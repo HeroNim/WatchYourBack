@@ -40,7 +40,7 @@ namespace WatchYourBack
         //Remove a component from the entity
         public void removeComponent(Component component)
         {
-            if(components.Contains(component))
+            if(hasComponent(component))
                 this.components.Remove(component);
         }
 
@@ -48,11 +48,11 @@ namespace WatchYourBack
         public void initialize()
         {
             isActive = true;
-            //foreach (Component component in components)
-                //component.initialize();
+            foreach (Component component in components)
+                component.initialize();
         }
 
-        public void update()
+        public void update(float delta)
         {
 
         }

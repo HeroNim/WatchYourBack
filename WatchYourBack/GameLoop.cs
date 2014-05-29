@@ -18,6 +18,7 @@ namespace WatchYourBack
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        Entity p1;
 
         public GameLoop()
             : base()
@@ -47,7 +48,8 @@ namespace WatchYourBack
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-
+            p1 = new Entity();
+            p1.addComponent(new TransformComponent(100, 100));
             // TODO: use this.Content to load your game content here
         }
 
