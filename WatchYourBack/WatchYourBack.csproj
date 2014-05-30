@@ -35,13 +35,13 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Component.cs" />
-    <Compile Include="Entity.cs" />
-    <Compile Include="GameLoop.cs" />
-    <Compile Include="Player.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="Core\EComponent.cs" />
+    <Compile Include="Core\Entity.cs" />
+    <Compile Include="Core\ESystem.cs" />
+    <Compile Include="Core\GameLoop.cs" />
+    <Compile Include="Core\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TransformComponent.cs" />
+    <Compile Include="Components\TransformComponent.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
@@ -55,15 +55,13 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\" />
+    <Folder Include="Systems\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\WatchYourBackContent\WatchYourBackContent\WatchYourBackContent.csproj">
       <Project>{d2588212-7c52-49ac-9da9-3b9892e586ad}</Project>
       <Name>WatchYourBackContent</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

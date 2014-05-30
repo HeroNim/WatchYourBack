@@ -50,6 +50,7 @@ namespace WatchYourBack
             spriteBatch = new SpriteBatch(GraphicsDevice);
             p1 = new Entity();
             p1.addComponent(new TransformComponent(100, 100));
+            p1.removeComponent(typeof(TransformComponent));
             // TODO: use this.Content to load your game content here
         }
 
@@ -71,7 +72,6 @@ namespace WatchYourBack
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-
             // TODO: Add your update logic here
 
             base.Update(gameTime);

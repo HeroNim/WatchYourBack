@@ -11,50 +11,52 @@ namespace WatchYourBack
     {
 
         private bool isActive;
-        private List<Component> components;
+        private Dictionary<Type, EComponent> components;
 
         public Entity()
         {
             isActive = false;
-            components = new List<Component>();
+            components = new Dictionary<Type, EComponent>();
         }
 
         //Checks if the entity has a component of this type already
-        public bool hasComponent(Component component)
+        public bool hasComponent(Type type)
         {
-            foreach(Component current in components)
-            {
-                if(current.GetType() == component.GetType())
-                    return true;
-            }
+            if (components.ContainsKey(type))
+                return true;
             return false;
+            
         }
 
         //Add a component to the entity
-        public void addComponent(Component component)
+        public void addComponent(EComponent component)
         {
-            if(!hasComponent(component))
-                this.components.Add(component);
+            if (!hasComponent(component.GetType()))
+            {
+                components.Add(component.GetType(), component);
+                component.setEntity(this);
+            }
         }
 
         //Remove a component from the entity
-        public void removeComponent(Component component)
+        public void removeComponent(Type component)
         {
-            if(hasComponent(component))
-                this.components.Remove(component);
+            if (hasComponent(component))
+                components.Remove(component);
         }
 
         //Initialize the entity. This sets the entity to active, and initializes all of it's components as well
         public void initialize()
         {
             isActive = true;
-            foreach (Component component in components)
+            foreach (EComponent component in components.Values)
                 component.initialize();
         }
 
         public void update(float delta)
         {
-
+            foreach (EComponent component in components.Values)
+                component.update(delta);
         }
 
         public bool IsActive
