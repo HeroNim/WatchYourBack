@@ -7,10 +7,28 @@ namespace WatchYourBack.Core
 {
     abstract class ESystem
     {
-        public ESystem(List<Entity> entities, params Type[] components)
+        private List<Entity> entities;
+        private abstract List<Type> components;
+
+        public ESystem(List<Entity> entities, bool exclusive)
         {
-            if(components.Any(t => !typeof(EComponent).IsAssignableFrom(t)))
-                throw new ArgumentException();
+           foreach(Type type in components)
+               if(!type.IsAssignableFrom(typeof(EComponent)))
+                   throw new ArgumentException();
+
+           if (exclusive == true)
+               foreach (Entity entity in entities)
+                   if (entity.Components.Count != components.Count)
+                       entities.Remove(entity);
+
+               foreach (Type type in components)
+                   foreach (Entity entity in entities)
+                       if (!entity.hasComponent(type))
+                           entities.Remove(entity);
+
+
+               
+                
         }
     }
 }

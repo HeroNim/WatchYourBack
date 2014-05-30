@@ -13,6 +13,11 @@ namespace WatchYourBack
         private bool isActive;
         private Dictionary<Type, EComponent> components;
 
+        public Dictionary<Type, EComponent> Components
+        {
+            get { return components; }
+        }
+
         public Entity()
         {
             isActive = false;
