@@ -20,7 +20,6 @@ namespace WatchYourBack
         SpriteBatch spriteBatch;
         ECSManager systemManager;
         Entity p1;
-        List<Entity> entities;
 
         public GameLoop()
             : base()
