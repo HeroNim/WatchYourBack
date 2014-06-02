@@ -9,14 +9,16 @@ namespace WatchYourBack
     class ECSManager
     {
         private List<ESystem> systems;
-        private List<Entity> entities;
+        private List<Entity> inactiveEntities;
         private List<Entity> activeEntities;
+        private List<Entity> removal;
 
         public ECSManager(List<Entity> entities)
         {
             systems = new List<ESystem>();
             activeEntities = new List<Entity>();
-            this.entities = entities;
+            removal = new List<Entity>();
+            this.inactiveEntities = entities;
         }
 
         public void addSystem(ESystem system)
@@ -33,19 +35,20 @@ namespace WatchYourBack
 
         public void removeEntity(Entity entity)
         {
-            entities.Remove(entity);
+            if (inactiveEntities.Contains(entity))
+                inactiveEntities.Remove(entity);
             if (activeEntities.Contains(entity))
                 activeEntities.Remove(entity);
         }
         
         public void addEntity(Entity entity)
         {
-            entities.Add(entity);
+            inactiveEntities.Add(entity);
         }
 
         public List<Entity> Entities
         {
-            get { return entities; } 
+            get { return inactiveEntities; } 
         }
 
         public List<Entity> ActiveEntities
@@ -53,11 +56,19 @@ namespace WatchYourBack
             get { return activeEntities; }
         }
 
-        public void update(float delta)
+        public void update()
         {
-            foreach (Entity entity in entities)
+            foreach (Entity entity in inactiveEntities)
                 if (entity.IsActive)
+                {
                     activeEntities.Add(entity);
+                    removal.Add(entity);
+                }
+
+            foreach (Entity entity in removal)
+                inactiveEntities.Remove(entity);
+            removal.Clear();
+
 
             foreach (ESystem system in systems)
                 system.updateEntities();

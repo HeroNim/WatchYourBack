@@ -43,7 +43,7 @@ namespace WatchYourBack
             p1 = new Entity();
             systemManager.addEntity(p1);
             p1.addComponent(new TransformComponent(100, 100));
-            p1.removeComponent(typeof(TransformComponent));
+            p1.initialize();
 
             base.Initialize();
         }
@@ -80,6 +80,7 @@ namespace WatchYourBack
                 Exit();
             // TODO: Add your update logic here
 
+            systemManager.update();
             base.Update(gameTime);
         }
 
