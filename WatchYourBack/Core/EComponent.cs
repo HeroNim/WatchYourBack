@@ -27,14 +27,6 @@ namespace WatchYourBack
             return this.entity;
         }
 
-        public bool IsActive
-        {
-            get { return isActive; }
-            set { isActive = value; }
-        }
 
-        public void initialize() { }
-
-        public void update(float delta) { }
     }
 }

@@ -51,14 +51,6 @@ namespace WatchYourBack
         public void initialize()
         {
             isActive = true;
-            foreach (EComponent component in components.Values)
-                component.initialize();
-        }
-
-        public void update(float delta)
-        {
-            foreach (EComponent component in components.Values)
-                component.update(delta);
         }
 
         public bool IsActive
