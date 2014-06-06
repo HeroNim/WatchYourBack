@@ -69,6 +69,17 @@ namespace WatchYourBack
                 inactiveEntities.Remove(entity);
             removal.Clear();
 
+            foreach (Entity entity in activeEntities)
+                if (!entity.IsActive)
+                {
+                    inactiveEntities.Add(entity);
+                    removal.Add(entity);
+                }
+
+            foreach (Entity entity in removal)
+                activeEntities.Remove(entity);
+            removal.Clear();
+
 
             foreach (ESystem system in systems)
                 system.updateEntities();

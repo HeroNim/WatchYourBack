@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-
+using Microsoft.Xna.Framework;
 
 
 namespace WatchYourBack
@@ -12,25 +12,37 @@ namespace WatchYourBack
     {
         
 
-        private float xPos;
-        private float yPos;
+        private Vector2 position;
+
+        public override int Mask
+        {  
+                get { return (int)Masks.Transform; }
+        }
+        
 
         public TransformComponent(float x, float y)
         {
-            xPos = x;
-            yPos = y;
+            position = new Vector2(x, y);
         }
 
-        public float XPos
+
+
+        public float X
         {
-            get { return xPos; }
-            set { xPos = value; }
+            get { return position.X; }
+            set { position.X = value; }
         }
 
-        public float YPos
+        public float Y
         {
-            get { return yPos; }
-            set { yPos = value; }
+            get { return position.Y; }
+            set { position.Y = value; }
+        }
+
+        public Vector2 Position
+        {
+            get { return position; }
+            set { position = value; }
         }
     }
 }

@@ -43,6 +43,7 @@ namespace WatchYourBack
             p1 = new Entity();
             systemManager.addEntity(p1);
             p1.addComponent(new TransformComponent(100, 100));
+            p1.addComponent(new VelocityComponent(10, -10));
             p1.initialize();
 
             base.Initialize();

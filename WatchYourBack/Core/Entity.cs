@@ -7,9 +7,12 @@ namespace WatchYourBack
 {
     //Container for all the components that make up game objects. Contains a list of all the components contained, and methods to modify said components. Each entity
     //can have only one of each component.
+
+    public enum Masks { Transform = 1, Velocity = 2 };
+
     class Entity
     {
-
+        private int mask;
         private bool isActive;
         private Dictionary<Type, EComponent> components;
 
@@ -19,6 +22,7 @@ namespace WatchYourBack
         {
             isActive = false;
             components = new Dictionary<Type, EComponent>();
+            
         }
 
         //Checks if the entity has a component of this type already
@@ -37,14 +41,18 @@ namespace WatchYourBack
             {
                 components.Add(component.GetType(), component);
                 component.setEntity(this);
+                mask += component.Mask;
             }
         }
 
         //Remove a component from the entity
-        public void removeComponent(Type component)
+        public void removeComponent(EComponent component)
         {
-            if (hasComponent(component))
-                components.Remove(component);
+            if (hasComponent(component.GetType()))
+            {
+                components.Remove(component.GetType());
+                mask -= component.Mask;
+            }
         }
 
         //Initialize the entity. This sets the entity to active, and initializes all of it's components as well
@@ -63,5 +71,7 @@ namespace WatchYourBack
         {
             get { return components; }
         }
+
+        public int Mask { get { return mask; } }
     }
 }
