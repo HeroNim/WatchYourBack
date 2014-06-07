@@ -8,7 +8,7 @@ namespace WatchYourBack
     //Container for all the components that make up game objects. Contains a list of all the components contained, and methods to modify said components. Each entity
     //can have only one of each component.
 
-    public enum Masks { Transform = 1, Velocity = 2 };
+    public enum Masks { Transform = 1, Velocity = 2, Graphics = 4 };
 
     class Entity
     {

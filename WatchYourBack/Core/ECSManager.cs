@@ -43,7 +43,8 @@ namespace WatchYourBack
         
         public void addEntity(Entity entity)
         {
-            inactiveEntities.Add(entity);
+            entity.initialize();
+            activeEntities.Add(entity);
         }
 
         public List<Entity> Entities

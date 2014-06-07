@@ -19,7 +19,7 @@ namespace WatchYourBack
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         ECSManager systemManager;
-        Entity p1;
+        EFactory factory;
 
         public GameLoop()
             : base()
@@ -38,13 +38,10 @@ namespace WatchYourBack
         {
             // TODO: Add your initialization logic here
 
+            factory = new EFactory();
             systemManager = new ECSManager(new List<Entity>());
             systemManager.addSystem(new MovementSystem(false));
-            p1 = new Entity();
-            systemManager.addEntity(p1);
-            p1.addComponent(new TransformComponent(100, 100));
-            p1.addComponent(new VelocityComponent(10, -10));
-            p1.initialize();
+            systemManager.addEntity(factory.createAvatar(100, 100));
 
             base.Initialize();
         }

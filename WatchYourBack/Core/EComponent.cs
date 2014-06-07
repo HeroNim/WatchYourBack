@@ -13,7 +13,6 @@ namespace WatchYourBack
     abstract class EComponent
     {
         public abstract int Mask { get; }
-        private bool isActive;
         private Entity entity;
 
 
