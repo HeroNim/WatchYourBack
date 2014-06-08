@@ -3,16 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
+
 namespace WatchYourBack
 {
     class EFactory
     {
-        public Entity createAvatar(int x, int y)
+        public Entity createAvatar(int x, int y, Rectangle rect, Texture2D texture, Color color)
         {
             Entity entity = new Entity();
             entity.addComponent(new TransformComponent(x, y));
-            entity.addComponent(new VelocityComponent(0, 0));
-            entity.addComponent(new GraphicsComponent(x, y, 20, 20));
+            entity.addComponent(new VelocityComponent(10, 0));
+            entity.addComponent(new GraphicsComponent(rect, texture, color));
             return entity;
         }
     }

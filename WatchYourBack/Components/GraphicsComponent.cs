@@ -13,13 +13,22 @@ namespace WatchYourBack
 
         public override int Mask { get { return (int)Masks.Graphics; } }
 
-        private Rectangle sprite;
+        private Texture2D spriteTexture;
+        private Rectangle body;
+        private Color color;
 
-        public GraphicsComponent(int x, int y, int width, int height)
+        public GraphicsComponent(Rectangle rectangle, Texture2D texture, Color color)
         {
-            sprite = new Rectangle(x, y, width, height);
+            spriteTexture = texture;
+            body = rectangle;
+            this.color = color;
         }
 
-        public Rectangle Sprite { get { return sprite; } }
+        public int X { get { return body.X; } set { body.X = value; } }
+        public int Y { get { return body.Y; } set { body.Y = value; } }
+
+        public Texture2D Sprite { get { return spriteTexture; } }
+        public Rectangle Body { get { return body; } }
+        public Color SpriteColor { get { return color; } }
     }
 }

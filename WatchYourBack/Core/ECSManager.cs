@@ -3,18 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Microsoft.Xna.Framework.Graphics;
+
 namespace WatchYourBack
 {
     //Manages the systems in the game. Is responsible for initializing, updating, and removing systems as needed.
     class ECSManager
     {
+
+        private EFactory factory;
         private List<ESystem> systems;
         private List<Entity> inactiveEntities;
         private List<Entity> activeEntities;
         private List<Entity> removal;
 
-        public ECSManager(List<Entity> entities)
+        public ECSManager(List<Entity> entities, EFactory factory)
         {
+            this.factory = factory;
             systems = new List<ESystem>();
             activeEntities = new List<Entity>();
             removal = new List<Entity>();
@@ -83,8 +88,23 @@ namespace WatchYourBack
 
 
             foreach (ESystem system in systems)
-                system.updateEntities();
+            {
+                if (system.Loop == true)
+                    system.updateEntities();
+            }
             
+        }
+
+        public void draw(SpriteBatch spriteBatch)
+        {
+            foreach (Entity entity in activeEntities)
+            {
+                if ((entity.Mask & (int)Masks.Graphics) != 0)
+                {
+                    GraphicsComponent graphics = (GraphicsComponent)entity.Components[typeof(GraphicsComponent)];
+                    spriteBatch.Draw(graphics.Sprite, graphics.Body, graphics.SpriteColor);
+                }
+            }
         }
     }
 }

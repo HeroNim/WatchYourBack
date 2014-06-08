@@ -11,7 +11,7 @@ namespace WatchYourBack
     {
         
 
-        public MovementSystem(bool exclusive) : base(exclusive)
+        public MovementSystem(bool exclusive) : base(exclusive, true)
         {
             components = 0;
             components += (int)Masks.Transform;
@@ -25,6 +25,13 @@ namespace WatchYourBack
                 TransformComponent transform = (TransformComponent)entity.Components[typeof(TransformComponent)];
                 VelocityComponent velocity = (VelocityComponent)entity.Components[typeof(VelocityComponent)];
                 transform.Position = new Vector2(transform.X + velocity.X, transform.Y + velocity.Y);
+                if(entity.hasComponent(typeof(GraphicsComponent)))
+                {
+                    GraphicsComponent graphics = (GraphicsComponent)entity.Components[typeof(GraphicsComponent)];
+                    graphics.X = (int)transform.X;
+                    graphics.Y = (int)transform.Y;
+                    
+                }
             }
         }
     }

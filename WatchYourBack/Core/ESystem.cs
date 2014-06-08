@@ -13,12 +13,14 @@ namespace WatchYourBack
         protected List<Entity> activeEntities;
         protected int components;
         private bool exclusive;
+        private bool updateLoop;
         
         private ECSManager manager;
 
-        public ESystem(bool exclusive)
+        public ESystem(bool exclusive, bool updateLoop)
         {
             this.exclusive = exclusive;
+            this.updateLoop = updateLoop;
             activeEntities = new List<Entity>();
         }
         
@@ -49,6 +51,9 @@ namespace WatchYourBack
                             
             
         }
+
+        public bool Loop { get { return updateLoop; } }
+
         //Logic goes here
         public abstract void update();
     }

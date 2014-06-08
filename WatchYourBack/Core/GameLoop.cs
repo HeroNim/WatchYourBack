@@ -21,6 +21,9 @@ namespace WatchYourBack
         ECSManager systemManager;
         EFactory factory;
 
+        Rectangle body;
+        Texture2D bodyTexture;
+
         public GameLoop()
             : base()
         {
@@ -39,9 +42,8 @@ namespace WatchYourBack
             // TODO: Add your initialization logic here
 
             factory = new EFactory();
-            systemManager = new ECSManager(new List<Entity>());
+            systemManager = new ECSManager(new List<Entity>(), factory);
             systemManager.addSystem(new MovementSystem(false));
-            systemManager.addEntity(factory.createAvatar(100, 100));
 
             base.Initialize();
         }
@@ -54,6 +56,10 @@ namespace WatchYourBack
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            bodyTexture = new Texture2D(GraphicsDevice, 1, 1);
+            bodyTexture.SetData(new[] { Color.White });
+            body = new Rectangle(100, 100, 20, 20);
+            systemManager.addEntity(factory.createAvatar(100, 100, body, bodyTexture, Color.White));
             
             // TODO: use this.Content to load your game content here
         }
@@ -89,6 +95,9 @@ namespace WatchYourBack
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
+            spriteBatch.Begin();
+            systemManager.draw(spriteBatch);
+            spriteBatch.End();
 
             // TODO: Add your drawing code here
 
