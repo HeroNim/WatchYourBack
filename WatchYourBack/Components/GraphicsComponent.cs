@@ -8,6 +8,10 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace WatchYourBack
 {
+
+    /* 
+     * Holds all the information the graphics device needs to render an entity.
+     */
     class GraphicsComponent : EComponent
     {
 
@@ -24,6 +28,7 @@ namespace WatchYourBack
             this.color = color;
         }
 
+ 
         public int X { get { return body.X; } set { body.X = value; } }
         public int Y { get { return body.Y; } set { body.Y = value; } }
 

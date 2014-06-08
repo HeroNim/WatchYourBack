@@ -7,10 +7,12 @@ using Microsoft.Xna.Framework;
 
 namespace WatchYourBack
 {
+    /*
+     * The system used to move all entities. Finds all entities that have a transform and velocity component, then uses
+     * the relevant data to adjust their position. Also adjusts the position of the graphics component accordingly if applicable.
+     */
     class MovementSystem : ESystem
     {
-        
-
         public MovementSystem(bool exclusive) : base(exclusive, true)
         {
             components = 0;

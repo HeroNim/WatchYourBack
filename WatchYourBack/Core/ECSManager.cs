@@ -28,7 +28,6 @@ namespace WatchYourBack
 
         public void addSystem(ESystem system)
         {
-            
             systems.Add(system);
             system.initialize(this);
         }
@@ -62,6 +61,11 @@ namespace WatchYourBack
             get { return activeEntities; }
         }
 
+
+        /*
+         * Updates the entity lists of the manager, moving active/inactive entities to their proper lists. Any systems that run
+         * during the update loop are then updated.
+         */
         public void update()
         {
             foreach (Entity entity in inactiveEntities)
@@ -86,7 +90,7 @@ namespace WatchYourBack
                 activeEntities.Remove(entity);
             removal.Clear();
 
-
+            //Update the systems
             foreach (ESystem system in systems)
             {
                 if (system.Loop == true)
@@ -95,6 +99,9 @@ namespace WatchYourBack
             
         }
 
+        /*
+         * Has the sprite batch draw all the entities that have a graphics component 
+         */
         public void draw(SpriteBatch spriteBatch)
         {
             foreach (Entity entity in activeEntities)

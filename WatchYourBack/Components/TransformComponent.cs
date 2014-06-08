@@ -8,10 +8,12 @@ using Microsoft.Xna.Framework;
 
 namespace WatchYourBack
 {
+    /*
+     * Holds the position of the entity 
+    */
+
     class TransformComponent : EComponent
     {
-        
-
         private Vector2 position;
 
         public override int Mask

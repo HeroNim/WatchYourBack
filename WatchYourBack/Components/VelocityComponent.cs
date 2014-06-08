@@ -7,6 +7,9 @@ using Microsoft.Xna.Framework;
 
 namespace WatchYourBack
 {
+    /*
+     * Holds the velocity of the entity 
+     */
     class VelocityComponent : EComponent
     {
         public override int Mask {get { return (int)Masks.Velocity; } }

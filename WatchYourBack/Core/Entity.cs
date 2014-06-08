@@ -5,8 +5,11 @@ using System.Text;
 
 namespace WatchYourBack
 {
-    //Container for all the components that make up game objects. Contains a list of all the components contained, and methods to modify said components. Each entity
-    //can have only one of each component.
+    /* 
+     * Container for all the components that make up game objects. Contains a list of all the components contained, and methods to modify said components. Each entity
+     * can have only one of each component. Each component has a component-specific bit; combining these into a bitmask for the entity allows for quick lookup and comparison
+     * using bitwise operators.
+     */
 
     public enum Masks 
     { 
