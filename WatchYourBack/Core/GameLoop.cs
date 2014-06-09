@@ -22,7 +22,9 @@ namespace WatchYourBack
         EFactory factory;
 
         Rectangle body;
+        Rectangle wall;
         Texture2D bodyTexture;
+        Texture2D wallTexture;
 
         public GameLoop()
             : base()
@@ -43,7 +45,8 @@ namespace WatchYourBack
 
             factory = new EFactory();
             systemManager = new ECSManager(new List<Entity>(), factory);
-            systemManager.addSystem(new MovementSystem(false));
+            systemManager.addSystem(new CollisionSystem());
+            systemManager.addSystem(new MovementSystem());
 
             base.Initialize();
         }
@@ -58,8 +61,12 @@ namespace WatchYourBack
             spriteBatch = new SpriteBatch(GraphicsDevice);
             bodyTexture = new Texture2D(GraphicsDevice, 1, 1);
             bodyTexture.SetData(new[] { Color.White });
+            wallTexture = new Texture2D(GraphicsDevice, 1, 1);
+            wallTexture.SetData(new[] { Color.Black });
             body = new Rectangle(100, 100, 20, 20);
-            systemManager.addEntity(factory.createAvatar(100, 100, body, bodyTexture, Color.White));
+            wall = new Rectangle(500, 119, 10, 50);
+            systemManager.addEntity(factory.createAvatar(body.X, body.Y, body, bodyTexture, Color.White));
+            systemManager.addEntity(factory.createWall(wall.X, wall.Y, wall, wallTexture, Color.Black));
             
             // TODO: use this.Content to load your game content here
         }

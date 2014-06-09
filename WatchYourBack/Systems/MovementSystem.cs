@@ -9,15 +9,15 @@ namespace WatchYourBack
 {
     /*
      * The system used to move all entities. Finds all entities that have a transform and velocity component, then uses
-     * the relevant data to adjust their position. Also adjusts the position of the graphics component accordingly if applicable.
+     * the relevant data to adjust their position. Also adjusts the position of the graphics and collider components accordingly if applicable.
      */
     class MovementSystem : ESystem
     {
-        public MovementSystem(bool exclusive) : base(exclusive, true)
+        public MovementSystem() : base(false, true)
         {
             components = 0;
-            components += (int)Masks.Transform;
-            components += (int)Masks.Velocity;
+            components += TransformComponent.bitMask;
+            components += VelocityComponent.bitMask;
         }
 
         public override void update()
@@ -27,12 +27,19 @@ namespace WatchYourBack
                 TransformComponent transform = (TransformComponent)entity.Components[typeof(TransformComponent)];
                 VelocityComponent velocity = (VelocityComponent)entity.Components[typeof(VelocityComponent)];
                 transform.Position = new Vector2(transform.X + velocity.X, transform.Y + velocity.Y);
-                if(entity.hasComponent(typeof(GraphicsComponent)))
+                
+                if(entity.hasComponent(GraphicsComponent.bitMask))
                 {
                     GraphicsComponent graphics = (GraphicsComponent)entity.Components[typeof(GraphicsComponent)];
                     graphics.X = (int)transform.X;
                     graphics.Y = (int)transform.Y;
-                    
+                }
+                
+                if (entity.hasComponent(ColliderComponent.bitMask))
+                {
+                    ColliderComponent collider = (ColliderComponent)entity.Components[typeof(ColliderComponent)];
+                    collider.X = (int)transform.X;
+                    collider.Y = (int)transform.Y;
                 }
             }
         }

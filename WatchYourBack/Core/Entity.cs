@@ -15,7 +15,8 @@ namespace WatchYourBack
     { 
         Transform = 1 << 0, 
         Velocity = 1 << 1, 
-        Graphics = 1 << 2 
+        Graphics = 1 << 2,
+        Collider = 1 << 3
     };
 
     class Entity
@@ -34,18 +35,19 @@ namespace WatchYourBack
         }
 
         //Checks if the entity has a component of this type already
-        public bool hasComponent(Type type)
+        public bool hasComponent(int bitMask)
         {
-            if (components.ContainsKey(type))
+            if ((this.mask & bitMask) != 0)
                 return true;
             return false;
+            
             
         }
 
         //Add a component to the entity
         public void addComponent(EComponent component)
         {
-            if (!hasComponent(component.GetType()))
+            if (!hasComponent(component.Mask))
             {
                 components.Add(component.GetType(), component);
                 component.setEntity(this);
@@ -56,7 +58,7 @@ namespace WatchYourBack
         //Remove a component from the entity
         public void removeComponent(EComponent component)
         {
-            if (hasComponent(component.GetType()))
+            if (hasComponent(component.Mask))
             {
                 components.Remove(component.GetType());
                 mask -= component.Mask;

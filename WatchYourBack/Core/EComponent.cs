@@ -15,6 +15,7 @@ namespace WatchYourBack
     abstract class EComponent
     {
         public abstract int Mask { get; }
+
         private Entity entity;
 
 
