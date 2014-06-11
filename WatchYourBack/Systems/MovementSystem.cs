@@ -15,7 +15,6 @@ namespace WatchYourBack
     {
         public MovementSystem() : base(false, true)
         {
-            components = 0;
             components += TransformComponent.bitMask;
             components += VelocityComponent.bitMask;
         }

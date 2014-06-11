@@ -45,6 +45,8 @@ namespace WatchYourBack
 
             factory = new EFactory();
             systemManager = new ECSManager(new List<Entity>(), factory);
+            systemManager.addSystem(new InputSystem());
+            systemManager.addSystem(new PlayerInputSystem());
             systemManager.addSystem(new CollisionSystem());
             systemManager.addSystem(new MovementSystem());
 

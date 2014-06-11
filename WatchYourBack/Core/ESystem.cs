@@ -24,6 +24,7 @@ namespace WatchYourBack
             this.exclusive = exclusive;
             this.updateLoop = updateLoop;
             activeEntities = new List<Entity>();
+            components = 0;
         }
         
         //Initializes the system, pulling the entity list from the manager, and making sure that all of it's components are actually components.

@@ -16,7 +16,8 @@ namespace WatchYourBack
         Transform = 1 << 0, 
         Velocity = 1 << 1, 
         Graphics = 1 << 2,
-        Collider = 1 << 3
+        Collider = 1 << 3,
+        PlayerInput = 1 << 4
     };
 
     class Entity

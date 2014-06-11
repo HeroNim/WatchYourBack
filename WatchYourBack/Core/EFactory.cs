@@ -16,7 +16,8 @@ namespace WatchYourBack
             Entity entity = new Entity();
             entity.addComponent(new TransformComponent(x, y));
             entity.addComponent(new ColliderComponent(rect));
-            entity.addComponent(new VelocityComponent(2, 1));
+            entity.addComponent(new VelocityComponent(0, 0));
+            entity.addComponent(new PlayerInputComponent());
             entity.addComponent(new GraphicsComponent(rect, texture, color));
             return entity;
         }

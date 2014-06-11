@@ -9,7 +9,6 @@ namespace WatchYourBack
     {
         public CollisionSystem() : base(false, true)
         {
-            components = 0;
             components += TransformComponent.bitMask;
             components += ColliderComponent.bitMask;
         }
