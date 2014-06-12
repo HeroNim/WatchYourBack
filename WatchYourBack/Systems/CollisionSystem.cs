@@ -16,9 +16,14 @@ namespace WatchYourBack
         public override void update()
         {
             foreach (Entity entity in activeEntities)
-                foreach (Entity other in activeEntities)
-                    if(entity != other)
-                        checkCollisions(entity, other);
+                if (entity.hasComponent(VelocityComponent.bitMask))
+                {
+                    foreach (Entity other in activeEntities)
+                        if (entity != other)
+                            checkCollisions(entity, other);
+                    ColliderComponent c1 = (ColliderComponent)entity.Components[typeof(ColliderComponent)];
+                    c1.resetLocks();
+                }
                 
         }
 
@@ -30,25 +35,32 @@ namespace WatchYourBack
          * */
         private void checkCollisions(Entity e1, Entity e2)
         {
-            VelocityComponent v1 = null;
+            VelocityComponent v1 = (VelocityComponent)e1.Components[typeof(VelocityComponent)];
             TransformComponent t1 = (TransformComponent)e1.Components[typeof(TransformComponent)];
             ColliderComponent c1 = (ColliderComponent)e1.Components[typeof(ColliderComponent)];
             ColliderComponent c2 = (ColliderComponent)e2.Components[typeof(ColliderComponent)];
 
-            if (e1.hasComponent(VelocityComponent.bitMask))
-                v1 = (VelocityComponent)e1.Components[typeof(VelocityComponent)];
+
 
             if(v1 != null)
             {
                 c1.X += (int)v1.X;
                 if (c1.Collider.Intersects(c2.Collider))
-                    t1.X -= v1.X;
+                    if (c1.XLock != true)
+                    {
+                        t1.X -= v1.X;
+                        c1.XLock = true;
+                    }
                 c1.X -= (int)v1.X;
 
 
                 c1.Y += (int)v1.Y;
                 if (c1.Collider.Intersects(c2.Collider))
-                    t1.Y -= v1.Y;
+                    if (c1.YLock != true)
+                    {
+                        t1.Y -= v1.Y;
+                        c1.YLock = true;
+                    }
                 c1.Y -= (int)v1.Y;
             }
                 

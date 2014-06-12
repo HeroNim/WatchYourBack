@@ -13,6 +13,8 @@ namespace WatchYourBack
         public override int Mask { get { return bitMask; } }
 
         private Rectangle collider;
+        private bool xLock;
+        private bool yLock;
 
         public ColliderComponent(Rectangle r)
         {
@@ -47,6 +49,24 @@ namespace WatchYourBack
         {
             get { return collider; }
             set { collider = value; }
+        }
+
+        public bool XLock
+        {
+            get { return xLock; }
+            set { xLock = value; }
+        }
+
+        public bool YLock
+        {
+            get { return yLock; }
+            set { yLock = value; }
+        }
+
+        public void resetLocks()
+        {
+            xLock = false;
+            yLock = false;
         }
 
 

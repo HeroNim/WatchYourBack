@@ -20,16 +20,21 @@ namespace WatchYourBack
         SpriteBatch spriteBatch;
         ECSManager systemManager;
         EFactory factory;
+        LevelManager levelManager;
 
         Rectangle body;
         Rectangle wall;
         Texture2D bodyTexture;
         Texture2D wallTexture;
+        WallTemplate wallTemplate;
 
         public GameLoop()
             : base()
         {
             graphics = new GraphicsDeviceManager(this);
+            graphics.PreferredBackBufferWidth = 1280;
+            graphics.PreferredBackBufferHeight = 720;
+            graphics.IsFullScreen = true;
             Content.RootDirectory = "Content";
         }
 
@@ -45,6 +50,8 @@ namespace WatchYourBack
 
             factory = new EFactory();
             systemManager = new ECSManager(new List<Entity>(), factory);
+            levelManager = new LevelManager(systemManager, factory);
+
             systemManager.addSystem(new InputSystem());
             systemManager.addSystem(new PlayerInputSystem());
             systemManager.addSystem(new CollisionSystem());
@@ -60,15 +67,23 @@ namespace WatchYourBack
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
+            Texture2D testLevelLayout = Content.Load<Texture2D>("TestLevel");
+            levelManager.addLevel(LevelName.firstLevel, new Level(testLevelLayout));
+
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            
             bodyTexture = new Texture2D(GraphicsDevice, 1, 1);
             bodyTexture.SetData(new[] { Color.White });
             wallTexture = new Texture2D(GraphicsDevice, 1, 1);
             wallTexture.SetData(new[] { Color.Black });
-            body = new Rectangle(100, 100, 20, 20);
-            wall = new Rectangle(500, 119, 10, 50);
-            systemManager.addEntity(factory.createAvatar(body.X, body.Y, body, bodyTexture, Color.White));
-            systemManager.addEntity(factory.createWall(wall.X, wall.Y, wall, wallTexture, Color.Black));
+            body = new Rectangle(100, 100, GraphicsDevice.Viewport.Width / 40, GraphicsDevice.Viewport.Width / 40);
+            wall = new Rectangle(0, 0, GraphicsDevice.Viewport.Width / 32, GraphicsDevice.Viewport.Height / 18);
+            
+            wallTemplate = new WallTemplate(wallTexture, wall);
+            factory.setWallTemplate(wallTemplate);
+
+            systemManager.addEntity(factory.createAvatar(body, bodyTexture, Color.White));
+            levelManager.buildLevel(LevelName.firstLevel);
             
             // TODO: use this.Content to load your game content here
         }

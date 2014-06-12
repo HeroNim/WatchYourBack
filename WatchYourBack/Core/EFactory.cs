@@ -11,10 +11,12 @@ namespace WatchYourBack
 {
     class EFactory
     {
-        public Entity createAvatar(int x, int y, Rectangle rect, Texture2D texture, Color color)
+        private WallTemplate wallTemplate;
+
+        public Entity createAvatar(Rectangle rect, Texture2D texture, Color color)
         {
             Entity entity = new Entity();
-            entity.addComponent(new TransformComponent(x, y));
+            entity.addComponent(new TransformComponent(rect.X, rect.Y));
             entity.addComponent(new ColliderComponent(rect));
             entity.addComponent(new VelocityComponent(0, 0));
             entity.addComponent(new PlayerInputComponent());
@@ -22,13 +24,22 @@ namespace WatchYourBack
             return entity;
         }
 
-        public Entity createWall(int x, int y, Rectangle rect, Texture2D texture, Color color)
+        public Entity createWall(int x, int y)
         {
             Entity entity = new Entity();
             entity.addComponent(new TransformComponent(x, y));
-            entity.addComponent(new ColliderComponent(rect));
-            entity.addComponent(new GraphicsComponent(rect, texture, color));
+            wallTemplate.X = x;
+            wallTemplate.Y = y;
+            entity.addComponent(new ColliderComponent(wallTemplate.WallBody));
+            entity.addComponent(new GraphicsComponent(wallTemplate.WallBody, wallTemplate.WallTexture, Color.Black));
             return entity;
         }
+
+        public void setWallTemplate(WallTemplate template)
+        {
+            wallTemplate = template;
+        }
+
+        
     }
 }
