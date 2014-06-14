@@ -17,7 +17,7 @@ namespace WatchYourBack
         private bool exclusive;
         private bool updateLoop;
         
-        private ECSManager manager;
+        protected ECSManager manager;
 
         public ESystem(bool exclusive, bool updateLoop)
         {

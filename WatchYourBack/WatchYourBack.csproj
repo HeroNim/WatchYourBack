@@ -37,8 +37,10 @@
   <ItemGroup>
     <Compile Include="Components\ColliderComponent.cs" />
     <Compile Include="Components\PlayerInputComponent.cs" />
-    <Compile Include="Core\Level.cs" />
-    <Compile Include="Core\LevelManager.cs" />
+    <Compile Include="Core\ETemplate.cs" />
+    <Compile Include="Components\LevelComponent.cs" />
+    <Compile Include="Templates\LevelTemplate.cs" />
+    <Compile Include="Systems\LevelSystem.cs" />
     <Compile Include="Systems\PlayerInputSystem.cs" />
     <Compile Include="Systems\InputSystem.cs" />
     <Compile Include="Systems\CollisionSystem.cs" />
@@ -54,8 +56,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Components\TransformComponent.cs" />
     <Compile Include="Components\VelocityComponent.cs" />
-    <Compile Include="Core\Tile.cs" />
     <Compile Include="Templates\WallTemplate.cs" />
+    <Compile Include="Components\TileComponent.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

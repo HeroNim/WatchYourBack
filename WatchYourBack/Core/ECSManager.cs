@@ -16,6 +16,9 @@ namespace WatchYourBack
         private List<Entity> inactiveEntities;
         private List<Entity> activeEntities;
         private List<Entity> removal;
+        private bool initialized;
+
+        //TODO: States
 
         public ECSManager(List<Entity> entities, EFactory factory)
         {
@@ -24,6 +27,7 @@ namespace WatchYourBack
             activeEntities = new List<Entity>();
             removal = new List<Entity>();
             this.inactiveEntities = entities;
+            initialized = false;
         }
 
         public void addSystem(ESystem system)
@@ -37,18 +41,18 @@ namespace WatchYourBack
             systems.Remove(system);
         }
 
+        public void addEntity(Entity entity)
+        {
+            entity.initialize();
+            activeEntities.Add(entity);
+        }
+
         public void removeEntity(Entity entity)
         {
             if (inactiveEntities.Contains(entity))
                 inactiveEntities.Remove(entity);
             if (activeEntities.Contains(entity))
                 activeEntities.Remove(entity);
-        }
-        
-        public void addEntity(Entity entity)
-        {
-            entity.initialize();
-            activeEntities.Add(entity);
         }
 
         public List<Entity> Entities
@@ -68,6 +72,13 @@ namespace WatchYourBack
          */
         public void update()
         {
+            if (!initialized)
+            {
+                Entity levelEntity = new Entity();
+                levelEntity.addComponent(new LevelComponent());
+                addEntity(levelEntity);
+                initialized = true;
+            }
             foreach (Entity entity in inactiveEntities)
                 if (entity.IsActive)
                 {
@@ -112,6 +123,11 @@ namespace WatchYourBack
                     spriteBatch.Draw(graphics.Sprite, graphics.Body, graphics.SpriteColor);
                 }
             }
+        }
+
+        public EFactory Factory
+        {
+            get { return factory; }
         }
     }
 }

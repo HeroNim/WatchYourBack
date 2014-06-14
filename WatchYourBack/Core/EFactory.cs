@@ -27,11 +27,11 @@ namespace WatchYourBack
         public Entity createWall(int x, int y)
         {
             Entity entity = new Entity();
+            Rectangle body = new Rectangle(x, y, wallTemplate.Width, wallTemplate.Height);
+            entity.addComponent(new TileComponent());
             entity.addComponent(new TransformComponent(x, y));
-            wallTemplate.X = x;
-            wallTemplate.Y = y;
-            entity.addComponent(new ColliderComponent(wallTemplate.WallBody));
-            entity.addComponent(new GraphicsComponent(wallTemplate.WallBody, wallTemplate.WallTexture, Color.Black));
+            entity.addComponent(new ColliderComponent(body));
+            entity.addComponent(new GraphicsComponent(body, wallTemplate.Texture, Color.Black));
             return entity;
         }
 

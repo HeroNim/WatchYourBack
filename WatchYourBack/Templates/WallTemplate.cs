@@ -13,38 +13,34 @@ namespace WatchYourBack
     /*
      * A modifiable template for the walls. 
      */
-    class WallTemplate
+    class WallTemplate : ETemplate
     {
-        private Texture2D wallTexture;
-        private Rectangle body;
+        private Texture2D texture;
+        private int width;
+        private int height;
 
-        public WallTemplate(Texture2D texture, Rectangle rect)
+        public WallTemplate(Texture2D texture, int width, int height)
         {
-            wallTexture = texture;
-            body = rect;
+            this.texture = texture;
+            this.width = width;
+            this.height = height;
         }
 
-        public Texture2D WallTexture
+        public Texture2D Texture
         {
-            get { return wallTexture; }
+            get { return texture; }
         }
 
-        public Rectangle WallBody
+        public int Width
         {
-            get { return body; }
-            set { body = value; }
+            get { return width; }
+            
         }
 
-        public int X
+        public int Height
         {
-            get { return body.X; }
-            set { body.X = value; }
-        }
-
-        public int Y
-        {
-            get { return body.Y; }
-            set { body.Y = value; }
+            get { return height; }
+           
         }
     }
 }
