@@ -60,11 +60,9 @@ namespace WatchYourBack
             }
             else
             {
-
-            
-            if(level.Playing)
-                if (!built)
-                    buildLevel(level.CurrentLevel);
+                if(level.Playing)
+                    if (!built)
+                        buildLevel(level.CurrentLevel);
             }
 
         }
