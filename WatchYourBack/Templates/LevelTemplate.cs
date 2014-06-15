@@ -15,7 +15,7 @@ namespace WatchYourBack
         SPAWN
     };
    
-    class LevelTemplate : ETemplate
+    class LevelTemplate
     {
         private Texture2D levelImage;
         private Color[] data;

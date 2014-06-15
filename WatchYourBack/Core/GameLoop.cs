@@ -16,10 +16,12 @@ namespace WatchYourBack
     /// </summary>
     public class GameLoop : Game
     {
+        World activeWorld;
+
+        World gameWorld;
+        World pauseMenu;
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        ECSManager systemManager;
-        EFactory factory;
 
         Dictionary<LevelName, LevelTemplate> levels; 
         Rectangle body;
@@ -46,21 +48,25 @@ namespace WatchYourBack
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
+            gameWorld = new World();
+            pauseMenu = new World();
+
             levels = new Dictionary<LevelName, LevelTemplate>();
 
             Texture2D testLevelLayout = Content.Load<Texture2D>("TestLevel");
             LevelTemplate firstLevel = new LevelTemplate(testLevelLayout);
             levels.Add(LevelName.firstLevel, firstLevel);
 
-            factory = new EFactory();
-            systemManager = new ECSManager(new List<Entity>(), factory);
+            gameWorld.Manager.addSystem(new InputSystem());
+            gameWorld.Manager.addSystem(new PlayerInputSystem());
+            gameWorld.Manager.addSystem(new CollisionSystem());
+            gameWorld.Manager.addSystem(new MovementSystem());
+            gameWorld.Manager.addSystem(new LevelSystem(levels));
 
-            systemManager.addSystem(new InputSystem());
-            systemManager.addSystem(new PlayerInputSystem());
-            systemManager.addSystem(new CollisionSystem());
-            systemManager.addSystem(new MovementSystem());
-            systemManager.addSystem(new LevelSystem(levels));
+            pauseMenu.Manager.addSystem(new InputSystem());
+            pauseMenu.Manager.addSystem(new PlayerInputSystem());
 
+            activeWorld = gameWorld;
             base.Initialize();
         }
 
@@ -81,9 +87,10 @@ namespace WatchYourBack
             body = new Rectangle(100, 100, GraphicsDevice.Viewport.Width / 40, GraphicsDevice.Viewport.Width / 40);
             
             wallTemplate = new WallTemplate(wallTexture, GraphicsDevice.Viewport.Width / 32, GraphicsDevice.Viewport.Height / 18);
-            systemManager.Factory.setWallTemplate(wallTemplate);
 
-            systemManager.addEntity(factory.createAvatar(body, bodyTexture, Color.White));
+            gameWorld.Manager.Factory.setWallTemplate(wallTemplate);
+            gameWorld.Manager.addEntity(gameWorld.Manager.Factory.createAvatar(body, bodyTexture, Color.White));
+
             
             
             // TODO: use this.Content to load your game content here
@@ -109,7 +116,7 @@ namespace WatchYourBack
                 Exit();
             // TODO: Add your update logic here
 
-            systemManager.update();
+            activeWorld.Manager.update();
             base.Update(gameTime);
         }
 
@@ -121,7 +128,7 @@ namespace WatchYourBack
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             spriteBatch.Begin();
-            systemManager.draw(spriteBatch);
+            activeWorld.Manager.draw(spriteBatch);
             spriteBatch.End();
 
             // TODO: Add your drawing code here

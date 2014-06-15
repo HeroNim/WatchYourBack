@@ -37,7 +37,6 @@
   <ItemGroup>
     <Compile Include="Components\ColliderComponent.cs" />
     <Compile Include="Components\PlayerInputComponent.cs" />
-    <Compile Include="Core\ETemplate.cs" />
     <Compile Include="Components\LevelComponent.cs" />
     <Compile Include="Templates\LevelTemplate.cs" />
     <Compile Include="Systems\LevelSystem.cs" />
@@ -58,6 +57,7 @@
     <Compile Include="Components\VelocityComponent.cs" />
     <Compile Include="Templates\WallTemplate.cs" />
     <Compile Include="Components\TileComponent.cs" />
+    <Compile Include="Core\World.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
