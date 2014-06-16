@@ -5,18 +5,36 @@ using System.Text;
 
 namespace WatchYourBack
 {
-    class World
+    public enum Worlds
+    {
+        MAIN_MENU,
+        PAUSE_MENU,
+        IN_GAME
+    };
+
+    public class World
     {
         private ECSManager systemManager;
-        
-        public World()
+        private Worlds menuType;
+
+
+        public World(Worlds type)
         {
             systemManager = new ECSManager(new List<Entity>(), new EFactory());
+            menuType = type;
+            
         }
 
         public ECSManager Manager
         {
             get { return systemManager; }
         }
+
+        public Worlds MenuType
+        {
+            get { return menuType; }
+        }
+
+       
     }
 }

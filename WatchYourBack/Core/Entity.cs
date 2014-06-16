@@ -23,7 +23,7 @@ namespace WatchYourBack
         Button = 1 << 7
     };
 
-    class Entity
+    public class Entity
     {
         private int mask;
         private bool isActive;

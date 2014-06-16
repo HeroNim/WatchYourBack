@@ -6,7 +6,7 @@
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{1E178E67-747E-41BE-9A97-9BA553E8618F}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>WatchYourBack</RootNamespace>
     <AssemblyName>WatchYourBack</AssemblyName>
@@ -34,12 +34,15 @@
   <PropertyGroup>
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Core\ButtonArgs.cs" />
     <Compile Include="Components\ColliderComponent.cs" />
     <Compile Include="Components\AvatarInputComponent.cs" />
     <Compile Include="Components\LevelComponent.cs" />
     <Compile Include="Components\ButtonComponent.cs" />
-    <Compile Include="Systems\MenuCollisionSystem.cs" />
     <Compile Include="Systems\MenuInputSystem.cs" />
     <Compile Include="Templates\LevelTemplate.cs" />
     <Compile Include="Systems\LevelSystem.cs" />

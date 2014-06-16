@@ -9,7 +9,7 @@ namespace WatchYourBack
      * exact components that the system acts on, whereas nonexclusive systems will act on all entities that contain the necessary components, even if they have extra components. Each system
      * also must specifiy whether they want to be updated during the update loop, or the draw loop.
      */
-    abstract class ESystem
+    public abstract class ESystem
     {
         private List<Entity> entities;
         protected List<Entity> activeEntities;

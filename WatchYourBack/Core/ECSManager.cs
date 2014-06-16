@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 namespace WatchYourBack
 {
     //Manages the systems in the game. Is responsible for initializing, updating, and removing systems as needed.
-    class ECSManager
+    public class ECSManager
     {
 
         private EFactory factory;
@@ -72,9 +72,7 @@ namespace WatchYourBack
         public void update()
         {
             
-                Entity levelEntity = new Entity();
-                levelEntity.addComponent(new LevelComponent());
-                addEntity(levelEntity);
+                
              
             
             foreach (Entity entity in inactiveEntities)

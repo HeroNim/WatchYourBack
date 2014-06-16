@@ -13,7 +13,7 @@ namespace WatchYourBack
      * A factory to create all the entities of the game. Can hold templates so that objects can be created by only specifying their location.
      * TODO: Figure out a better template system. Holding instances and setting them manually seems a bit stupid.
      */
-    class EFactory
+    public class EFactory
     {
         private WallTemplate wallTemplate;
 
@@ -28,11 +28,11 @@ namespace WatchYourBack
             return entity;
         }
 
-        public Entity createButton(int x, int y, int width, int height, Texture2D texture, string text)
+        public Entity createButton(int x, int y, int width, int height, Buttons type, Texture2D texture, string text)
         {
             Entity entity = new Entity();
             Rectangle body = new Rectangle(x, y, width, height);
-            entity.addComponent(new ButtonComponent(text));
+            entity.addComponent(new ButtonComponent(type, text));
             entity.addComponent(new TransformComponent(x, y));
             entity.addComponent(new ColliderComponent(body));
             entity.addComponent(new GraphicsComponent(body, texture, Color.Red ));

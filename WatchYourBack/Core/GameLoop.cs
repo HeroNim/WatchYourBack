@@ -1,6 +1,8 @@
 ﻿#region Using Statements
 using System;
 using System.Collections.Generic;
+using System.Collections;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -16,11 +18,14 @@ namespace WatchYourBack
     /// </summary>
     public class GameLoop : Game
     {
+
+        Stack<World> worldStack;
         World activeWorld;
         
         World mainMenu;
         World inGame;
         World pauseMenu;
+        MenuListener menuListener;
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
@@ -50,9 +55,12 @@ namespace WatchYourBack
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            mainMenu = new World();
-            inGame = new World();
-            pauseMenu = new World();
+            worldStack = new Stack<World>();
+            mainMenu = new World(Worlds.MAIN_MENU);
+            inGame = new World(Worlds.IN_GAME);
+            pauseMenu = new World(Worlds.PAUSE_MENU);
+            menuListener = new MenuListener(this);
+
 
             levels = new Dictionary<LevelName, LevelTemplate>();
 
@@ -60,7 +68,7 @@ namespace WatchYourBack
             LevelTemplate firstLevel = new LevelTemplate(testLevelLayout);
             levels.Add(LevelName.firstLevel, firstLevel);
 
-            mainMenu.Manager.addSystem(new MenuCollisionSystem());
+            menuListener.addMenu(mainMenu);
             //mainMenu.Manager.addSystem(new MenuInputSystem());
 
             inGame.Manager.addSystem(new GameInputSystem());
@@ -70,9 +78,10 @@ namespace WatchYourBack
             inGame.Manager.addSystem(new LevelSystem(levels));
 
             pauseMenu.Manager.addSystem(new GameInputSystem());
-            pauseMenu.Manager.addSystem(new MenuInputSystem());
+            menuListener.addMenu(pauseMenu);
 
-            activeWorld = mainMenu;
+            worldStack.Push(mainMenu);
+            activeWorld = worldStack.Peek();
             base.Initialize();
         }
 
@@ -94,7 +103,7 @@ namespace WatchYourBack
             
             wallTemplate = new WallTemplate(wallTexture, GraphicsDevice.Viewport.Width / 32, GraphicsDevice.Viewport.Height / 18);
 
-            mainMenu.Manager.addEntity(mainMenu.Manager.Factory.createButton(50, 50, 50, 50, bodyTexture, "Blah"));
+            mainMenu.Manager.addEntity(mainMenu.Manager.Factory.createButton(50, 50, 50, 50, Buttons.Start, bodyTexture, "Start"));
 
             inGame.Manager.Factory.setWallTemplate(wallTemplate);
             inGame.Manager.addEntity(inGame.Manager.Factory.createAvatar(body, bodyTexture, Color.White));
@@ -125,6 +134,7 @@ namespace WatchYourBack
             // TODO: Add your update logic here
 
             activeWorld.Manager.update();
+            activeWorld = worldStack.Peek();
             base.Update(gameTime);
         }
 
@@ -142,6 +152,44 @@ namespace WatchYourBack
             // TODO: Add your drawing code here
 
             base.Draw(gameTime);
+        }
+
+        private class MenuListener
+        {
+            private Dictionary<World, MenuInputSystem> menuInputs;
+            GameLoop game;
+
+            public MenuListener(GameLoop game)
+            {
+                this.game = game;
+                menuInputs = new Dictionary<World, MenuInputSystem>();
+            }
+
+            public void addMenu(World menu)
+            {
+                MenuInputSystem toAdd = new MenuInputSystem(menu);
+                menu.Manager.addSystem(toAdd);
+                menuInputs.Add(menu, toAdd);
+                toAdd.buttonClicked += new EventHandler(buttonClicked);
+            }
+
+            private void buttonClicked(object sender, EventArgs e)
+            {
+                ButtonArgs args = (ButtonArgs)e;
+                World input = (World)sender;
+                Console.WriteLine(game.worldStack.Peek().MenuType);
+                Console.WriteLine(menuInputs[input].ToString());
+                Console.WriteLine(args.ButtonType);
+
+                if(game.activeWorld.MenuType == Worlds.MAIN_MENU)
+                {
+                    if (args.ButtonType == Buttons.Start)
+                        game.worldStack.Push(game.inGame);
+                }
+                
+                //Do stuff
+                
+            }
         }
     }
 }

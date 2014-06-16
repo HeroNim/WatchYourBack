@@ -13,7 +13,7 @@ namespace WatchYourBack
     /*
      * A modifiable template for the walls. 
      */
-    class WallTemplate
+    public class WallTemplate
     {
         private Texture2D texture;
         private int width;

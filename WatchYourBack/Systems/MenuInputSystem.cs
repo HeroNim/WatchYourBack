@@ -7,36 +7,58 @@ using Microsoft.Xna.Framework.Input;
 
 namespace WatchYourBack
 {
+    /*
+     * Checks for collisions between mouseclicks and menu elements, and activates the appropriate response.
+     */
     class MenuInputSystem : ESystem
     {
-        public MenuInputSystem()
-            : base(false, true)
+
+        private bool clickable;
+        private bool collided;
+        private World menu;
+
+         public MenuInputSystem(World menu) : base(false, true)
         {
+            components += ColliderComponent.bitMask;
             components += ButtonComponent.bitMask;
-            
+            this.menu = menu;
+            clickable = false;
+            collided = false;
         }
 
         public override void update()
         {
-            foreach (Entity entity in activeEntities)
-            {
-                AvatarInputComponent p1 = (AvatarInputComponent)entity.Components[typeof(AvatarInputComponent)];
-                VelocityComponent v1 = (VelocityComponent)entity.Components[typeof(VelocityComponent)];
-                if (p1.MoveDown)
-                    v1.Y = 5;
-                else if (p1.MoveUp)
-                    v1.Y = -5;
-                else
-                    v1.Y = 0;
+            MouseState ms = Mouse.GetState();
+            collided = false;
+                foreach (Entity entity in activeEntities)
+                {
+                    ColliderComponent collider = (ColliderComponent)entity.Components[typeof(ColliderComponent)];
+                    ButtonComponent button = (ButtonComponent)entity.Components[typeof(ButtonComponent)];
+                    GraphicsComponent graphics = (GraphicsComponent)entity.Components[typeof(GraphicsComponent)];
 
-                if (p1.MoveRight)
-                    v1.X = 5;
-                else if (p1.MoveLeft)
-                    v1.X = -5;
-                else
-                    v1.X = 0;
-                    
-            }
+                    if (collider.Collider.Contains(ms.X, ms.Y))
+                    {
+                        collided = true;
+                        if (ms.LeftButton == ButtonState.Pressed && clickable == true)
+                        {
+                            onClick(button.Args);
+                            clickable = false;
+                        }
+                        else if (ms.LeftButton != ButtonState.Pressed)
+                            clickable = true;
+                        
+                    }           
+                }
+                if (collided == false)
+                    clickable = false;
+        }
+
+        public event EventHandler buttonClicked;
+
+        private void onClick(EventArgs e)
+        {
+            if (buttonClicked != null)
+                buttonClicked(menu, e);
         }
     }
 }

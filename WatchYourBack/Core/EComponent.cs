@@ -12,7 +12,7 @@ namespace WatchYourBack
      * however, for smaller programs and tightly coupled components, it may be simpler to include the logic in the components themselves.
      * Also contains the value of the component-specific bitmask used to quickly lookup and compare components and entities.
      */
-    abstract class EComponent
+    public abstract class EComponent
     {
         public abstract int Mask { get; }
 
