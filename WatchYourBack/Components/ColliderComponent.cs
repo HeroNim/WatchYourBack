@@ -51,6 +51,9 @@ namespace WatchYourBack
             set { collider = value; }
         }
 
+        /*
+         * The locks are used to stop the entity from jittering when there are multiple collisions 
+         */
         public bool XLock
         {
             get { return xLock; }

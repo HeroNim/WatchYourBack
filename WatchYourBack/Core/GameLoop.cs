@@ -17,8 +17,9 @@ namespace WatchYourBack
     public class GameLoop : Game
     {
         World activeWorld;
-
-        World gameWorld;
+        
+        World mainMenu;
+        World inGame;
         World pauseMenu;
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
@@ -36,6 +37,7 @@ namespace WatchYourBack
             graphics.PreferredBackBufferWidth = 1280;
             graphics.PreferredBackBufferHeight = 720;
             graphics.IsFullScreen = true;
+            this.IsMouseVisible = true;
             Content.RootDirectory = "Content";
         }
 
@@ -48,7 +50,8 @@ namespace WatchYourBack
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            gameWorld = new World();
+            mainMenu = new World();
+            inGame = new World();
             pauseMenu = new World();
 
             levels = new Dictionary<LevelName, LevelTemplate>();
@@ -57,16 +60,19 @@ namespace WatchYourBack
             LevelTemplate firstLevel = new LevelTemplate(testLevelLayout);
             levels.Add(LevelName.firstLevel, firstLevel);
 
-            gameWorld.Manager.addSystem(new InputSystem());
-            gameWorld.Manager.addSystem(new PlayerInputSystem());
-            gameWorld.Manager.addSystem(new CollisionSystem());
-            gameWorld.Manager.addSystem(new MovementSystem());
-            gameWorld.Manager.addSystem(new LevelSystem(levels));
+            mainMenu.Manager.addSystem(new MenuCollisionSystem());
+            //mainMenu.Manager.addSystem(new MenuInputSystem());
 
-            pauseMenu.Manager.addSystem(new InputSystem());
-            pauseMenu.Manager.addSystem(new PlayerInputSystem());
+            inGame.Manager.addSystem(new GameInputSystem());
+            inGame.Manager.addSystem(new AvatarInputSystem());
+            inGame.Manager.addSystem(new GameCollisionSystem());
+            inGame.Manager.addSystem(new MovementSystem());
+            inGame.Manager.addSystem(new LevelSystem(levels));
 
-            activeWorld = gameWorld;
+            pauseMenu.Manager.addSystem(new GameInputSystem());
+            pauseMenu.Manager.addSystem(new MenuInputSystem());
+
+            activeWorld = mainMenu;
             base.Initialize();
         }
 
@@ -88,8 +94,10 @@ namespace WatchYourBack
             
             wallTemplate = new WallTemplate(wallTexture, GraphicsDevice.Viewport.Width / 32, GraphicsDevice.Viewport.Height / 18);
 
-            gameWorld.Manager.Factory.setWallTemplate(wallTemplate);
-            gameWorld.Manager.addEntity(gameWorld.Manager.Factory.createAvatar(body, bodyTexture, Color.White));
+            mainMenu.Manager.addEntity(mainMenu.Manager.Factory.createButton(50, 50, 50, 50, bodyTexture, "Blah"));
+
+            inGame.Manager.Factory.setWallTemplate(wallTemplate);
+            inGame.Manager.addEntity(inGame.Manager.Factory.createAvatar(body, bodyTexture, Color.White));
 
             
             

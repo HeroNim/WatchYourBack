@@ -11,22 +11,22 @@ namespace WatchYourBack
      * Takes the state of the game, and modifies what recieves input in that state. For example, in a Playing state, the input should go to the player and the AI should be active,
      * while in a Menu state, the input should go to the menu and the AI should be inactive.
      */
-    class InputSystem : ESystem
+    class GameInputSystem : ESystem
     {
-        public InputSystem()
+        public GameInputSystem()
             : base(false, true)
         {
-            components += PlayerInputComponent.bitMask;
+            components += AvatarInputComponent.bitMask;
         }
 
         public override void update()
         {
             //If (state == Playing)
-            PlayerInputComponent p1;
+            AvatarInputComponent p1;
 
             foreach(Entity entity in activeEntities)
             {
-                p1 = (PlayerInputComponent)entity.Components[typeof(PlayerInputComponent)];
+                p1 = (AvatarInputComponent)entity.Components[typeof(AvatarInputComponent)];
                 
                 if (Keyboard.GetState().IsKeyDown(Keys.Right))
                     p1.MoveRight = true;

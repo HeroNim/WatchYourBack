@@ -9,6 +9,10 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace WatchYourBack
 {
+    /*
+     * A factory to create all the entities of the game. Can hold templates so that objects can be created by only specifying their location.
+     * TODO: Figure out a better template system. Holding instances and setting them manually seems a bit stupid.
+     */
     class EFactory
     {
         private WallTemplate wallTemplate;
@@ -19,8 +23,19 @@ namespace WatchYourBack
             entity.addComponent(new TransformComponent(rect.X, rect.Y));
             entity.addComponent(new ColliderComponent(rect));
             entity.addComponent(new VelocityComponent(0, 0));
-            entity.addComponent(new PlayerInputComponent());
+            entity.addComponent(new AvatarInputComponent());
             entity.addComponent(new GraphicsComponent(rect, texture, color));
+            return entity;
+        }
+
+        public Entity createButton(int x, int y, int width, int height, Texture2D texture, string text)
+        {
+            Entity entity = new Entity();
+            Rectangle body = new Rectangle(x, y, width, height);
+            entity.addComponent(new ButtonComponent(text));
+            entity.addComponent(new TransformComponent(x, y));
+            entity.addComponent(new ColliderComponent(body));
+            entity.addComponent(new GraphicsComponent(body, texture, Color.Red ));
             return entity;
         }
 
@@ -34,6 +49,8 @@ namespace WatchYourBack
             entity.addComponent(new GraphicsComponent(body, wallTemplate.Texture, Color.Black));
             return entity;
         }
+
+        
 
         public void setWallTemplate(WallTemplate template)
         {

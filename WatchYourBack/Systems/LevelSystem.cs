@@ -31,6 +31,7 @@ namespace WatchYourBack
             components += LevelComponent.bitMask;
             this.levels = levels;
             built = false;
+            
         }
 
         public void addLevel(LevelName levelName, LevelTemplate level)
@@ -53,11 +54,8 @@ namespace WatchYourBack
 
         public override void update()
         {
-            if (level == null){
-                foreach (Entity entity in activeEntities)
-                    if (entity.hasComponent(LevelComponent.bitMask))
-                        level = (LevelComponent)entity.Components[typeof(LevelComponent)];
-            }
+            if (level == null)
+                initialize();
             else
             {
                 if(level.Playing)
@@ -65,6 +63,14 @@ namespace WatchYourBack
                         buildLevel(level.CurrentLevel);
             }
 
+        }
+
+        public void initialize()
+        {         
+            Entity levelEntity = new Entity();
+            levelEntity.addComponent(new LevelComponent());
+            manager.addEntity(levelEntity);
+            level = (LevelComponent)levelEntity.Components[typeof(LevelComponent)];
         }
     }
 }

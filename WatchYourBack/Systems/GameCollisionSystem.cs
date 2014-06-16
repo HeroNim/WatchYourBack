@@ -5,9 +5,12 @@ using System.Text;
 
 namespace WatchYourBack
 {
-    class CollisionSystem : ESystem
+    /*
+     * Checks for collisions between game objects, and resolves them appropriately; destroys destructible objects, stops moving objects etc.
+     */
+    class GameCollisionSystem : ESystem
     {
-        public CollisionSystem() : base(false, true)
+        public GameCollisionSystem() : base(false, true)
         {
             components += TransformComponent.bitMask;
             components += ColliderComponent.bitMask;

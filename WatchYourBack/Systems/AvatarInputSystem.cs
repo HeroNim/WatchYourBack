@@ -9,12 +9,12 @@ namespace WatchYourBack
     /*
      * Defines the behaviour of the player's movement
      */
-    class PlayerInputSystem : ESystem
+    class AvatarInputSystem : ESystem
     {
-        public PlayerInputSystem()
+        public AvatarInputSystem()
             : base(false, true)
         {
-            components += PlayerInputComponent.bitMask;
+            components += AvatarInputComponent.bitMask;
             components += VelocityComponent.bitMask;
         }
 
@@ -22,7 +22,7 @@ namespace WatchYourBack
         {
             foreach (Entity entity in activeEntities)
             {
-                PlayerInputComponent p1 = (PlayerInputComponent)entity.Components[typeof(PlayerInputComponent)];
+                AvatarInputComponent p1 = (AvatarInputComponent)entity.Components[typeof(AvatarInputComponent)];
                 VelocityComponent v1 = (VelocityComponent)entity.Components[typeof(VelocityComponent)];
                 if (p1.MoveDown)
                     v1.Y = 5;

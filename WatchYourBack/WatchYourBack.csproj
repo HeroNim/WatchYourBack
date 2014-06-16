@@ -36,13 +36,16 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Components\ColliderComponent.cs" />
-    <Compile Include="Components\PlayerInputComponent.cs" />
+    <Compile Include="Components\AvatarInputComponent.cs" />
     <Compile Include="Components\LevelComponent.cs" />
+    <Compile Include="Components\ButtonComponent.cs" />
+    <Compile Include="Systems\MenuCollisionSystem.cs" />
+    <Compile Include="Systems\MenuInputSystem.cs" />
     <Compile Include="Templates\LevelTemplate.cs" />
     <Compile Include="Systems\LevelSystem.cs" />
-    <Compile Include="Systems\PlayerInputSystem.cs" />
-    <Compile Include="Systems\InputSystem.cs" />
-    <Compile Include="Systems\CollisionSystem.cs" />
+    <Compile Include="Systems\AvatarInputSystem.cs" />
+    <Compile Include="Systems\GameInputSystem.cs" />
+    <Compile Include="Systems\GameCollisionSystem.cs" />
     <Compile Include="Core\EComponent.cs" />
     <Compile Include="Core\Entity.cs" />
     <Compile Include="Core\ESystem.cs" />

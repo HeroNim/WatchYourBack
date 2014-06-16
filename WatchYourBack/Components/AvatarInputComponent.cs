@@ -5,7 +5,10 @@ using System.Text;
 
 namespace WatchYourBack
 {
-    class PlayerInputComponent : EComponent
+    /*
+     * Holds the data containing the current inputs to the avatar
+     */
+    class AvatarInputComponent : EComponent
     {
         public readonly static int bitMask = (int)Masks.PlayerInput;
         public override int Mask { get { return bitMask; } }
@@ -15,7 +18,7 @@ namespace WatchYourBack
         private bool moveLeft;
         private bool moveRight;
 
-        public PlayerInputComponent()
+        public AvatarInputComponent()
         {
             moveUp = false;
             moveDown = false;

@@ -19,7 +19,8 @@ namespace WatchYourBack
         Collider = 1 << 3,
         PlayerInput = 1 << 4,
         Tile = 1 << 5,
-        Level = 1 << 6
+        Level = 1 << 6,
+        Button = 1 << 7
     };
 
     class Entity

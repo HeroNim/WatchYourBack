@@ -16,7 +16,7 @@ namespace WatchYourBack
         private List<Entity> inactiveEntities;
         private List<Entity> activeEntities;
         private List<Entity> removal;
-        private bool initialized;
+
 
         //TODO: States
 
@@ -27,7 +27,6 @@ namespace WatchYourBack
             activeEntities = new List<Entity>();
             removal = new List<Entity>();
             this.inactiveEntities = entities;
-            initialized = false;
         }
 
         public void addSystem(ESystem system)
@@ -72,13 +71,12 @@ namespace WatchYourBack
          */
         public void update()
         {
-            if (!initialized)
-            {
+            
                 Entity levelEntity = new Entity();
                 levelEntity.addComponent(new LevelComponent());
                 addEntity(levelEntity);
-                initialized = true;
-            }
+             
+            
             foreach (Entity entity in inactiveEntities)
                 if (entity.IsActive)
                 {

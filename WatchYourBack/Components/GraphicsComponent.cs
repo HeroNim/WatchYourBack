@@ -35,6 +35,6 @@ namespace WatchYourBack
 
         public Texture2D Sprite { get { return spriteTexture; } }
         public Rectangle Body { get { return body; } }
-        public Color SpriteColor { get { return color; } }
+        public Color SpriteColor { get { return color; } set { color = value; } }
     }
 }

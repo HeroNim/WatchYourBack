@@ -10,6 +10,9 @@ namespace WatchYourBack
         firstLevel
     };
 
+    /*
+     * Holds the level data, such as the current level, and whether or not the level has actually started.
+     */
     class LevelComponent : EComponent
     {
         public readonly static int bitMask = (int)Masks.Level;
