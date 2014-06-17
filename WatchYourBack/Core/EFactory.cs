@@ -28,7 +28,7 @@ namespace WatchYourBack
             return entity;
         }
 
-        public Entity createButton(int x, int y, int width, int height, Buttons type, Texture2D texture, string text)
+        public Entity createButton(int x, int y, int width, int height, Inputs type, Texture2D texture, string text)
         {
             Entity entity = new Entity();
             Rectangle body = new Rectangle(x, y, width, height);

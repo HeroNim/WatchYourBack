@@ -25,7 +25,7 @@ namespace WatchYourBack
         World mainMenu;
         World inGame;
         World pauseMenu;
-        MenuListener menuListener;
+        InputListener inputListener;
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
@@ -56,29 +56,15 @@ namespace WatchYourBack
         {
             // TODO: Add your initialization logic here
             worldStack = new Stack<World>();
-            mainMenu = new World(Worlds.MAIN_MENU);
             inGame = new World(Worlds.IN_GAME);
+            mainMenu = new World(Worlds.MAIN_MENU);
             pauseMenu = new World(Worlds.PAUSE_MENU);
-            menuListener = new MenuListener(this);
-
-
-            levels = new Dictionary<LevelName, LevelTemplate>();
+            inputListener = new InputListener(this);
 
             Texture2D testLevelLayout = Content.Load<Texture2D>("TestLevel");
             LevelTemplate firstLevel = new LevelTemplate(testLevelLayout);
-            levels.Add(LevelName.firstLevel, firstLevel);
-
-            menuListener.addMenu(mainMenu);
-            //mainMenu.Manager.addSystem(new MenuInputSystem());
-
-            inGame.Manager.addSystem(new GameInputSystem());
-            inGame.Manager.addSystem(new AvatarInputSystem());
-            inGame.Manager.addSystem(new GameCollisionSystem());
-            inGame.Manager.addSystem(new MovementSystem());
-            inGame.Manager.addSystem(new LevelSystem(levels));
-
-            pauseMenu.Manager.addSystem(new GameInputSystem());
-            menuListener.addMenu(pauseMenu);
+            levels = new Dictionary<LevelName, LevelTemplate>(); 
+            levels.Add(LevelName.FIRST_LEVEL, firstLevel);
 
             worldStack.Push(mainMenu);
             activeWorld = worldStack.Peek();
@@ -103,10 +89,11 @@ namespace WatchYourBack
             
             wallTemplate = new WallTemplate(wallTexture, GraphicsDevice.Viewport.Width / 32, GraphicsDevice.Viewport.Height / 18);
 
-            mainMenu.Manager.addEntity(mainMenu.Manager.Factory.createButton(50, 50, 50, 50, Buttons.Start, bodyTexture, "Start"));
+            createMainMenu();
+            createGame();
+            createPauseMenu();
 
-            inGame.Manager.Factory.setWallTemplate(wallTemplate);
-            inGame.Manager.addEntity(inGame.Manager.Factory.createAvatar(body, bodyTexture, Color.White));
+         
 
             
             
@@ -129,8 +116,7 @@ namespace WatchYourBack
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
+            
             // TODO: Add your update logic here
 
             activeWorld.Manager.update();
@@ -154,37 +140,90 @@ namespace WatchYourBack
             base.Draw(gameTime);
         }
 
-        private class MenuListener
+        private void createMainMenu()
         {
-            private Dictionary<World, MenuInputSystem> menuInputs;
+            inputListener.addMenu(mainMenu);
+            mainMenu.Manager.addEntity(mainMenu.Manager.Factory.createButton(50, 50, 50, 50, Inputs.START, bodyTexture, "Start Game"));
+            mainMenu.Manager.addEntity(mainMenu.Manager.Factory.createButton(50, 200, 50, 50, Inputs.EXIT, bodyTexture, "Exit"));
+        }
+
+        private void createGame()
+        {
+            inputListener.addGame(inGame);
+            inGame.Manager.addSystem(new AvatarInputSystem());
+            inGame.Manager.addSystem(new GameCollisionSystem());
+            inGame.Manager.addSystem(new MovementSystem());
+            inGame.Manager.addSystem(new LevelSystem(levels));
+
+            inGame.Manager.Factory.setWallTemplate(wallTemplate);
+            inGame.Manager.addEntity(inGame.Manager.Factory.createAvatar(body, bodyTexture, Color.White));
+        }
+
+        private void createPauseMenu()
+        {
+            inputListener.addMenu(pauseMenu);
+            pauseMenu.Manager.addEntity(mainMenu.Manager.Factory.createButton(50, 50, 50, 50, Inputs.START, bodyTexture, "Resume"));
+            pauseMenu.Manager.addEntity(mainMenu.Manager.Factory.createButton(50, 200, 50, 50, Inputs.EXIT, bodyTexture, "Exit to menu"));
+        }
+
+        /*
+         * Listens for the events from menu elements, and uses the information to manage what screens are active.
+         */
+        private class InputListener
+        {
+            private Dictionary<World, InputSystem> inputs;
             GameLoop game;
 
-            public MenuListener(GameLoop game)
+            public InputListener(GameLoop game)
             {
                 this.game = game;
-                menuInputs = new Dictionary<World, MenuInputSystem>();
+                inputs = new Dictionary<World, InputSystem>();
             }
 
             public void addMenu(World menu)
             {
-                MenuInputSystem toAdd = new MenuInputSystem(menu);
+                MenuInputSystem toAdd = new MenuInputSystem();
                 menu.Manager.addSystem(toAdd);
-                menuInputs.Add(menu, toAdd);
-                toAdd.buttonClicked += new EventHandler(buttonClicked);
+                inputs.Add(menu, toAdd);
+                toAdd.inputFired += new EventHandler(inputFired);
             }
 
-            private void buttonClicked(object sender, EventArgs e)
+            public void addGame(World game)
             {
-                ButtonArgs args = (ButtonArgs)e;
-                World input = (World)sender;
-                Console.WriteLine(game.worldStack.Peek().MenuType);
-                Console.WriteLine(menuInputs[input].ToString());
-                Console.WriteLine(args.ButtonType);
+                GameInputSystem toAdd = new GameInputSystem();
+                game.Manager.addSystem(toAdd);
+                inputs.Add(game, toAdd);
+                toAdd.inputFired += new EventHandler(inputFired);
+            }
+
+            private void inputFired(object sender, EventArgs e)
+            {
+                InputArgs args = (InputArgs)e;
+                Console.WriteLine(game.worldStack.Peek().MenuType + "=> " + args.InputType);
 
                 if(game.activeWorld.MenuType == Worlds.MAIN_MENU)
                 {
-                    if (args.ButtonType == Buttons.Start)
+                    if (args.InputType == Inputs.START)
                         game.worldStack.Push(game.inGame);
+                    if (args.InputType == Inputs.EXIT)
+                        game.Exit();
+                }
+                if (game.activeWorld.MenuType == Worlds.PAUSE_MENU)
+                {
+                    if (args.InputType == Inputs.START)
+                        game.worldStack.Pop();
+                    if (args.InputType == Inputs.EXIT)
+                    {
+                        game.worldStack.Pop();
+                        game.worldStack.Push(game.mainMenu);
+                    }
+                }
+                if(game.activeWorld.MenuType == Worlds.IN_GAME)
+                {
+                    if(args.InputType == Inputs.PAUSE)
+                    {
+                        game.worldStack.Push(game.pauseMenu);
+                    }
                 }
                 
                 //Do stuff

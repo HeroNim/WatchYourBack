@@ -11,7 +11,7 @@ namespace WatchYourBack
      * Takes the state of the game, and modifies what recieves input in that state. For example, in a Playing state, the input should go to the player and the AI should be active,
      * while in a Menu state, the input should go to the menu and the AI should be inactive.
      */
-    class GameInputSystem : ESystem
+    class GameInputSystem : ESystem, InputSystem
     {
         public GameInputSystem()
             : base(false, true)
@@ -47,9 +47,17 @@ namespace WatchYourBack
                     p1.MoveDown = true;
                 else
                     p1.MoveDown = false;
+                if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+                    onFire(new InputArgs(Inputs.PAUSE));
             }
-                    
-                
+        }
+
+        public event EventHandler inputFired;
+
+        private void onFire(EventArgs e)
+        {
+            if (inputFired != null)
+                inputFired(this, e);
         }
         
 

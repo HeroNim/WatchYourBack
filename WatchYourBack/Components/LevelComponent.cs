@@ -7,7 +7,7 @@ namespace WatchYourBack
 {
     enum LevelName
     {
-        firstLevel
+        FIRST_LEVEL
     };
 
     /*
@@ -15,7 +15,7 @@ namespace WatchYourBack
      */
     class LevelComponent : EComponent
     {
-        public readonly static int bitMask = (int)Masks.Level;
+        public readonly static int bitMask = (int)Masks.LEVEL;
         public override int Mask { get { return bitMask; } }
 
         private LevelName currentLevel;
@@ -23,7 +23,7 @@ namespace WatchYourBack
 
         public LevelComponent()
         {
-            currentLevel = LevelName.firstLevel;
+            currentLevel = LevelName.FIRST_LEVEL;
             playing = true;
         }
 

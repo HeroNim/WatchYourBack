@@ -113,7 +113,7 @@ namespace WatchYourBack
         {
             foreach (Entity entity in activeEntities)
             {
-                if ((entity.Mask & (int)Masks.Graphics) != 0)
+                if ((entity.Mask & (int)Masks.GRAPHICS) != 0)
                 {
                     GraphicsComponent graphics = (GraphicsComponent)entity.Components[typeof(GraphicsComponent)];
                     spriteBatch.Draw(graphics.Sprite, graphics.Body, graphics.SpriteColor);

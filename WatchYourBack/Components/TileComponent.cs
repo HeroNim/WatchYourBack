@@ -10,7 +10,7 @@ namespace WatchYourBack
 {
     class TileComponent : EComponent
     {
-        public readonly static int bitMask = (int)Masks.Tile;
+        public readonly static int bitMask = (int)Masks.TILE;
         public override int Mask { get { return bitMask; } }
 
         

@@ -13,7 +13,7 @@ namespace WatchYourBack
     class VelocityComponent : EComponent
     {
 
-        public readonly static int bitMask = (int)Masks.Velocity;
+        public readonly static int bitMask = (int)Masks.VELOCITY;
         public override int Mask { get { return bitMask; } }
 
         private Vector2 velocity;

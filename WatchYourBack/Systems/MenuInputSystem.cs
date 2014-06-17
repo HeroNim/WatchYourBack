@@ -10,18 +10,17 @@ namespace WatchYourBack
     /*
      * Checks for collisions between mouseclicks and menu elements, and activates the appropriate response.
      */
-    class MenuInputSystem : ESystem
+    class MenuInputSystem : ESystem, InputSystem
     {
 
         private bool clickable;
         private bool collided;
-        private World menu;
 
-         public MenuInputSystem(World menu) : base(false, true)
+
+         public MenuInputSystem() : base(false, true)
         {
             components += ColliderComponent.bitMask;
             components += ButtonComponent.bitMask;
-            this.menu = menu;
             clickable = false;
             collided = false;
         }
@@ -41,7 +40,7 @@ namespace WatchYourBack
                         collided = true;
                         if (ms.LeftButton == ButtonState.Pressed && clickable == true)
                         {
-                            onClick(button.Args);
+                            onFire(button.Args);
                             clickable = false;
                         }
                         else if (ms.LeftButton != ButtonState.Pressed)
@@ -53,12 +52,12 @@ namespace WatchYourBack
                     clickable = false;
         }
 
-        public event EventHandler buttonClicked;
+        public event EventHandler inputFired;
 
-        private void onClick(EventArgs e)
+        private void onFire(EventArgs e)
         {
-            if (buttonClicked != null)
-                buttonClicked(menu, e);
+            if (inputFired != null)
+                inputFired(this, e);
         }
     }
 }

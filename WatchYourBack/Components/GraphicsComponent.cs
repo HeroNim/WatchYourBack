@@ -15,7 +15,7 @@ namespace WatchYourBack
     class GraphicsComponent : EComponent
     {
 
-        public readonly static int bitMask = (int)Masks.Graphics;
+        public readonly static int bitMask = (int)Masks.GRAPHICS;
         public override int Mask { get { return bitMask; } }
 
         private Texture2D spriteTexture;

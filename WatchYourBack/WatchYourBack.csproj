@@ -38,11 +38,12 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Core\ButtonArgs.cs" />
+    <Compile Include="Core\InputArgs.cs" />
     <Compile Include="Components\ColliderComponent.cs" />
     <Compile Include="Components\AvatarInputComponent.cs" />
     <Compile Include="Components\LevelComponent.cs" />
     <Compile Include="Components\ButtonComponent.cs" />
+    <Compile Include="InputSystem.cs" />
     <Compile Include="Systems\MenuInputSystem.cs" />
     <Compile Include="Templates\LevelTemplate.cs" />
     <Compile Include="Systems\LevelSystem.cs" />

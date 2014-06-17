@@ -16,7 +16,7 @@ namespace WatchYourBack
     {
         private Vector2 position;
 
-        public readonly static int bitMask = (int)Masks.Transform;
+        public readonly static int bitMask = (int)Masks.TRANSFORM;
         public override int Mask { get { return bitMask; } }
         
 

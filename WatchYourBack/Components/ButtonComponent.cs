@@ -5,31 +5,26 @@ using System.Text;
 
 namespace WatchYourBack
 {
-    public enum Buttons
-    {
-        Exit,
-        Start,
-        Pause
-    };
+  
 
     public class ButtonComponent : EComponent
     {
-        public readonly static int bitMask = (int)Masks.Button;
+        public readonly static int bitMask = (int)Masks.BUTTON;
         public override int Mask { get { return bitMask; } }
 
         private string buttonText;
-        private Buttons buttonType;
-        private ButtonArgs args;
+        private Inputs buttonType;
+        private InputArgs args;
 
-        public ButtonComponent(Buttons type, string text)
+        public ButtonComponent(Inputs type, string text)
         {
             buttonText = text;
             buttonType = type;
-            args = new ButtonArgs(buttonType);
+            args = new InputArgs(buttonType);
             
         }
 
-        public ButtonArgs Args
+        public InputArgs Args
         {
             get { return args; }
         }

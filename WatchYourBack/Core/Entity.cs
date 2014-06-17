@@ -13,14 +13,14 @@ namespace WatchYourBack
 
     public enum Masks 
     { 
-        Transform = 1 << 0, 
-        Velocity = 1 << 1, 
-        Graphics = 1 << 2,
-        Collider = 1 << 3,
-        PlayerInput = 1 << 4,
-        Tile = 1 << 5,
-        Level = 1 << 6,
-        Button = 1 << 7
+        TRANSFORM = 1 << 0, 
+        VELOCITY = 1 << 1, 
+        GRAPHICS = 1 << 2,
+        COLLIDER = 1 << 3,
+        PLAYER_INPUT = 1 << 4,
+        TILE = 1 << 5,
+        LEVEL = 1 << 6,
+        BUTTON = 1 << 7
     };
 
     public class Entity

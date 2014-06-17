@@ -9,7 +9,7 @@ namespace WatchYourBack
 {
     class ColliderComponent : EComponent
     {
-        public readonly static int bitMask = (int)Masks.Collider;
+        public readonly static int bitMask = (int)Masks.COLLIDER;
         public override int Mask { get { return bitMask; } }
 
         private Rectangle collider;
