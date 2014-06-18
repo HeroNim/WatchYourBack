@@ -21,12 +21,28 @@ namespace WatchYourBack
         private Texture2D spriteTexture;
         private Rectangle body;
         private Color color;
+        private Color fontColor;
+        private SpriteFont font;
+        private string text;
+        private bool hasText;
 
-        public GraphicsComponent(Rectangle rectangle, Texture2D texture, Color color)
+        public GraphicsComponent(Rectangle rectangle, Texture2D texture)
         {
             spriteTexture = texture;
             body = rectangle;
-            this.color = color;
+            color = Color.White;
+            hasText = false;
+        }
+
+        public GraphicsComponent(Rectangle rectangle, Texture2D texture, string text, SpriteFont font, Color fontColor)
+        {
+            spriteTexture = texture;
+            body = rectangle;
+            this.fontColor = fontColor;
+            color = Color.White;
+            this.font = font;
+            this.text = text;
+            hasText = true;
         }
 
  
@@ -36,5 +52,9 @@ namespace WatchYourBack
         public Texture2D Sprite { get { return spriteTexture; } }
         public Rectangle Body { get { return body; } }
         public Color SpriteColor { get { return color; } set { color = value; } }
+        public Color FontColor { get { return fontColor; } set { fontColor = value; } }
+        public SpriteFont Font { get { return font; } set { font = value; } }
+        public bool HasText { get { return hasText; } set { hasText = value; } }
+        public string Text { get { return text; } set { text = value; } }
     }
 }

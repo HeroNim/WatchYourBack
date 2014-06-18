@@ -17,25 +17,25 @@ namespace WatchYourBack
     {
         private WallTemplate wallTemplate;
 
-        public Entity createAvatar(Rectangle rect, Texture2D texture, Color color)
+        public Entity createAvatar(Rectangle rect, Texture2D texture)
         {
             Entity entity = new Entity();
             entity.addComponent(new TransformComponent(rect.X, rect.Y));
             entity.addComponent(new ColliderComponent(rect));
             entity.addComponent(new VelocityComponent(0, 0));
             entity.addComponent(new AvatarInputComponent());
-            entity.addComponent(new GraphicsComponent(rect, texture, color));
+            entity.addComponent(new GraphicsComponent(rect, texture));
             return entity;
         }
 
-        public Entity createButton(int x, int y, int width, int height, Inputs type, Texture2D texture, string text)
+        public Entity createButton(int x, int y, int width, int height, Inputs type, Texture2D texture, string text, SpriteFont font)
         {
             Entity entity = new Entity();
             Rectangle body = new Rectangle(x, y, width, height);
-            entity.addComponent(new ButtonComponent(type, text));
+            entity.addComponent(new ButtonComponent(type));
             entity.addComponent(new TransformComponent(x, y));
             entity.addComponent(new ColliderComponent(body));
-            entity.addComponent(new GraphicsComponent(body, texture, Color.Red ));
+            entity.addComponent(new GraphicsComponent(body, texture, text, font, Color.Blue));
             return entity;
         }
 
@@ -46,7 +46,7 @@ namespace WatchYourBack
             entity.addComponent(new TileComponent());
             entity.addComponent(new TransformComponent(x, y));
             entity.addComponent(new ColliderComponent(body));
-            entity.addComponent(new GraphicsComponent(body, wallTemplate.Texture, Color.Black));
+            entity.addComponent(new GraphicsComponent(body, wallTemplate.Texture));
             return entity;
         }
 

@@ -12,13 +12,11 @@ namespace WatchYourBack
         public readonly static int bitMask = (int)Masks.BUTTON;
         public override int Mask { get { return bitMask; } }
 
-        private string buttonText;
         private Inputs buttonType;
         private InputArgs args;
 
-        public ButtonComponent(Inputs type, string text)
+        public ButtonComponent(Inputs type)
         {
-            buttonText = text;
             buttonType = type;
             args = new InputArgs(buttonType);
             

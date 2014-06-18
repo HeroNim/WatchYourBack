@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework;
 
 namespace WatchYourBack
 {
@@ -117,6 +118,8 @@ namespace WatchYourBack
                 {
                     GraphicsComponent graphics = (GraphicsComponent)entity.Components[typeof(GraphicsComponent)];
                     spriteBatch.Draw(graphics.Sprite, graphics.Body, graphics.SpriteColor);
+                    if (graphics.HasText)
+                        spriteBatch.DrawString(graphics.Font, graphics.Text, new Vector2(graphics.X, graphics.Y), graphics.FontColor);
                 }
             }
         }
