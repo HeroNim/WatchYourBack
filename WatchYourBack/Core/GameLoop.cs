@@ -170,7 +170,7 @@ namespace WatchYourBack
         }
 
         /*
-         * Listens for the events from menu elements, and uses the information to manage what screens are active.
+         * Listens for the events from menu and game elements, and uses the information to manage what screens are active.
          */
         private class InputListener
         {

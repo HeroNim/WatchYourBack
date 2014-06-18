@@ -7,7 +7,8 @@ namespace WatchYourBack
 {
     /* All Systems must inherit from this class. All logic for the game must be done in the systems. All systems are either exclusive or not: exclusive systems only act on entities that contain the
      * exact components that the system acts on, whereas nonexclusive systems will act on all entities that contain the necessary components, even if they have extra components. Each system
-     * also must specifiy whether they want to be updated during the update loop, or the draw loop.
+     * also must specifiy whether they want to be updated during the update loop, or the draw loop. Finally, all systems must have a priority value that is used to determine the order in which
+     * each system is updated during the update loop.
      */
     public abstract class ESystem
     {
@@ -16,13 +17,15 @@ namespace WatchYourBack
         protected int components;
         private bool exclusive;
         private bool updateLoop;
+        private int priority;
         
         protected ECSManager manager;
 
-        public ESystem(bool exclusive, bool updateLoop)
+        public ESystem(bool exclusive, bool updateLoop, int priority)
         {
             this.exclusive = exclusive;
             this.updateLoop = updateLoop;
+            this.priority = priority;
             activeEntities = new List<Entity>();
             components = 0;
         }
@@ -53,6 +56,11 @@ namespace WatchYourBack
             update();
                             
             
+        }
+
+        public int Priority
+        {
+            get { return priority; }
         }
 
         public bool Loop { get { return updateLoop; } }

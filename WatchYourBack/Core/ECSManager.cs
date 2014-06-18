@@ -18,9 +18,6 @@ namespace WatchYourBack
         private List<Entity> activeEntities;
         private List<Entity> removal;
 
-
-        //TODO: States
-
         public ECSManager(List<Entity> entities, EFactory factory)
         {
             this.factory = factory;
@@ -34,6 +31,7 @@ namespace WatchYourBack
         {
             systems.Add(system);
             system.initialize(this);
+            systems = systems.OrderBy(o => o.Priority).ToList();
         }
 
         public void removeSystem(ESystem system)
@@ -71,11 +69,7 @@ namespace WatchYourBack
          * during the update loop are then updated.
          */
         public void update()
-        {
-            
-                
-             
-            
+        {  
             foreach (Entity entity in inactiveEntities)
                 if (entity.IsActive)
                 {

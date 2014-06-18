@@ -19,12 +19,10 @@ namespace WatchYourBack
         public override int Mask { get { return bitMask; } }
 
         private LevelName currentLevel;
-        private bool playing;
 
         public LevelComponent()
         {
             currentLevel = LevelName.FIRST_LEVEL;
-            playing = true;
         }
 
         public LevelName CurrentLevel
@@ -33,10 +31,6 @@ namespace WatchYourBack
             set { currentLevel = value; }
         }
 
-        public bool Playing
-        {
-            get { return playing; }
-            set { playing = value; }
-        }
+        
     }
 }

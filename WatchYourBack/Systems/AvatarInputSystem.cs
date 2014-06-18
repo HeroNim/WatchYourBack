@@ -12,7 +12,7 @@ namespace WatchYourBack
     class AvatarInputSystem : ESystem
     {
         public AvatarInputSystem()
-            : base(false, true)
+            : base(false, true, 3)
         {
             components += AvatarInputComponent.bitMask;
             components += VelocityComponent.bitMask;

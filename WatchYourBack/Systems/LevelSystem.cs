@@ -23,10 +23,11 @@ namespace WatchYourBack
     {
 
         private Dictionary<LevelName, LevelTemplate> levels;
+        private LevelName currentLevel;
         private LevelComponent level;
         private bool built;
 
-        public LevelSystem(Dictionary<LevelName, LevelTemplate> levels) : base(false, true)
+        public LevelSystem(Dictionary<LevelName, LevelTemplate> levels) : base(false, true, 1)
         {
             components += LevelComponent.bitMask;
             this.levels = levels;
@@ -39,14 +40,14 @@ namespace WatchYourBack
             levels.Add(levelName, level);
         }
 
-        public void buildLevel(LevelName levelName)
+        private void buildLevel(LevelName levelName)
         {
-            LevelTemplate level = levels[levelName];
+            LevelTemplate levelTemplate = levels[levelName];
             int y, x;
             for (y = 0; y < (int)LevelDimensions.HEIGHT; y++)
                 for (x = 0; x < (int)LevelDimensions.WIDTH; x++)
                 {
-                    if (level.LevelData[y, x] == TileType.WALL)
+                    if (levelTemplate.LevelData[y, x] == TileType.WALL)
                         manager.addEntity(manager.Factory.createWall(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE));
                 }
             built = true;
@@ -58,19 +59,39 @@ namespace WatchYourBack
                 initialize();
             else
             {
-                if(level.Playing)
+                if (currentLevel == level.CurrentLevel)
+                {
                     if (!built)
-                        buildLevel(level.CurrentLevel);
+                        buildLevel(currentLevel);
+                }
+                else
+                {
+                    clearLevel();
+                    currentLevel = level.CurrentLevel;
+                    update();
+                }
             }
 
         }
 
-        public void initialize()
+        private void initialize()
         {         
             Entity levelEntity = new Entity();
             levelEntity.addComponent(new LevelComponent());
             manager.addEntity(levelEntity);
             level = (LevelComponent)levelEntity.Components[typeof(LevelComponent)];
+            currentLevel = level.CurrentLevel;
+        }
+
+        private void clearLevel()
+        {
+            foreach(Entity entity in manager.ActiveEntities)
+            {
+                if (entity.hasComponent(TileComponent.bitMask))
+                    manager.removeEntity(entity);
+            }
+            built = false;
+
         }
     }
 }

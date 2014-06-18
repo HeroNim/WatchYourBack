@@ -13,7 +13,7 @@ namespace WatchYourBack
      */
     class MovementSystem : ESystem
     {
-        public MovementSystem() : base(false, true)
+        public MovementSystem() : base(false, true, 5)
         {
             components += TransformComponent.bitMask;
             components += VelocityComponent.bitMask;

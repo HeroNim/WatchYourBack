@@ -10,7 +10,7 @@ namespace WatchYourBack
      */
     class GameCollisionSystem : ESystem
     {
-        public GameCollisionSystem() : base(false, true)
+        public GameCollisionSystem() : base(false, true, 4)
         {
             components += TransformComponent.bitMask;
             components += ColliderComponent.bitMask;

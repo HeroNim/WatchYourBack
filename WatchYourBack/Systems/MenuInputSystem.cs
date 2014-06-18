@@ -17,7 +17,7 @@ namespace WatchYourBack
         private bool collided;
 
 
-         public MenuInputSystem() : base(false, true)
+         public MenuInputSystem() : base(false, true, 1)
         {
             components += ColliderComponent.bitMask;
             components += ButtonComponent.bitMask;
