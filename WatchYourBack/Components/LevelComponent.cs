@@ -5,10 +5,7 @@ using System.Text;
 
 namespace WatchYourBack
 {
-    enum LevelName
-    {
-        FIRST_LEVEL
-    };
+    
 
     /*
      * Holds the level data, such as the current level, and whether or not the level has actually started.

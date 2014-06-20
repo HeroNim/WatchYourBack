@@ -47,11 +47,10 @@ namespace WatchYourBack
 
         public void removeEntity(Entity entity)
         {
-            if (inactiveEntities.Contains(entity))
-                inactiveEntities.Remove(entity);
-            if (activeEntities.Contains(entity))
-                activeEntities.Remove(entity);
+            if (inactiveEntities.Contains(entity) || activeEntities.Contains(entity))
+                removal.Add(entity);
         }
+        
 
         public List<Entity> Entities
         {
@@ -63,13 +62,23 @@ namespace WatchYourBack
             get { return activeEntities; }
         }
 
+        public void clearEntities()
+        {
+            foreach(Entity entity in removal)
+            {
+                inactiveEntities.Remove(entity);
+                activeEntities.Remove(entity);
+            }
+            removal.Clear();
+        }
 
         /*
          * Updates the entity lists of the manager, moving active/inactive entities to their proper lists. Any systems that run
          * during the update loop are then updated.
          */
         public void update()
-        {  
+        {
+            clearEntities();
             foreach (Entity entity in inactiveEntities)
                 if (entity.IsActive)
                 {

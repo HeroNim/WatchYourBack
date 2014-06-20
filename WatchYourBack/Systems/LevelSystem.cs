@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Microsoft.Xna.Framework.Input;
+
 namespace WatchYourBack
 {
     
@@ -13,6 +15,12 @@ namespace WatchYourBack
         HEIGHT = 18,
         X_SCALE = 40,
         Y_SCALE = 40
+    };
+
+    enum LevelName
+    {
+        FIRST_LEVEL,
+        TEST_LEVEL
     };
 
     /*
@@ -26,6 +34,7 @@ namespace WatchYourBack
         private LevelName currentLevel;
         private LevelComponent level;
         private bool built;
+        private bool pressed;
 
         public LevelSystem(Dictionary<LevelName, LevelTemplate> levels) : base(false, true, 1)
         {
@@ -49,6 +58,8 @@ namespace WatchYourBack
                 {
                     if (levelTemplate.LevelData[y, x] == TileType.WALL)
                         manager.addEntity(manager.Factory.createWall(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE));
+                    if (levelTemplate.LevelData[y, x] == TileType.SPAWN)
+                        manager.addEntity(manager.Factory.createSpawn(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE));
                 }
             built = true;
         }
@@ -71,6 +82,13 @@ namespace WatchYourBack
                     update();
                 }
             }
+            if (Keyboard.GetState().IsKeyDown(Keys.N) && pressed == false)
+            {
+                level.CurrentLevel++;
+                pressed = true;
+            }
+            if (Keyboard.GetState().IsKeyUp(Keys.N) && pressed == true) 
+                pressed = false;
 
         }
 

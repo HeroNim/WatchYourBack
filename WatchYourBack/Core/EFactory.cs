@@ -16,6 +16,7 @@ namespace WatchYourBack
     public class EFactory
     {
         private WallTemplate wallTemplate;
+        private WallTemplate spawnTemplate;
 
         public Entity createAvatar(Rectangle rect, Texture2D texture)
         {
@@ -43,10 +44,20 @@ namespace WatchYourBack
         {
             Entity entity = new Entity();
             Rectangle body = new Rectangle(x, y, wallTemplate.Width, wallTemplate.Height);
-            entity.addComponent(new TileComponent());
+            entity.addComponent(new TileComponent(TileType.WALL));
             entity.addComponent(new TransformComponent(x, y));
             entity.addComponent(new ColliderComponent(body));
             entity.addComponent(new GraphicsComponent(body, wallTemplate.Texture));
+            return entity;
+        }
+
+        public Entity createSpawn(int x, int y)
+        {
+            Entity entity = new Entity();
+            Rectangle body = new Rectangle(x, y, spawnTemplate.Width, spawnTemplate.Height);
+            entity.addComponent(new TileComponent(TileType.SPAWN));
+            entity.addComponent(new TransformComponent(x, y));
+            entity.addComponent(new GraphicsComponent(body, spawnTemplate.Texture));
             return entity;
         }
 
@@ -56,6 +67,13 @@ namespace WatchYourBack
         {
             wallTemplate = template;
         }
+
+        public void setSpawnTemplate(WallTemplate template)
+        {
+            spawnTemplate = template;
+        }
+
+        
 
         
     }

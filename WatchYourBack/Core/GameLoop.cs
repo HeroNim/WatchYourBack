@@ -21,6 +21,7 @@ namespace WatchYourBack
 
         Stack<World> worldStack;
         World activeWorld;
+
         World mainMenu;
         World inGame;
         World pauseMenu;
@@ -33,7 +34,10 @@ namespace WatchYourBack
         Rectangle body;
         Texture2D bodyTexture;
         Texture2D wallTexture;
+        Texture2D spawnTexture;
+
         WallTemplate wallTemplate;
+        WallTemplate spawnTemplate;
         SpriteFont testFont;
 
         public GameLoop()
@@ -63,10 +67,11 @@ namespace WatchYourBack
             inputListener = new InputListener(this);
 
             Texture2D testLevelLayout = Content.Load<Texture2D>("TestLevel");
+            Texture2D levelOne = Content.Load<Texture2D>("LevelOne");
             testFont = Content.Load<SpriteFont>("TestFont");
-            LevelTemplate firstLevel = new LevelTemplate(testLevelLayout);
             levels = new Dictionary<LevelName, LevelTemplate>(); 
-            levels.Add(LevelName.FIRST_LEVEL, firstLevel);
+            levels.Add(LevelName.TEST_LEVEL, new LevelTemplate(testLevelLayout));
+            levels.Add(LevelName.FIRST_LEVEL, new LevelTemplate(levelOne));
 
             worldStack.Push(mainMenu);
             activeWorld = worldStack.Peek();
@@ -88,9 +93,12 @@ namespace WatchYourBack
             bodyTexture.SetData(new[] { Color.White });
             wallTexture = new Texture2D(GraphicsDevice, 1, 1);
             wallTexture.SetData(new[] { Color.Black });
+            spawnTexture = new Texture2D(GraphicsDevice, 1, 1);
+            spawnTexture.SetData(new[] { Color.Red });
             body = new Rectangle(100, 100, GraphicsDevice.Viewport.Width / 40, GraphicsDevice.Viewport.Width / 40);
             
             wallTemplate = new WallTemplate(wallTexture, GraphicsDevice.Viewport.Width / 32, GraphicsDevice.Viewport.Height / 18);
+            spawnTemplate = new WallTemplate(spawnTexture, GraphicsDevice.Viewport.Width / 32, GraphicsDevice.Viewport.Height / 18);
 
             createMainMenu();
             createGame();
@@ -159,6 +167,7 @@ namespace WatchYourBack
             inGame.Manager.addSystem(new LevelSystem(levels));
 
             inGame.Manager.Factory.setWallTemplate(wallTemplate);
+            inGame.Manager.Factory.setSpawnTemplate(spawnTemplate);
             inGame.Manager.addEntity(inGame.Manager.Factory.createAvatar(body, bodyTexture));
         }
 

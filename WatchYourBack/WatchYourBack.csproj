@@ -43,7 +43,7 @@
     <Compile Include="Components\AvatarInputComponent.cs" />
     <Compile Include="Components\LevelComponent.cs" />
     <Compile Include="Components\ButtonComponent.cs" />
-    <Compile Include="InputSystem.cs" />
+    <Compile Include="Core\InputSystem.cs" />
     <Compile Include="Systems\MenuInputSystem.cs" />
     <Compile Include="Templates\LevelTemplate.cs" />
     <Compile Include="Systems\LevelSystem.cs" />

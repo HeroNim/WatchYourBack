@@ -13,7 +13,17 @@ namespace WatchYourBack
         public readonly static int bitMask = (int)Masks.TILE;
         public override int Mask { get { return bitMask; } }
 
-        
+        private TileType type;
+
+        public TileComponent(TileType type)
+        {
+            this.type = type;
+        }
+
+        public TileType Type
+        {
+            get { return type; }
+        }
       
         
     }

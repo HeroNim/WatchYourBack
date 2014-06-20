@@ -21,6 +21,7 @@ namespace WatchYourBack
         TILE = 1 << 5,
         LEVEL = 1 << 6,
         BUTTON = 1 << 7
+        
     };
 
     public class Entity
