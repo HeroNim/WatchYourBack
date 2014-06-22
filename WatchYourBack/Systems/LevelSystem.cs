@@ -41,7 +41,6 @@ namespace WatchYourBack
             components += LevelComponent.bitMask;
             this.levels = levels;
             built = false;
-            
         }
 
         public void addLevel(LevelName levelName, LevelTemplate level)
@@ -105,7 +104,7 @@ namespace WatchYourBack
         {
             foreach(Entity entity in manager.ActiveEntities)
             {
-                if (entity.hasComponent(TileComponent.bitMask))
+                if (entity.hasComponent(Masks.TILE))
                     manager.removeEntity(entity);
             }
             built = false;

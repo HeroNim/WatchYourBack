@@ -19,13 +19,13 @@ namespace WatchYourBack
         public override void update()
         {
             foreach (Entity entity in activeEntities)
-                if (entity.hasComponent(VelocityComponent.bitMask))
+                if (entity.hasComponent(Masks.VELOCITY))
                 {
                     foreach (Entity other in activeEntities)
                         if (entity != other)
                             checkCollisions(entity, other);
-                    ColliderComponent c1 = (ColliderComponent)entity.Components[typeof(ColliderComponent)];
-                    c1.resetLocks();
+                    TransformComponent t1 = (TransformComponent)entity.Components[typeof(TransformComponent)];
+                    t1.resetLocks();
                 }
                 
         }
@@ -38,10 +38,21 @@ namespace WatchYourBack
          * */
         private void checkCollisions(Entity e1, Entity e2)
         {
+            ColliderComponent c1;
+            ColliderComponent c2;
+
             VelocityComponent v1 = (VelocityComponent)e1.Components[typeof(VelocityComponent)];
             TransformComponent t1 = (TransformComponent)e1.Components[typeof(TransformComponent)];
-            ColliderComponent c1 = (ColliderComponent)e1.Components[typeof(ColliderComponent)];
-            ColliderComponent c2 = (ColliderComponent)e2.Components[typeof(ColliderComponent)];
+             
+            if(e1.hasComponent(Masks.RAY_COLLIDER))
+                c1 = (RayColliderComponent)e1.Components[typeof(RayColliderComponent)];
+            else
+                c1 = (ColliderComponent)e1.Components[typeof(ColliderComponent)];
+
+            if (e2.hasComponent(Masks.RAY_COLLIDER))
+                c2 = (RayColliderComponent)e2.Components[typeof(RayColliderComponent)];
+            else
+                c2 = (ColliderComponent)e2.Components[typeof(ColliderComponent)];
 
 
 
@@ -49,20 +60,20 @@ namespace WatchYourBack
             {
                 c1.X += (int)v1.X;
                 if (c1.Collider.Intersects(c2.Collider))
-                    if (c1.XLock != true)
+                    if (t1.XLock != true)
                     {
                         t1.X -= v1.X;
-                        c1.XLock = true;
+                        t1.XLock = true;
                     }
                 c1.X -= (int)v1.X;
 
 
                 c1.Y += (int)v1.Y;
                 if (c1.Collider.Intersects(c2.Collider))
-                    if (c1.YLock != true)
+                    if (t1.YLock != true)
                     {
                         t1.Y -= v1.Y;
-                        c1.YLock = true;
+                        t1.YLock = true;
                     }
                 c1.Y -= (int)v1.Y;
             }

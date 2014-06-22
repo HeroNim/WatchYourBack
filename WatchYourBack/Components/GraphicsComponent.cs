@@ -16,7 +16,7 @@ namespace WatchYourBack
     {
 
         public readonly static int bitMask = (int)Masks.GRAPHICS;
-        public override int Mask { get { return bitMask; } }
+        public override Masks Mask { get { return Masks.GRAPHICS; } }
 
         private Texture2D spriteTexture;
         private Rectangle body;

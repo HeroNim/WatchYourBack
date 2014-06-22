@@ -27,14 +27,14 @@ namespace WatchYourBack
                 VelocityComponent velocity = (VelocityComponent)entity.Components[typeof(VelocityComponent)];
                 transform.Position = new Vector2(transform.X + velocity.X, transform.Y + velocity.Y);
                 
-                if(entity.hasComponent(GraphicsComponent.bitMask))
+                if(entity.hasComponent(Masks.GRAPHICS))
                 {
                     GraphicsComponent graphics = (GraphicsComponent)entity.Components[typeof(GraphicsComponent)];
                     graphics.X = (int)transform.X;
                     graphics.Y = (int)transform.Y;
                 }
                 
-                if (entity.hasComponent(ColliderComponent.bitMask))
+                if (entity.hasComponent(Masks.COLLIDER))
                 {
                     ColliderComponent collider = (ColliderComponent)entity.Components[typeof(ColliderComponent)];
                     collider.X = (int)transform.X;

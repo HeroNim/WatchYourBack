@@ -13,7 +13,7 @@ namespace WatchYourBack
     class LevelComponent : EComponent
     {
         public readonly static int bitMask = (int)Masks.LEVEL;
-        public override int Mask { get { return bitMask; } }
+        public override Masks Mask { get { return Masks.LEVEL; } }
 
         private LevelName currentLevel;
 

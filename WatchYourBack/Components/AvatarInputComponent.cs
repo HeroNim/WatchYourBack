@@ -11,7 +11,7 @@ namespace WatchYourBack
     class AvatarInputComponent : EComponent
     {
         public readonly static int bitMask = (int)Masks.PLAYER_INPUT;
-        public override int Mask { get { return bitMask; } }
+        public override Masks Mask { get { return Masks.PLAYER_INPUT; } }
 
         private bool moveUp;
         private bool moveDown;

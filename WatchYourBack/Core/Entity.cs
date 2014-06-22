@@ -20,7 +20,9 @@ namespace WatchYourBack
         PLAYER_INPUT = 1 << 4,
         TILE = 1 << 5,
         LEVEL = 1 << 6,
-        BUTTON = 1 << 7
+        BUTTON = 1 << 7,
+        WEAPON = 1 << 8,
+        RAY_COLLIDER = 1 << 9
         
     };
 
@@ -40,9 +42,9 @@ namespace WatchYourBack
         }
 
         //Checks if the entity has a component of this type already
-        public bool hasComponent(int bitMask)
+        public bool hasComponent(Masks bitMask)
         {
-            if ((this.mask & bitMask) != 0)
+            if ((this.mask & (int)bitMask) != 0)
                 return true;
             return false;
             
@@ -56,7 +58,7 @@ namespace WatchYourBack
             {
                 components.Add(component.GetType(), component);
                 component.setEntity(this);
-                mask += component.Mask;
+                mask += (int)component.Mask;
             }
         }
 
@@ -66,7 +68,7 @@ namespace WatchYourBack
             if (hasComponent(component.Mask))
             {
                 components.Remove(component.GetType());
-                mask -= component.Mask;
+                mask -= (int)component.Mask;
             }
         }
 

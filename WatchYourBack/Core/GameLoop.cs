@@ -220,6 +220,15 @@ namespace WatchYourBack
                     if (args.InputType == Inputs.EXIT)
                         game.Exit();
                 }
+
+                if (game.activeWorld.MenuType == Worlds.IN_GAME)
+                {
+                    if (args.InputType == Inputs.PAUSE)
+                    {
+                        game.worldStack.Push(game.pauseMenu);
+                    }
+                }
+
                 if (game.activeWorld.MenuType == Worlds.PAUSE_MENU)
                 {
                     if (args.InputType == Inputs.START)
@@ -227,16 +236,10 @@ namespace WatchYourBack
                     if (args.InputType == Inputs.EXIT)
                     {
                         game.worldStack.Pop();
-                        game.worldStack.Push(game.mainMenu);
+                        game.worldStack.Pop();
                     }
                 }
-                if(game.activeWorld.MenuType == Worlds.IN_GAME)
-                {
-                    if(args.InputType == Inputs.PAUSE)
-                    {
-                        game.worldStack.Push(game.pauseMenu);
-                    }
-                }
+                
                 
                 //Do stuff
                 

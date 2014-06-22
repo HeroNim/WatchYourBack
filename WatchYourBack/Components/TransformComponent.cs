@@ -16,8 +16,11 @@ namespace WatchYourBack
     {
         private Vector2 position;
 
+        private bool xLock;
+        private bool yLock;
+
         public readonly static int bitMask = (int)Masks.TRANSFORM;
-        public override int Mask { get { return bitMask; } }
+        public override Masks Mask { get { return Masks.TRANSFORM; } }
         
 
         public TransformComponent(float x, float y)
@@ -43,6 +46,27 @@ namespace WatchYourBack
         {
             get { return position; }
             set { position = value; }
+        }
+
+        /*
+         * The locks are used to stop the entity from jittering when there are multiple collisions 
+         */
+        public bool XLock
+        {
+            get { return xLock; }
+            set { xLock = value; }
+        }
+
+        public bool YLock
+        {
+            get { return yLock; }
+            set { yLock = value; }
+        }
+
+        public void resetLocks()
+        {
+            xLock = false;
+            yLock = false;
         }
     }
 }

@@ -10,7 +10,7 @@ namespace WatchYourBack
     public class ButtonComponent : EComponent
     {
         public readonly static int bitMask = (int)Masks.BUTTON;
-        public override int Mask { get { return bitMask; } }
+        public override Masks Mask { get { return Masks.BUTTON; } }
 
         private Inputs buttonType;
         private InputArgs args;

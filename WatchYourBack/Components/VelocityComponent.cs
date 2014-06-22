@@ -14,7 +14,7 @@ namespace WatchYourBack
     {
 
         public readonly static int bitMask = (int)Masks.VELOCITY;
-        public override int Mask { get { return bitMask; } }
+        public override Masks Mask { get { return Masks.VELOCITY; } }
 
         private Vector2 velocity;
 
