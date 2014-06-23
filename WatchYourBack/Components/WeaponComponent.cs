@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Microsoft.Xna.Framework;
+
 namespace WatchYourBack
 {
     enum Weapons
@@ -21,6 +23,8 @@ namespace WatchYourBack
         private float range;
         private float speed;
         private bool melee;
+
+        private Entity weapon;
         
 
         public WeaponComponent(float range, float speed, bool melee)
@@ -28,6 +32,20 @@ namespace WatchYourBack
             this.range = range;
             this.speed = speed;
             this.melee = melee;
+            
         }
+
+        public float Range
+        {
+            get { return range; }
+        }
+
+        public Entity Weapon
+        {
+            get { return weapon; }
+            set { weapon = value; }
+        }
+
+        
     }
 }

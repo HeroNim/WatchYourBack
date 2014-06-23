@@ -19,8 +19,7 @@ namespace WatchYourBack
         private Vector2 velocity;
 
         public VelocityComponent(float x, float y)
-        {
-            
+        {  
             velocity = new Vector2(x,y);
         }
 

@@ -22,7 +22,6 @@ namespace WatchYourBack
         LEVEL = 1 << 6,
         BUTTON = 1 << 7,
         WEAPON = 1 << 8,
-        RAY_COLLIDER = 1 << 9
         
     };
 
@@ -39,6 +38,17 @@ namespace WatchYourBack
             isActive = false;
             components = new Dictionary<Type, EComponent>();
             
+        }
+
+        public Entity(params EComponent[] args)
+        {
+            isActive = false;
+            components = new Dictionary<Type, EComponent>();
+            foreach(EComponent arg in args)
+            {
+                this.addComponent(arg);
+            }
+
         }
 
         //Checks if the entity has a component of this type already

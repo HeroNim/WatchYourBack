@@ -5,26 +5,27 @@ using System.Text;
 
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 
 namespace WatchYourBack
 {
     //Manages the systems in the game. Is responsible for initializing, updating, and removing systems as needed.
     public class ECSManager
     {
-
-        private EFactory factory;
         private List<ESystem> systems;
         private List<Entity> inactiveEntities;
         private List<Entity> activeEntities;
         private List<Entity> removal;
+        private ContentManager content;
+        
 
-        public ECSManager(List<Entity> entities, EFactory factory)
+        public ECSManager(List<Entity> entities, ContentManager content)
         {
-            this.factory = factory;
             systems = new List<ESystem>();
             activeEntities = new List<Entity>();
             removal = new List<Entity>();
             this.inactiveEntities = entities;
+            this.content = content;
         }
 
         public void addSystem(ESystem system)
@@ -126,10 +127,12 @@ namespace WatchYourBack
                 }
             }
         }
+    
+        
 
-        public EFactory Factory
+        public Texture2D getTexture(string fileName)
         {
-            get { return factory; }
+            return content.Load<Texture2D>(fileName);
         }
     }
 }

@@ -9,7 +9,8 @@ namespace WatchYourBack
     {
         EXIT,
         START,
-        PAUSE
+        PAUSE,
+        ATTACK
     };
 
     public class InputArgs : EventArgs

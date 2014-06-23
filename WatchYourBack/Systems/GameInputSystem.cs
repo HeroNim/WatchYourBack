@@ -14,7 +14,8 @@ namespace WatchYourBack
         RIGHT,
         UP,
         DOWN,
-        ESCAPE
+        ESCAPE,
+        SPACE
     }
     /*
      * Takes the state of the game, and modifies what recieves input in that state. For example, in a Playing state, the input should go to the player and the AI should be active,
@@ -33,6 +34,7 @@ namespace WatchYourBack
             mappings.Add(KeyBindings.UP, Keys.Up);
             mappings.Add(KeyBindings.DOWN, Keys.Down);
             mappings.Add(KeyBindings.ESCAPE, Keys.Escape);
+            mappings.Add(KeyBindings.SPACE, Keys.Space);
         }
 
         public override void update()
@@ -65,6 +67,8 @@ namespace WatchYourBack
                     p1.MoveDown = false;
                 if (Keyboard.GetState().IsKeyDown(mappings[KeyBindings.ESCAPE]))
                     onFire(new InputArgs(Inputs.PAUSE));
+                if (Keyboard.GetState().IsKeyDown(mappings[KeyBindings.SPACE]))
+                    onFire(p1.getEntity(), new InputArgs(Inputs.ATTACK));
             }
         }
 
@@ -74,6 +78,12 @@ namespace WatchYourBack
         {
             if (inputFired != null)
                 inputFired(this, e);
+        }
+
+        private void onFire(Entity sender, EventArgs e)
+        {
+            if (inputFired != null)
+                inputFired(sender, e);
         }
         
 

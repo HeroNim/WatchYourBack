@@ -11,77 +11,59 @@ namespace WatchYourBack
 {
     /*
      * A factory to create all the entities of the game. Can hold templates so that objects can be created by only specifying their location.
-     * TODO: Figure out a better template system. Holding instances and setting them manually seems a bit stupid.
      */
-    public class EFactory
+    public static class EFactory
     {
-        private WallTemplate wallTemplate;
-        private WallTemplate spawnTemplate;
-
-        public Entity createAvatar(Rectangle rect, Texture2D texture)
-        {
-            Entity entity = new Entity();
-            entity.addComponent(new TransformComponent(rect.X, rect.Y));
-            entity.addComponent(new ColliderComponent(rect));
-            entity.addComponent(new VelocityComponent(0, 0));
-            entity.addComponent(new AvatarInputComponent());
-            entity.addComponent(new GraphicsComponent(rect, texture));
-            return entity;
-        }
-
-        public Entity createWeapon(Rectangle origin, Rectangle body, Texture2D texture)
-        {
-            Entity entity = new Entity();
-            entity.addComponent(new TransformComponent(origin.Right, origin.Bottom));
-            entity.addComponent(new RayColliderComponent(origin.Right, origin.Bottom, 1, 0, 10));
-            entity.addComponent(new WeaponComponent(10, 5, true));
-            entity.addComponent(new VelocityComponent(0, 0));
-            entity.addComponent(new GraphicsComponent(body, texture));
-            return entity;
-        }
-
-        public Entity createButton(int x, int y, int width, int height, Inputs type, Texture2D texture, string text, SpriteFont font)
-        {
-            Entity entity = new Entity();
-            Rectangle body = new Rectangle(x, y, width, height);
-            entity.addComponent(new ButtonComponent(type));
-            entity.addComponent(new TransformComponent(x, y));
-            entity.addComponent(new ColliderComponent(body));
-            entity.addComponent(new GraphicsComponent(body, texture, text, font, Color.Blue));
-            return entity;
-        }
-
-        public Entity createWall(int x, int y)
-        {
-            Entity entity = new Entity();
-            Rectangle body = new Rectangle(x, y, wallTemplate.Width, wallTemplate.Height);
-            entity.addComponent(new TileComponent(TileType.WALL));
-            entity.addComponent(new TransformComponent(x, y));
-            entity.addComponent(new ColliderComponent(body));
-            entity.addComponent(new GraphicsComponent(body, wallTemplate.Texture));
-            return entity;
-        }
-
-        public Entity createSpawn(int x, int y)
-        {
-            Entity entity = new Entity();
-            Rectangle body = new Rectangle(x, y, spawnTemplate.Width, spawnTemplate.Height);
-            entity.addComponent(new TileComponent(TileType.SPAWN));
-            entity.addComponent(new TransformComponent(x, y));
-            entity.addComponent(new GraphicsComponent(body, spawnTemplate.Texture));
-            return entity;
-        }
-
         
-
-        public void setWallTemplate(WallTemplate template)
+        public static Entity createAvatar(Rectangle rect, Texture2D texture)
         {
-            wallTemplate = template;
+
+                return new Entity(
+                new WeaponComponent(10, 5, true),
+                new TransformComponent(rect.X, rect.Y),
+                new ColliderComponent(rect),
+                new VelocityComponent(0, 0),
+                new AvatarInputComponent(),
+                new GraphicsComponent(rect, texture));
         }
 
-        public void setSpawnTemplate(WallTemplate template)
+        public static Entity createWeapon(float xOrigin, float yOrigin, Rectangle body, Texture2D texture)
         {
-            spawnTemplate = template;
+
+
+                return new Entity(
+                new TransformComponent(xOrigin, yOrigin),
+                new ColliderComponent(body),
+                new VelocityComponent(0, 0),
+                new GraphicsComponent(body, texture));
+        }
+
+        public static Entity createButton(int x, int y, int width, int height, Inputs type, Texture2D texture, string text, SpriteFont font)
+        {
+
+
+                return new Entity(
+                new ButtonComponent(type),
+                new TransformComponent(x, y),
+                new ColliderComponent(new Rectangle(x, y, width, height)),
+                new GraphicsComponent(new Rectangle(x, y, width, height), texture, text, font, Color.Blue));
+        }
+
+        public static Entity createWall(int x, int y, int width, int height, Texture2D texture)
+        {
+            return new Entity(
+                new TileComponent(TileType.WALL),
+                new TransformComponent(x, y),
+                new ColliderComponent(new Rectangle(x, y, width, height)),
+                new GraphicsComponent(new Rectangle(x, y, width, height), texture));
+        }
+
+        public static Entity createSpawn(int x, int y, int width, int height, Texture2D texture)
+        {
+            return new Entity(
+                new TileComponent(TileType.SPAWN),
+                new TransformComponent(x, y),
+                new GraphicsComponent(new Rectangle(x, y, width, height), texture));
         }
 
         

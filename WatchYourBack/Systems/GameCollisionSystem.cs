@@ -43,15 +43,7 @@ namespace WatchYourBack
 
             VelocityComponent v1 = (VelocityComponent)e1.Components[typeof(VelocityComponent)];
             TransformComponent t1 = (TransformComponent)e1.Components[typeof(TransformComponent)];
-             
-            if(e1.hasComponent(Masks.RAY_COLLIDER))
-                c1 = (RayColliderComponent)e1.Components[typeof(RayColliderComponent)];
-            else
                 c1 = (ColliderComponent)e1.Components[typeof(ColliderComponent)];
-
-            if (e2.hasComponent(Masks.RAY_COLLIDER))
-                c2 = (RayColliderComponent)e2.Components[typeof(RayColliderComponent)];
-            else
                 c2 = (ColliderComponent)e2.Components[typeof(ColliderComponent)];
 
 

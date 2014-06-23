@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
+
+
 namespace WatchYourBack
 {
     public enum Worlds
@@ -25,9 +29,9 @@ namespace WatchYourBack
         private Worlds menuType;
 
 
-        public World(Worlds type)
+        public World(Worlds type, ContentManager manager)
         {
-            systemManager = new ECSManager(new List<Entity>(), new EFactory());
+            systemManager = new ECSManager(new List<Entity>(), manager);
             menuType = type;
             
         }
@@ -41,6 +45,8 @@ namespace WatchYourBack
         {
             get { return menuType; }
         }
+
+        
 
        
     }

@@ -64,9 +64,9 @@ namespace WatchYourBack
         {
             // TODO: Add your initialization logic here
             worldStack = new Stack<World>();
-            inGame = new World(Worlds.IN_GAME);
-            mainMenu = new World(Worlds.MAIN_MENU);
-            pauseMenu = new World(Worlds.PAUSE_MENU);
+            inGame = new World(Worlds.IN_GAME, Content);
+            mainMenu = new World(Worlds.MAIN_MENU, Content);
+            pauseMenu = new World(Worlds.PAUSE_MENU, Content);
             inputListener = new InputListener(this);
 
             Texture2D testLevelLayout = Content.Load<Texture2D>("TestLevel");
@@ -161,29 +161,31 @@ namespace WatchYourBack
         private void createMainMenu()
         {
             inputListener.addMenu(mainMenu);
-            mainMenu.Manager.addEntity(mainMenu.Manager.Factory.createButton(50, 50, 50, 50, Inputs.START, avatarTexture, "Start Game", testFont));
-            mainMenu.Manager.addEntity(mainMenu.Manager.Factory.createButton(50, 200, 50, 50, Inputs.EXIT, avatarTexture, "Exit", testFont));
+            mainMenu.Manager.addEntity(EFactory.createButton(50, 50, 50, 50, Inputs.START, avatarTexture, "Start Game", testFont));
+            mainMenu.Manager.addEntity(EFactory.createButton(50, 200, 50, 50, Inputs.EXIT, avatarTexture, "Exit", testFont));
         }
 
         private void createGame()
         {
             inputListener.addGame(inGame);
+            GameInputSystem input = new GameInputSystem();
+            
             inGame.Manager.addSystem(new AvatarInputSystem());
             inGame.Manager.addSystem(new GameCollisionSystem());
             inGame.Manager.addSystem(new MovementSystem());
             inGame.Manager.addSystem(new LevelSystem(levels));
+            //inGame.Manager.addSystem(new AttackSystem());
 
-            inGame.Manager.Factory.setWallTemplate(wallTemplate);
-            inGame.Manager.Factory.setSpawnTemplate(spawnTemplate);
-            inGame.Manager.addEntity(inGame.Manager.Factory.createAvatar(avatarBody, avatarTexture));
-            inGame.Manager.addEntity(inGame.Manager.Factory.createWeapon(avatarBody, weaponBody, weaponTexture));
+            
+            inGame.Manager.addEntity(EFactory.createAvatar(avatarBody, avatarTexture));
+           
         }
 
         private void createPauseMenu()
         {
             inputListener.addMenu(pauseMenu);
-            pauseMenu.Manager.addEntity(mainMenu.Manager.Factory.createButton(50, 50, 50, 50, Inputs.START, avatarTexture, "Resume", testFont));
-            pauseMenu.Manager.addEntity(mainMenu.Manager.Factory.createButton(50, 200, 50, 50, Inputs.EXIT, avatarTexture, "Exit to menu", testFont));
+            pauseMenu.Manager.addEntity(EFactory.createButton(50, 50, 50, 50, Inputs.START, avatarTexture, "Resume", testFont));
+            pauseMenu.Manager.addEntity(EFactory.createButton(50, 200, 50, 50, Inputs.EXIT, avatarTexture, "Exit to menu", testFont));
         }
 
         /*

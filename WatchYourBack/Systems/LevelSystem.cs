@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace WatchYourBack
 {
@@ -56,9 +58,10 @@ namespace WatchYourBack
                 for (x = 0; x < (int)LevelDimensions.WIDTH; x++)
                 {
                     if (levelTemplate.LevelData[y, x] == TileType.WALL)
-                        manager.addEntity(manager.Factory.createWall(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE));
+                        manager.addEntity(EFactory.createWall(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE, 40, 40, manager.getTexture("WallTexture")));
                     if (levelTemplate.LevelData[y, x] == TileType.SPAWN)
-                        manager.addEntity(manager.Factory.createSpawn(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE));
+                        manager.addEntity(EFactory.createSpawn(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE, 40, 40, manager.getTexture("SpawnTexture")));
+                    
                 }
             built = true;
         }
