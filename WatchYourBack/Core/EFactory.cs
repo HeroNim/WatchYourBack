@@ -29,6 +29,17 @@ namespace WatchYourBack
             return entity;
         }
 
+        public Entity createWeapon(Rectangle origin, Rectangle body, Texture2D texture)
+        {
+            Entity entity = new Entity();
+            entity.addComponent(new TransformComponent(origin.Right, origin.Bottom));
+            entity.addComponent(new RayColliderComponent(origin.Right, origin.Bottom, 1, 0, 10));
+            entity.addComponent(new WeaponComponent(10, 5, true));
+            entity.addComponent(new VelocityComponent(0, 0));
+            entity.addComponent(new GraphicsComponent(body, texture));
+            return entity;
+        }
+
         public Entity createButton(int x, int y, int width, int height, Inputs type, Texture2D texture, string text, SpriteFont font)
         {
             Entity entity = new Entity();

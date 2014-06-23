@@ -21,6 +21,16 @@ namespace WatchYourBack
             this.length = length;
         }
 
+        public float XOrigin
+        {
+            get { return collider.Position.X; }
+        }
+
+        public float YOrigin
+        {
+            get { return collider.Position.Y; }
+        }
+
         new public float X
         {
             get { return collider.Position.X + (collider.Direction.X * length); }

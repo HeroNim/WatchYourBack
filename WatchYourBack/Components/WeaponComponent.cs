@@ -8,7 +8,7 @@ namespace WatchYourBack
     enum Weapons
     {
         DAGGER,
-        SWORD,
+        SWORD
 
     }
 

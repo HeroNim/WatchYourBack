@@ -31,8 +31,11 @@ namespace WatchYourBack
         SpriteBatch spriteBatch;
 
         Dictionary<LevelName, LevelTemplate> levels; 
-        Rectangle body;
-        Texture2D bodyTexture;
+        Rectangle avatarBody;
+        Rectangle weaponBody;
+
+        Texture2D avatarTexture;
+        Texture2D weaponTexture;
         Texture2D wallTexture;
         Texture2D spawnTexture;
 
@@ -89,13 +92,17 @@ namespace WatchYourBack
             spriteBatch = new SpriteBatch(GraphicsDevice);
             
             
-            bodyTexture = new Texture2D(GraphicsDevice, 1, 1);
-            bodyTexture.SetData(new[] { Color.White });
+            avatarTexture = new Texture2D(GraphicsDevice, 1, 1);
+            avatarTexture.SetData(new[] { Color.White });
+            weaponTexture = new Texture2D(GraphicsDevice, 1, 1);
+            weaponTexture.SetData(new[] { Color.Green });
             wallTexture = new Texture2D(GraphicsDevice, 1, 1);
             wallTexture.SetData(new[] { Color.Black });
             spawnTexture = new Texture2D(GraphicsDevice, 1, 1);
             spawnTexture.SetData(new[] { Color.Red });
-            body = new Rectangle(100, 100, GraphicsDevice.Viewport.Width / 40, GraphicsDevice.Viewport.Width / 40);
+
+            avatarBody = new Rectangle(100, 100, GraphicsDevice.Viewport.Width / 40, GraphicsDevice.Viewport.Width / 40);
+            weaponBody = new Rectangle(avatarBody.Right, avatarBody.Bottom, 3, 10);
             
             wallTemplate = new WallTemplate(wallTexture, GraphicsDevice.Viewport.Width / 32, GraphicsDevice.Viewport.Height / 18);
             spawnTemplate = new WallTemplate(spawnTexture, GraphicsDevice.Viewport.Width / 32, GraphicsDevice.Viewport.Height / 18);
@@ -154,8 +161,8 @@ namespace WatchYourBack
         private void createMainMenu()
         {
             inputListener.addMenu(mainMenu);
-            mainMenu.Manager.addEntity(mainMenu.Manager.Factory.createButton(50, 50, 50, 50, Inputs.START, bodyTexture, "Start Game", testFont));
-            mainMenu.Manager.addEntity(mainMenu.Manager.Factory.createButton(50, 200, 50, 50, Inputs.EXIT, bodyTexture, "Exit", testFont));
+            mainMenu.Manager.addEntity(mainMenu.Manager.Factory.createButton(50, 50, 50, 50, Inputs.START, avatarTexture, "Start Game", testFont));
+            mainMenu.Manager.addEntity(mainMenu.Manager.Factory.createButton(50, 200, 50, 50, Inputs.EXIT, avatarTexture, "Exit", testFont));
         }
 
         private void createGame()
@@ -168,14 +175,15 @@ namespace WatchYourBack
 
             inGame.Manager.Factory.setWallTemplate(wallTemplate);
             inGame.Manager.Factory.setSpawnTemplate(spawnTemplate);
-            inGame.Manager.addEntity(inGame.Manager.Factory.createAvatar(body, bodyTexture));
+            inGame.Manager.addEntity(inGame.Manager.Factory.createAvatar(avatarBody, avatarTexture));
+            inGame.Manager.addEntity(inGame.Manager.Factory.createWeapon(avatarBody, weaponBody, weaponTexture));
         }
 
         private void createPauseMenu()
         {
             inputListener.addMenu(pauseMenu);
-            pauseMenu.Manager.addEntity(mainMenu.Manager.Factory.createButton(50, 50, 50, 50, Inputs.START, bodyTexture, "Resume", testFont));
-            pauseMenu.Manager.addEntity(mainMenu.Manager.Factory.createButton(50, 200, 50, 50, Inputs.EXIT, bodyTexture, "Exit to menu", testFont));
+            pauseMenu.Manager.addEntity(mainMenu.Manager.Factory.createButton(50, 50, 50, 50, Inputs.START, avatarTexture, "Resume", testFont));
+            pauseMenu.Manager.addEntity(mainMenu.Manager.Factory.createButton(50, 200, 50, 50, Inputs.EXIT, avatarTexture, "Exit to menu", testFont));
         }
 
         /*
