@@ -64,7 +64,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Components\TransformComponent.cs" />
     <Compile Include="Components\VelocityComponent.cs" />
-    <Compile Include="Templates\WallTemplate.cs" />
     <Compile Include="Components\TileComponent.cs" />
     <Compile Include="Core\World.cs" />
   </ItemGroup>

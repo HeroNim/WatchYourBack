@@ -24,6 +24,7 @@ namespace WatchYourBack
             foreach (Entity entity in activeEntities)
             {
                 TransformComponent transform = (TransformComponent)entity.Components[typeof(TransformComponent)];
+                
                 VelocityComponent velocity = (VelocityComponent)entity.Components[typeof(VelocityComponent)];
                 transform.Position = new Vector2(transform.X + velocity.X, transform.Y + velocity.Y);
                 

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace WatchYourBack
 {
-    interface InputSystem
+    public interface InputSystem
     {
         event EventHandler inputFired;
     }

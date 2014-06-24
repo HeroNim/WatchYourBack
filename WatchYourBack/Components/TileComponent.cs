@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace WatchYourBack
 {
+    //Used to store what type a terrain tile is, such as a wall or a spawn point
     class TileComponent : EComponent
     {
         public readonly static int bitMask = (int)Masks.TILE;

@@ -12,7 +12,7 @@ namespace WatchYourBack
      * Holds the position of the entity 
     */
 
-    class TransformComponent : EComponent
+    public class TransformComponent : EComponent
     {
         private Vector2 position;
 

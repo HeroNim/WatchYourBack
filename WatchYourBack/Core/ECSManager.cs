@@ -17,6 +17,7 @@ namespace WatchYourBack
         private List<Entity> activeEntities;
         private List<Entity> removal;
         private ContentManager content;
+        private InputSystem input;
         
 
         public ECSManager(List<Entity> entities, ContentManager content)
@@ -52,6 +53,10 @@ namespace WatchYourBack
                 removal.Add(entity);
         }
         
+        public void addInput(InputSystem input)
+        {
+            this.input = input;
+        }
 
         public List<Entity> Entities
         {
@@ -133,6 +138,11 @@ namespace WatchYourBack
         public Texture2D getTexture(string fileName)
         {
             return content.Load<Texture2D>(fileName);
+        }
+
+        public InputSystem Input
+        {
+            get { return input; }
         }
     }
 }

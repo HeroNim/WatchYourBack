@@ -31,16 +31,10 @@ namespace WatchYourBack
         SpriteBatch spriteBatch;
 
         Dictionary<LevelName, LevelTemplate> levels; 
+
         Rectangle avatarBody;
-        Rectangle weaponBody;
-
         Texture2D avatarTexture;
-        Texture2D weaponTexture;
-        Texture2D wallTexture;
-        Texture2D spawnTexture;
-
-        WallTemplate wallTemplate;
-        WallTemplate spawnTemplate;
+        
         SpriteFont testFont;
 
         public GameLoop()
@@ -94,19 +88,9 @@ namespace WatchYourBack
             
             avatarTexture = new Texture2D(GraphicsDevice, 1, 1);
             avatarTexture.SetData(new[] { Color.White });
-            weaponTexture = new Texture2D(GraphicsDevice, 1, 1);
-            weaponTexture.SetData(new[] { Color.Green });
-            wallTexture = new Texture2D(GraphicsDevice, 1, 1);
-            wallTexture.SetData(new[] { Color.Black });
-            spawnTexture = new Texture2D(GraphicsDevice, 1, 1);
-            spawnTexture.SetData(new[] { Color.Red });
-
             avatarBody = new Rectangle(100, 100, GraphicsDevice.Viewport.Width / 40, GraphicsDevice.Viewport.Width / 40);
-            weaponBody = new Rectangle(avatarBody.Right, avatarBody.Bottom, 3, 10);
             
-            wallTemplate = new WallTemplate(wallTexture, GraphicsDevice.Viewport.Width / 32, GraphicsDevice.Viewport.Height / 18);
-            spawnTemplate = new WallTemplate(spawnTexture, GraphicsDevice.Viewport.Width / 32, GraphicsDevice.Viewport.Height / 18);
-
+        
             createMainMenu();
             createGame();
             createPauseMenu();
@@ -174,7 +158,7 @@ namespace WatchYourBack
             inGame.Manager.addSystem(new GameCollisionSystem());
             inGame.Manager.addSystem(new MovementSystem());
             inGame.Manager.addSystem(new LevelSystem(levels));
-            //inGame.Manager.addSystem(new AttackSystem());
+            inGame.Manager.addSystem(new AttackSystem());
 
             
             inGame.Manager.addEntity(EFactory.createAvatar(avatarBody, avatarTexture));
@@ -205,6 +189,7 @@ namespace WatchYourBack
             public void addMenu(World menu)
             {
                 MenuInputSystem toAdd = new MenuInputSystem();
+                menu.Manager.addInput(toAdd);
                 menu.Manager.addSystem(toAdd);
                 inputs.Add(menu, toAdd);
                 toAdd.inputFired += new EventHandler(inputFired);
@@ -213,6 +198,7 @@ namespace WatchYourBack
             public void addGame(World game)
             {
                 GameInputSystem toAdd = new GameInputSystem();
+                game.Manager.addInput(toAdd);
                 game.Manager.addSystem(toAdd);
                 inputs.Add(game, toAdd);
                 toAdd.inputFired += new EventHandler(inputFired);

@@ -10,7 +10,7 @@ namespace WatchYourBack
     /*
      * Holds the velocity of the entity 
      */
-    class VelocityComponent : EComponent
+    public class VelocityComponent : EComponent
     {
 
         public readonly static int bitMask = (int)Masks.VELOCITY;

@@ -7,26 +7,44 @@ using Microsoft.Xna.Framework;
 
 namespace WatchYourBack
 {
+    /*
+     * The system responsible for waiting for attack commands, and creating the appropriate attacks, such as sword swings. (abilities?)
+     */
     class AttackSystem : ESystem
     {
-        public AttackSystem(GameInputSystem input) : base(false, true, 7)
+        private bool listening;
+
+        public AttackSystem() : base(false, true, 7)
         {
             components += WeaponComponent.bitMask;
-            input.inputFired += new EventHandler(checkInput);
+            listening = false;
         }
 
         public override void update()
         {
-            throw new NotImplementedException();
+            if (!listening)
+            {
+                manager.Input.inputFired += new EventHandler(checkInput);
+                listening = true;
+            }
         }
 
         private void checkInput(object sender, EventArgs e)
         {
-            Entity source = (Entity)sender;
-            WeaponComponent weapon = (WeaponComponent)source.Components[typeof(WeaponComponent)];
-            TransformComponent anchor = (TransformComponent)source.Components[typeof(TransformComponent)];
-            if (weapon.Weapon == null)
-                weapon.Weapon = EFactory.createWeapon(anchor.X,anchor.Y, new Rectangle((int)anchor.X, (int)anchor.Y, 5, (int)weapon.Range), manager.getTexture("WeaponTexture"));
+            InputArgs args = (InputArgs)e;
+            if (args.InputType == Inputs.ATTACK)
+            {
+                Entity source = (Entity)sender;
+                if (!source.hasComponent(Masks.WEAPON))
+                {
+                    WeaponComponent weapon = new WeaponComponent(10, 5, true);
+                    source.addComponent(weapon);
+                    VelocityComponent anchorSpeed = (VelocityComponent)source.Components[typeof(VelocityComponent)];
+                    TransformComponent anchorPosition = (TransformComponent)source.Components[typeof(TransformComponent)];
+                    weapon.Weapon = EFactory.createWeapon(anchorPosition.X, anchorPosition.Y, new Rectangle((int)anchorPosition.X, (int)anchorPosition.Y, 5, (int)weapon.Range), anchorSpeed, manager.getTexture("WeaponTexture"));
+                    manager.addEntity(weapon.Weapon);
+                }
+            }
             
         }
     }
