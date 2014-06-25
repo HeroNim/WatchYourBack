@@ -22,6 +22,7 @@ namespace WatchYourBack
         LEVEL = 1 << 6,
         BUTTON = 1 << 7,
         WEAPON = 1 << 8,
+        DEBUG = 1 << 9
         
     };
 

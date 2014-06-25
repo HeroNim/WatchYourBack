@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework;
 
 namespace WatchYourBack
 {
@@ -25,7 +26,7 @@ namespace WatchYourBack
             collided = false;
         }
 
-        public override void update()
+        public override void update(GameTime gameTime)
         {
             MouseState ms = Mouse.GetState();
             collided = false;

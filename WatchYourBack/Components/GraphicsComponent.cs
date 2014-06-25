@@ -26,11 +26,24 @@ namespace WatchYourBack
         private string text;
         private bool hasText;
 
+        private float rotationAngle;
+        private Vector2 rotationOrigin;
+
         public GraphicsComponent(Rectangle rectangle, Texture2D texture)
         {
             spriteTexture = texture;
             body = rectangle;
             color = Color.White;
+            hasText = false;
+        }
+
+        public GraphicsComponent(Rectangle rectangle, Texture2D texture, float rotationAngle, Vector2 rotationOrigin)
+        {
+            spriteTexture = texture;
+            body = rectangle;
+            color = Color.White;
+            this.rotationAngle = rotationAngle;
+            this.rotationOrigin = rotationOrigin;
             hasText = false;
         }
 
@@ -56,5 +69,8 @@ namespace WatchYourBack
         public SpriteFont Font { get { return font; } set { font = value; } }
         public bool HasText { get { return hasText; } set { hasText = value; } }
         public string Text { get { return text; } set { text = value; } }
+        public float RotationAngle { get { return rotationAngle; } set { rotationAngle = value; } }
+        public Vector2 RotationOrigin { get { return rotationOrigin; } }
+        public bool Rotatable { get { return (rotationAngle != 0); } }
     }
 }

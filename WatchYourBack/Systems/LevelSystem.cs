@@ -66,7 +66,7 @@ namespace WatchYourBack
             built = true;
         }
 
-        public override void update()
+        public override void update(GameTime gameTime)
         {
             if (level == null)
                 initialize();
@@ -81,7 +81,7 @@ namespace WatchYourBack
                 {
                     clearLevel();
                     currentLevel = level.CurrentLevel;
-                    update();
+                    update(gameTime);
                 }
             }
             if (Keyboard.GetState().IsKeyDown(Keys.N) && pressed == false)

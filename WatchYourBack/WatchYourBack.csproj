@@ -38,6 +38,7 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Components\DebugComponent.cs" />
     <Compile Include="Systems\AttackSystem.cs" />
     <Compile Include="Components\WeaponComponent.cs" />
     <Compile Include="Core\InputArgs.cs" />

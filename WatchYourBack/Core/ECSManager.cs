@@ -82,7 +82,7 @@ namespace WatchYourBack
          * Updates the entity lists of the manager, moving active/inactive entities to their proper lists. Any systems that run
          * during the update loop are then updated.
          */
-        public void update()
+        public void update(GameTime gameTime)
         {
             clearEntities();
             foreach (Entity entity in inactiveEntities)
@@ -111,7 +111,7 @@ namespace WatchYourBack
             foreach (ESystem system in systems)
             {
                 if (system.Loop == true)
-                    system.updateEntities();
+                    system.updateEntities(gameTime);
             }
             
         }
@@ -126,9 +126,12 @@ namespace WatchYourBack
                 if ((entity.Mask & (int)Masks.GRAPHICS) != 0)
                 {
                     GraphicsComponent graphics = (GraphicsComponent)entity.Components[typeof(GraphicsComponent)];
-                    spriteBatch.Draw(graphics.Sprite, graphics.Body, graphics.SpriteColor);
-                    if (graphics.HasText)
-                        spriteBatch.DrawString(graphics.Font, graphics.Text, new Vector2(graphics.X, graphics.Y), graphics.FontColor);
+                    if(graphics.Rotatable == true)
+                        spriteBatch.Draw(graphics.Sprite, graphics.Body, new Rectangle(0,0, graphics.Sprite.Width, graphics.Sprite.Height), graphics.SpriteColor, graphics.RotationAngle, graphics.RotationOrigin, SpriteEffects.None,1);
+                    else
+                        spriteBatch.Draw(graphics.Sprite, graphics.Body, graphics.SpriteColor);
+                        if (graphics.HasText)
+                            spriteBatch.DrawString(graphics.Font, graphics.Text, new Vector2(graphics.X, graphics.Y), graphics.FontColor);
                 }
             }
         }

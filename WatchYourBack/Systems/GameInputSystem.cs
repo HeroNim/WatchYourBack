@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework;
 
 namespace WatchYourBack
 {
@@ -37,7 +38,7 @@ namespace WatchYourBack
             mappings.Add(KeyBindings.SPACE, Keys.Space);
         }
 
-        public override void update()
+        public override void update(GameTime gameTime)
         {
             //If (state == Playing)
             AvatarInputComponent p1;

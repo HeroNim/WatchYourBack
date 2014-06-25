@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Microsoft.Xna.Framework;
+
 namespace WatchYourBack
 {
     /* All Systems must inherit from this class. All logic for the game must be done in the systems. All systems are either exclusive or not: exclusive systems only act on entities that contain the
@@ -40,7 +42,7 @@ namespace WatchYourBack
 
         //Checks each entity on the entity list for matching components. If it is not exclusive, the entity must simply have the components; if it is,
         //the entity must have only those components. The applicable entities are then updated.
-        public void updateEntities()
+        public void updateEntities(GameTime gameTime)
         {
             activeEntities.Clear();
             if (exclusive)
@@ -53,7 +55,7 @@ namespace WatchYourBack
                 foreach (Entity entity in entities)
                     if ((entity.Mask & components) == components)
                         activeEntities.Add(entity);
-            update();
+            update(gameTime);
                             
             
         }
@@ -66,6 +68,6 @@ namespace WatchYourBack
         public bool Loop { get { return updateLoop; } }
 
         //Logic goes here
-        public abstract void update();
+        public abstract void update(GameTime gameTime);
     }
 }

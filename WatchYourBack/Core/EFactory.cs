@@ -34,8 +34,8 @@ namespace WatchYourBack
 
                 return new Entity(
                 new TransformComponent(xOrigin, yOrigin),
-                anchorMovement,
-                new GraphicsComponent(body, texture));
+                new VelocityComponent(anchorMovement.X, anchorMovement.Y, 0.1f),
+                new GraphicsComponent(body, texture, 0.1f, new Vector2(texture.Width/2, texture.Height)));
         }
 
         public static Entity createButton(int x, int y, int width, int height, Inputs type, Texture2D texture, string text, SpriteFont font)

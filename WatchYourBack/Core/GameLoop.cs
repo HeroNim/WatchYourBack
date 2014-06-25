@@ -121,7 +121,7 @@ namespace WatchYourBack
             
             // TODO: Add your update logic here
 
-            activeWorld.Manager.update();
+            activeWorld.Manager.update(gameTime);
             activeWorld = worldStack.Peek();
             base.Update(gameTime);
         }

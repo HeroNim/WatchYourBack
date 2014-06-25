@@ -20,7 +20,7 @@ namespace WatchYourBack
             listening = false;
         }
 
-        public override void update()
+        public override void update(GameTime gameTime)
         {
             if (!listening)
             {

@@ -17,10 +17,18 @@ namespace WatchYourBack
         public override Masks Mask { get { return Masks.VELOCITY; } }
 
         private Vector2 velocity;
+        private float rotationSpeed;
 
         public VelocityComponent(float x, float y)
         {  
             velocity = new Vector2(x,y);
+            rotationSpeed = 0;
+        }
+
+        public VelocityComponent(float x, float y, float rotation)
+        {
+            velocity = new Vector2(x, y);
+            rotationSpeed = rotation;
         }
 
         public Vector2 Velocity
@@ -39,6 +47,12 @@ namespace WatchYourBack
         {
             get { return velocity.Y; }
             set { velocity.Y = value; }
+        }
+
+        public float RotationSpeed
+        {
+            get { return rotationSpeed; }
+            set { rotationSpeed = value; }
         }
     }
 }

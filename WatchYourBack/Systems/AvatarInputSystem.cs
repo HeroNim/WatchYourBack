@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Microsoft.Xna.Framework;
+
 namespace WatchYourBack
 {
 
@@ -18,26 +20,39 @@ namespace WatchYourBack
             components += VelocityComponent.bitMask;
         }
 
-        public override void update()
+        public override void update(GameTime gameTime)
         {
             foreach (Entity entity in activeEntities)
             {
-                AvatarInputComponent p1 = (AvatarInputComponent)entity.Components[typeof(AvatarInputComponent)];
-                VelocityComponent v1 = (VelocityComponent)entity.Components[typeof(VelocityComponent)];
-                if (p1.MoveDown)
-                    v1.Y = 5;
-                else if (p1.MoveUp)
-                    v1.Y = -5;
-                else
-                    v1.Y = 0;
+                AvatarInputComponent avatarInput = (AvatarInputComponent)entity.Components[typeof(AvatarInputComponent)];
+                VelocityComponent velocityComponent = (VelocityComponent)entity.Components[typeof(VelocityComponent)];
+                float xVel = 0;
+                float yVel = 0;
 
-                if (p1.MoveRight)
-                    v1.X = 5;
-                else if (p1.MoveLeft)
-                    v1.X = -5;
+                if (avatarInput.MoveDown)
+                    yVel = 5;
+                else if (avatarInput.MoveUp)
+                    yVel = -5;
                 else
-                    v1.X = 0;
-                    
+                    yVel = 0;
+
+                if (avatarInput.MoveRight)
+                    xVel = 5;
+                else if (avatarInput.MoveLeft)
+                    xVel = -5;
+                else
+                    xVel = 0;
+
+                velocityComponent.Y = yVel;
+                velocityComponent.X = xVel;
+
+                if(entity.hasComponent(Masks.WEAPON))
+                {
+                    Entity weapon = ((WeaponComponent)entity.Components[typeof(WeaponComponent)]).Weapon;
+                    VelocityComponent weaponVelocityComponent = (VelocityComponent)weapon.Components[typeof(VelocityComponent)];
+                    weaponVelocityComponent.Y = yVel;
+                    weaponVelocityComponent.X = xVel;
+                }
             }
         }
     }
