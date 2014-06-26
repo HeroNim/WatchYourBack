@@ -34,7 +34,7 @@ namespace WatchYourBack
                 new TransformComponent(xOrigin, yOrigin),
                 new WeaponComponent(wielder),
                 new VelocityComponent(anchorMovement.X, anchorMovement.Y, 0.01f),
-                new LineColliderComponent(new Vector2(xOrigin + body.Width/2, yOrigin + body.Height), new Vector2(xOrigin + body.Width/2, yOrigin)),
+                new LineColliderComponent(new Vector2(xOrigin + body.Width/2, yOrigin), new Vector2(xOrigin + body.Width/2, yOrigin - body.Height)),
                 new GraphicsComponent(body, texture, 0.1f, new Vector2(texture.Width/2, texture.Height)));
         }
 

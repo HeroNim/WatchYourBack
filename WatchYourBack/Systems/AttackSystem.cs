@@ -53,7 +53,7 @@ namespace WatchYourBack
                     source.addComponent(wielder);
                     VelocityComponent anchorSpeed = (VelocityComponent)source.Components[typeof(VelocityComponent)];
                     TransformComponent anchorPosition = (TransformComponent)source.Components[typeof(TransformComponent)];
-                    wielder.Weapon = EFactory.createWeapon(source, anchorPosition.X - 5, anchorPosition.Y - wielder.Range, new Rectangle((int)anchorPosition.X, (int)anchorPosition.Y, 5, (int)wielder.Range), anchorSpeed, manager.getTexture("WeaponTexture"));
+                    wielder.Weapon = EFactory.createWeapon(source, anchorPosition.X, anchorPosition.Y - 10, new Rectangle((int)anchorPosition.X, (int)anchorPosition.Y, 5, (int)wielder.Range), anchorSpeed, manager.getTexture("WeaponTexture"));
                     manager.addEntity(wielder.Weapon);
                 }
             }

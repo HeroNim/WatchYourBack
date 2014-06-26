@@ -38,6 +38,8 @@ namespace WatchYourBack
                     graphics.X = (int)transform.X;
                     graphics.Y = (int)transform.Y;
                     graphics.RotationAngle = transform.Rotation;
+                    Console.WriteLine("X: " + graphics.X);
+                    Console.WriteLine("Y: " + graphics.Y);
                     
                 }
                 
@@ -50,8 +52,10 @@ namespace WatchYourBack
                         collider.P2 = new Vector2(collider.P2.X + velocity.X, collider.P2.Y + velocity.Y);
                         Vector2 rotation = Vector2.Transform(collider.P2 - collider.P1, Matrix.CreateRotationZ(velocity.RotationSpeed)) + collider.P1;
                         collider.P2 = rotation;
-                        Console.WriteLine(collider.P1);
-                        Console.WriteLine(collider.P2);
+                        Console.WriteLine("P1: " + collider.P1);
+                        Console.WriteLine("P2: " + collider.P2);
+                        
+                        
 
                     }
                     else
