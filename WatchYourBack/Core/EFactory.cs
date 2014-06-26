@@ -26,15 +26,15 @@ namespace WatchYourBack
                 new GraphicsComponent(rect, texture));
         }
 
-
+        
         //Creates a weapon at a point on an entity, while taking the holder's velocity component to allow it to 'stick' to the holder
-        public static Entity createWeapon(float xOrigin, float yOrigin, Rectangle body, VelocityComponent anchorMovement, Texture2D texture)
+        public static Entity createWeapon(Entity wielder, float xOrigin, float yOrigin, Rectangle body, VelocityComponent anchorMovement, Texture2D texture)
         {
-
-
                 return new Entity(
                 new TransformComponent(xOrigin, yOrigin),
-                new VelocityComponent(anchorMovement.X, anchorMovement.Y, 0.1f),
+                new WeaponComponent(wielder),
+                new VelocityComponent(anchorMovement.X, anchorMovement.Y, 0.01f),
+                new LineColliderComponent(new Vector2(xOrigin + body.Width/2, yOrigin + body.Height), new Vector2(xOrigin + body.Width/2, yOrigin)),
                 new GraphicsComponent(body, texture, 0.1f, new Vector2(texture.Width/2, texture.Height)));
         }
 

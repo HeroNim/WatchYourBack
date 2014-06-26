@@ -39,8 +39,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Components\DebugComponent.cs" />
+    <Compile Include="Components\LineColliderComponent.cs" />
     <Compile Include="Systems\AttackSystem.cs" />
-    <Compile Include="Components\WeaponComponent.cs" />
+    <Compile Include="Components\WielderComponent.cs" />
     <Compile Include="Core\InputArgs.cs" />
     <Compile Include="Components\ColliderComponent.cs" />
     <Compile Include="Components\AvatarInputComponent.cs" />
@@ -67,6 +68,8 @@
     <Compile Include="Components\VelocityComponent.cs" />
     <Compile Include="Components\TileComponent.cs" />
     <Compile Include="Core\World.cs" />
+    <Compile Include="Components\TimerComponent.cs" />
+    <Compile Include="Components\WeaponComponent.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

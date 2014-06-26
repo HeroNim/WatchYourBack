@@ -21,8 +21,12 @@ namespace WatchYourBack
         TILE = 1 << 5,
         LEVEL = 1 << 6,
         BUTTON = 1 << 7,
-        WEAPON = 1 << 8,
-        DEBUG = 1 << 9
+        WIELDER = 1 << 8,
+        DEBUG = 1 << 9,
+        TIMER = 1 << 10,
+        LINE_COLLIDER = 1 << 11,
+        WEAPON = 1 << 12
+
         
     };
 

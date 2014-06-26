@@ -46,9 +46,9 @@ namespace WatchYourBack
                 velocityComponent.Y = yVel;
                 velocityComponent.X = xVel;
 
-                if(entity.hasComponent(Masks.WEAPON))
+                if(entity.hasComponent(Masks.WIELDER))
                 {
-                    Entity weapon = ((WeaponComponent)entity.Components[typeof(WeaponComponent)]).Weapon;
+                    Entity weapon = ((WielderComponent)entity.Components[typeof(WielderComponent)]).Weapon;
                     VelocityComponent weaponVelocityComponent = (VelocityComponent)weapon.Components[typeof(VelocityComponent)];
                     weaponVelocityComponent.Y = yVel;
                     weaponVelocityComponent.X = xVel;

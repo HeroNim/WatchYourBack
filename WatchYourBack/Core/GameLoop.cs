@@ -94,11 +94,7 @@ namespace WatchYourBack
             createMainMenu();
             createGame();
             createPauseMenu();
-
-         
-
-            
-            
+  
             // TODO: use this.Content to load your game content here
         }
 
@@ -234,12 +230,10 @@ namespace WatchYourBack
                         game.worldStack.Pop();
                         game.worldStack.Pop();
                     }
-                }
-                
-                
-                //Do stuff
-                
+                }               
             }
         }
+
+        
     }
 }

@@ -3,49 +3,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using Microsoft.Xna.Framework;
-
 namespace WatchYourBack
 {
-    enum Weapons
-    {
-        DAGGER,
-        SWORD
-
-    }
-
     class WeaponComponent : EComponent
     {
-
         public readonly static int bitMask = (int)Masks.WEAPON;
         public override Masks Mask { get { return Masks.WEAPON; } }
 
-        private float range;
-        private float speed;
-        private bool melee;
+        private Entity wielder;
 
-        private Entity weapon;
-        
-
-        public WeaponComponent(float range, float speed, bool melee)
+        public WeaponComponent(Entity wielder)
         {
-            this.range = range;
-            this.speed = speed;
-            this.melee = melee;
-            
+            this.wielder = wielder;
         }
 
-        public float Range
+        public Entity Wielder
         {
-            get { return range; }
+            get { return wielder; }
         }
 
-        public Entity Weapon
-        {
-            get { return weapon; }
-            set { weapon = value; }
-        }
 
-        
     }
 }

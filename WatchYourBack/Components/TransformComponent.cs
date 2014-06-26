@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework;
 namespace WatchYourBack
 {
     /*
-     * Holds the position of the entity 
+     * Holds the position and rotation of the entity
     */
 
     public class TransformComponent : EComponent
@@ -18,6 +18,7 @@ namespace WatchYourBack
 
         private bool xLock;
         private bool yLock;
+        private float rotation;
 
         public readonly static int bitMask = (int)Masks.TRANSFORM;
         public override Masks Mask { get { return Masks.TRANSFORM; } }
@@ -26,6 +27,7 @@ namespace WatchYourBack
         public TransformComponent(float x, float y)
         {
             position = new Vector2(x, y);
+            rotation = 0;
         }
 
 
@@ -46,6 +48,12 @@ namespace WatchYourBack
         {
             get { return position; }
             set { position = value; }
+        }
+
+        public float Rotation
+        {
+            get { return rotation; }
+            set { rotation = value; }
         }
 
         /*
