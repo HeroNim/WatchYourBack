@@ -19,7 +19,7 @@ namespace WatchYourBack
         {
 
                 return new Entity(
-                new TransformComponent(rect.X, rect.Y),
+                new TransformComponent(rect.X, rect.Y, rect.Width, rect.Height),
                 new ColliderComponent(rect),
                 new VelocityComponent(0, 0),
                 new AvatarInputComponent(),
@@ -28,23 +28,22 @@ namespace WatchYourBack
 
         
         //Creates a weapon at a point on an entity, while taking the holder's velocity component to allow it to 'stick' to the holder
-        public static Entity createWeapon(Entity wielder, float xOrigin, float yOrigin, Rectangle body, VelocityComponent anchorMovement, Texture2D texture)
+        public static Entity createWeapon(Entity wielder, float xOrigin, float yOrigin, float range, float rotationAngle, VelocityComponent anchorMovement, Texture2D texture)
         {
                 return new Entity(
-                new TransformComponent(xOrigin, yOrigin),
-                new WeaponComponent(wielder),
-                new VelocityComponent(anchorMovement.X, anchorMovement.Y, 0.01f),
-                new LineColliderComponent(new Vector2(xOrigin + body.Width/2, yOrigin), new Vector2(xOrigin + body.Width/2, yOrigin - body.Height)),
-                new GraphicsComponent(body, texture, 0.1f, new Vector2(texture.Width/2, texture.Height)));
+                new TransformComponent(xOrigin, yOrigin, rotationAngle),
+                new WeaponComponent(wielder, MathHelper.ToRadians((float)SWORD.ARC)),
+                new VelocityComponent(anchorMovement.X, anchorMovement.Y, -0.1f),
+                new LineColliderComponent(new Vector2(xOrigin + (float)SWORD.WIDTH / 2, yOrigin), new Vector2(xOrigin + (float)SWORD.WIDTH / 2 / 2, yOrigin - (float)SWORD.RANGE), rotationAngle),
+                new GraphicsComponent(new Rectangle((int)xOrigin, (int)yOrigin, (int)SWORD.WIDTH, (int)SWORD.RANGE), texture, 0.1f, new Vector2(texture.Width/2, texture.Height)));
         }
 
         public static Entity createButton(int x, int y, int width, int height, Inputs type, Texture2D texture, string text, SpriteFont font)
         {
 
-
                 return new Entity(
                 new ButtonComponent(type),
-                new TransformComponent(x, y),
+                new TransformComponent(x, y, width, height),
                 new ColliderComponent(new Rectangle(x, y, width, height)),
                 new GraphicsComponent(new Rectangle(x, y, width, height), texture, text, font, Color.Blue));
         }
@@ -53,7 +52,7 @@ namespace WatchYourBack
         {
             return new Entity(
                 new TileComponent(TileType.WALL),
-                new TransformComponent(x, y),
+                new TransformComponent(x, y, width, height),
                 new ColliderComponent(new Rectangle(x, y, width, height)),
                 new GraphicsComponent(new Rectangle(x, y, width, height), texture));
         }
@@ -62,7 +61,7 @@ namespace WatchYourBack
         {
             return new Entity(
                 new TileComponent(TileType.SPAWN),
-                new TransformComponent(x, y),
+                new TransformComponent(x, y, width, height),
                 new GraphicsComponent(new Rectangle(x, y, width, height), texture));
         }
 

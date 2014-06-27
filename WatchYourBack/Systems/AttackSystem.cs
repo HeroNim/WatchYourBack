@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 
 namespace WatchYourBack
 {
@@ -30,13 +31,15 @@ namespace WatchYourBack
 
             foreach (Entity entity in activeEntities)
             {
-                WielderComponent weaponComponent = (WielderComponent)entity.Components[typeof(WielderComponent)];
-                Entity weapon = weaponComponent.Weapon;
-                TransformComponent transform = (TransformComponent)weapon.Components[typeof(TransformComponent)];
-                if(transform.Rotation >= weaponComponent.Arc)
+                WielderComponent wielderComponent = (WielderComponent)entity.Components[typeof(WielderComponent)];
+                Entity weapon = wielderComponent.Weapon;
+                WeaponComponent weaponComponent = (WeaponComponent)weapon.Components[typeof(WeaponComponent)];
+                Console.WriteLine(weaponComponent.Arc);
+                Console.WriteLine(weaponComponent.MaxArc);
+                if(weaponComponent.Arc >= weaponComponent.MaxArc)
                 {
                     manager.removeEntity(weapon);
-                    entity.removeComponent(weaponComponent);
+                    entity.removeComponent(wielderComponent);
                 }
             }
         }
@@ -46,18 +49,33 @@ namespace WatchYourBack
             InputArgs args = (InputArgs)e;
             if (args.InputType == Inputs.ATTACK)
             {
+                
                 Entity source = (Entity)sender;
                 if (!source.hasComponent(Masks.WIELDER))
                 {
-                    WielderComponent wielder = new WielderComponent(10, (float)(1000*Math.PI));
-                    source.addComponent(wielder);
+                    WielderComponent wielder = new WielderComponent((float)SWORD.RANGE, MathHelper.ToRadians((int)SWORD.ARC));
                     VelocityComponent anchorSpeed = (VelocityComponent)source.Components[typeof(VelocityComponent)];
                     TransformComponent anchorPosition = (TransformComponent)source.Components[typeof(TransformComponent)];
-                    wielder.Weapon = EFactory.createWeapon(source, anchorPosition.X, anchorPosition.Y - 10, new Rectangle((int)anchorPosition.X, (int)anchorPosition.Y, 5, (int)wielder.Range), anchorSpeed, manager.getTexture("WeaponTexture"));
+
+                    /*
+                     * Get the angle between the mouse and the sword, and start the sword rotated 90 degrees from the mouse vector
+                     */
+                    MouseState ms = Mouse.GetState();
+                    float xDir = ms.X - anchorPosition.X;
+                    float yDir = ms.Y - anchorPosition.Y;
+                    Vector2 dir = new Vector2(yDir, -xDir);
+                    float rotationAngle = -(float)Math.Atan2(dir.X * Vector2.UnitY.Y, dir.Y * Vector2.UnitY.Y);
+                    if (rotationAngle < 0)
+                        rotationAngle = (float)(rotationAngle + Math.PI * 2);
+
+                    source.addComponent(wielder);
+                    wielder.Weapon = EFactory.createWeapon(source, anchorPosition.Center.X, anchorPosition.Center.Y, wielder.Range, rotationAngle, anchorSpeed, manager.getTexture("WeaponTexture"));
                     manager.addEntity(wielder.Weapon);
                 }
             }
             
         }
+
+       
     }
 }

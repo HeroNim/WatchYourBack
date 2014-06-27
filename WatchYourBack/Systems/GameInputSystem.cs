@@ -46,6 +46,7 @@ namespace WatchYourBack
             foreach(Entity entity in activeEntities)
             {
                 p1 = (AvatarInputComponent)entity.Components[typeof(AvatarInputComponent)];
+                MouseState ms = Mouse.GetState();
                 
                 if (Keyboard.GetState().IsKeyDown(mappings[KeyBindings.RIGHT]))
                     p1.MoveRight = true;
@@ -67,8 +68,8 @@ namespace WatchYourBack
                 else
                     p1.MoveDown = false;
                 if (Keyboard.GetState().IsKeyDown(mappings[KeyBindings.ESCAPE]))
-                    onFire(new InputArgs(Inputs.PAUSE));
-                if (Keyboard.GetState().IsKeyDown(mappings[KeyBindings.SPACE]))
+                    onFire(new InputArgs(Inputs.PAUSE));   
+                if(ms.LeftButton == ButtonState.Pressed)
                     onFire(p1.getEntity(), new InputArgs(Inputs.ATTACK));
             }
         }

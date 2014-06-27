@@ -10,7 +10,7 @@ namespace WatchYourBack
 {
     /*
      * The system used to move all entities. Finds all entities that have a transform and velocity component, then uses
-     * the relevant data to adjust their position. Also adjusts the position of the graphics and collider components accordingly if applicable.
+     * the relevant data to adjust their position. Also adjusts any variables in extra components that rely on movement.
      */
     class MovementSystem : ESystem
     {
@@ -38,9 +38,13 @@ namespace WatchYourBack
                     graphics.X = (int)transform.X;
                     graphics.Y = (int)transform.Y;
                     graphics.RotationAngle = transform.Rotation;
-                    Console.WriteLine("X: " + graphics.X);
-                    Console.WriteLine("Y: " + graphics.Y);
                     
+                }
+
+                if (entity.hasComponent(Masks.WEAPON))
+                {
+                    WeaponComponent weapon = (WeaponComponent)entity.Components[typeof(WeaponComponent)];
+                    weapon.Arc += Math.Abs(velocity.RotationSpeed);
                 }
                 
                 if (entity.hasComponent(Masks.COLLIDER))
@@ -53,10 +57,7 @@ namespace WatchYourBack
                         Vector2 rotation = Vector2.Transform(collider.P2 - collider.P1, Matrix.CreateRotationZ(velocity.RotationSpeed)) + collider.P1;
                         collider.P2 = rotation;
                         Console.WriteLine("P1: " + collider.P1);
-                        Console.WriteLine("P2: " + collider.P2);
-                        
-                        
-
+                        Console.WriteLine("P2: " + collider.P2);                                                
                     }
                     else
                     {

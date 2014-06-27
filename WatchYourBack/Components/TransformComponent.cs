@@ -15,6 +15,8 @@ namespace WatchYourBack
     public class TransformComponent : EComponent
     {
         private Vector2 position;
+        private int width;
+        private int height;
 
         private bool xLock;
         private bool yLock;
@@ -27,7 +29,23 @@ namespace WatchYourBack
         public TransformComponent(float x, float y)
         {
             position = new Vector2(x, y);
+            width = 0;
+            height = 0;
             rotation = 0;
+        }
+
+        public TransformComponent(float x, float y, int width, int height)
+        {
+            position = new Vector2(x, y);
+            this.width = width;
+            this.height = height;
+            rotation = 0;
+        }
+
+        public TransformComponent(float x, float y, float rotation)
+        {
+            position = new Vector2(x, y);
+            this.rotation = rotation;
         }
 
 
@@ -55,6 +73,22 @@ namespace WatchYourBack
             get { return rotation; }
             set { rotation = value; }
         }
+
+        public int Width
+        {
+            get { return width; }
+        }
+        public int Height
+        {
+            get { return height; }
+        }
+
+        public Vector2 Center
+        {
+            get { return new Vector2(position.X + width/2, position.Y + height/2); }
+        }
+
+        
 
         /*
          * The locks are used to stop the entity from jittering when there are multiple collisions 

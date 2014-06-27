@@ -19,11 +19,20 @@ namespace WatchYourBack
 
         private Vector2 p1;
         private Vector2 p2;
+        private float rotation;
 
         public LineColliderComponent(Vector2 p1, Vector2 p2) 
         {
             this.p1 = p1;
             this.p2 = p2;
+            rotation = 0;
+        }
+
+        public LineColliderComponent(Vector2 point1, Vector2 point2, float rotation)
+        {
+            this.rotation = rotation;
+            p1 = point1;
+            p2 = Vector2.Transform(point2 - p1, Matrix.CreateRotationZ(rotation)) + p1;
         }
 
         public Vector2 P1
