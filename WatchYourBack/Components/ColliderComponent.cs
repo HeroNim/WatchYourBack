@@ -13,15 +13,17 @@ namespace WatchYourBack
         public override Masks Mask { get { return Masks.COLLIDER; } }
 
         private Rectangle collider;
+        private bool destructable;
        
 
         public ColliderComponent()
         {
         }
 
-        public ColliderComponent(Rectangle r)
+        public ColliderComponent(Rectangle r, bool destructable)
         {
             collider = r;
+            this.destructable = destructable;
         }
 
         public int X
@@ -52,6 +54,12 @@ namespace WatchYourBack
         {
             get { return collider; }
             set { collider = value; }
+        }
+
+        public bool Destructable
+        {
+            get { return destructable; }
+            set { destructable = value; }
         }
 
         

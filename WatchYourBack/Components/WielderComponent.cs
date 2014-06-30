@@ -30,6 +30,7 @@ namespace WatchYourBack
         private Entity weapon;
         
 
+
         public WielderComponent(float range, float arc)
         {
             this.range = range;

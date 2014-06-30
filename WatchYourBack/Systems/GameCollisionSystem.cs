@@ -71,33 +71,47 @@ namespace WatchYourBack
 
             c1.X += (int)v1.X;
             if (c1.Collider.Intersects(c2.Collider))
-                if (t1.XLock != true)
+            {
+                if (c1.Destructable)
                 {
-                    t1.X -= v1.X;
-                    t1.XLock = true;
-                    if (weaponTransformComponent != null)
-                    {
-                        weaponTransformComponent.X -= v1.X;
-                        weaponCollider.X1 -= v1.X;
-                        weaponCollider.X2 -= v1.X;
-                    }
+                    manager.removeEntity(e1);
+                    return;
                 }
+                else
+                    if (t1.XLock != true)
+                    {
+                        t1.X -= v1.X;
+                        t1.XLock = true;
+                        if (weaponTransformComponent != null)
+                        {
+                            weaponTransformComponent.X -= v1.X;
+                            weaponCollider.X1 -= v1.X;
+                            weaponCollider.X2 -= v1.X;
+                        }
+                    }
+            }
             c1.X -= (int)v1.X;
 
 
             c1.Y += (int)v1.Y;
             if (c1.Collider.Intersects(c2.Collider))
-                if (t1.YLock != true)
+                if (c1.Destructable)
                 {
-                    t1.Y -= v1.Y;
-                    t1.YLock = true;
-                    if (weaponTransformComponent != null)
-                    {
-                        weaponTransformComponent.Y -= v1.Y;
-                        weaponCollider.Y1 -= v1.Y;
-                        weaponCollider.Y2 -= v1.Y;
-                    }
+                    manager.removeEntity(e1);
+                    return;
                 }
+                else
+                    if (t1.YLock != true)
+                    {
+                        t1.Y -= v1.Y;
+                        t1.YLock = true;
+                        if (weaponTransformComponent != null)
+                        {
+                            weaponTransformComponent.Y -= v1.Y;
+                            weaponCollider.Y1 -= v1.Y;
+                            weaponCollider.Y2 -= v1.Y;
+                        }
+                    }
             c1.Y -= (int)v1.Y;
 
         }
@@ -112,7 +126,8 @@ namespace WatchYourBack
          */
         private void checkLineCollision(Entity e1, Entity e2)
         {
-            
+            if(e2.hasComponent(Masks.TILE))
+                return;
             LineColliderComponent c1 = (LineColliderComponent)e1.Components[typeof(LineColliderComponent)];
             ColliderComponent c2 = (ColliderComponent)e2.Components[typeof(ColliderComponent)];
             VelocityComponent v1 = (VelocityComponent)e1.Components[typeof(VelocityComponent)];
