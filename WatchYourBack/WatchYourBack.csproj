@@ -38,6 +38,7 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Components\AllegianceComponent.cs" />
     <Compile Include="Components\DebugComponent.cs" />
     <Compile Include="Components\LineColliderComponent.cs" />
     <Compile Include="Systems\AttackSystem.cs" />

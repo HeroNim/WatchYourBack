@@ -15,10 +15,11 @@ namespace WatchYourBack
     public static class EFactory
     {
         
-        public static Entity createAvatar(Rectangle rect, Texture2D texture)
+        public static Entity createAvatar(Rectangle rect, Texture2D texture, Allegiance player)
         {
 
                 return new Entity(
+                new AllegianceComponent(player),
                 new TransformComponent(rect.X, rect.Y, rect.Width, rect.Height),
                 new ColliderComponent(rect),
                 new VelocityComponent(0, 0),
@@ -28,12 +29,13 @@ namespace WatchYourBack
 
         
         //Creates a weapon at a point on an entity, while taking the holder's velocity component to allow it to 'stick' to the holder
-        public static Entity createWeapon(Entity wielder, float xOrigin, float yOrigin, float range, float rotationAngle, VelocityComponent anchorMovement, Texture2D texture)
+        public static Entity createWeapon(Entity wielder, Allegiance wielderAllegiance, float xOrigin, float yOrigin, float range, float rotationAngle, VelocityComponent anchorMovement, Texture2D texture)
         {
                 return new Entity(
+                new AllegianceComponent(wielderAllegiance),
                 new TransformComponent(xOrigin, yOrigin, rotationAngle),
                 new WeaponComponent(wielder, MathHelper.ToRadians((float)SWORD.ARC)),
-                new VelocityComponent(anchorMovement.X, anchorMovement.Y, -0.1f),
+                new VelocityComponent(anchorMovement.X, anchorMovement.Y, -(float)SWORD.SPEED),
                 new LineColliderComponent(new Vector2(xOrigin + (float)SWORD.WIDTH / 2, yOrigin), new Vector2(xOrigin + (float)SWORD.WIDTH / 2 / 2, yOrigin - (float)SWORD.RANGE), rotationAngle),
                 new GraphicsComponent(new Rectangle((int)xOrigin, (int)yOrigin, (int)SWORD.WIDTH, (int)SWORD.RANGE), texture, 0.1f, new Vector2(texture.Width/2, texture.Height)));
         }
@@ -61,8 +63,7 @@ namespace WatchYourBack
         {
             return new Entity(
                 new TileComponent(TileType.SPAWN),
-                new TransformComponent(x, y, width, height),
-                new GraphicsComponent(new Rectangle(x, y, width, height), texture));
+                new TransformComponent(x, y, width, height));
         }
 
         

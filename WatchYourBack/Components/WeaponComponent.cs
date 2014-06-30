@@ -7,8 +7,9 @@ namespace WatchYourBack
 {
     public enum SWORD
     {
-        RANGE = 100,
+        RANGE = 50,
         WIDTH = 5,
+        SPEED = 20,
         ARC = 180
     }
     class WeaponComponent : EComponent

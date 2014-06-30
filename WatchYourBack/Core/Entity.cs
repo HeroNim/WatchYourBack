@@ -11,24 +11,7 @@ namespace WatchYourBack
      * using bitwise operators.
      */
 
-    public enum Masks 
-    { 
-        TRANSFORM = 1 << 0, 
-        VELOCITY = 1 << 1, 
-        GRAPHICS = 1 << 2,
-        COLLIDER = 1 << 3,
-        PLAYER_INPUT = 1 << 4,
-        TILE = 1 << 5,
-        LEVEL = 1 << 6,
-        BUTTON = 1 << 7,
-        WIELDER = 1 << 8,
-        DEBUG = 1 << 9,
-        TIMER = 1 << 10,
-        LINE_COLLIDER = 1 << 11,
-        WEAPON = 1 << 12
-
-        
-    };
+    
 
     public class Entity
     {

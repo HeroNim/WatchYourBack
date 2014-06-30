@@ -25,10 +25,14 @@ namespace WatchYourBack
                 if (entity.hasComponent(Masks.VELOCITY))
                 {
                     foreach (Entity other in activeEntities)
-                        if (entity != other && entity.hasComponent(Masks.VELOCITY) && !entity.hasComponent(Masks.LINE_COLLIDER) && !other.hasComponent(Masks.LINE_COLLIDER))
-                            checkBoxCollisions(entity, other);
-                        else if (entity != other && entity.hasComponent(Masks.VELOCITY) && entity.hasComponent(Masks.LINE_COLLIDER) && !other.hasComponent(Masks.LINE_COLLIDER))
-                            checkLineCollision(entity, other);
+                        if(!haveSameAllegiance(entity, other))
+                            if (entity != other && entity.hasComponent(Masks.VELOCITY) && !other.hasComponent(Masks.LINE_COLLIDER))
+                            {
+                                if (!entity.hasComponent(Masks.LINE_COLLIDER))
+                                    checkBoxCollisions(entity, other);
+                                else if (entity.hasComponent(Masks.LINE_COLLIDER))
+                                    checkLineCollision(entity, other);
+                            }
                     TransformComponent t1 = (TransformComponent)entity.Components[typeof(TransformComponent)];
                     t1.resetLocks();
                 }
@@ -108,9 +112,7 @@ namespace WatchYourBack
          */
         private void checkLineCollision(Entity e1, Entity e2)
         {
-            if (e2.hasComponent(Masks.PLAYER_INPUT))
-                return;
-
+            
             LineColliderComponent c1 = (LineColliderComponent)e1.Components[typeof(LineColliderComponent)];
             ColliderComponent c2 = (ColliderComponent)e2.Components[typeof(ColliderComponent)];
             VelocityComponent v1 = (VelocityComponent)e1.Components[typeof(VelocityComponent)];
@@ -191,6 +193,18 @@ namespace WatchYourBack
         private float lineEquation(Vector2 p1, Vector2 p2, Vector2 corner)
         {
             return (p2.Y - p1.Y) * corner.X + (p1.X - p2.X) * corner.Y + (p2.X * p1.Y - p1.X * p2.Y);
+        }
+
+        private bool haveSameAllegiance(Entity e1, Entity e2)
+        {
+            if (!e1.hasComponent(Masks.ALLEGIANCE) || !e2.hasComponent(Masks.ALLEGIANCE))
+                return false;
+            AllegianceComponent a1 = (AllegianceComponent)e1.Components[typeof(AllegianceComponent)];
+            AllegianceComponent a2 = (AllegianceComponent)e2.Components[typeof(AllegianceComponent)];
+
+            if (a1.Owner == a2.Owner)
+                return true;
+            return false;
         }
     }
 }

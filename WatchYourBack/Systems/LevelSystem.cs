@@ -52,6 +52,10 @@ namespace WatchYourBack
 
         private void buildLevel(LevelName levelName)
         {
+            Texture2D wallTexture = manager.getTexture("WallTexture");
+            Texture2D spawnTexture = manager.getTexture("SpawnTexture");
+            int player = 1;
+
             LevelTemplate levelTemplate = levels[levelName];
             int y, x;
             for (y = 0; y < (int)LevelDimensions.HEIGHT; y++)
@@ -60,7 +64,11 @@ namespace WatchYourBack
                     if (levelTemplate.LevelData[y, x] == TileType.WALL)
                         manager.addEntity(EFactory.createWall(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE, 40, 40, manager.getTexture("WallTexture")));
                     if (levelTemplate.LevelData[y, x] == TileType.SPAWN)
+                    {
                         manager.addEntity(EFactory.createSpawn(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE, 40, 40, manager.getTexture("SpawnTexture")));
+                        manager.addEntity(EFactory.createAvatar(new Rectangle(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE, 40, 40), spawnTexture, (Allegiance)player));
+                        player++;
+                    }
                     
                 }
             built = true;

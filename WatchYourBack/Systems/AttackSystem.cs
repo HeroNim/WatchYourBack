@@ -34,8 +34,6 @@ namespace WatchYourBack
                 WielderComponent wielderComponent = (WielderComponent)entity.Components[typeof(WielderComponent)];
                 Entity weapon = wielderComponent.Weapon;
                 WeaponComponent weaponComponent = (WeaponComponent)weapon.Components[typeof(WeaponComponent)];
-                Console.WriteLine(weaponComponent.Arc);
-                Console.WriteLine(weaponComponent.MaxArc);
                 if(weaponComponent.Arc >= weaponComponent.MaxArc)
                 {
                     manager.removeEntity(weapon);
@@ -56,6 +54,7 @@ namespace WatchYourBack
                     WielderComponent wielder = new WielderComponent((float)SWORD.RANGE, MathHelper.ToRadians((int)SWORD.ARC));
                     VelocityComponent anchorSpeed = (VelocityComponent)source.Components[typeof(VelocityComponent)];
                     TransformComponent anchorPosition = (TransformComponent)source.Components[typeof(TransformComponent)];
+                    AllegianceComponent anchorAllegiance = (AllegianceComponent)source.Components[typeof(AllegianceComponent)];
 
                     /*
                      * Get the angle between the mouse and the sword, and start the sword rotated 90 degrees from the mouse vector
@@ -69,7 +68,7 @@ namespace WatchYourBack
                         rotationAngle = (float)(rotationAngle + Math.PI * 2);
 
                     source.addComponent(wielder);
-                    wielder.Weapon = EFactory.createWeapon(source, anchorPosition.Center.X, anchorPosition.Center.Y, wielder.Range, rotationAngle, anchorSpeed, manager.getTexture("WeaponTexture"));
+                    wielder.Weapon = EFactory.createWeapon(source, anchorAllegiance.Owner, anchorPosition.Center.X, anchorPosition.Center.Y, wielder.Range, rotationAngle, anchorSpeed, manager.getTexture("WeaponTexture"));
                     manager.addEntity(wielder.Weapon);
                 }
             }

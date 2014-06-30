@@ -28,7 +28,7 @@ namespace WatchYourBack
         public VelocityComponent(float x, float y, float rotation)
         {
             velocity = new Vector2(x, y);
-            rotationSpeed = rotation;
+            rotationSpeed = rotation/100;
         }
 
         public Vector2 Velocity
@@ -52,7 +52,7 @@ namespace WatchYourBack
         public float RotationSpeed
         {
             get { return rotationSpeed; }
-            set { rotationSpeed = value; }
+            set { rotationSpeed = value/100; }
         }
     }
 }

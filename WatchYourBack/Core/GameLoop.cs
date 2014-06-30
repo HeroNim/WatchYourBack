@@ -32,7 +32,6 @@ namespace WatchYourBack
 
         Dictionary<LevelName, LevelTemplate> levels; 
 
-        Rectangle avatarBody;
         Texture2D avatarTexture;
         
         SpriteFont testFont;
@@ -58,9 +57,6 @@ namespace WatchYourBack
         {
             // TODO: Add your initialization logic here
             worldStack = new Stack<World>();
-            inGame = new World(Worlds.IN_GAME, Content);
-            mainMenu = new World(Worlds.MAIN_MENU, Content);
-            pauseMenu = new World(Worlds.PAUSE_MENU, Content);
             inputListener = new InputListener(this);
 
             Texture2D testLevelLayout = Content.Load<Texture2D>("TestLevel");
@@ -70,8 +66,7 @@ namespace WatchYourBack
             levels.Add(LevelName.TEST_LEVEL, new LevelTemplate(testLevelLayout));
             levels.Add(LevelName.FIRST_LEVEL, new LevelTemplate(levelOne));
 
-            worldStack.Push(mainMenu);
-            activeWorld = worldStack.Peek();
+           
             base.Initialize();
         }
 
@@ -88,12 +83,15 @@ namespace WatchYourBack
             
             avatarTexture = new Texture2D(GraphicsDevice, 1, 1);
             avatarTexture.SetData(new[] { Color.White });
-            avatarBody = new Rectangle(100, 100, GraphicsDevice.Viewport.Width / 40, GraphicsDevice.Viewport.Width / 40);
+            
             
         
             createMainMenu();
             createGame();
             createPauseMenu();
+
+            worldStack.Push(mainMenu);
+            activeWorld = worldStack.Peek();
   
             // TODO: use this.Content to load your game content here
         }
@@ -140,14 +138,16 @@ namespace WatchYourBack
 
         private void createMainMenu()
         {
-            inputListener.addMenu(mainMenu);
+            mainMenu = new World(Worlds.MAIN_MENU, Content);
+            inputListener.addWorld(mainMenu, true);
             mainMenu.Manager.addEntity(EFactory.createButton(50, 50, 50, 50, Inputs.START, avatarTexture, "Start Game", testFont));
             mainMenu.Manager.addEntity(EFactory.createButton(50, 200, 50, 50, Inputs.EXIT, avatarTexture, "Exit", testFont));
         }
 
         private void createGame()
         {
-            inputListener.addGame(inGame);
+            inGame = new World(Worlds.IN_GAME, Content); 
+            inputListener.addWorld(inGame, false);
             GameInputSystem input = new GameInputSystem();
             
             inGame.Manager.addSystem(new AvatarInputSystem());
@@ -156,16 +156,25 @@ namespace WatchYourBack
             inGame.Manager.addSystem(new LevelSystem(levels));
             inGame.Manager.addSystem(new AttackSystem());
 
-            
-            inGame.Manager.addEntity(EFactory.createAvatar(avatarBody, avatarTexture));
-           
+ 
         }
 
         private void createPauseMenu()
         {
-            inputListener.addMenu(pauseMenu);
+            pauseMenu = new World(Worlds.PAUSE_MENU, Content);
+            inputListener.addWorld(pauseMenu, true);
             pauseMenu.Manager.addEntity(EFactory.createButton(50, 50, 50, 50, Inputs.START, avatarTexture, "Resume", testFont));
             pauseMenu.Manager.addEntity(EFactory.createButton(50, 200, 50, 50, Inputs.EXIT, avatarTexture, "Exit to menu", testFont));
+        }
+
+        private void reset(World world)
+        {
+            if (world.MenuType == Worlds.IN_GAME)
+                createGame();
+            else if (world.MenuType == Worlds.MAIN_MENU)
+                createMainMenu();
+            else if (world.MenuType == Worlds.PAUSE_MENU)
+                createPauseMenu();
         }
 
         /*
@@ -182,21 +191,20 @@ namespace WatchYourBack
                 inputs = new Dictionary<World, InputSystem>();
             }
 
-            public void addMenu(World menu)
-            {
-                MenuInputSystem toAdd = new MenuInputSystem();
-                menu.Manager.addInput(toAdd);
-                menu.Manager.addSystem(toAdd);
-                inputs.Add(menu, toAdd);
-                toAdd.inputFired += new EventHandler(inputFired);
-            }
+            
 
-            public void addGame(World game)
+            public void addWorld(World world, bool isMenu)
             {
-                GameInputSystem toAdd = new GameInputSystem();
-                game.Manager.addInput(toAdd);
-                game.Manager.addSystem(toAdd);
-                inputs.Add(game, toAdd);
+                InputSystem toAdd;
+                if (inputs.ContainsKey(world))
+                    return;
+                if (isMenu)
+                    toAdd = new MenuInputSystem();
+                else
+                    toAdd = new GameInputSystem();
+                world.Manager.addInput(toAdd);
+                world.Manager.addSystem((ESystem)toAdd);
+                inputs.Add(world, toAdd);
                 toAdd.inputFired += new EventHandler(inputFired);
             }
 
@@ -213,15 +221,15 @@ namespace WatchYourBack
                         game.Exit();
                 }
 
-                if (game.activeWorld.MenuType == Worlds.IN_GAME)
+                else if (game.activeWorld.MenuType == Worlds.IN_GAME)
                 {
                     if (args.InputType == Inputs.PAUSE)
                     {
-                        game.worldStack.Push(game.pauseMenu);
+                        game.worldStack.Push(game.pauseMenu);  
                     }
                 }
 
-                if (game.activeWorld.MenuType == Worlds.PAUSE_MENU)
+                else if (game.activeWorld.MenuType == Worlds.PAUSE_MENU)
                 {
                     if (args.InputType == Inputs.START)
                         game.worldStack.Pop();
@@ -229,8 +237,10 @@ namespace WatchYourBack
                     {
                         game.worldStack.Pop();
                         game.worldStack.Pop();
+                        game.reset(game.inGame);
                     }
-                }               
+                }
+                game.activeWorld = game.worldStack.Peek();
             }
         }
 

@@ -55,9 +55,7 @@ namespace WatchYourBack
                         collider.P1 = new Vector2(collider.P1.X + velocity.X, collider.P1.Y + velocity.Y);
                         collider.P2 = new Vector2(collider.P2.X + velocity.X, collider.P2.Y + velocity.Y);
                         Vector2 rotation = Vector2.Transform(collider.P2 - collider.P1, Matrix.CreateRotationZ(velocity.RotationSpeed)) + collider.P1;
-                        collider.P2 = rotation;
-                        Console.WriteLine("P1: " + collider.P1);
-                        Console.WriteLine("P2: " + collider.P2);                                                
+                        collider.P2 = rotation;                                            
                     }
                     else
                     {
