@@ -49,25 +49,31 @@ namespace WatchYourBack
         private void checkBoxCollisions(Entity e1, Entity e2)
         {
 
+            //Assign local variables
+
             WielderComponent weaponComponent = null;
             TransformComponent weaponTransformComponent = null;
             LineColliderComponent weaponCollider = null;
+            bool hasWeapon = false;
 
             VelocityComponent v1 = (VelocityComponent)e1.Components[typeof(VelocityComponent)];
             TransformComponent t1 = (TransformComponent)e1.Components[typeof(TransformComponent)];
 
+            ColliderComponent c1 = (ColliderComponent)e1.Components[typeof(ColliderComponent)];
+            ColliderComponent c2 = (ColliderComponent)e2.Components[typeof(ColliderComponent)];
 
             if (e1.hasComponent(Masks.WIELDER))
             {
                 weaponComponent = (WielderComponent)e1.Components[typeof(WielderComponent)];
-                Entity weapon = weaponComponent.Weapon;
-                weaponTransformComponent = (TransformComponent)weapon.Components[typeof(TransformComponent)];
-                weaponCollider = (LineColliderComponent)weapon.Components[typeof(LineColliderComponent)];
+                if (weaponComponent.hasWeapon)
+                {
+                    weaponTransformComponent = (TransformComponent)weaponComponent.Weapon.Components[typeof(TransformComponent)];
+                    weaponCollider = (LineColliderComponent)weaponComponent.Weapon.Components[typeof(LineColliderComponent)];
+                    hasWeapon = true;
+                }
             }
 
-
-            ColliderComponent c1 = (ColliderComponent)e1.Components[typeof(ColliderComponent)];
-            ColliderComponent c2 = (ColliderComponent)e2.Components[typeof(ColliderComponent)];
+            //Check collisions
 
             c1.X += (int)v1.X;
             if (c1.Collider.Intersects(c2.Collider))
@@ -82,7 +88,7 @@ namespace WatchYourBack
                     {
                         t1.X -= v1.X;
                         t1.XLock = true;
-                        if (weaponTransformComponent != null)
+                        if (hasWeapon)
                         {
                             weaponTransformComponent.X -= v1.X;
                             weaponCollider.X1 -= v1.X;
@@ -91,7 +97,6 @@ namespace WatchYourBack
                     }
             }
             c1.X -= (int)v1.X;
-
 
             c1.Y += (int)v1.Y;
             if (c1.Collider.Intersects(c2.Collider))
@@ -105,7 +110,7 @@ namespace WatchYourBack
                     {
                         t1.Y -= v1.Y;
                         t1.YLock = true;
-                        if (weaponTransformComponent != null)
+                        if (hasWeapon)
                         {
                             weaponTransformComponent.Y -= v1.Y;
                             weaponCollider.Y1 -= v1.Y;
@@ -132,6 +137,8 @@ namespace WatchYourBack
             ColliderComponent c2 = (ColliderComponent)e2.Components[typeof(ColliderComponent)];
             VelocityComponent v1 = (VelocityComponent)e1.Components[typeof(VelocityComponent)];
 
+            //Predict collider forward
+
             c1.X1 += v1.X;
             c1.X2 += v1.X;
             c1.Y1 += v1.Y;
@@ -142,6 +149,8 @@ namespace WatchYourBack
             bool above = false;
             bool possibleIntersection = false;
             bool intersection = false;
+
+            //Check if corners are all above or below the line
 
             Vector2 topLeft = new Vector2(c2.Collider.Left, c2.Collider.Top);
             Vector2 bottomLeft = new Vector2(c2.Collider.Left, c2.Collider.Bottom);
@@ -172,7 +181,7 @@ namespace WatchYourBack
             }
             if (possibleIntersection == false)
                 intersection = false;
-            else
+            else //Check that at least one coordinate of the line on both axis' is contained within the rectangle
             {
                 if (c1.X1 > bottomRight.X && c1.X2 > bottomRight.X)
                     intersection = false;
@@ -186,6 +195,8 @@ namespace WatchYourBack
                     intersection = true;
             }
 
+            //Move the collider back
+
             rotation = Vector2.Transform(c1.P2 - c1.P1, Matrix.CreateRotationZ(-v1.RotationSpeed)) + c1.P1;
             c1.P2 = rotation;
             c1.X1 -= v1.X;
@@ -193,14 +204,15 @@ namespace WatchYourBack
             c1.Y1 -= v1.Y;
             c1.Y2 -= v1.Y;
 
+            //Handle collisions
+
             if (intersection == true)
             {
                 manager.removeEntity(e1);
                 if (e1.hasComponent(Masks.WEAPON))
                 {
                     WeaponComponent w1 = (WeaponComponent)e1.Components[typeof(WeaponComponent)];
-                    if (w1.Wielder.hasComponent(Masks.WIELDER))
-                        w1.Wielder.removeComponent((WielderComponent)w1.Wielder.Components[typeof(WielderComponent)]);
+                        ((WielderComponent)w1.Wielder.Components[typeof(WielderComponent)]).RemoveWeapon();
                 }
             }
         }

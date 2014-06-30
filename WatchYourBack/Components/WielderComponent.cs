@@ -7,9 +7,9 @@ using Microsoft.Xna.Framework;
 
 namespace WatchYourBack
 {
-    enum Weapons
+    public enum Weapons
     {
-        DAGGER,
+        THROWN,
         SWORD
 
     }
@@ -23,34 +23,64 @@ namespace WatchYourBack
         public readonly static int bitMask = (int)Masks.WIELDER;
         public override Masks Mask { get { return Masks.WIELDER; } }
 
-        private float range;
-        private float arc;
-        
-
         private Entity weapon;
+        private Weapons weaponType;
+        private int attackTimer;
+        private int elapsedTime;
         
-
-
-        public WielderComponent(float range, float arc)
+        
+        public WielderComponent(Weapons weapon)
         {
-            this.range = range;
-            this.arc = arc;
-        }
-
-        public float Range
-        {
-            get { return range; }
-        }
-
-        public float Arc
-        {
-            get { return arc; }
+            if (weapon == Weapons.SWORD)
+                attackTimer = (int)SWORD.ATTACK_SPEED;
+            else if (weapon == Weapons.THROWN)
+                attackTimer = (int)THROWN.ATTACK_SPEED;
+            weaponType = weapon;
         }
 
         public Entity Weapon
         {
             get { return weapon; }
             set { weapon = value; }
+        }
+
+        public Weapons WeaponType
+        {
+            get { return weaponType; }
+            set { weaponType = value; }
+        }
+
+        public bool hasWeapon
+        {
+            get { return (weapon != null); }
+        }
+
+        public void RemoveWeapon()
+        {
+            if (weapon == null)
+                return;
+            else
+                weapon = null;
+        }
+
+        public void EquipWeapon(Entity weapon)
+        {
+            if (this.weapon != null)
+                return;
+            else
+                this.weapon = weapon;
+        }
+
+        public int ElapsedTime
+        {
+            get { return elapsedTime; }
+            set { elapsedTime = value; }
+        }
+
+        public int AttackSpeed
+        {
+            get { return attackTimer; }
+            set { attackTimer = value; }
         }
 
         

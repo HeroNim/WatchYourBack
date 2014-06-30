@@ -15,11 +15,12 @@ namespace WatchYourBack
     public static class EFactory
     {
         
-        public static Entity createAvatar(Rectangle rect, Texture2D texture, Allegiance player)
+        public static Entity createAvatar(Rectangle rect, Texture2D texture, Allegiance player, Weapons weaponType)
         {
 
                 return new Entity(
                 new AllegianceComponent(player),
+                new WielderComponent(weaponType),
                 new TransformComponent(rect.X, rect.Y, rect.Width, rect.Height),
                 new ColliderComponent(rect, false),
                 new VelocityComponent(0, 0),
@@ -29,7 +30,7 @@ namespace WatchYourBack
 
         
         //Creates a weapon at a point on an entity, while taking the holder's velocity component to allow it to 'stick' to the holder
-        public static Entity createMeleeWeapon(Entity wielder, Allegiance wielderAllegiance, float xOrigin, float yOrigin, float range, float rotationAngle, VelocityComponent anchorMovement, Texture2D texture)
+        public static Entity createSword(Entity wielder, Allegiance wielderAllegiance, float xOrigin, float yOrigin, float rotationAngle, VelocityComponent anchorMovement, Texture2D texture)
         {
             return new Entity(
             new AllegianceComponent(wielderAllegiance),
@@ -41,7 +42,7 @@ namespace WatchYourBack
         }
             
 
-        public static Entity createRangedWeapon(Allegiance wielderAllegiance, float xOrigin, float yOrigin, Vector2 rotationVector, Texture2D texture)
+        public static Entity createThrown(Allegiance wielderAllegiance, float xOrigin, float yOrigin, Vector2 rotationVector, Texture2D texture)
         {
             
                 return new Entity(

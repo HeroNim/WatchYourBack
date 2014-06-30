@@ -10,6 +10,7 @@ namespace WatchYourBack
         RANGE = 50,
         WIDTH = 5,
         SPEED = 20,
+        ATTACK_SPEED = 500,
         ARC = 180
     }
 

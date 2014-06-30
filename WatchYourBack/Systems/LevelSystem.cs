@@ -66,7 +66,8 @@ namespace WatchYourBack
                     if (levelTemplate.LevelData[y, x] == TileType.SPAWN)
                     {
                         manager.addEntity(EFactory.createSpawn(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE, 40, 40, manager.getTexture("SpawnTexture")));
-                        manager.addEntity(EFactory.createAvatar(new Rectangle(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE, 40, 40), spawnTexture, (Allegiance)player));
+                        manager.addEntity(EFactory.createAvatar(new Rectangle(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE, 40, 40), 
+                            spawnTexture, (Allegiance)player, Weapons.THROWN));
                         player++;
                     }
                     

@@ -48,10 +48,13 @@ namespace WatchYourBack
 
                 if(entity.hasComponent(Masks.WIELDER))
                 {
-                    Entity weapon = ((WielderComponent)entity.Components[typeof(WielderComponent)]).Weapon;
-                    VelocityComponent weaponVelocityComponent = (VelocityComponent)weapon.Components[typeof(VelocityComponent)];
-                    weaponVelocityComponent.Y = yVel;
-                    weaponVelocityComponent.X = xVel;
+                    if (((WielderComponent)entity.Components[typeof(WielderComponent)]).hasWeapon)
+                    {
+                        Entity weapon = ((WielderComponent)entity.Components[typeof(WielderComponent)]).Weapon;
+                        VelocityComponent weaponVelocityComponent = (VelocityComponent)weapon.Components[typeof(VelocityComponent)];
+                        weaponVelocityComponent.Y = yVel;
+                        weaponVelocityComponent.X = xVel;
+                    }
                 }
             }
         }
