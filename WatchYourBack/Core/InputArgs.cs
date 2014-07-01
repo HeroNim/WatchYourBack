@@ -8,7 +8,9 @@ namespace WatchYourBack
     public enum Inputs
     {
         EXIT,
-        START,
+        START_SINGLE,
+        START_MUTLI,
+        RESUME,
         PAUSE,
         ATTACK
     };

@@ -13,7 +13,8 @@ namespace WatchYourBack
     {
         MAIN_MENU,
         PAUSE_MENU,
-        IN_GAME
+        IN_GAME,
+        IN_GAME_MULTI
     };
 
     /*

@@ -24,16 +24,17 @@ namespace WatchYourBack
 
         World mainMenu;
         World inGame;
+        World inGameMulti;
         World pauseMenu;
 
         InputListener inputListener;
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        Dictionary<LevelName, LevelTemplate> levels; 
+        Dictionary<LevelName, LevelTemplate> levels;
 
         Texture2D avatarTexture;
-        
+
         SpriteFont testFont;
 
         public GameLoop()
@@ -62,11 +63,11 @@ namespace WatchYourBack
             Texture2D testLevelLayout = Content.Load<Texture2D>("TestLevel");
             Texture2D levelOne = Content.Load<Texture2D>("LevelOne");
             testFont = Content.Load<SpriteFont>("TestFont");
-            levels = new Dictionary<LevelName, LevelTemplate>(); 
+            levels = new Dictionary<LevelName, LevelTemplate>();
             levels.Add(LevelName.TEST_LEVEL, new LevelTemplate(testLevelLayout));
             levels.Add(LevelName.FIRST_LEVEL, new LevelTemplate(levelOne));
 
-           
+
             base.Initialize();
         }
 
@@ -79,20 +80,21 @@ namespace WatchYourBack
             // Create a new SpriteBatch, which can be used to draw textures.
 
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            
-            
+
+
             avatarTexture = new Texture2D(GraphicsDevice, 1, 1);
             avatarTexture.SetData(new[] { Color.White });
-            
-            
-        
+
+
+
             createMainMenu();
             createGame();
+            createGameMulti();
             createPauseMenu();
 
             worldStack.Push(mainMenu);
             activeWorld = worldStack.Peek();
-  
+
             // TODO: use this.Content to load your game content here
         }
 
@@ -112,7 +114,7 @@ namespace WatchYourBack
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            
+
             // TODO: Add your update logic here
 
             activeWorld.Manager.update(gameTime);
@@ -140,30 +142,43 @@ namespace WatchYourBack
         {
             mainMenu = new World(Worlds.MAIN_MENU, Content);
             inputListener.addWorld(mainMenu, true);
-            mainMenu.Manager.addEntity(EFactory.createButton(50, 50, 50, 50, Inputs.START, avatarTexture, "Start Game", testFont));
-            mainMenu.Manager.addEntity(EFactory.createButton(50, 200, 50, 50, Inputs.EXIT, avatarTexture, "Exit", testFont));
+            mainMenu.Manager.addEntity(EFactory.createButton(50, 50, 50, 50, Inputs.START_SINGLE, avatarTexture, "Singleplayer", testFont));
+            mainMenu.Manager.addEntity(EFactory.createButton(50, 200, 50, 50, Inputs.START_MUTLI, avatarTexture, "Multiplayer", testFont));
+            mainMenu.Manager.addEntity(EFactory.createButton(50, 350, 50, 50, Inputs.EXIT, avatarTexture, "Exit", testFont));
         }
 
         private void createGame()
         {
-            inGame = new World(Worlds.IN_GAME, Content); 
+
+            inGame = new World(Worlds.IN_GAME, Content);
             inputListener.addWorld(inGame, false);
             GameInputSystem input = new GameInputSystem();
-            
+
             inGame.Manager.addSystem(new AvatarInputSystem());
             inGame.Manager.addSystem(new GameCollisionSystem());
             inGame.Manager.addSystem(new MovementSystem());
             inGame.Manager.addSystem(new LevelSystem(levels));
             inGame.Manager.addSystem(new AttackSystem());
 
- 
+        }
+
+        private void createGameMulti()
+        {
+            inGameMulti = new World(Worlds.IN_GAME, Content);
+            inputListener.addWorld(inGameMulti, false);
+            GameInputSystem input = new GameInputSystem();
+
+            NetworkInputSystem networkInput = new NetworkInputSystem();
+            inGameMulti.Manager.addSystem(new LevelSystem(levels));
+            inGameMulti.Manager.addSystem(networkInput);
+            inGameMulti.Manager.addSystem(new NetworkUpdaterSystem(networkInput));
         }
 
         private void createPauseMenu()
         {
             pauseMenu = new World(Worlds.PAUSE_MENU, Content);
             inputListener.addWorld(pauseMenu, true);
-            pauseMenu.Manager.addEntity(EFactory.createButton(50, 50, 50, 50, Inputs.START, avatarTexture, "Resume", testFont));
+            pauseMenu.Manager.addEntity(EFactory.createButton(50, 50, 50, 50, Inputs.RESUME, avatarTexture, "Resume", testFont));
             pauseMenu.Manager.addEntity(EFactory.createButton(50, 200, 50, 50, Inputs.EXIT, avatarTexture, "Exit to menu", testFont));
         }
 
@@ -171,6 +186,8 @@ namespace WatchYourBack
         {
             if (world.MenuType == Worlds.IN_GAME)
                 createGame();
+            else if (world.MenuType == Worlds.IN_GAME_MULTI)
+                createGameMulti();
             else if (world.MenuType == Worlds.MAIN_MENU)
                 createMainMenu();
             else if (world.MenuType == Worlds.PAUSE_MENU)
@@ -191,7 +208,7 @@ namespace WatchYourBack
                 inputs = new Dictionary<World, InputSystem>();
             }
 
-            
+
 
             public void addWorld(World world, bool isMenu)
             {
@@ -213,37 +230,42 @@ namespace WatchYourBack
                 InputArgs args = (InputArgs)e;
                 Console.WriteLine(game.worldStack.Peek().MenuType + "=> " + args.InputType);
 
-                if(game.activeWorld.MenuType == Worlds.MAIN_MENU)
+                if (game.activeWorld.MenuType == Worlds.MAIN_MENU)
                 {
-                    if (args.InputType == Inputs.START)
+
+                    if (args.InputType == Inputs.START_SINGLE)
                         game.worldStack.Push(game.inGame);
+                    if (args.InputType == Inputs.START_MUTLI)
+                        game.worldStack.Push(game.inGameMulti);
                     if (args.InputType == Inputs.EXIT)
                         game.Exit();
                 }
 
-                else if (game.activeWorld.MenuType == Worlds.IN_GAME)
+                else if (game.activeWorld.MenuType == Worlds.IN_GAME || game.activeWorld.MenuType == Worlds.IN_GAME_MULTI)
                 {
                     if (args.InputType == Inputs.PAUSE)
                     {
-                        game.worldStack.Push(game.pauseMenu);  
+                        game.worldStack.Push(game.pauseMenu);
                     }
                 }
 
                 else if (game.activeWorld.MenuType == Worlds.PAUSE_MENU)
                 {
-                    if (args.InputType == Inputs.START)
+                    if (args.InputType == Inputs.RESUME)
                         game.worldStack.Pop();
                     if (args.InputType == Inputs.EXIT)
                     {
+
                         game.worldStack.Pop();
+                        World currentGame = game.worldStack.Peek();
                         game.worldStack.Pop();
-                        game.reset(game.inGame);
+                        game.reset(currentGame);
                     }
                 }
                 game.activeWorld = game.worldStack.Peek();
             }
         }
 
-        
+
     }
 }

@@ -41,6 +41,9 @@
     <Compile Include="Components\AllegianceComponent.cs" />
     <Compile Include="Components\DebugComponent.cs" />
     <Compile Include="Components\LineColliderComponent.cs" />
+    <Compile Include="Core\NetworkArgs.cs" />
+    <Compile Include="Systems\NetworkUpdaterSystem.cs" />
+    <Compile Include="Systems\NetworkInputSystem.cs" />
     <Compile Include="Systems\AttackSystem.cs" />
     <Compile Include="Components\WielderComponent.cs" />
     <Compile Include="Core\InputArgs.cs" />

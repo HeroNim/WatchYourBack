@@ -13,7 +13,9 @@ namespace WatchYourBackServer
     {
         MAIN_MENU,
         PAUSE_MENU,
-        IN_GAME
+        NETWORK_MENU,
+        IN_GAME,
+        IN_GAME_MULTI
     };
 
     /*
