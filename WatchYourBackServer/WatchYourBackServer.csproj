@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{7D1A226D-93C7-4D87-BF3C-CBE4E2E38670}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>WatchYourBackServer</RootNamespace>
+    <AssemblyName>WatchYourBackServer</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Lidgren.Network, Version=2011.3.12.0, Culture=neutral, processorArchitecture=MSIL" />
+    <Reference Include="MonoGame.Framework, Version=3.1.2.0, Culture=neutral, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Components\AllegianceComponent.cs" />
+    <Compile Include="Components\AvatarInputComponent.cs" />
+    <Compile Include="Components\ButtonComponent.cs" />
+    <Compile Include="Components\ColliderComponent.cs" />
+    <Compile Include="Components\DebugComponent.cs" />
+    <Compile Include="Components\LevelComponent.cs" />
+    <Compile Include="Components\LineColliderComponent.cs" />
+    <Compile Include="Components\TileComponent.cs" />
+    <Compile Include="Components\TimerComponent.cs" />
+    <Compile Include="Components\TransformComponent.cs" />
+    <Compile Include="Components\VelocityComponent.cs" />
+    <Compile Include="Components\WeaponComponent.cs" />
+    <Compile Include="Components\WielderComponent.cs" />
+    <Compile Include="Core\EComponent.cs" />
+    <Compile Include="Core\ECSManager.cs" />
+    <Compile Include="Core\EFactory.cs" />
+    <Compile Include="Core\Entity.cs" />
+    <Compile Include="Core\ESystem.cs" />
+    <Compile Include="Core\GameLoop.cs" />
+    <Compile Include="Core\InputArgs.cs" />
+    <Compile Include="Core\World.cs" />
+    <Compile Include="Core\Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Systems\AttackSystem.cs" />
+    <Compile Include="Systems\AvatarInputSystem.cs" />
+    <Compile Include="Systems\GameCollisionSystem.cs" />
+    <Compile Include="Systems\GameInputSystem.cs" />
+    <Compile Include="Systems\Interfaces\InputSystem.cs" />
+    <Compile Include="Systems\LevelSystem.cs" />
+    <Compile Include="Systems\MenuInputSystem.cs" />
+    <Compile Include="Systems\MovementSystem.cs" />
+    <Compile Include="Templates\LevelTemplate.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
