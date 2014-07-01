@@ -88,7 +88,7 @@ namespace WatchYourBack
                             manager.addEntity(wielderComponent.Weapon);
                         }
                     }
-                    wielderComponent.ElapsedTime %= wielderComponent.AttackSpeed;
+                    wielderComponent.ElapsedTime = 0;
                     
                 }
                 
