@@ -65,6 +65,8 @@
     <Compile Include="Core\InputArgs.cs" />
     <Compile Include="Core\World.cs" />
     <Compile Include="Core\Program.cs" />
+    <Compile Include="Systems\NetworkUpdaterSystem.cs" />
+    <Compile Include="Systems\NetworkIOSystem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Systems\AttackSystem.cs" />
     <Compile Include="Systems\AvatarInputSystem.cs" />

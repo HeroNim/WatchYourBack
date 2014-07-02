@@ -20,7 +20,7 @@ namespace WatchYourBackServer
             components += VelocityComponent.bitMask;
         }
 
-        public override void update(GameTime gameTime)
+        public override void update(double lastUpdate)
         {
             foreach (Entity entity in activeEntities)
             {

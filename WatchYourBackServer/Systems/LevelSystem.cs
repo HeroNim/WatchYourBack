@@ -73,7 +73,7 @@ namespace WatchYourBackServer
             built = true;
         }
 
-        public override void update(GameTime gameTime)
+        public override void update(double lastUpdate)
         {
             if (level == null)
                 initialize();
@@ -88,7 +88,7 @@ namespace WatchYourBackServer
                 {
                     clearLevel();
                     currentLevel = level.CurrentLevel;
-                    update(gameTime);
+                    update(lastUpdate);
                 }
             }
             if (Keyboard.GetState().IsKeyDown(Keys.N) && pressed == false)

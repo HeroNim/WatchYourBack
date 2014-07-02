@@ -26,7 +26,7 @@ namespace WatchYourBackServer
         private Entity weapon;
         private Weapons weaponType;
         private int attackTimer;
-        private int elapsedTime;
+        private double elapsedTime;
         
         
         public WielderComponent(Weapons weapon)
@@ -71,7 +71,7 @@ namespace WatchYourBackServer
                 this.weapon = weapon;
         }
 
-        public int ElapsedTime
+        public double ElapsedTime
         {
             get { return elapsedTime; }
             set { elapsedTime = value; }

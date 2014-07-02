@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Runtime.Serialization;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -14,8 +15,8 @@ namespace WatchYourBack
         EMPTY,
         SPAWN
     };
-   
-    class LevelTemplate
+   [Serializable()]
+    class LevelTemplate : ISerializable
     {
         private Texture2D levelImage;
         private Color[] data;
@@ -42,6 +43,16 @@ namespace WatchYourBack
                 }
             }
         }
+
+       public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("levelData", levelData, typeof(TileType[,]));
+        }
+
+       public LevelTemplate(SerializationInfo info, StreamingContext context)
+       {
+           levelData = (TileType[,])info.GetValue("levelData", typeof(TileType[,]));
+       }
 
         public TileType[,] LevelData
         {

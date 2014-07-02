@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace WatchYourBack
 {
-    class NetworkInputSystem : ESystem, InputSystem
+    class NetworkIOSystem : ESystem, InputSystem
     {
         private Dictionary<KeyBindings, Keys> mappings;
         private int xInput;
@@ -19,7 +19,7 @@ namespace WatchYourBack
         private NetworkArgs toSend;
 
 
-        public NetworkInputSystem() : base(false, true, 1)
+        public NetworkIOSystem() : base(false, true, 1)
         {
             mappings = new Dictionary<KeyBindings, Keys>();
             mappings.Add(KeyBindings.LEFT, Keys.Left);

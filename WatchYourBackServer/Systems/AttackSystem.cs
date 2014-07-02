@@ -6,6 +6,8 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
+using Lidgren.Network;
+
 namespace WatchYourBackServer
 {
     /*
@@ -22,19 +24,22 @@ namespace WatchYourBackServer
             listening = false;
         }
 
-        public override void update(GameTime gameTime)
+        public override void update(double lastUpdate)
         {
             if (!listening)
             {
                 manager.Input.inputFired += new EventHandler(checkInput);
                 listening = true;
-            }
 
-            
+            }
+            Console.WriteLine(NetTime.Now - lastUpdate);
+
             foreach (Entity entity in activeEntities)
             {
                 WielderComponent wielderComponent = (WielderComponent)entity.Components[typeof(WielderComponent)];
-                wielderComponent.ElapsedTime += gameTime.ElapsedGameTime.Milliseconds;
+                wielderComponent.ElapsedTime += NetTime.Now - lastUpdate;
+                
+                
                 if (wielderComponent.hasWeapon)
                 {
                     Entity weapon = wielderComponent.Weapon;

@@ -38,7 +38,7 @@ namespace WatchYourBackServer
             mappings.Add(KeyBindings.ATTACK, Keys.Space);
         }
 
-        public override void update(GameTime gameTime)
+        public override void update(double lastUpdate)
         {
             //If (state == Playing)
             AvatarInputComponent p1;

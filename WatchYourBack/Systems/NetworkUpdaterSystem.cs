@@ -9,10 +9,10 @@ namespace WatchYourBack
 {
     class NetworkUpdaterSystem : ESystem
     {
-        NetworkInputSystem input;
+        NetworkIOSystem input;
         NetworkArgs toSend;
 
-        public NetworkUpdaterSystem(NetworkInputSystem inputs) : base(false, true, 2)
+        public NetworkUpdaterSystem(NetworkIOSystem inputs) : base(false, true, 2)
         {
             input = inputs;
             toSend = null;

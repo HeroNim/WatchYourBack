@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Diagnostics;
 
 using Microsoft.Xna.Framework;
+using Lidgren.Network;
 
 namespace WatchYourBackServer
 {
@@ -42,7 +44,7 @@ namespace WatchYourBackServer
 
         //Checks each entity on the entity list for matching components. If it is not exclusive, the entity must simply have the components; if it is,
         //the entity must have only those components. The applicable entities are then updated.
-        public void updateEntities(GameTime gameTime)
+        public void updateEntities(double lastUpdate)
         {
             activeEntities.Clear();
             if (exclusive)
@@ -55,7 +57,7 @@ namespace WatchYourBackServer
                 foreach (Entity entity in entities)
                     if ((entity.Mask & components) == components)
                         activeEntities.Add(entity);
-            update(gameTime);
+            update(lastUpdate);
                             
             
         }
@@ -68,6 +70,6 @@ namespace WatchYourBackServer
         public bool Loop { get { return updateLoop; } }
 
         //Logic goes here
-        public abstract void update(GameTime gameTime);
+        public abstract void update(double lastUpdate);
     }
 }

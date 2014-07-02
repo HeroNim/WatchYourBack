@@ -7,6 +7,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 
+using Lidgren.Network;
+
 namespace WatchYourBackServer
 {
     //Manages the systems in the game. Is responsible for initializing, updating, and removing systems as needed.
@@ -81,7 +83,7 @@ namespace WatchYourBackServer
          * Updates the entity lists of the manager, moving active/inactive entities to their proper lists. Any systems that run
          * during the update loop are then updated.
          */
-        public void update(GameTime gameTime)
+        public void update(double lastUpdate)
         {
             clearEntities();
             foreach (Entity entity in inactiveEntities)
@@ -110,7 +112,7 @@ namespace WatchYourBackServer
             foreach (ESystem system in systems)
             {
                 if (system.Loop == true)
-                    system.updateEntities(gameTime);
+                    system.updateEntities(lastUpdate);
             }
             
         }

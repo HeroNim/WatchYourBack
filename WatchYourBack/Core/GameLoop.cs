@@ -168,7 +168,7 @@ namespace WatchYourBack
             inputListener.addWorld(inGameMulti, false);
             GameInputSystem input = new GameInputSystem();
 
-            NetworkInputSystem networkInput = new NetworkInputSystem();
+            NetworkIOSystem networkInput = new NetworkIOSystem();
             inGameMulti.Manager.addSystem(new LevelSystem(levels));
             inGameMulti.Manager.addSystem(networkInput);
             inGameMulti.Manager.addSystem(new NetworkUpdaterSystem(networkInput));
