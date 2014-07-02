@@ -12,6 +12,7 @@ namespace WatchYourBack
     public enum Worlds
     {
         MAIN_MENU,
+        CONNECT_MENU,
         PAUSE_MENU,
         IN_GAME,
         IN_GAME_MULTI

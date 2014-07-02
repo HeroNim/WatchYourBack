@@ -32,7 +32,7 @@ namespace WatchYourBackServer
                 listening = true;
 
             }
-            Console.WriteLine(NetTime.Now - lastUpdate);
+            //Console.WriteLine(NetTime.Now - lastUpdate);
 
             foreach (Entity entity in activeEntities)
             {

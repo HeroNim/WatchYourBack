@@ -81,6 +81,12 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\WatchYourBackLibrary\WatchYourBackLibrary.csproj">
+      <Project>{7f450c9b-6722-47c7-b99f-21c4c60d15c8}</Project>
+      <Name>WatchYourBackLibrary</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

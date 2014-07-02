@@ -12,6 +12,8 @@ namespace WatchYourBackServer
 {
     class GameLoop
     {
+        NetServer server;
+
         double nextUpdate;
         double lastUpdate;
         
@@ -36,7 +38,7 @@ namespace WatchYourBackServer
             config.EnableMessageType(NetIncomingMessageType.DiscoveryRequest);
             config.Port = 14242;
 
-            NetServer server = new NetServer(config);
+            server = new NetServer(config);
             server.Start();
 
             nextUpdate = NetTime.Now;
@@ -44,8 +46,8 @@ namespace WatchYourBackServer
             levels = new Dictionary<LevelName, LevelTemplate>();
 
             //FIXFIXFIXFIXFIXFIXFIX
-            levels.Add(LevelName.TEST_LEVEL, new LevelTemplate(testLevelLayout));
-            levels.Add(LevelName.FIRST_LEVEL, new LevelTemplate(levelOne));
+            //levels.Add(LevelName.TEST_LEVEL, new LevelTemplate(testLevelLayout));
+            //levels.Add(LevelName.FIRST_LEVEL, new LevelTemplate(levelOne));
         }
 
         /// <summary>
@@ -59,11 +61,10 @@ namespace WatchYourBackServer
 
 
 
-
+        //Pseudo-XNA style gametime. Would probably cause problems on a larger scale game (still might).
         private void Update()
-        {
+        {   
             double now = NetTime.Now;
-            //Console.WriteLine(now);
             if (now > nextUpdate)
             {
                 inGame.Manager.update(lastUpdate);
@@ -77,14 +78,14 @@ namespace WatchYourBackServer
         private void createGame()
         {
             inGame = new World(Worlds.IN_GAME);
-            NetworkIOSystem input = new NetworkIOSystem();
+            NetworkIOSystem input = new NetworkIOSystem(server);
             inGame.Manager.addSystem(input);
             inGame.Manager.addInput(input);
 
             inGame.Manager.addSystem(new AvatarInputSystem());
             inGame.Manager.addSystem(new GameCollisionSystem());
             inGame.Manager.addSystem(new MovementSystem());
-           // inGame.Manager.addSystem(new LevelSystem(levels));
+            // inGame.Manager.addSystem(new LevelSystem(levels));
             inGame.Manager.addSystem(new AttackSystem());
 
 

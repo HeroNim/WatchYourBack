@@ -9,6 +9,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.GamerServices;
+
+using Lidgren.Network;
 #endregion
 
 namespace WatchYourBack
@@ -23,6 +25,7 @@ namespace WatchYourBack
         World activeWorld;
 
         World mainMenu;
+        World connectMenu;
         World inGame;
         World inGameMulti;
         World pauseMenu;
@@ -34,8 +37,14 @@ namespace WatchYourBack
         Dictionary<LevelName, LevelTemplate> levels;
 
         Texture2D avatarTexture;
-
         SpriteFont testFont;
+
+        //----------------------------------------------------------------------------------------------------------
+        NetClient client;
+        bool isPinging;
+        //----------------------------------------------------------------------------------------------------------
+
+
 
         public GameLoop()
             : base()
@@ -46,6 +55,14 @@ namespace WatchYourBack
             graphics.IsFullScreen = true;
             this.IsMouseVisible = true;
             Content.RootDirectory = "Content";
+
+            //----------------------------------------------------------------------------------------------------------
+            NetPeerConfiguration config = new NetPeerConfiguration("WatchYourBack");
+            config.EnableMessageType(NetIncomingMessageType.DiscoveryResponse);
+
+            client = new NetClient(config);
+            client.Start();
+            //----------------------------------------------------------------------------------------------------------
         }
 
         /// <summary>
@@ -67,6 +84,8 @@ namespace WatchYourBack
             levels.Add(LevelName.TEST_LEVEL, new LevelTemplate(testLevelLayout));
             levels.Add(LevelName.FIRST_LEVEL, new LevelTemplate(levelOne));
 
+            client.DiscoverLocalPeers(14242);
+            isPinging = false;
 
             base.Initialize();
         }
@@ -88,6 +107,7 @@ namespace WatchYourBack
 
 
             createMainMenu();
+            createConnectMenu();
             createGame();
             createGameMulti();
             createPauseMenu();
@@ -116,7 +136,8 @@ namespace WatchYourBack
         {
 
             // TODO: Add your update logic here
-
+            if (isPinging)
+                Connect();
             activeWorld.Manager.update(gameTime);
             activeWorld = worldStack.Peek();
             base.Update(gameTime);
@@ -147,12 +168,19 @@ namespace WatchYourBack
             mainMenu.Manager.addEntity(EFactory.createButton(50, 350, 50, 50, Inputs.EXIT, avatarTexture, "Exit", testFont));
         }
 
+        private void createConnectMenu()
+        {
+            connectMenu = new World(Worlds.CONNECT_MENU, Content);
+            inputListener.addWorld(connectMenu, true);
+            connectMenu.Manager.addEntity(EFactory.createButton(50, 200, 50, 50, Inputs.START_MUTLI, avatarTexture, "Connect", testFont));
+            connectMenu.Manager.addEntity(EFactory.createButton(50, 350, 50, 50, Inputs.EXIT, avatarTexture, "Back", testFont));
+        }
+
         private void createGame()
         {
 
             inGame = new World(Worlds.IN_GAME, Content);
             inputListener.addWorld(inGame, false);
-            GameInputSystem input = new GameInputSystem();
 
             inGame.Manager.addSystem(new AvatarInputSystem());
             inGame.Manager.addSystem(new GameCollisionSystem());
@@ -166,12 +194,10 @@ namespace WatchYourBack
         {
             inGameMulti = new World(Worlds.IN_GAME, Content);
             inputListener.addWorld(inGameMulti, false);
-            GameInputSystem input = new GameInputSystem();
 
-            NetworkIOSystem networkInput = new NetworkIOSystem();
+            NetworkIOSystem networkInput = new NetworkIOSystem(client);
             inGameMulti.Manager.addSystem(new LevelSystem(levels));
             inGameMulti.Manager.addSystem(networkInput);
-            inGameMulti.Manager.addSystem(new NetworkUpdaterSystem(networkInput));
         }
 
         private void createPauseMenu()
@@ -192,6 +218,33 @@ namespace WatchYourBack
                 createMainMenu();
             else if (world.MenuType == Worlds.PAUSE_MENU)
                 createPauseMenu();
+        }
+
+        private void Connect()
+        {
+            //----------------------------------------------------------------------------------------------------------
+            Console.WriteLine("Pinging");
+            client.DiscoverLocalPeers(14242);
+            NetIncomingMessage msg;
+            while ((msg = client.ReadMessage()) != null)
+            {
+                switch (msg.MessageType)
+                {
+                    case NetIncomingMessageType.DiscoveryResponse:
+                        // just connect to first server discovered
+                        client.Connect(msg.SenderEndpoint);
+                        isPinging = false;
+                        worldStack.Push(inGameMulti);
+                        activeWorld = inGameMulti;
+                        Console.WriteLine("Connected");
+                        break;
+                    case NetIncomingMessageType.Data:
+                        // server sent a position update
+                        Console.WriteLine("Data");
+                        break;
+                }
+            }
+            
         }
 
         /*
@@ -236,9 +289,22 @@ namespace WatchYourBack
                     if (args.InputType == Inputs.START_SINGLE)
                         game.worldStack.Push(game.inGame);
                     if (args.InputType == Inputs.START_MUTLI)
-                        game.worldStack.Push(game.inGameMulti);
+                        game.worldStack.Push(game.connectMenu);
                     if (args.InputType == Inputs.EXIT)
                         game.Exit();
+                }
+
+                else if (game.activeWorld.MenuType == Worlds.CONNECT_MENU)
+                {
+
+
+                    if (args.InputType == Inputs.START_MUTLI && !game.isPinging)
+                    {
+                        game.isPinging = true;
+                        Console.WriteLine("Starting pings");
+                    }
+                    if (args.InputType == Inputs.EXIT)
+                        game.worldStack.Pop();
                 }
 
                 else if (game.activeWorld.MenuType == Worlds.IN_GAME || game.activeWorld.MenuType == Worlds.IN_GAME_MULTI)

@@ -5,14 +5,15 @@ using System.Text;
 
 using Microsoft.Xna.Framework;
 
-namespace WatchYourBack
+namespace WatchYourBackLibrary
 {
     [Serializable()]
-    class NetworkArgs : EventArgs
+    public class NetworkArgs : EventArgs
     {
         private int xInput;
         private int yInput;
-        private Vector2 mouseLoc;
+        private int mouseX;
+        private int mouseY;
         private bool clicked;
 
 
@@ -20,13 +21,14 @@ namespace WatchYourBack
         {
             this.xInput = xInput;
             this.yInput = yInput;
-            this.mouseLoc = mouseLoc;
+            mouseX = (int)mouseLoc.X;
+            mouseY = (int)mouseLoc.Y;
             this.clicked = clicked;
         }
 
         public override string ToString()
         {
-            return xInput + ", " + yInput + ", " + mouseLoc + ", " + clicked;
+            return xInput + ", " + yInput + ", (" + mouseX + ", " + mouseY+"), " + clicked;
         }
         
     }

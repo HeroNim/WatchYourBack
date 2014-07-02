@@ -41,9 +41,7 @@
     <Compile Include="Components\AllegianceComponent.cs" />
     <Compile Include="Components\DebugComponent.cs" />
     <Compile Include="Components\LineColliderComponent.cs" />
-    <Compile Include="Core\NetworkArgs.cs" />
-    <Compile Include="Systems\NetworkUpdaterSystem.cs" />
-    <Compile Include="Systems\NetworkInputSystem.cs" />
+    <Compile Include="Systems\NetworkIOSystem.cs" />
     <Compile Include="Systems\AttackSystem.cs" />
     <Compile Include="Components\WielderComponent.cs" />
     <Compile Include="Core\InputArgs.cs" />
@@ -76,6 +74,7 @@
     <Compile Include="Components\WeaponComponent.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Lidgren.Network, Version=2011.3.12.0, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="MonoGame.Framework">
       <HintPath>$(MSBuildExtensionsPath)\..\MonoGame\v3.0\Assemblies\Windows\MonoGame.Framework.dll</HintPath>
     </Reference>
@@ -92,6 +91,10 @@
     <ProjectReference Include="..\WatchYourBackContent\WatchYourBackContent\WatchYourBackContent.csproj">
       <Project>{d2588212-7c52-49ac-9da9-3b9892e586ad}</Project>
       <Name>WatchYourBackContent</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WatchYourBackLibrary\WatchYourBackLibrary.csproj">
+      <Project>{7f450c9b-6722-47c7-b99f-21c4c60d15c8}</Project>
+      <Name>WatchYourBackLibrary</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
