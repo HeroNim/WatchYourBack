@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{7F450C9B-6722-47C7-B99F-21C4C60D15C8}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>WatchYourBackLibrary</RootNamespace>
+    <AssemblyName>WatchYourBackLibrary</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Lidgren.Network, Version=2011.3.12.0, Culture=neutral, processorArchitecture=MSIL" />
+    <Reference Include="MonoGame.Framework, Version=3.1.2.0, Culture=neutral, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CommonComponents\AllegianceComponent.cs" />
+    <Compile Include="CommonComponents\AvatarInputComponent.cs" />
+    <Compile Include="CommonComponents\ButtonComponent.cs" />
+    <Compile Include="CommonComponents\ColliderComponent.cs" />
+    <Compile Include="CommonComponents\DebugComponent.cs" />
+    <Compile Include="CommonComponents\LevelComponent.cs" />
+    <Compile Include="CommonComponents\LineColliderComponent.cs" />
+    <Compile Include="CommonComponents\TileComponent.cs" />
+    <Compile Include="CommonComponents\TimerComponent.cs" />
+    <Compile Include="CommonComponents\TransformComponent.cs" />
+    <Compile Include="CommonComponents\VelocityComponent.cs" />
+    <Compile Include="CommonComponents\WeaponComponent.cs" />
+    <Compile Include="CommonComponents\WielderComponent.cs" />
+    <Compile Include="CommonSystems\AvatarInputSystem.cs" />
+    <Compile Include="CommonSystems\GameCollisionSystem.cs" />
+    <Compile Include="CommonSystems\GameInputSystem.cs" />
+    <Compile Include="CommonSystems\MenuInputSystem.cs" />
+    <Compile Include="CommonSystems\MovementSystem.cs" />
+    <Compile Include="ECS\EComponent.cs" />
+    <Compile Include="ECS\Entity.cs" />
+    <Compile Include="ECS\ESystem.cs" />
+    <Compile Include="CommonComponents\GraphicsComponent.cs" />
+    <Compile Include="ECS\IECSManager.cs" />
+    <Compile Include="CommonSystems\InputSystem.cs" />
+    <Compile Include="ECS\World.cs" />
+    <Compile Include="InputArgs.cs" />
+    <Compile Include="LevelTemplate.cs" />
+    <Compile Include="NetworkArgs.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SerializationHelper.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
