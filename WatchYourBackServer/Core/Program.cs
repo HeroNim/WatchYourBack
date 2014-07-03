@@ -14,11 +14,7 @@ namespace WatchYourBackServer
         
         static void Main(string[] args)
         {
-<<<<<<< HEAD
             new ServerGameLoop();
-=======
-            new GameLoop();
->>>>>>> origin/Networking
         }
 
        

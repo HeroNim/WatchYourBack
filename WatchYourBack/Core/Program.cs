@@ -21,11 +21,7 @@ namespace WatchYourBack
         [STAThread]
         static void Main()
         {
-<<<<<<< HEAD
             using (var game = new ClientGameLoop())
-=======
-            using (var game = new GameLoop())
->>>>>>> origin/Networking
                 game.Run();
         }
     }

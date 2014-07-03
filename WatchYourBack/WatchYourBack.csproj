@@ -46,40 +46,6 @@
     <Compile Include="Core\Program.cs" />
     <Compile Include="Core\EFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Components\AllegianceComponent.cs" />
-    <Compile Include="Components\DebugComponent.cs" />
-    <Compile Include="Components\LineColliderComponent.cs" />
-    <Compile Include="Systems\NetworkIOSystem.cs" />
-    <Compile Include="Systems\AttackSystem.cs" />
-    <Compile Include="Components\WielderComponent.cs" />
-    <Compile Include="Core\InputArgs.cs" />
-    <Compile Include="Components\ColliderComponent.cs" />
-    <Compile Include="Components\AvatarInputComponent.cs" />
-    <Compile Include="Components\LevelComponent.cs" />
-    <Compile Include="Components\ButtonComponent.cs" />
-    <Compile Include="Systems\Interfaces\InputSystem.cs" />
-    <Compile Include="Systems\MenuInputSystem.cs" />
-    <Compile Include="Templates\LevelTemplate.cs" />
-    <Compile Include="Systems\LevelSystem.cs" />
-    <Compile Include="Systems\AvatarInputSystem.cs" />
-    <Compile Include="Systems\GameInputSystem.cs" />
-    <Compile Include="Systems\GameCollisionSystem.cs" />
-    <Compile Include="Core\EComponent.cs" />
-    <Compile Include="Core\Entity.cs" />
-    <Compile Include="Core\ESystem.cs" />
-    <Compile Include="Core\GameLoop.cs" />
-    <Compile Include="Core\Program.cs" />
-    <Compile Include="Core\ECSManager.cs" />
-    <Compile Include="Components\GraphicsComponent.cs" />
-    <Compile Include="Core\EFactory.cs" />
-    <Compile Include="Systems\MovementSystem.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Components\TransformComponent.cs" />
-    <Compile Include="Components\VelocityComponent.cs" />
-    <Compile Include="Components\TileComponent.cs" />
-    <Compile Include="Core\World.cs" />
-    <Compile Include="Components\TimerComponent.cs" />
-    <Compile Include="Components\WeaponComponent.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Lidgren.Network, Version=2011.3.12.0, Culture=neutral, processorArchitecture=MSIL" />

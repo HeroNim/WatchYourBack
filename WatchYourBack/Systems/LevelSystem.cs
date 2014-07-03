@@ -7,11 +7,8 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-<<<<<<< HEAD
 using WatchYourBackLibrary;
 
-=======
->>>>>>> origin/Networking
 namespace WatchYourBack
 {
     
@@ -24,15 +21,6 @@ namespace WatchYourBack
         Y_SCALE = 40
     };
 
-<<<<<<< HEAD
-=======
-    enum LevelName
-    {
-        FIRST_LEVEL,
-        TEST_LEVEL
-    };
-
->>>>>>> origin/Networking
     /*
      * Holds all the levels in the game, and manages which one should be loaded at any time.
      */
@@ -40,36 +28,22 @@ namespace WatchYourBack
     class LevelSystem : ESystem
     {
 
-<<<<<<< HEAD
         private List<LevelTemplate> levels;
-=======
-        private Dictionary<LevelName, LevelTemplate> levels;
->>>>>>> origin/Networking
         private LevelName currentLevel;
         private LevelComponent level;
         private bool built;
         private bool pressed;
 
-<<<<<<< HEAD
         public LevelSystem(List<LevelTemplate> levels) : base(false, true, 1)
-=======
-        public LevelSystem(Dictionary<LevelName, LevelTemplate> levels) : base(false, true, 1)
->>>>>>> origin/Networking
         {
             components += LevelComponent.bitMask;
             this.levels = levels;
             built = false;
         }
 
-<<<<<<< HEAD
         public void addLevel(LevelTemplate level)
         {
             levels.Add(level);
-=======
-        public void addLevel(LevelName levelName, LevelTemplate level)
-        {
-            levels.Add(levelName, level);
->>>>>>> origin/Networking
         }
 
         private void buildLevel(LevelName levelName)
@@ -78,24 +52,14 @@ namespace WatchYourBack
             Texture2D spawnTexture = manager.getTexture("SpawnTexture");
             int player = 1;
 
-<<<<<<< HEAD
             LevelTemplate levelTemplate = levels.Find(o => o.Name == levelName);
-=======
-            LevelTemplate levelTemplate = levels[levelName];
->>>>>>> origin/Networking
             int y, x;
             for (y = 0; y < (int)LevelDimensions.HEIGHT; y++)
                 for (x = 0; x < (int)LevelDimensions.WIDTH; x++)
                 {
-<<<<<<< HEAD
                     if (levelTemplate.LevelData[y, x] == (int)TileType.WALL)
                         manager.addEntity(EFactory.createWall(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE, 40, 40, manager.getTexture("WallTexture")));
                     if (levelTemplate.LevelData[y, x] == (int)TileType.SPAWN)
-=======
-                    if (levelTemplate.LevelData[y, x] == TileType.WALL)
-                        manager.addEntity(EFactory.createWall(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE, 40, 40, manager.getTexture("WallTexture")));
-                    if (levelTemplate.LevelData[y, x] == TileType.SPAWN)
->>>>>>> origin/Networking
                     {
                         manager.addEntity(EFactory.createSpawn(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE, 40, 40, manager.getTexture("SpawnTexture")));
                         manager.addEntity(EFactory.createAvatar(new Rectangle(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE, 40, 40), 
@@ -140,11 +104,7 @@ namespace WatchYourBack
             Entity levelEntity = new Entity();
             levelEntity.addComponent(new LevelComponent());
             manager.addEntity(levelEntity);
-<<<<<<< HEAD
             level = (LevelComponent)levelEntity.Components[Masks.LEVEL];
-=======
-            level = (LevelComponent)levelEntity.Components[typeof(LevelComponent)];
->>>>>>> origin/Networking
             currentLevel = level.CurrentLevel;
         }
 

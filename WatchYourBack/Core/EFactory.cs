@@ -3,19 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-<<<<<<< HEAD
 using WatchYourBackLibrary;
 
-=======
->>>>>>> origin/Networking
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/Networking
 namespace WatchYourBack
 {
     /*

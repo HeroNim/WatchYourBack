@@ -6,11 +6,8 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-<<<<<<< HEAD
 using WatchYourBackLibrary;
 
-=======
->>>>>>> origin/Networking
 namespace WatchYourBack
 {
     /*
@@ -38,20 +35,12 @@ namespace WatchYourBack
             
             foreach (Entity entity in activeEntities)
             {
-<<<<<<< HEAD
                 WielderComponent wielderComponent = (WielderComponent)entity.Components[Masks.WIELDER];
-=======
-                WielderComponent wielderComponent = (WielderComponent)entity.Components[typeof(WielderComponent)];
->>>>>>> origin/Networking
                 wielderComponent.ElapsedTime += gameTime.ElapsedGameTime.Milliseconds;
                 if (wielderComponent.hasWeapon)
                 {
                     Entity weapon = wielderComponent.Weapon;
-<<<<<<< HEAD
                     WeaponComponent weaponComponent = (WeaponComponent)weapon.Components[Masks.WEAPON];
-=======
-                    WeaponComponent weaponComponent = (WeaponComponent)weapon.Components[typeof(WeaponComponent)];
->>>>>>> origin/Networking
                     if (weaponComponent.Arc >= weaponComponent.MaxArc)
                     {
                         manager.removeEntity(weapon);
@@ -68,17 +57,10 @@ namespace WatchYourBack
             {
 
                 Entity source = (Entity)sender;
-<<<<<<< HEAD
                 WielderComponent wielderComponent = (WielderComponent)source.Components[Masks.WIELDER];
                 VelocityComponent anchorSpeed = (VelocityComponent)source.Components[Masks.VELOCITY];
                 TransformComponent anchorPosition = (TransformComponent)source.Components[Masks.TRANSFORM];
                 AllegianceComponent anchorAllegiance = (AllegianceComponent)source.Components[Masks.ALLEGIANCE];
-=======
-                WielderComponent wielderComponent = (WielderComponent)source.Components[typeof(WielderComponent)];
-                VelocityComponent anchorSpeed = (VelocityComponent)source.Components[typeof(VelocityComponent)];
-                TransformComponent anchorPosition = (TransformComponent)source.Components[typeof(TransformComponent)];
-                AllegianceComponent anchorAllegiance = (AllegianceComponent)source.Components[typeof(AllegianceComponent)];
->>>>>>> origin/Networking
 
                 /*
                  * Get the angle between the mouse and the sword, and start the sword rotated 90 degrees from the mouse vector
