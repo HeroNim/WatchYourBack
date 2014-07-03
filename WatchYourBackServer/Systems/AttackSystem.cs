@@ -6,7 +6,10 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
+<<<<<<< HEAD
 using WatchYourBackLibrary;
+=======
+>>>>>>> origin/Networking
 using Lidgren.Network;
 
 namespace WatchYourBackServer
@@ -17,22 +20,32 @@ namespace WatchYourBackServer
     class AttackSystem : ESystem
     {
         private bool listening;
+<<<<<<< HEAD
         private double lastUpdate;
+=======
+>>>>>>> origin/Networking
 
 
         public AttackSystem() : base(false, true, 7)
         {
             components += WielderComponent.bitMask;
             listening = false;
+<<<<<<< HEAD
             lastUpdate = 0;
         }
 
         public override void update(GameTime gameTime)
+=======
+        }
+
+        public override void update(double lastUpdate)
+>>>>>>> origin/Networking
         {
             if (!listening)
             {
                 manager.Input.inputFired += new EventHandler(checkInput);
                 listening = true;
+<<<<<<< HEAD
             }
 
             
@@ -46,6 +59,22 @@ namespace WatchYourBackServer
                 {
                     Entity weapon = wielderComponent.Weapon;
                     WeaponComponent weaponComponent = (WeaponComponent)weapon.Components[Masks.WEAPON];
+=======
+
+            }
+            //Console.WriteLine(NetTime.Now - lastUpdate);
+
+            foreach (Entity entity in activeEntities)
+            {
+                WielderComponent wielderComponent = (WielderComponent)entity.Components[typeof(WielderComponent)];
+                wielderComponent.ElapsedTime += NetTime.Now - lastUpdate;
+                
+                
+                if (wielderComponent.hasWeapon)
+                {
+                    Entity weapon = wielderComponent.Weapon;
+                    WeaponComponent weaponComponent = (WeaponComponent)weapon.Components[typeof(WeaponComponent)];
+>>>>>>> origin/Networking
                     if (weaponComponent.Arc >= weaponComponent.MaxArc)
                     {
                         manager.removeEntity(weapon);
@@ -53,8 +82,11 @@ namespace WatchYourBackServer
                     }
                 }
             }
+<<<<<<< HEAD
             Console.WriteLine(NetTime.Now - lastUpdate);
             lastUpdate = NetTime.Now;
+=======
+>>>>>>> origin/Networking
         }
 
         private void checkInput(object sender, EventArgs e)
@@ -64,10 +96,17 @@ namespace WatchYourBackServer
             {
 
                 Entity source = (Entity)sender;
+<<<<<<< HEAD
                 WielderComponent wielderComponent = (WielderComponent)source.Components[Masks.WIELDER];
                 VelocityComponent anchorSpeed = (VelocityComponent)source.Components[Masks.VELOCITY];
                 TransformComponent anchorPosition = (TransformComponent)source.Components[Masks.TRANSFORM];
                 AllegianceComponent anchorAllegiance = (AllegianceComponent)source.Components[Masks.ALLEGIANCE];
+=======
+                WielderComponent wielderComponent = (WielderComponent)source.Components[typeof(WielderComponent)];
+                VelocityComponent anchorSpeed = (VelocityComponent)source.Components[typeof(VelocityComponent)];
+                TransformComponent anchorPosition = (TransformComponent)source.Components[typeof(TransformComponent)];
+                AllegianceComponent anchorAllegiance = (AllegianceComponent)source.Components[typeof(AllegianceComponent)];
+>>>>>>> origin/Networking
 
                 /*
                  * Get the angle between the mouse and the sword, and start the sword rotated 90 degrees from the mouse vector
@@ -86,14 +125,22 @@ namespace WatchYourBackServer
                 {
                     if (wielderComponent.WeaponType == Weapons.THROWN)
                     {                       
+<<<<<<< HEAD
                             manager.addEntity(ServerEFactory.createThrown(anchorAllegiance.Owner, anchorPosition.Center.X, anchorPosition.Center.Y, dir));
+=======
+                            manager.addEntity(EFactory.createThrown(anchorAllegiance.Owner, anchorPosition.Center.X, anchorPosition.Center.Y, dir));
+>>>>>>> origin/Networking
                             
                     }
                     else if (wielderComponent.WeaponType == Weapons.SWORD)
                     {
                         if (!wielderComponent.hasWeapon)
                         {
+<<<<<<< HEAD
                             wielderComponent.EquipWeapon(ServerEFactory.createSword(source, anchorAllegiance.Owner, anchorPosition.Center.X, anchorPosition.Center.Y, rotationAngle, anchorSpeed));
+=======
+                            wielderComponent.EquipWeapon(EFactory.createSword(source, anchorAllegiance.Owner, anchorPosition.Center.X, anchorPosition.Center.Y, rotationAngle, anchorSpeed));
+>>>>>>> origin/Networking
                             manager.addEntity(wielderComponent.Weapon);
                         }
                     }

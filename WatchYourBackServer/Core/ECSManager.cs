@@ -7,48 +7,27 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 
-<<<<<<< HEAD
-using WatchYourBackLibrary;
+using Lidgren.Network;
 
-namespace WatchYourBack
-{
-    //Manages the systems in the game. Is responsible for initializing, updating, and removing systems as needed.
-    public class ECSManager : IECSManager
-=======
-namespace WatchYourBack
+namespace WatchYourBackServer
 {
     //Manages the systems in the game. Is responsible for initializing, updating, and removing systems as needed.
     public class ECSManager
->>>>>>> origin/Networking
     {
         private List<ESystem> systems;
         private List<Entity> inactiveEntities;
         private List<Entity> activeEntities;
         private List<Entity> removal;
-        private ContentManager content;
         private InputSystem input;
 
         
 
-<<<<<<< HEAD
-        public ECSManager()
-=======
-        public ECSManager(List<Entity> entities, ContentManager content)
->>>>>>> origin/Networking
+        public ECSManager(List<Entity> entities)
         {
             systems = new List<ESystem>();
             activeEntities = new List<Entity>();
             removal = new List<Entity>();
-<<<<<<< HEAD
-            inactiveEntities = new List<Entity>();
-        }
-
-        public void addContent(ContentManager content)
-        {
-=======
             this.inactiveEntities = entities;
->>>>>>> origin/Networking
-            this.content = content;
         }
 
         public void addSystem(ESystem system)
@@ -104,12 +83,7 @@ namespace WatchYourBack
          * Updates the entity lists of the manager, moving active/inactive entities to their proper lists. Any systems that run
          * during the update loop are then updated.
          */
-<<<<<<< HEAD
-        
-
-=======
->>>>>>> origin/Networking
-        public void update(GameTime gameTime)
+        public void update(double lastUpdate)
         {
             clearEntities();
             foreach (Entity entity in inactiveEntities)
@@ -138,7 +112,7 @@ namespace WatchYourBack
             foreach (ESystem system in systems)
             {
                 if (system.Loop == true)
-                    system.updateEntities(gameTime);
+                    system.updateEntities(lastUpdate);
             }
             
         }
@@ -146,37 +120,11 @@ namespace WatchYourBack
         /*
          * Has the sprite batch draw all the entities that have a graphics component 
          */
-        public void draw(SpriteBatch spriteBatch)
-        {
-            foreach (Entity entity in activeEntities)
-            {
-<<<<<<< HEAD
-                if (entity.hasComponent(Masks.GRAPHICS))
-                {
-                    GraphicsComponent graphics = (GraphicsComponent)entity.Components[Masks.GRAPHICS];
-=======
-                if ((entity.Mask & (int)Masks.GRAPHICS) != 0)
-                {
-                    GraphicsComponent graphics = (GraphicsComponent)entity.Components[typeof(GraphicsComponent)];
->>>>>>> origin/Networking
-                    if (graphics.Rotatable == true)
-                        spriteBatch.Draw(graphics.Sprite, graphics.Body, new Rectangle(0, 0, graphics.Sprite.Width, graphics.Sprite.Height), 
-                            graphics.SpriteColor, graphics.RotationAngle, graphics.RotationOrigin, SpriteEffects.None, 1);
-                    else
-                        spriteBatch.Draw(graphics.Sprite, graphics.Body, graphics.SpriteColor);
-                    
-                    if (graphics.HasText)
-                        spriteBatch.DrawString(graphics.Font, graphics.Text, new Vector2(graphics.X, graphics.Y), graphics.FontColor);
-                }
-            }
-        }
+        
     
         
 
-        public Texture2D getTexture(string fileName)
-        {
-            return content.Load<Texture2D>(fileName);
-        }
+        
 
         public InputSystem Input
         {

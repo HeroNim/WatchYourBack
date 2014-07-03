@@ -7,8 +7,11 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
+<<<<<<< HEAD
 using WatchYourBackLibrary;
 
+=======
+>>>>>>> origin/Networking
 namespace WatchYourBackServer
 {
     
@@ -21,7 +24,15 @@ namespace WatchYourBackServer
         Y_SCALE = 40
     };
 
+<<<<<<< HEAD
     
+=======
+    enum LevelName
+    {
+        FIRST_LEVEL,
+        TEST_LEVEL
+    };
+>>>>>>> origin/Networking
 
     /*
      * Holds all the levels in the game, and manages which one should be loaded at any time.
@@ -30,32 +41,54 @@ namespace WatchYourBackServer
     class LevelSystem : ESystem
     {
 
+<<<<<<< HEAD
         private List<LevelTemplate> levels;
+=======
+        private Dictionary<LevelName, LevelTemplate> levels;
+>>>>>>> origin/Networking
         private LevelName currentLevel;
         private LevelComponent level;
         private bool built;
         private bool pressed;
 
+<<<<<<< HEAD
         public LevelSystem(List<LevelTemplate> levels) : base(false, true, 1)
+=======
+        public LevelSystem(Dictionary<LevelName, LevelTemplate> levels) : base(false, true, 1)
+>>>>>>> origin/Networking
         {
             components += LevelComponent.bitMask;
             this.levels = levels;
             built = false;
         }
 
+<<<<<<< HEAD
         public void addLevel(LevelTemplate level)
         {
             levels.Add(level);
+=======
+        public void addLevel(LevelName levelName, LevelTemplate level)
+        {
+            levels.Add(levelName, level);
+>>>>>>> origin/Networking
         }
 
         private void buildLevel(LevelName levelName)
         {
+<<<<<<< HEAD
             int player = 0;
             LevelTemplate levelTemplate = levels.Find(o => o.Name == levelName);
+=======
+            
+            int player = 1;
+
+            LevelTemplate levelTemplate = levels[levelName];
+>>>>>>> origin/Networking
             int y, x;
             for (y = 0; y < (int)LevelDimensions.HEIGHT; y++)
                 for (x = 0; x < (int)LevelDimensions.WIDTH; x++)
                 {
+<<<<<<< HEAD
                     if (levelTemplate.LevelData[y, x] == (int)TileType.WALL)
                         manager.addEntity(ServerEFactory.createWall(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE, 40, 40));
                     if (levelTemplate.LevelData[y, x] == (int)TileType.SPAWN)
@@ -65,15 +98,33 @@ namespace WatchYourBackServer
                         player++;
                     }
 
+=======
+                    if (levelTemplate.LevelData[y, x] == TileType.WALL)
+                        manager.addEntity(EFactory.createWall(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE, 40, 40));
+                    if (levelTemplate.LevelData[y, x] == TileType.SPAWN)
+                    {
+                        manager.addEntity(EFactory.createSpawn(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE, 40, 40));
+                        manager.addEntity(EFactory.createAvatar(new Rectangle(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE, 40, 40), (Allegiance)player, Weapons.THROWN));
+                        player++;
+                    }
+                    
+>>>>>>> origin/Networking
                 }
             built = true;
         }
 
+<<<<<<< HEAD
         public override void update(GameTime gameTime)
         {
             if (level == null)
                 initialize();
                 
+=======
+        public override void update(double lastUpdate)
+        {
+            if (level == null)
+                initialize();
+>>>>>>> origin/Networking
             else
             {
                 if (currentLevel == level.CurrentLevel)
@@ -85,7 +136,11 @@ namespace WatchYourBackServer
                 {
                     clearLevel();
                     currentLevel = level.CurrentLevel;
+<<<<<<< HEAD
                     update(gameTime);
+=======
+                    update(lastUpdate);
+>>>>>>> origin/Networking
                 }
             }
             if (Keyboard.GetState().IsKeyDown(Keys.N) && pressed == false)
@@ -103,9 +158,14 @@ namespace WatchYourBackServer
             Entity levelEntity = new Entity();
             levelEntity.addComponent(new LevelComponent());
             manager.addEntity(levelEntity);
+<<<<<<< HEAD
             level = (LevelComponent)levelEntity.Components[Masks.LEVEL];
             currentLevel = level.CurrentLevel;
             buildLevel(currentLevel);
+=======
+            level = (LevelComponent)levelEntity.Components[typeof(LevelComponent)];
+            currentLevel = level.CurrentLevel;
+>>>>>>> origin/Networking
         }
 
         private void clearLevel()
