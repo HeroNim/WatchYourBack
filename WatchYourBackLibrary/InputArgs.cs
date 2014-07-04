@@ -20,10 +20,26 @@ namespace WatchYourBackLibrary
     public class InputArgs : EventArgs
     {
         private Inputs type;
+        private int mouseX;
+        private int mouseY;
+
         public InputArgs(Inputs type)
         {
             this.type = type;
+            mouseX = -1;
+            mouseY = -1;
         }
+
+        public InputArgs(Inputs type, int x, int y)
+        {
+            this.type = type;
+            mouseX = x;
+            mouseY = y;
+        }
+
+
         public Inputs InputType { get { return type; } }
+        public int MouseX { get { return mouseX; } }
+        public int MouseY { get { return mouseY; } }
     }
 }

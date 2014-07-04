@@ -24,7 +24,7 @@ namespace WatchYourBackLibrary
     }
     public class WeaponComponent : EComponent
     {
-        public readonly static int bitMask = (int)Masks.WEAPON;
+        public override int BitMask { get { return (int)Masks.WEAPON; } }
         public override Masks Mask { get { return Masks.WEAPON; } }
 
 

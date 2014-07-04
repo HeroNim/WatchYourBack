@@ -141,10 +141,14 @@ namespace WatchYourBack
         {
 
             // TODO: Add your update logic here
-            if (!isPlaying)
-                Connect();
-            activeWorld.Manager.update(gameTime);
+            if(activeWorld == connectMenu)
+                if (!isPlaying)
+                    Connect();
+            activeWorld.Manager.update(gameTime.ElapsedGameTime);
             activeWorld = worldStack.Peek();
+
+            
+
             base.Update(gameTime);
         }
 
@@ -159,82 +163,12 @@ namespace WatchYourBack
             activeWorld.Manager.draw(spriteBatch);
             spriteBatch.End();
 
-            // TODO: Add your drawing code here
+           
 
             base.Draw(gameTime);
         }
 
-        private void createMainMenu()
-        {
-            mainMenu = new World(Worlds.MAIN_MENU);
-            mainMenu.addManager(new ECSManager());
-            mainMenu.Manager.addContent(Content);
-            inputListener.addWorld(mainMenu, true);
-            mainMenu.Manager.addEntity(EFactory.createButton(50, 50, 50, 50, Inputs.START_SINGLE, avatarTexture, "Singleplayer", testFont));
-            mainMenu.Manager.addEntity(EFactory.createButton(50, 200, 50, 50, Inputs.START_MUTLI, avatarTexture, "Multiplayer", testFont));
-            mainMenu.Manager.addEntity(EFactory.createButton(50, 350, 50, 50, Inputs.EXIT, avatarTexture, "Exit", testFont));
-        }
-
-        private void createConnectMenu()
-        {
-            connectMenu = new World(Worlds.CONNECT_MENU);
-            connectMenu.addManager(new ECSManager());
-            connectMenu.Manager.addContent(Content);
-            inputListener.addWorld(connectMenu, true);
-            connectMenu.Manager.addEntity(EFactory.createButton(50, 200, 50, 50, Inputs.START_MUTLI, avatarTexture, "Connect", testFont));
-            connectMenu.Manager.addEntity(EFactory.createButton(50, 350, 50, 50, Inputs.EXIT, avatarTexture, "Back", testFont));
-        }
-
-        private void createGame()
-        {
-
-            inGame = new World(Worlds.IN_GAME);
-            inGame.addManager(new ECSManager());
-            inGame.Manager.addContent(Content);
-            inputListener.addWorld(inGame, false);
-
-            inGame.Manager.addSystem(new AvatarInputSystem());
-            inGame.Manager.addSystem(new GameCollisionSystem());
-            inGame.Manager.addSystem(new MovementSystem());
-            inGame.Manager.addSystem(new LevelSystem(levels));
-            inGame.Manager.addSystem(new AttackSystem());
-
-        }
-
-        private void createGameMulti()
-        {
-            inGameMulti = new World(Worlds.IN_GAME);
-            inGameMulti.addManager(new ECSManager());
-            inGameMulti.Manager.addContent(Content);
-
-            inputListener.addWorld(inGameMulti, false);
-
-            ClientUpdateSystem networkInput = new ClientUpdateSystem(client);
-            inGameMulti.Manager.addSystem(new LevelSystem(levels));
-            inGameMulti.Manager.addSystem(networkInput);
-        }
-
-        private void createPauseMenu()
-        {
-            pauseMenu = new World(Worlds.PAUSE_MENU);
-            pauseMenu.addManager(new ECSManager());
-            pauseMenu.Manager.addContent(Content);
-            inputListener.addWorld(pauseMenu, true);
-            pauseMenu.Manager.addEntity(EFactory.createButton(50, 50, 50, 50, Inputs.RESUME, avatarTexture, "Resume", testFont));
-            pauseMenu.Manager.addEntity(EFactory.createButton(50, 200, 50, 50, Inputs.EXIT, avatarTexture, "Exit to menu", testFont));
-        }
-
-        private void reset(World world)
-        {
-            if (world.MenuType == Worlds.IN_GAME)
-                createGame();
-            else if (world.MenuType == Worlds.IN_GAME_MULTI)
-                createGameMulti();
-            else if (world.MenuType == Worlds.MAIN_MENU)
-                createMainMenu();
-            else if (world.MenuType == Worlds.PAUSE_MENU)
-                createPauseMenu();
-        }
+       
 
         private void Connect()
         {
@@ -273,6 +207,77 @@ namespace WatchYourBack
                 }
             }
             
+        }
+
+        private void createMainMenu()
+        {
+            mainMenu = new World(Worlds.MAIN_MENU);
+            mainMenu.addManager(new ClientECSManager());
+            mainMenu.Manager.addContent(Content);
+            inputListener.addWorld(mainMenu, true);
+            mainMenu.Manager.addEntity(EFactory.createButton(50, 50, 50, 50, Inputs.START_SINGLE, avatarTexture, "Singleplayer", testFont));
+            mainMenu.Manager.addEntity(EFactory.createButton(50, 200, 50, 50, Inputs.START_MUTLI, avatarTexture, "Multiplayer", testFont));
+            mainMenu.Manager.addEntity(EFactory.createButton(50, 350, 50, 50, Inputs.EXIT, avatarTexture, "Exit", testFont));
+        }
+
+        private void createConnectMenu()
+        {
+            connectMenu = new World(Worlds.CONNECT_MENU);
+            connectMenu.addManager(new ClientECSManager());
+            connectMenu.Manager.addContent(Content);
+            inputListener.addWorld(connectMenu, true);
+            connectMenu.Manager.addEntity(EFactory.createButton(50, 200, 50, 50, Inputs.START_MUTLI, avatarTexture, "Connect", testFont));
+            connectMenu.Manager.addEntity(EFactory.createButton(50, 350, 50, 50, Inputs.EXIT, avatarTexture, "Back", testFont));
+        }
+
+        private void createGame()
+        {
+
+            inGame = new World(Worlds.IN_GAME);
+            inGame.addManager(new ClientECSManager());
+            inGame.Manager.addContent(Content);
+            inputListener.addWorld(inGame, false);
+
+            inGame.Manager.addSystem(new AvatarInputSystem());
+            inGame.Manager.addSystem(new GameCollisionSystem());
+            inGame.Manager.addSystem(new MovementSystem());
+            inGame.Manager.addSystem(new LevelSystem(levels));
+            inGame.Manager.addSystem(new AttackSystem());
+
+        }
+
+        private void createGameMulti()
+        {
+            inGameMulti = new World(Worlds.IN_GAME);
+            inGameMulti.addManager(new ClientECSManager());
+            inGameMulti.Manager.addContent(Content);
+
+            inputListener.addWorld(inGameMulti, false);
+
+            ClientUpdateSystem networkInput = new ClientUpdateSystem(client);
+            inGameMulti.Manager.addSystem(networkInput);
+        }
+
+        private void createPauseMenu()
+        {
+            pauseMenu = new World(Worlds.PAUSE_MENU);
+            pauseMenu.addManager(new ClientECSManager());
+            pauseMenu.Manager.addContent(Content);
+            inputListener.addWorld(pauseMenu, true);
+            pauseMenu.Manager.addEntity(EFactory.createButton(50, 50, 50, 50, Inputs.RESUME, avatarTexture, "Resume", testFont));
+            pauseMenu.Manager.addEntity(EFactory.createButton(50, 200, 50, 50, Inputs.EXIT, avatarTexture, "Exit to menu", testFont));
+        }
+
+        private void reset(World world)
+        {
+            if (world.MenuType == Worlds.IN_GAME)
+                createGame();
+            else if (world.MenuType == Worlds.IN_GAME_MULTI)
+                createGameMulti();
+            else if (world.MenuType == Worlds.MAIN_MENU)
+                createMainMenu();
+            else if (world.MenuType == Worlds.PAUSE_MENU)
+                createPauseMenu();
         }
 
         /*

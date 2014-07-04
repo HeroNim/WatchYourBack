@@ -17,6 +17,7 @@ namespace WatchYourBackServer
         NetServer server;
         bool initializing;
         bool playing;
+        TimeSpan gameTime;
         
 
         double nextUpdate;
@@ -132,14 +133,16 @@ namespace WatchYourBackServer
 
         //Pseudo-XNA style gametime. Would probably cause problems on a larger scale game (still might).
         private void Update()
-        {   
+        {
             double now = NetTime.Now;
             if (now > nextUpdate)
             {
-                inGame.Manager.update(new GameTime());
-                //Console.WriteLine(NetTime.Now);
-                nextUpdate += (1.0 / 60.0);
                 lastUpdate = NetTime.Now;
+                nextUpdate = lastUpdate + (1.0 / 60.0);
+                double dif = nextUpdate - lastUpdate;
+                gameTime = new TimeSpan((long)(TimeSpan.TicksPerSecond * dif));
+                inGame.Manager.update(gameTime);
+
             }
             
         }

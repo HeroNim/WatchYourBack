@@ -15,8 +15,9 @@ namespace WatchYourBackLibrary
     //A component that tells the game who's 'team' the entity belongs to.
     public class AllegianceComponent : EComponent
     {
-        public readonly static int bitMask = (int)Masks.ALLEGIANCE;
+        public override int BitMask { get { return (int)Masks.ALLEGIANCE; } }
         public override Masks Mask { get { return Masks.ALLEGIANCE; } }
+
 
         private Allegiance ownedBy;
 

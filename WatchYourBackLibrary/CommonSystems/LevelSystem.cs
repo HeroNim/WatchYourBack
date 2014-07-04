@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 using WatchYourBackLibrary;
 
-namespace WatchYourBack
+namespace WatchYourBackLibrary
 {
     
 
@@ -25,18 +25,19 @@ namespace WatchYourBack
      * Holds all the levels in the game, and manages which one should be loaded at any time.
      */
 
-    class LevelSystem : ESystem
+    public class LevelSystem : ESystem
     {
 
         private List<LevelTemplate> levels;
         private LevelName currentLevel;
         private LevelComponent level;
         private bool built;
-        private bool pressed;
+        private Texture2D wallTexture;
+        private Texture2D spawnTexture;
 
         public LevelSystem(List<LevelTemplate> levels) : base(false, true, 1)
         {
-            components += LevelComponent.bitMask;
+            components += (int)Masks.LEVEL;
             this.levels = levels;
             built = false;
         }
@@ -48,8 +49,11 @@ namespace WatchYourBack
 
         private void buildLevel(LevelName levelName)
         {
-            Texture2D wallTexture = manager.getTexture("WallTexture");
-            Texture2D spawnTexture = manager.getTexture("SpawnTexture");
+            if (manager.hasGraphics())
+            {
+                wallTexture = manager.getTexture("WallTexture");
+                spawnTexture = manager.getTexture("SpawnTexture");
+            }
             int player = 1;
 
             LevelTemplate levelTemplate = levels.Find(o => o.Name == levelName);
@@ -58,12 +62,12 @@ namespace WatchYourBack
                 for (x = 0; x < (int)LevelDimensions.WIDTH; x++)
                 {
                     if (levelTemplate.LevelData[y, x] == (int)TileType.WALL)
-                        manager.addEntity(EFactory.createWall(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE, 40, 40, manager.getTexture("WallTexture")));
+                        manager.addEntity(EFactory.createWall(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE, 40, 40, wallTexture, manager.hasGraphics()));
                     if (levelTemplate.LevelData[y, x] == (int)TileType.SPAWN)
                     {
-                        manager.addEntity(EFactory.createSpawn(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE, 40, 40, manager.getTexture("SpawnTexture")));
-                        manager.addEntity(EFactory.createAvatar(new Rectangle(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE, 40, 40), 
-                            spawnTexture, (Allegiance)player, Weapons.THROWN));
+                        manager.addEntity(EFactory.createSpawn(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE, 40, 40));
+                        manager.addEntity(EFactory.createAvatar(new Rectangle(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE, 40, 40),
+                             (Allegiance)player, Weapons.THROWN, spawnTexture, manager.hasGraphics()));
                         player++;
                     }
                     
@@ -71,7 +75,7 @@ namespace WatchYourBack
             built = true;
         }
 
-        public override void update(GameTime gameTime)
+        public override void update(TimeSpan gameTime)
         {
             if (level == null)
                 initialize();
@@ -89,13 +93,6 @@ namespace WatchYourBack
                     update(gameTime);
                 }
             }
-            if (Keyboard.GetState().IsKeyDown(Keys.N) && pressed == false)
-            {
-                level.CurrentLevel++;
-                pressed = true;
-            }
-            if (Keyboard.GetState().IsKeyUp(Keys.N) && pressed == true) 
-                pressed = false;
 
         }
 
@@ -106,11 +103,12 @@ namespace WatchYourBack
             manager.addEntity(levelEntity);
             level = (LevelComponent)levelEntity.Components[Masks.LEVEL];
             currentLevel = level.CurrentLevel;
+            buildLevel(currentLevel);
         }
 
         private void clearLevel()
         {
-            foreach(Entity entity in manager.ActiveEntities)
+            foreach(Entity entity in manager.ActiveEntities.Values)
             {
                 if (entity.hasComponent(Masks.TILE))
                     manager.removeEntity(entity);

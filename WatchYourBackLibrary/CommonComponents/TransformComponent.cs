@@ -24,17 +24,20 @@ namespace WatchYourBackLibrary
         private bool yLock;
         private float rotation;
 
-        public readonly static int bitMask = (int)Masks.TRANSFORM;
+        private bool hasMoved;
+
+        public override int BitMask { get { return (int)Masks.TRANSFORM; } }
         public override Masks Mask { get { return Masks.TRANSFORM; } }
         
 
-        public TransformComponent(float x, float y)
-        {
-            position = new Vector2(x, y);
-            width = 0;
-            height = 0;
-            rotation = 0;
-        }
+        //public TransformComponent(float x, float y)
+        //{
+        //    position = new Vector2(x, y);
+        //    width = 0;
+        //    height = 0;
+        //    rotation = 0;
+        //    hasMoved = false;
+        //}
 
         public TransformComponent(float x, float y, int width, int height)
         {
@@ -42,12 +45,16 @@ namespace WatchYourBackLibrary
             this.width = width;
             this.height = height;
             rotation = 0;
+            hasMoved = false;
         }
 
-        public TransformComponent(float x, float y, float rotation)
+        public TransformComponent(float x, float y, int width, int height, float rotation)
         {
             position = new Vector2(x, y);
             this.rotation = rotation;
+            this.width = width;
+            this.height = height;
+            hasMoved = false;
         }
 
 
@@ -55,25 +62,59 @@ namespace WatchYourBackLibrary
         public float X
         {
             get { return position.X; }
-            set { position.X = value; }
+            set
+            {
+                if (position.X != value)
+                {
+                    position.X = value;
+                    hasMoved = true;
+                }
+            }
         }
 
         public float Y
         {
             get { return position.Y; }
-            set { position.Y = value; }
+            set
+            {
+                if (position.Y != value)
+                {
+                    position.Y = value;
+                    hasMoved = true;
+                }
+            }
         }
 
         public Vector2 Position
         {
             get { return position; }
-            set { position = value; }
+            set
+            {
+                if (position != value)
+                {
+                    position = value;
+                    hasMoved = true;
+                }
+            }
         }
 
         public float Rotation
         {
             get { return rotation; }
-            set { rotation = value; }
+            set
+            {
+                if (rotation != value)
+                {
+                    rotation = value;
+                    hasMoved = true;
+                }
+            }
+        }
+
+        public bool HasMoved
+        {
+            get { return hasMoved; }
+            set { hasMoved = value; }
         }
 
         public int Width

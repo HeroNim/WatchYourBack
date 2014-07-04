@@ -20,20 +20,21 @@ namespace WatchYourBackLibrary
 
         public MovementSystem() : base(false, true, 5)
         {
-            components += TransformComponent.bitMask;
-            components += VelocityComponent.bitMask;
+            components += (int)Masks.TRANSFORM;
+            components += (int)Masks.VELOCITY;
         }
 
-        public override void update(GameTime gameTime)
+        public override void update(TimeSpan gameTime)
         {
             foreach (Entity entity in activeEntities)
             {
                 TransformComponent transform = (TransformComponent)entity.Components[Masks.TRANSFORM];
+                transform.HasMoved = false;
                 
                 VelocityComponent velocity = (VelocityComponent)entity.Components[Masks.VELOCITY];
                 transform.Position = new Vector2(transform.X + velocity.X, transform.Y + velocity.Y);
                 transform.Rotation += velocity.RotationSpeed;
-                Console.WriteLine("X: " + transform.X + ", Y: " + transform.Y + ", Rotation: " + transform.Rotation);
+                
        
                 if(entity.hasComponent(Masks.GRAPHICS))
                 {
@@ -48,6 +49,7 @@ namespace WatchYourBackLibrary
                 {
                     WeaponComponent weapon = (WeaponComponent)entity.Components[Masks.WEAPON];
                     weapon.Arc += Math.Abs(velocity.RotationSpeed);
+                    Console.WriteLine("X: " + transform.X + ", Y: " + transform.Y + ", Rotation: " + transform.Rotation);
                 }
                 
                 if (entity.hasComponent(Masks.COLLIDER))
@@ -67,6 +69,9 @@ namespace WatchYourBackLibrary
                         collider.Y = (int)transform.Y;
                     }
                 }
+
+                if (transform.HasMoved)
+                    manager.addChangedEntities(entity, COMMANDS.MODIFY);
             }
         }
     }

@@ -14,7 +14,7 @@ namespace WatchYourBackLibrary
      */
     public class LevelComponent : EComponent
     {
-        public readonly static int bitMask = (int)Masks.LEVEL;
+        public override int BitMask { get { return (int)Masks.LEVEL; } }
         public override Masks Mask { get { return Masks.LEVEL; } }
 
         private LevelName currentLevel;

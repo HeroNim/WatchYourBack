@@ -11,7 +11,7 @@ namespace WatchYourBackLibrary
 {
     public class TimerComponent : EComponent
     {
-        public readonly static int bitMask = (int)Masks.TIMER;
+        public override int BitMask { get { return (int)Masks.TIMER; } }
         public override Masks Mask { get { return Masks.TIMER; } }
 
         

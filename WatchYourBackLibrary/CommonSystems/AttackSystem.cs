@@ -7,27 +7,23 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
 using WatchYourBackLibrary;
-using Lidgren.Network;
 
-namespace WatchYourBackServer
+namespace WatchYourBackLibrary
 {
     /*
      * The system responsible for waiting for attack commands, and creating the appropriate attacks, such as sword swings. (abilities?)
      */
-    class AttackSystem : ESystem
+    public class AttackSystem : ESystem
     {
         private bool listening;
-        private double lastUpdate;
-
 
         public AttackSystem() : base(false, true, 7)
         {
-            components += WielderComponent.bitMask;
+            components += (int)Masks.WIELDER ;
             listening = false;
-            lastUpdate = 0;
         }
 
-        public override void update(GameTime gameTime)
+        public override void update(TimeSpan gameTime)
         {
             if (!listening)
             {
@@ -39,9 +35,7 @@ namespace WatchYourBackServer
             foreach (Entity entity in activeEntities)
             {
                 WielderComponent wielderComponent = (WielderComponent)entity.Components[Masks.WIELDER];
-                wielderComponent.ElapsedTime += NetTime.Now - wielderComponent.LastUpdate;
-                wielderComponent.LastUpdate = NetTime.Now;
-                //Console.WriteLine(NetTime.Now - lastUpdate);
+                wielderComponent.ElapsedTime += gameTime.TotalMilliseconds;
                 if (wielderComponent.hasWeapon)
                 {
                     Entity weapon = wielderComponent.Weapon;
@@ -53,8 +47,6 @@ namespace WatchYourBackServer
                     }
                 }
             }
-            Console.WriteLine(NetTime.Now - lastUpdate);
-            lastUpdate = NetTime.Now;
         }
 
         private void checkInput(object sender, EventArgs e)
@@ -72,9 +64,9 @@ namespace WatchYourBackServer
                 /*
                  * Get the angle between the mouse and the sword, and start the sword rotated 90 degrees from the mouse vector
                  */
-                MouseState ms = Mouse.GetState();
-                float xDir = ms.X - anchorPosition.Center.X;
-                float yDir = ms.Y - anchorPosition.Center.Y;
+                
+                float xDir = args.MouseX - anchorPosition.Center.X;
+                float yDir = args.MouseY - anchorPosition.Center.Y;
                 Vector2 dir = new Vector2(xDir, yDir);
                 dir.Normalize();
                 Vector2 perpDir = new Vector2(yDir, -xDir);
@@ -86,15 +78,15 @@ namespace WatchYourBackServer
                 {
                     if (wielderComponent.WeaponType == Weapons.THROWN)
                     {                       
-                            manager.addEntity(ServerEFactory.createThrown(anchorAllegiance.Owner, anchorPosition.Center.X, anchorPosition.Center.Y, dir));
-                            
+                            manager.addEntity(EFactory.createThrown(anchorAllegiance.Owner, anchorPosition.Center.X, anchorPosition.Center.Y, dir, manager.getTexture("WeaponTexture"), manager.hasGraphics()));   
                     }
                     else if (wielderComponent.WeaponType == Weapons.SWORD)
                     {
                         if (!wielderComponent.hasWeapon)
                         {
-                            wielderComponent.EquipWeapon(ServerEFactory.createSword(source, anchorAllegiance.Owner, anchorPosition.Center.X, anchorPosition.Center.Y, rotationAngle, anchorSpeed));
+                            wielderComponent.EquipWeapon(EFactory.createSword(source, anchorAllegiance.Owner, anchorPosition.Center.X, anchorPosition.Center.Y, rotationAngle, anchorSpeed, manager.getTexture("WeaponTexture"), manager.hasGraphics()));
                             manager.addEntity(wielderComponent.Weapon);
+                            wielderComponent.Weapon.hasComponent(Masks.COLLIDER);
                         }
                     }
                     wielderComponent.ElapsedTime = 0;

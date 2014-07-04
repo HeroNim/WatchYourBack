@@ -54,12 +54,15 @@
     <Compile Include="CommonComponents\VelocityComponent.cs" />
     <Compile Include="CommonComponents\WeaponComponent.cs" />
     <Compile Include="CommonComponents\WielderComponent.cs" />
+    <Compile Include="CommonSystems\AttackSystem.cs" />
     <Compile Include="CommonSystems\AvatarInputSystem.cs" />
     <Compile Include="CommonSystems\GameCollisionSystem.cs" />
     <Compile Include="CommonSystems\GameInputSystem.cs" />
+    <Compile Include="CommonSystems\LevelSystem.cs" />
     <Compile Include="CommonSystems\MenuInputSystem.cs" />
     <Compile Include="CommonSystems\MovementSystem.cs" />
     <Compile Include="ECS\EComponent.cs" />
+    <Compile Include="ECS\EFactory.cs" />
     <Compile Include="ECS\Entity.cs" />
     <Compile Include="ECS\ESystem.cs" />
     <Compile Include="CommonComponents\GraphicsComponent.cs" />
@@ -68,7 +71,8 @@
     <Compile Include="ECS\World.cs" />
     <Compile Include="InputArgs.cs" />
     <Compile Include="LevelTemplate.cs" />
-    <Compile Include="NetworkArgs.cs" />
+    <Compile Include="NetworkInputArgs.cs" />
+    <Compile Include="NetworkEntityArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SerializationHelper.cs" />
   </ItemGroup>

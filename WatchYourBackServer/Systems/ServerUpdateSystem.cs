@@ -18,22 +18,45 @@ namespace WatchYourBackServer
     class ServerUpdateSystem : ESystem, InputSystem
     {
         NetServer server;
+        List<NetworkEntityArgs> sendData;
         int playerIndex;
 
 
         public ServerUpdateSystem(NetServer server)
            : base(false, true, 2) 
         {
-            components += AvatarInputComponent.bitMask;
+            components += (int)Masks.PLAYER_INPUT;
             this.server = server;
+            sendData = new List<NetworkEntityArgs>();
         }
 
-        public override void update(GameTime gameTime)
+        public override void update(TimeSpan gameTime)
         {
             NetIncomingMessage msg;
-            NetworkArgs args;
+            NetworkInputArgs args;
             AvatarInputComponent playerInputComponent;
             playerIndex = 0;
+
+            //Output
+
+            foreach(int id in manager.ChangedEntities.Keys)
+            {
+
+                Entity e = manager.ActiveEntities[id];
+                if (e.hasComponent(Masks.TRANSFORM))
+                {
+                    TransformComponent transform = (TransformComponent)e.Components[Masks.TRANSFORM];
+                    sendData.Add(new NetworkEntityArgs(e.Type, manager.ChangedEntities[id], e.ID, transform.X, transform.Y, transform.Width, transform.Height, transform.Rotation));
+                }
+            }
+
+            NetOutgoingMessage om = server.CreateMessage();
+            om.Write(SerializationHelper.Serialize(sendData));
+            server.SendToAll(om, NetDeliveryMethod.UnreliableSequenced);
+            sendData.Clear();
+            manager.ChangedEntities.Clear();
+            manager.RemoveAll();
+            
 
             foreach(NetConnection player in server.Connections)
             {
@@ -62,7 +85,7 @@ namespace WatchYourBackServer
                             //
                             // The client sent input to the server
                             //
-                            args = SerializationHelper.DeserializeObject<NetworkArgs>(msg.ReadBytes(msg.LengthBytes));
+                            args = SerializationHelper.DeserializeObject<NetworkInputArgs>(msg.ReadBytes(msg.LengthBytes));
                             playerInputComponent = (AvatarInputComponent)activeEntities[playerIndex].Components[Masks.PLAYER_INPUT];
 
                             if (args.XInput == 1)
@@ -80,18 +103,23 @@ namespace WatchYourBackServer
                                 playerInputComponent.MoveY = 0;
 
                             if(args.Clicked)
-                                onFire(playerInputComponent.getEntity(), new InputArgs(Inputs.ATTACK));
+                                onFire(playerInputComponent.getEntity(), new InputArgs(Inputs.ATTACK, args.MouseX, args.MouseY));
                             
                             break;
                     }
+                    server.Recycle(msg);
                 }
+                
+
+
+
                 playerIndex++;
 
             }
             playerIndex = 0;
 
 
-            //Output
+            
 
         }
 

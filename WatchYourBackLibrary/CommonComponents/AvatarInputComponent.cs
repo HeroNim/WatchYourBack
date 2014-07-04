@@ -12,7 +12,7 @@ namespace WatchYourBackLibrary
      */
     public class AvatarInputComponent : EComponent
     {
-        public readonly static int bitMask = (int)Masks.PLAYER_INPUT;
+        public override int BitMask { get { return (int)Masks.PLAYER_INPUT; } }
         public override Masks Mask { get { return Masks.PLAYER_INPUT; } }
 
         

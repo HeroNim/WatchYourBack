@@ -12,23 +12,27 @@ using WatchYourBackLibrary;
 namespace WatchYourBack
 {
     //Manages the systems in the game. Is responsible for initializing, updating, and removing systems as needed.
-    public class ECSManager : IECSManager
+    public class ClientECSManager : IECSManager
     {
         private List<ESystem> systems;
-        private List<Entity> inactiveEntities;
-        private List<Entity> activeEntities;
+        private Dictionary<int, Entity> inactiveEntities;
+        private Dictionary<int, Entity> activeEntities;
+        private Dictionary<int, COMMANDS> changedEntities;
         private List<Entity> removal;
         private ContentManager content;
         private InputSystem input;
+        private int id;
 
         
 
-        public ECSManager()
+        public ClientECSManager()
         {
+            id = 0;
             systems = new List<ESystem>();
-            activeEntities = new List<Entity>();
+            activeEntities = new Dictionary<int, Entity>();
+            changedEntities = new Dictionary<int, COMMANDS>();
             removal = new List<Entity>();
-            inactiveEntities = new List<Entity>();
+            inactiveEntities = new Dictionary<int, Entity>();
         }
 
         public void addContent(ContentManager content)
@@ -50,14 +54,20 @@ namespace WatchYourBack
 
         public void addEntity(Entity entity)
         {
+            
+            entity.ID = id;
+            id++;
             entity.initialize();
-            activeEntities.Add(entity);
+            activeEntities.Add(entity.ID, entity);
         }
 
         public void removeEntity(Entity entity)
         {
-            if (inactiveEntities.Contains(entity) || activeEntities.Contains(entity))
+            if (activeEntities.Values.Contains(entity))
+            {
                 removal.Add(entity);
+                addChangedEntities(entity, COMMANDS.REMOVE);
+            }
         }
         
         public void addInput(InputSystem input)
@@ -65,22 +75,35 @@ namespace WatchYourBack
             this.input = input;
         }
 
-        public List<Entity> Entities
+        public Dictionary<int, Entity> Entities
         {
             get { return inactiveEntities; } 
         }
 
-        public List<Entity> ActiveEntities
+        public Dictionary<int, Entity> ActiveEntities
         {
             get { return activeEntities; }
+        }
+
+        public Dictionary<int, COMMANDS> ChangedEntities
+        {
+            get { return changedEntities; }
+        }
+
+        public void addChangedEntities(Entity e, COMMANDS c)
+        {
+            if (!changedEntities.Keys.Contains(e.ID))
+                changedEntities.Add(e.ID, c);
+            else if (changedEntities.Keys.Contains(e.ID) && changedEntities[e.ID] != COMMANDS.REMOVE && c == COMMANDS.REMOVE)
+                changedEntities[e.ID] = COMMANDS.REMOVE;
         }
 
         public void clearEntities()
         {
             foreach(Entity entity in removal)
             {
-                inactiveEntities.Remove(entity);
-                activeEntities.Remove(entity);
+                inactiveEntities.Remove(entity.ID);
+                activeEntities.Remove(entity.ID);
             }
             removal.Clear();
         }
@@ -91,38 +114,47 @@ namespace WatchYourBack
          */
         
 
-        public void update(GameTime gameTime)
+        public void update(TimeSpan gameTime)
         {
-            clearEntities();
-            foreach (Entity entity in inactiveEntities)
-                if (entity.IsActive)
-                {
-                    activeEntities.Add(entity);
-                    removal.Add(entity);
-                }
 
-            foreach (Entity entity in removal)
-                inactiveEntities.Remove(entity);
-            removal.Clear();
 
-            foreach (Entity entity in activeEntities)
-                if (!entity.IsActive)
-                {
-                    inactiveEntities.Add(entity);
-                    removal.Add(entity);
-                }
-
-            foreach (Entity entity in removal)
-                activeEntities.Remove(entity);
-            removal.Clear();
-
+            RemoveAll();
             //Update the systems
             foreach (ESystem system in systems)
             {
                 if (system.Loop == true)
                     system.updateEntities(gameTime);
             }
+
             
+           
+            
+        }
+
+        public void RemoveAll()
+        {
+            clearEntities();
+            foreach (Entity entity in inactiveEntities.Values)
+                if (entity.IsActive)
+                {
+                    activeEntities.Add(entity.ID, entity);
+                    removal.Add(entity);
+                }
+
+            foreach (Entity entity in removal)
+                inactiveEntities.Remove(entity.ID);
+            removal.Clear();
+
+            foreach (Entity entity in activeEntities.Values)
+                if (!entity.IsActive)
+                {
+                    inactiveEntities.Add(entity.ID, entity);
+                    removal.Add(entity);
+                }
+
+            foreach (Entity entity in removal)
+                activeEntities.Remove(entity.ID);
+            removal.Clear();
         }
 
         /*
@@ -130,13 +162,13 @@ namespace WatchYourBack
          */
         public void draw(SpriteBatch spriteBatch)
         {
-            foreach (Entity entity in activeEntities)
+            foreach (Entity entity in activeEntities.Values)
             {
                 if (entity.hasComponent(Masks.GRAPHICS))
                 {
                     GraphicsComponent graphics = (GraphicsComponent)entity.Components[Masks.GRAPHICS];
                     if (graphics.Rotatable == true)
-                        spriteBatch.Draw(graphics.Sprite, graphics.Body, new Rectangle(0, 0, graphics.Sprite.Width, graphics.Sprite.Height), 
+                        spriteBatch.Draw(graphics.Sprite, graphics.Body, new Rectangle(0,0, graphics.Sprite.Width, graphics.Sprite.Height), 
                             graphics.SpriteColor, graphics.RotationAngle, graphics.RotationOrigin, SpriteEffects.None, 1);
                     else
                         spriteBatch.Draw(graphics.Sprite, graphics.Body, graphics.SpriteColor);
@@ -147,7 +179,10 @@ namespace WatchYourBack
             }
         }
     
-        
+        public bool hasGraphics()
+        {
+            return true;
+        }
 
         public Texture2D getTexture(string fileName)
         {

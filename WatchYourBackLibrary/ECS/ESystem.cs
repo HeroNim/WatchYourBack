@@ -14,7 +14,7 @@ namespace WatchYourBackLibrary
      */
     public abstract class ESystem
     {
-        private List<Entity> entities;
+        private Dictionary<int, Entity> entities;
         protected List<Entity> activeEntities;
         protected int components;
         private bool exclusive;
@@ -42,17 +42,17 @@ namespace WatchYourBackLibrary
 
         //Checks each entity on the entity list for matching components. If it is not exclusive, the entity must simply have the components; if it is,
         //the entity must have only those components. The applicable entities are then updated.
-        public void updateEntities(GameTime gameTime)
+        public void updateEntities(TimeSpan gameTime)
         {
             activeEntities.Clear();
             if (exclusive)
             {
-                foreach (Entity entity in entities)
+                foreach (Entity entity in entities.Values)
                     if ((entity.Mask ^ components) == 0)
                         activeEntities.Add(entity);
             }
             else
-                foreach (Entity entity in entities)
+                foreach (Entity entity in entities.Values)
                     if ((entity.Mask & components) == components)
                         activeEntities.Add(entity);
             update(gameTime);
@@ -68,6 +68,6 @@ namespace WatchYourBackLibrary
         public bool Loop { get { return updateLoop; } }
 
         //Logic goes here
-        public abstract void update(GameTime gameTime);
+        public abstract void update(TimeSpan gameTime);
     }
 }

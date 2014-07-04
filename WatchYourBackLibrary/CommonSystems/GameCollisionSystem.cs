@@ -17,11 +17,11 @@ namespace WatchYourBackLibrary
         public GameCollisionSystem()
             : base(false, true, 4)
         {
-            components += TransformComponent.bitMask;
-            components += ColliderComponent.bitMask;
+            components += (int)Masks.TRANSFORM;
+            components += (int)Masks.COLLIDER;
         }
 
-        public override void update(GameTime gameTime)
+        public override void update(TimeSpan gameTime)
         {
             foreach (Entity entity in activeEntities)
                 if (entity.hasComponent(Masks.VELOCITY))

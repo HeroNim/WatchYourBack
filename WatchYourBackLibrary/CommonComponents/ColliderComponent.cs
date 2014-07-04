@@ -11,7 +11,7 @@ namespace WatchYourBackLibrary
 {
     public class ColliderComponent : EComponent
     {
-        public readonly static int bitMask = (int)Masks.COLLIDER;
+        public override int BitMask { get { return (int)Masks.COLLIDER; } }
         public override Masks Mask { get { return Masks.COLLIDER; } }
 
         private Rectangle collider;

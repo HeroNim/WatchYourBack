@@ -30,7 +30,7 @@ namespace WatchYourBack
         public GameInputSystem()
             : base(false, true, 2)
         {
-            components += AvatarInputComponent.bitMask;
+            components += (int)Masks.PLAYER_INPUT;
             mappings = new Dictionary<KeyBindings, Keys>();
             mappings.Add(KeyBindings.LEFT, Keys.Left);
             mappings.Add(KeyBindings.RIGHT, Keys.Right);
@@ -40,7 +40,7 @@ namespace WatchYourBack
             mappings.Add(KeyBindings.ATTACK, Keys.Space);
         }
 
-        public override void update(GameTime gameTime)
+        public override void update(TimeSpan gameTime)
         {
             //If (state == Playing)
             AvatarInputComponent p1;
@@ -67,7 +67,7 @@ namespace WatchYourBack
                 if (Keyboard.GetState().IsKeyDown(mappings[KeyBindings.PAUSE]))
                     onFire(new InputArgs(Inputs.PAUSE));   
                 if(ms.LeftButton == ButtonState.Pressed)
-                    onFire(p1.getEntity(), new InputArgs(Inputs.ATTACK));
+                    onFire(p1.getEntity(), new InputArgs(Inputs.ATTACK, ms.X, ms.Y));
             }
         }
 

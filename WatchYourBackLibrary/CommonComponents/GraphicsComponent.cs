@@ -15,7 +15,7 @@ namespace WatchYourBackLibrary
     public class GraphicsComponent : EComponent
     {
 
-        public readonly static int bitMask = (int)Masks.GRAPHICS;
+        public override int BitMask { get { return (int)Masks.GRAPHICS; } }
         public override Masks Mask { get { return Masks.GRAPHICS; } }
 
         private Texture2D spriteTexture;
@@ -63,7 +63,7 @@ namespace WatchYourBackLibrary
         public int Y { get { return body.Y; } set { body.Y = value; } }
 
         public Texture2D Sprite { get { return spriteTexture; } }
-        public Rectangle Body { get { return body; } }
+        public Rectangle Body { get { return body; } set { body = value; } }
         public Color SpriteColor { get { return color; } set { color = value; } }
         public Color FontColor { get { return fontColor; } set { fontColor = value; } }
         public SpriteFont Font { get { return font; } set { font = value; } }

@@ -22,13 +22,13 @@ namespace WatchYourBack
 
          public MenuInputSystem() : base(false, true, 1)
         {
-            components += ColliderComponent.bitMask;
-            components += ButtonComponent.bitMask;
+            components += (int)Masks.COLLIDER;
+            components += (int)Masks.BUTTON;
             clickable = false;
             collided = false;
         }
 
-         public override void update(GameTime gameTime)
+         public override void update(TimeSpan gameTime)
         {
             MouseState ms = Mouse.GetState();
             collided = false;

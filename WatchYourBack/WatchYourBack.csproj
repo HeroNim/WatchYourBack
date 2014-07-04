@@ -38,13 +38,10 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Core\ECSManager.cs" />
+    <Compile Include="Core\ClientECSManager.cs" />
     <Compile Include="Systems\ClientUpdateSystem.cs" />
-    <Compile Include="Systems\AttackSystem.cs" />
-    <Compile Include="Systems\LevelSystem.cs" />
     <Compile Include="Core\ClientGameLoop.cs" />
     <Compile Include="Core\Program.cs" />
-    <Compile Include="Core\EFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

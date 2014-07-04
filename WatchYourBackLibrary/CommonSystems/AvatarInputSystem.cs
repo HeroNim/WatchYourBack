@@ -18,11 +18,11 @@ namespace WatchYourBackLibrary
         public AvatarInputSystem()
             : base(false, true, 3)
         {
-            components += AvatarInputComponent.bitMask;
-            components += VelocityComponent.bitMask;
+            components += (int)Masks.PLAYER_INPUT;
+            components += (int)Masks.VELOCITY;
         }
 
-        public override void update(GameTime gameTime)
+        public override void update(TimeSpan gameTime)
         {
             foreach (Entity entity in activeEntities)
             {

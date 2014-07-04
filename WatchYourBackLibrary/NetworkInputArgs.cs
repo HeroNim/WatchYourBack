@@ -7,18 +7,20 @@ using Microsoft.Xna.Framework;
 
 namespace WatchYourBackLibrary
 {
+    
+
     [Serializable()]
-    public class NetworkArgs : EventArgs
+    public class NetworkInputArgs : EventArgs
     {
         private long sender;
+
         private int xInput;
         private int yInput;
         private int mouseX;
         private int mouseY;
         private bool clicked;
 
-
-        public NetworkArgs(long sender, int xInput, int yInput, Vector2 mouseLoc, bool clicked)
+        public NetworkInputArgs(long sender, int xInput, int yInput, Vector2 mouseLoc, bool clicked)
         {
             this.sender = sender;
             this.xInput = xInput;

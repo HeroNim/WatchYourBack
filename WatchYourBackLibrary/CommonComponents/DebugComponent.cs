@@ -9,7 +9,7 @@ namespace WatchYourBackLibrary
 {
     public class DebugComponent : EComponent
     {
-        public readonly static int bitMask = (int)Masks.DEBUG;
+        public override int BitMask { get { return (int)Masks.DEBUG; } }
         public override Masks Mask { get { return Masks.DEBUG; } }
     }
 }
