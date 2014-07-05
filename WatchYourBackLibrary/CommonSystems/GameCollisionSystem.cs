@@ -23,22 +23,27 @@ namespace WatchYourBackLibrary
 
         public override void update(TimeSpan gameTime)
         {
+            
             foreach (Entity entity in activeEntities)
                 if (entity.hasComponent(Masks.VELOCITY))
                 {
+                    TransformComponent t1 = (TransformComponent)entity.Components[Masks.TRANSFORM];
                     foreach (Entity other in activeEntities)
-                        if(!haveSameAllegiance(entity, other))
-                            if (entity != other && entity.hasComponent(Masks.VELOCITY) && !other.hasComponent(Masks.LINE_COLLIDER))
+                    {
+                        TransformComponent t2 = (TransformComponent)other.Components[Masks.TRANSFORM];
+                        if (!haveSameAllegiance(entity, other))
+                            if (entity != other && entity.hasComponent(Masks.VELOCITY) && !other.hasComponent(Masks.LINE_COLLIDER) && TransformComponent.distanceBetween(t1, t2) < 50)
                             {
                                 if (!entity.hasComponent(Masks.LINE_COLLIDER))
                                     checkBoxCollisions(entity, other);
                                 else if (entity.hasComponent(Masks.LINE_COLLIDER))
                                     checkLineCollision(entity, other);
                             }
-                    TransformComponent t1 = (TransformComponent)entity.Components[Masks.TRANSFORM];
+                    }
+
                     t1.resetLocks();
                 }
-
+            
         }
 
 

@@ -59,6 +59,7 @@ namespace WatchYourBack
             graphics.IsFullScreen = true;
             this.IsMouseVisible = true;
             Content.RootDirectory = "Content";
+            
 
             //----------------------------------------------------------------------------------------------------------
             NetPeerConfiguration config = new NetPeerConfiguration("WatchYourBack");

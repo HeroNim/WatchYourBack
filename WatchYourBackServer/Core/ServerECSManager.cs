@@ -115,18 +115,13 @@ namespace WatchYourBackServer
          */
         public void update(TimeSpan gameTime)
         {
-
             
             //Update the systems
             foreach (ESystem system in systems)
-            {
-                if (ActiveEntities.Count > 200 || ChangedEntities.Count > 200)
-                    Console.WriteLine("Big");
+            {            
                 if (system.Loop == true)
-                    system.updateEntities(gameTime);
+                    system.updateEntities(gameTime);   
             }
-
-            
             
         }
 

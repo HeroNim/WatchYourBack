@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
@@ -22,12 +23,15 @@ namespace WatchYourBackServer
         int playerIndex;
 
 
+
         public ServerUpdateSystem(NetServer server)
-           : base(false, true, 2) 
+            : base(false, true, 2)
         {
             components += (int)Masks.PLAYER_INPUT;
             this.server = server;
             sendData = new List<NetworkEntityArgs>();
+
+
         }
 
         public override void update(TimeSpan gameTime)
@@ -37,34 +41,14 @@ namespace WatchYourBackServer
             AvatarInputComponent playerInputComponent;
             playerIndex = 0;
 
-            //Output
-
-            foreach(int id in manager.ChangedEntities.Keys)
-            {
-
-                Entity e = manager.ActiveEntities[id];
-                if (e.hasComponent(Masks.TRANSFORM))
-                {
-                    TransformComponent transform = (TransformComponent)e.Components[Masks.TRANSFORM];
-                    sendData.Add(new NetworkEntityArgs(e.Type, manager.ChangedEntities[id], e.ID, transform.X, transform.Y, transform.Width, transform.Height, transform.Rotation));
-                }
-            }
-
-            NetOutgoingMessage om = server.CreateMessage();
-            om.Write(SerializationHelper.Serialize(sendData));
-            server.SendToAll(om, NetDeliveryMethod.UnreliableSequenced);
-            sendData.Clear();
-            manager.ChangedEntities.Clear();
-            manager.RemoveAll();
-            
-
-            foreach(NetConnection player in server.Connections)
+            foreach (NetConnection player in server.Connections)
             {
                 while ((msg = server.ReadMessage()) != null)
                 {
+
                     switch (msg.MessageType)
                     {
-                        case NetIncomingMessageType.DiscoveryRequest:   
+                        case NetIncomingMessageType.DiscoveryRequest:
                         case NetIncomingMessageType.VerboseDebugMessage:
                         case NetIncomingMessageType.DebugMessage:
                         case NetIncomingMessageType.WarningMessage:
@@ -75,7 +59,7 @@ namespace WatchYourBackServer
                             Console.WriteLine(msg.ReadString());
                             break;
                         case NetIncomingMessageType.StatusChanged:
-                            NetConnectionStatus status = (NetConnectionStatus)msg.ReadByte(); 
+                            NetConnectionStatus status = (NetConnectionStatus)msg.ReadByte();
                             if (status == NetConnectionStatus.Disconnected)
                             {
                                 Console.WriteLine(NetUtility.ToHexString(msg.SenderConnection.RemoteUniqueIdentifier) + " disconnected");
@@ -102,14 +86,15 @@ namespace WatchYourBackServer
                             else
                                 playerInputComponent.MoveY = 0;
 
-                            if(args.Clicked)
+                            if (args.Clicked)
                                 onFire(playerInputComponent.getEntity(), new InputArgs(Inputs.ATTACK, args.MouseX, args.MouseY));
-                            
+
+
                             break;
                     }
                     server.Recycle(msg);
                 }
-                
+
 
 
 
@@ -119,10 +104,29 @@ namespace WatchYourBackServer
             playerIndex = 0;
 
 
-            
+
+
+            //Output
+
+            foreach (int id in manager.ChangedEntities.Keys)
+            {
+                Entity e = manager.ActiveEntities[id];
+                if (e.hasComponent(Masks.TRANSFORM))
+                {
+                    TransformComponent transform = (TransformComponent)e.Components[Masks.TRANSFORM];
+                    sendData.Add(new NetworkEntityArgs(e.Type, manager.ChangedEntities[id], e.ID, transform.X, transform.Y, transform.Width, transform.Height, transform.Rotation));
+                }
+            }
+
+            NetOutgoingMessage om = server.CreateMessage();
+            om.Write(SerializationHelper.Serialize(sendData));
+            server.SendToAll(om, NetDeliveryMethod.UnreliableSequenced);
+            sendData.Clear();
+            manager.ChangedEntities.Clear();
+            manager.RemoveAll();
+
 
         }
-
         
 
         public event EventHandler inputFired;

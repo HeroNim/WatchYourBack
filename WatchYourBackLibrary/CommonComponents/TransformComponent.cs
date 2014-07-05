@@ -153,5 +153,13 @@ namespace WatchYourBackLibrary
             xLock = false;
             yLock = false;
         }
+
+        public static float distanceBetween(TransformComponent t1, TransformComponent t2)
+        {
+            float y = Math.Abs(t1.Center.Y - t2.Center.Y);
+            float x = Math.Abs(t1.Center.X - t2.Center.X);
+
+            return (float)Math.Sqrt((x * x) + (y * y));
+        }
     }
 }

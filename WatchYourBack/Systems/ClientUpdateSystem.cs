@@ -23,9 +23,15 @@ namespace WatchYourBack
         private Vector2 mouseLocation;
         private bool mouseClicked;
         List<NetworkEntityArgs> receivedData;
-        List<NetworkEntityArgs> lastData;
+        
+        
+        int bufferCount;
+        int consecutive;
+        bool stabilized;
+        
+        
+        List<List<NetworkEntityArgs>> buffer; //Holds incoming messages
 
-        private List<COMMANDS>[] debug;
 
 
         private NetworkInputArgs toSend;
@@ -35,9 +41,12 @@ namespace WatchYourBack
         public ClientUpdateSystem(NetClient client) : base(false, true, 2)
         {
             this.client = client;
-            
+            consecutive = 0;
+            stabilized = false;
+            bufferCount = 1;
+
             receivedData = new List<NetworkEntityArgs>();
-            lastData = new List<NetworkEntityArgs>();
+            buffer = new List<List<NetworkEntityArgs>>();
             mappings = new Dictionary<KeyBindings, Keys>();
             mappings.Add(KeyBindings.LEFT, Keys.Left);
             mappings.Add(KeyBindings.RIGHT, Keys.Right);
@@ -46,13 +55,13 @@ namespace WatchYourBack
             mappings.Add(KeyBindings.PAUSE, Keys.Escape);
             mappings.Add(KeyBindings.ATTACK, Keys.Space);
 
-            debug = new List<COMMANDS>[5000];
-            for (int i = 0; i < debug.Length; i++ )
-                debug[i] = new List<COMMANDS>();
         }
 
         public override void update(TimeSpan gameTime)
         {
+            int msgCount = 0;
+    
+
             MouseState ms = Mouse.GetState();
             mouseLocation = new Vector2(ms.X, ms.Y);
 
@@ -75,53 +84,61 @@ namespace WatchYourBack
             manager.ChangedEntities.Clear();
 
             NetIncomingMessage msg;
-            
-                while ((msg = client.ReadMessage()) != null)
+
+            while ((msg = client.ReadMessage()) != null)
+            {
+                
+                msgCount++;
+                switch (msg.MessageType)
                 {
-                    switch (msg.MessageType)
+                    case NetIncomingMessageType.Data:                     
+                        buffer.Add(SerializationHelper.DeserializeObject<List<NetworkEntityArgs>>(msg.ReadBytes(msg.LengthBytes)));
+                        client.Recycle(msg);
+                        break;
+                }
+            }
+
+            bufferCount += msgCount - 1;
+            Console.WriteLine(bufferCount);
+
+            while (buffer.Count != 0 && bufferCount >= 0)
+            {
+                List<NetworkEntityArgs> receivedData = buffer[0];
+                buffer.RemoveAt(0);
+                foreach (NetworkEntityArgs args in receivedData)
+                {
+                    Rectangle body = new Rectangle((int)args.XPos, (int)args.YPos, args.Width, args.Height);
+                    Texture2D texture = null;
+                    switch (args.Command)
                     {
-                        case NetIncomingMessageType.Data:
-                            receivedData = SerializationHelper.DeserializeObject<List<NetworkEntityArgs>>(msg.ReadBytes(msg.LengthBytes));
-                            foreach (NetworkEntityArgs args in receivedData)
+                        case COMMANDS.ADD:
+                            texture = getTexture(args.Type);
+                            manager.addEntity(EFactory.createGraphics(body, args.Rotation, args.ID, texture));
+                            break;
+                        case COMMANDS.REMOVE:
+                            manager.ActiveEntities.Remove(args.ID);
+                            break;
+                        case COMMANDS.MODIFY:
+                            try
                             {
-                                Rectangle body = new Rectangle((int)args.XPos, (int)args.YPos, args.Width, args.Height);
-                                debug[args.ID].Add(args.Command);
-                                Texture2D texture = null;
-                                switch (args.Command)
-                                {
-                                    case COMMANDS.ADD:
-                                        texture = getTexture(args.Type);
-                                        manager.addEntity(EFactory.createGraphics(body, args.Rotation, args.ID, texture));
-                                        break;
-                                    case COMMANDS.REMOVE:
-                                        manager.ActiveEntities.Remove(args.ID);
-                                        break;
-                                    case COMMANDS.MODIFY:
-                                        try
-                                        {
-                                            Entity e = manager.ActiveEntities[args.ID];
-                                            GraphicsComponent graphics = (GraphicsComponent)e.Components[Masks.GRAPHICS];
-                                            graphics.Body = body;
-                                            graphics.RotationAngle = args.Rotation;
-                                        }
-                                        catch(KeyNotFoundException)
-                                        {
-                                            texture = getTexture(args.Type);
-                                            manager.addEntity(EFactory.createGraphics(body, args.Rotation, args.ID, texture));
-                                            Console.WriteLine("Modify before Add caught and fixed");
-                                        }
-                                        break;
-
-
-                                }
+                                Entity e = manager.ActiveEntities[args.ID];
+                                GraphicsComponent graphics = (GraphicsComponent)e.Components[Masks.GRAPHICS];
+                                graphics.Body = body;
+                                graphics.RotationAngle = args.Rotation;
                             }
-                            receivedData = null;
-
+                            catch (KeyNotFoundException)
+                            {
+                                texture = getTexture(args.Type);
+                                manager.addEntity(EFactory.createGraphics(body, args.Rotation, args.ID, texture));
+                                Console.WriteLine("Modify before Add caught and fixed");
+                            }
                             break;
                     }
-
-
+                }
             }
+                //Console.WriteLine(msgCount);
+            
+                
             
         }
 

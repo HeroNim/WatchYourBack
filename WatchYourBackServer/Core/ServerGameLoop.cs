@@ -20,8 +20,7 @@ namespace WatchYourBackServer
         TimeSpan gameTime;
         
 
-        double nextUpdate;
-        double lastUpdate;
+        float nextUpdate;
         
         World inGame;
 
@@ -48,8 +47,7 @@ namespace WatchYourBackServer
             server = new NetServer(config);
             server.Start();
 
-            nextUpdate = NetTime.Now;
-            lastUpdate = 0;
+            nextUpdate = (float)NetTime.Now;
             levels = new List<LevelTemplate>();
 
             NetIncomingMessage msg;
@@ -134,12 +132,11 @@ namespace WatchYourBackServer
         //Pseudo-XNA style gametime. Would probably cause problems on a larger scale game (still might).
         private void Update()
         {
-            double now = NetTime.Now;
-            if (now > nextUpdate)
+            float now = (float)NetTime.Now;
+            while (now > nextUpdate)
             {
-                lastUpdate = NetTime.Now;
-                nextUpdate = lastUpdate + (1.0 / 60.0);
-                double dif = nextUpdate - lastUpdate;
+                nextUpdate = now + (1.0f / 60.0f);
+                float dif = nextUpdate - now;
                 gameTime = new TimeSpan((long)(TimeSpan.TicksPerSecond * dif));
                 inGame.Manager.update(gameTime);
 
