@@ -116,20 +116,16 @@ namespace WatchYourBack
 
         public void update(TimeSpan gameTime)
         {
-
-
             RemoveAll();
             //Update the systems
             foreach (ESystem system in systems)
             {
                 if (system.Loop == true)
                     system.updateEntities(gameTime);
-            }
-
-            
-           
-            
+            }    
         }
+
+        public double[] Accumulator { get; set; }
 
         public void RemoveAll()
         {

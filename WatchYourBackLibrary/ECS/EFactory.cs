@@ -33,11 +33,12 @@ namespace WatchYourBackLibrary
             return e;
         }
 
-        public static Entity createGraphics(Rectangle rect, float rotation, int ID, Texture2D texture)
+        public static Entity createGraphics(Rectangle rect, float rotation, int ID, Texture2D texture, ENTITIES type)
         { 
             Entity e = new Entity(
             new GraphicsComponent(rect, texture, rotation, new Vector2(texture.Width/2, texture.Height)));
             e.ID = ID;
+            e.Type = type;
             return e;
         }
 

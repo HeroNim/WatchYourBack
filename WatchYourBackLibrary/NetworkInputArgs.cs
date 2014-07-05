@@ -19,8 +19,9 @@ namespace WatchYourBackLibrary
         private int mouseX;
         private int mouseY;
         private bool clicked;
+        private double drawTime;
 
-        public NetworkInputArgs(long sender, int xInput, int yInput, Vector2 mouseLoc, bool clicked)
+        public NetworkInputArgs(long sender, int xInput, int yInput, Vector2 mouseLoc, bool clicked, double drawTime)
         {
             this.sender = sender;
             this.xInput = xInput;
@@ -28,6 +29,8 @@ namespace WatchYourBackLibrary
             mouseX = (int)mouseLoc.X;
             mouseY = (int)mouseLoc.Y;
             this.clicked = clicked;
+            this.drawTime = drawTime;
+
         }
 
         public override string ToString()
@@ -40,6 +43,7 @@ namespace WatchYourBackLibrary
         public int MouseX { get { return mouseX; } }
         public int MouseY { get { return mouseY; } }
         public bool Clicked { get { return clicked; } }
+        public double DrawTime { get { return drawTime; } }
         
     }
 }

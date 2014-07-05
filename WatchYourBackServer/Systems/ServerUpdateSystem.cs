@@ -20,8 +20,11 @@ namespace WatchYourBackServer
     {
         NetServer server;
         List<NetworkEntityArgs> sendData;
+        bool updating;
         int playerIndex;
-
+        const double timeStep = 1.0 / (double)SERVER_PROPERTIES.TIME_STEP;
+        double[] interpolation;
+        double[] accumulator;
 
 
         public ServerUpdateSystem(NetServer server)
@@ -30,100 +33,135 @@ namespace WatchYourBackServer
             components += (int)Masks.PLAYER_INPUT;
             this.server = server;
             sendData = new List<NetworkEntityArgs>();
-
+            interpolation = new double[server.ConnectionsCount];
+            updating = false;
 
         }
 
+
+        /*
+         * The update loop pulls all the draw rates of the players, and adds that value to their accumulators. When EVERY accumulator has more time than the fixed
+         * update rate, the server updates the entities. In the meantime, any player that is waiting on an update will receive interpolated graphics values whenever
+         * they send input, based on the ratio between how much time is in their accumulator and the fixed update rate. This means that every player should receive
+         * at least one packet from the server per cycle.
+         * 
+         * For example, if one player is drawing four times faster than another, the faster player will receive four interpolated values before receiving an actual update.
+         * To the client, the interpolated values are no different than an actual update; however, the server side entities are not actually updated when interpolation occurs.
+         */
         public override void update(TimeSpan gameTime)
         {
-            NetIncomingMessage msg;
-            NetworkInputArgs args;
-            AvatarInputComponent playerInputComponent;
-            playerIndex = 0;
-
-            foreach (NetConnection player in server.Connections)
+            if (updating)
             {
-                while ((msg = server.ReadMessage()) != null)
+                foreach (int id in manager.ChangedEntities.Keys)
                 {
-
-                    switch (msg.MessageType)
+                    Entity e = manager.ActiveEntities[id];
+                    if (e.hasComponent(Masks.TRANSFORM))
                     {
-                        case NetIncomingMessageType.DiscoveryRequest:
-                        case NetIncomingMessageType.VerboseDebugMessage:
-                        case NetIncomingMessageType.DebugMessage:
-                        case NetIncomingMessageType.WarningMessage:
-                        case NetIncomingMessageType.ErrorMessage:
-                            //
-                            // Just print diagnostic messages to console
-                            //
-                            Console.WriteLine(msg.ReadString());
-                            break;
-                        case NetIncomingMessageType.StatusChanged:
-                            NetConnectionStatus status = (NetConnectionStatus)msg.ReadByte();
-                            if (status == NetConnectionStatus.Disconnected)
-                            {
-                                Console.WriteLine(NetUtility.ToHexString(msg.SenderConnection.RemoteUniqueIdentifier) + " disconnected");
-                            }
-                            break;
-                        case NetIncomingMessageType.Data:
-                            //
-                            // The client sent input to the server
-                            //
-                            args = SerializationHelper.DeserializeObject<NetworkInputArgs>(msg.ReadBytes(msg.LengthBytes));
-                            playerInputComponent = (AvatarInputComponent)activeEntities[playerIndex].Components[Masks.PLAYER_INPUT];
-
-                            if (args.XInput == 1)
-                                playerInputComponent.MoveX = 1;
-                            else if (args.XInput == -1)
-                                playerInputComponent.MoveX = -1;
-                            else
-                                playerInputComponent.MoveX = 0;
-
-                            if (args.YInput == 1)
-                                playerInputComponent.MoveY = 1;
-                            else if (args.YInput == -1)
-                                playerInputComponent.MoveY = -1;
-                            else
-                                playerInputComponent.MoveY = 0;
-
-                            if (args.Clicked)
-                                onFire(playerInputComponent.getEntity(), new InputArgs(Inputs.ATTACK, args.MouseX, args.MouseY));
-
-
-                            break;
+                        TransformComponent transform = (TransformComponent)e.Components[Masks.TRANSFORM];
+                        sendData.Add(new NetworkEntityArgs(e.Type, manager.ChangedEntities[id], e.ID, transform.X, transform.Y, transform.Width, transform.Height, transform.Rotation));
                     }
-                    server.Recycle(msg);
                 }
 
-
-
-
-                playerIndex++;
-
+                NetOutgoingMessage om = server.CreateMessage();
+                om.Write(SerializationHelper.Serialize(sendData));
+                server.SendToAll(om, NetDeliveryMethod.UnreliableSequenced);
+                sendData.Clear();
+                manager.ChangedEntities.Clear();
+                manager.RemoveAll();
+                updating = false;
+                for (int i = 0; i < accumulator.Length; i++ )
+                {
+                    accumulator[i] -= timeStep;
+                }
             }
-            playerIndex = 0;
+
+            while (!updating)
+            {
+                
+
+                NetIncomingMessage msg;
+                NetworkInputArgs args;
+                AvatarInputComponent playerInputComponent;
+                playerIndex = 0;
+
+                foreach (NetConnection player in server.Connections)
+                {
+                    while ((msg = server.ReadMessage()) != null)
+                    {
+                        switch (msg.MessageType)
+                        {
+                            case NetIncomingMessageType.DiscoveryRequest:
+                            case NetIncomingMessageType.VerboseDebugMessage:
+                            case NetIncomingMessageType.DebugMessage:
+                            case NetIncomingMessageType.WarningMessage:
+                            case NetIncomingMessageType.ErrorMessage:
+                                //
+                                // Just print diagnostic messages to console
+                                //
+                                Console.WriteLine(msg.ReadString());
+                                break;
+                            case NetIncomingMessageType.StatusChanged:
+                                NetConnectionStatus status = (NetConnectionStatus)msg.ReadByte();
+                                if (status == NetConnectionStatus.Disconnected)
+                                {
+                                    Console.WriteLine(NetUtility.ToHexString(msg.SenderConnection.RemoteUniqueIdentifier) + " disconnected");
+                                }
+                                break;
+                            case NetIncomingMessageType.Data:
+                                //
+                                // The client sent input to the server
+                                //
+                                args = SerializationHelper.DeserializeObject<NetworkInputArgs>(msg.ReadBytes(msg.LengthBytes));
+                                playerInputComponent = (AvatarInputComponent)activeEntities[playerIndex].Components[Masks.PLAYER_INPUT];
+
+                                if (args.XInput == 1)
+                                    playerInputComponent.MoveX = 1;
+                                else if (args.XInput == -1)
+                                    playerInputComponent.MoveX = -1;
+                                else
+                                    playerInputComponent.MoveX = 0;
+
+                                if (args.YInput == 1)
+                                    playerInputComponent.MoveY = 1;
+                                else if (args.YInput == -1)
+                                    playerInputComponent.MoveY = -1;
+                                else
+                                    playerInputComponent.MoveY = 0;
+
+                                if (args.Clicked)
+                                    onFire(playerInputComponent.getEntity(), new InputArgs(Inputs.ATTACK, args.MouseX, args.MouseY));
+
+
+                                accumulator[playerIndex] += args.DrawTime;
+                                Console.WriteLine(accumulator[playerIndex]);
+                                interpolate(playerIndex, interpolation[playerIndex]);
+
+                                break;
+                        }
+                        server.Recycle(msg);
+                    }
+                    playerIndex++;
+                }
+                playerIndex = 0;
+
+                for(int i = 0; i < manager.Accumulator.Length; i++)
+                {
+                    if (accumulator[i] < timeStep)
+                    {
+                        updating = false;
+                        interpolation[i] = (accumulator[i] % timeStep) / timeStep;
+                        break;
+                    }
+                    updating = true;
+                }
+            }
 
 
 
 
             //Output
 
-            foreach (int id in manager.ChangedEntities.Keys)
-            {
-                Entity e = manager.ActiveEntities[id];
-                if (e.hasComponent(Masks.TRANSFORM))
-                {
-                    TransformComponent transform = (TransformComponent)e.Components[Masks.TRANSFORM];
-                    sendData.Add(new NetworkEntityArgs(e.Type, manager.ChangedEntities[id], e.ID, transform.X, transform.Y, transform.Width, transform.Height, transform.Rotation));
-                }
-            }
-
-            NetOutgoingMessage om = server.CreateMessage();
-            om.Write(SerializationHelper.Serialize(sendData));
-            server.SendToAll(om, NetDeliveryMethod.UnreliableSequenced);
-            sendData.Clear();
-            manager.ChangedEntities.Clear();
-            manager.RemoveAll();
+            
 
 
         }
@@ -143,8 +181,32 @@ namespace WatchYourBackServer
                 inputFired(sender, e);
         }
 
-        
+        private void interpolate(int playerIndex, double interpolationFactor)
+        {
+            foreach(Entity e in manager.ActiveEntities.Values)
+            {
+                if(e.hasComponent(Masks.TRANSFORM) && e.hasComponent(Masks.VELOCITY))
+                {
+                    TransformComponent transform = (TransformComponent)e.Components[Masks.TRANSFORM];
+                    VelocityComponent velocity = (VelocityComponent)e.Components[Masks.VELOCITY];
+                    float x = transform.X + (float)(velocity.X * interpolationFactor);
+                    float y = transform.Y + (float)(velocity.Y * interpolationFactor);
+                    float rotation = transform.Rotation + (float)(velocity.RotationSpeed * interpolationFactor);
+                    sendData.Add(new NetworkEntityArgs(e.Type, COMMANDS.MODIFY, e.ID, x, y, transform.Width, transform.Height, rotation));
+                }
+            }
 
+            NetOutgoingMessage om = server.CreateMessage();
+            om.Write(SerializationHelper.Serialize(sendData));
+            server.SendMessage(om, server.Connections[playerIndex], NetDeliveryMethod.ReliableOrdered);
+            sendData.Clear();
+        }
+
+        public double[] Accumulator
+        {
+            get { return accumulator; }
+            set { accumulator = value; }
+        }
         
     }
 }

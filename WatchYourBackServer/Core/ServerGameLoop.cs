@@ -29,6 +29,7 @@ namespace WatchYourBackServer
 
         public ServerGameLoop()
         {
+            gameTime = new TimeSpan();
             playing = false;
             initializing = false;
             Initialize();
@@ -132,25 +133,19 @@ namespace WatchYourBackServer
         //Pseudo-XNA style gametime. Would probably cause problems on a larger scale game (still might).
         private void Update()
         {
-            float now = (float)NetTime.Now;
-            while (now > nextUpdate)
-            {
-                nextUpdate = now + (1.0f / 60.0f);
-                float dif = nextUpdate - now;
-                gameTime = new TimeSpan((long)(TimeSpan.TicksPerSecond * dif));
+            while (true)
                 inGame.Manager.update(gameTime);
-
-            }
             
         }
        
         private void createGame()
         {
             inGame = new World(Worlds.IN_GAME);
-            inGame.addManager(new ServerECSManager());
+            inGame.addManager(new ServerECSManager(server.ConnectionsCount));
             ServerUpdateSystem input = new ServerUpdateSystem(server);
             inGame.Manager.addSystem(input);
             inGame.Manager.addInput(input);
+            input.Accumulator = inGame.Manager.Accumulator;
 
             inGame.Manager.addSystem(new AvatarInputSystem());
             inGame.Manager.addSystem(new GameCollisionSystem());

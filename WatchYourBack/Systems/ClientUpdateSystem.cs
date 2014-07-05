@@ -72,7 +72,7 @@ namespace WatchYourBack
             if (ms.LeftButton == ButtonState.Pressed)
                 mouseClicked = true;
 
-            toSend = new NetworkInputArgs(client.UniqueIdentifier, xInput, yInput, mouseLocation, mouseClicked);
+            toSend = new NetworkInputArgs(client.UniqueIdentifier, xInput, yInput, mouseLocation, mouseClicked, gameTime.TotalSeconds);
             NetOutgoingMessage om = client.CreateMessage();
             om.Write(SerializationHelper.Serialize(toSend));
             client.SendMessage(om, NetDeliveryMethod.ReliableOrdered); 
@@ -109,7 +109,7 @@ namespace WatchYourBack
                     {
                         case COMMANDS.ADD:
                             texture = getTexture(args.Type);
-                            manager.addEntity(EFactory.createGraphics(body, args.Rotation, args.ID, texture));
+                            manager.addEntity(EFactory.createGraphics(body, args.Rotation, args.ID, texture, args.Type));
                             break;
                         case COMMANDS.REMOVE:
                             manager.ActiveEntities.Remove(args.ID);
@@ -124,9 +124,8 @@ namespace WatchYourBack
                             }
                             catch (KeyNotFoundException)
                             {
-                                texture = getTexture(args.Type);
-                                manager.addEntity(EFactory.createGraphics(body, args.Rotation, args.ID, texture));
-                                Console.WriteLine("Modify before Add caught and fixed");
+                                
+                                Console.WriteLine("Modify before Add caught");
                             }
                             break;
                     }

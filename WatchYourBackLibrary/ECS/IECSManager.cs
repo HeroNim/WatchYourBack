@@ -50,6 +50,9 @@ namespace WatchYourBackLibrary
         void clearEntities();
 
         void RemoveAll();
+
+        
+        double[] Accumulator { get; set; }
        
 
         /*

@@ -12,6 +12,11 @@ using WatchYourBackLibrary;
 
 namespace WatchYourBackServer
 {
+    public enum SERVER_PROPERTIES
+    {
+        TIME_STEP = 60
+    }
+
     /* Manages the systems in the game. Is responsible for initializing, updating, and removing systems as needed. Also contains a list of
      * all the entities which has changed during the last update cycle; this allows for the server to send data to the client on what needs
      * to be removed, added, or modified.
@@ -26,10 +31,13 @@ namespace WatchYourBackServer
         private Dictionary<int, COMMANDS> changedEntities;
         private List<Entity> removal;
         private InputSystem input;
+        const double timeStep = 1.0 / (double)SERVER_PROPERTIES.TIME_STEP;
+
+        double[] accumulator;
 
         
 
-        public ServerECSManager()
+        public ServerECSManager(int playerCount)
         {
             systems = new List<ESystem>();
             activeEntities = new Dictionary<int, Entity>();
@@ -37,6 +45,7 @@ namespace WatchYourBackServer
             removal = new List<Entity>();
             inactiveEntities = new Dictionary<int, Entity>();
             currentID = 0;
+            accumulator = new double[playerCount];
         }
 
         public void addContent(ContentManager content) { }
@@ -112,17 +121,26 @@ namespace WatchYourBackServer
         /*
          * Updates the entity lists of the manager, moving active/inactive entities to their proper lists. Any systems that run
          * during the update loop are then updated.
+         * 
+         * 
          */
         public void update(TimeSpan gameTime)
         {
-            
+
+            gameTime = TimeSpan.FromTicks((long)(TimeSpan.TicksPerSecond * timeStep));
+            Console.WriteLine(gameTime.TotalSeconds);
             //Update the systems
             foreach (ESystem system in systems)
             {            
                 if (system.Loop == true)
                     system.updateEntities(gameTime);   
-            }
-            
+            }         
+        }
+
+        public double[] Accumulator
+        {
+            get { return accumulator; }
+            set { accumulator = value; }
         }
 
         public void RemoveAll()
