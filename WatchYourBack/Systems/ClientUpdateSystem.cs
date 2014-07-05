@@ -26,8 +26,6 @@ namespace WatchYourBack
         
         
         int bufferCount;
-        int consecutive;
-        bool stabilized;
         
         
         List<List<NetworkEntityArgs>> buffer; //Holds incoming messages
@@ -41,8 +39,6 @@ namespace WatchYourBack
         public ClientUpdateSystem(NetClient client) : base(false, true, 2)
         {
             this.client = client;
-            consecutive = 0;
-            stabilized = false;
             bufferCount = 1;
 
             receivedData = new List<NetworkEntityArgs>();
