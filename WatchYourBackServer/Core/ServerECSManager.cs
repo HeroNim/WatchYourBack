@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Content;
 
 using Lidgren.Network;
 using WatchYourBackLibrary;
+using System.Diagnostics;
 
 namespace WatchYourBackServer
 {
@@ -32,6 +33,7 @@ namespace WatchYourBackServer
         private List<Entity> removal;
         private InputSystem input;
         const double timeStep = 1.0 / (double)SERVER_PROPERTIES.TIME_STEP;
+        private Stopwatch debug;
 
         double[] accumulator;
 
@@ -46,6 +48,7 @@ namespace WatchYourBackServer
             inactiveEntities = new Dictionary<int, Entity>();
             currentID = 0;
             accumulator = new double[playerCount];
+            debug = new Stopwatch();
         }
 
         public void addContent(ContentManager content) { }
@@ -125,8 +128,7 @@ namespace WatchYourBackServer
          * 
          */
         public void update(TimeSpan gameTime)
-        {
-
+        {            
             gameTime = TimeSpan.FromTicks((long)(TimeSpan.TicksPerSecond * timeStep));
             Console.WriteLine(gameTime.TotalSeconds);
             //Update the systems
@@ -134,7 +136,7 @@ namespace WatchYourBackServer
             {            
                 if (system.Loop == true)
                     system.updateEntities(gameTime);   
-            }         
+            }
         }
 
         public double[] Accumulator
@@ -142,6 +144,8 @@ namespace WatchYourBackServer
             get { return accumulator; }
             set { accumulator = value; }
         }
+
+        public double DrawTime { get; set; }
 
         public void RemoveAll()
         {

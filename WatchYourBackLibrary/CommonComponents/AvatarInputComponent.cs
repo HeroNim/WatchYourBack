@@ -18,10 +18,17 @@ namespace WatchYourBackLibrary
         
         private int moveX;
         private int moveY;
+        private bool attack;
+        private float lookX;
+        private float lookY;
+
+
 
         public AvatarInputComponent()
         {
-            
+            attack = false;
+            lookX = 0;
+            lookY = 0;
             moveX = 0;
             moveY = 0;
         }
@@ -29,12 +36,16 @@ namespace WatchYourBackLibrary
        
         public int MoveX { get { return moveX; } set { moveX = value; } }
         public int MoveY { get { return moveY; } set { moveY = value; } }
+        public bool Attack { get { return attack; } set { attack = value; } }
+        public float LookX { get { return lookX; } set { lookX = value; } }
+        public float LookY{ get { return lookY; } set { lookY = value; } }
 
-        public void Reset()
+        public void MoveReset()
         {
-            
             moveX = 0;
             moveY = 0;
         }
+
+        
     }
 }

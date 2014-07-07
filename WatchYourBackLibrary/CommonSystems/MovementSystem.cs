@@ -49,7 +49,7 @@ namespace WatchYourBackLibrary
                 {
                     WeaponComponent weapon = (WeaponComponent)entity.Components[Masks.WEAPON];
                     weapon.Arc += Math.Abs(velocity.RotationSpeed);
-                    Console.WriteLine("X: " + transform.X + ", Y: " + transform.Y + ", Rotation: " + transform.Rotation);
+                    
                 }
                 
                 if (entity.hasComponent(Masks.COLLIDER))

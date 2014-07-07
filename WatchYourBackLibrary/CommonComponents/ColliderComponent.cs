@@ -58,7 +58,7 @@ namespace WatchYourBackLibrary
             set { collider = value; }
         }
 
-        public bool Destructable
+        public bool IsDestructable
         {
             get { return destructable; }
             set { destructable = value; }

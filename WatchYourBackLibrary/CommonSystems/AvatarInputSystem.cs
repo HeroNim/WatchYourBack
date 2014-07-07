@@ -11,7 +11,7 @@ namespace WatchYourBackLibrary
 {
 
     /*
-     * Defines the behaviour of the player's movement
+     * Adjusts aspects of the Avatars given various inputs by the players
      */
     public class AvatarInputSystem : ESystem
     {
@@ -20,33 +20,44 @@ namespace WatchYourBackLibrary
         {
             components += (int)Masks.PLAYER_INPUT;
             components += (int)Masks.VELOCITY;
+            components += (int)Masks.TRANSFORM;
         }
 
         public override void update(TimeSpan gameTime)
         {
             foreach (Entity entity in activeEntities)
             {
-                AvatarInputComponent avatarInput = (AvatarInputComponent)entity.Components[Masks.PLAYER_INPUT];
-                VelocityComponent velocityComponent = (VelocityComponent)entity.Components[Masks.VELOCITY];
+                AvatarInputComponent input = (AvatarInputComponent)entity.Components[Masks.PLAYER_INPUT];
+                VelocityComponent velocity = (VelocityComponent)entity.Components[Masks.VELOCITY];
+                TransformComponent transform = (TransformComponent)entity.Components[Masks.TRANSFORM];
+
                 float xVel = 0;
                 float yVel = 0;
 
-                if (avatarInput.MoveY == 1)
+                if (input.MoveY == 1)
                     yVel = 5;
-                else if (avatarInput.MoveY == -1)
+                else if (input.MoveY == -1)
                     yVel = -5;
                 else
                     yVel = 0;
 
-                if (avatarInput.MoveX == 1)
+                if (input.MoveX == 1)
                     xVel = 5;
-                else if (avatarInput.MoveX == -1)
+                else if (input.MoveX == -1)
                     xVel = -5;
                 else
                     xVel = 0;
 
-                velocityComponent.Y = yVel;
-                velocityComponent.X = xVel;
+                velocity.Y = yVel;
+                velocity.X = xVel;
+
+                float xDir = input.LookX - transform.Center.X;
+                float yDir = input.LookY - transform.Center.Y;
+                Vector2 dir = new Vector2(xDir, yDir);
+                dir.Normalize();
+                transform.LookDirection = dir;
+
+
 
                 if(entity.hasComponent(Masks.WIELDER))
                 {

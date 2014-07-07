@@ -25,16 +25,26 @@ namespace WatchYourBackServer
         const double timeStep = 1.0 / (double)SERVER_PROPERTIES.TIME_STEP;
         double[] interpolation;
         double[] accumulator;
+        Dictionary<long, int> playerMap;
 
 
         public ServerUpdateSystem(NetServer server)
-            : base(false, true, 2)
+            : base(false, true, 7)
         {
             components += (int)Masks.PLAYER_INPUT;
             this.server = server;
             sendData = new List<NetworkEntityArgs>();
             interpolation = new double[server.ConnectionsCount];
-            updating = false;
+            updating = true;
+            playerIndex = 0;
+            playerMap = new Dictionary<long, int>();
+
+            foreach(NetConnection player in server.Connections)
+            {
+                playerMap.Add(player.RemoteUniqueIdentifier, playerIndex);
+                playerIndex++;
+            }
+
 
         }
 
@@ -55,7 +65,7 @@ namespace WatchYourBackServer
                 foreach (int id in manager.ChangedEntities.Keys)
                 {
                     Entity e = manager.ActiveEntities[id];
-                    if (e.hasComponent(Masks.TRANSFORM))
+                    if (e.hasComponent(Masks.TRANSFORM) && e.Drawable == true)
                     {
                         TransformComponent transform = (TransformComponent)e.Components[Masks.TRANSFORM];
                         sendData.Add(new NetworkEntityArgs(e.Type, manager.ChangedEntities[id], e.ID, transform.X, transform.Y, transform.Width, transform.Height, transform.Rotation));
@@ -76,18 +86,16 @@ namespace WatchYourBackServer
             }
 
             while (!updating)
-            {
-                
-
+            { 
                 NetIncomingMessage msg;
                 NetworkInputArgs args;
                 AvatarInputComponent playerInputComponent;
-                playerIndex = 0;
+                
 
-                foreach (NetConnection player in server.Connections)
+
+                while ((msg = server.ReadMessage()) != null)
                 {
-                    while ((msg = server.ReadMessage()) != null)
-                    {
+                        playerIndex = playerMap[msg.SenderConnection.RemoteUniqueIdentifier];
                         switch (msg.MessageType)
                         {
                             case NetIncomingMessageType.DiscoveryRequest:
@@ -129,20 +137,26 @@ namespace WatchYourBackServer
                                     playerInputComponent.MoveY = 0;
 
                                 if (args.Clicked)
-                                    onFire(playerInputComponent.getEntity(), new InputArgs(Inputs.ATTACK, args.MouseX, args.MouseY));
+                                {
+                                    playerInputComponent.Attack = true;
+                                }
+                                playerInputComponent.LookX = args.MouseX;
+                                playerInputComponent.LookY = args.MouseY;
 
 
+
+                                Console.WriteLine(args.DrawTime);
                                 accumulator[playerIndex] += args.DrawTime;
-                                Console.WriteLine(accumulator[playerIndex]);
                                 interpolate(playerIndex, interpolation[playerIndex]);
 
                                 break;
-                        }
-                        server.Recycle(msg);
+                        
                     }
-                    playerIndex++;
+                    server.Recycle(msg);
+                    
+                   
                 }
-                playerIndex = 0;
+               
 
                 for(int i = 0; i < manager.Accumulator.Length; i++)
                 {
@@ -183,8 +197,9 @@ namespace WatchYourBackServer
 
         private void interpolate(int playerIndex, double interpolationFactor)
         {
-            foreach(Entity e in manager.ActiveEntities.Values)
+            foreach(int id in manager.ChangedEntities.Values)
             {
+                Entity e = manager.ActiveEntities[id];
                 if(e.hasComponent(Masks.TRANSFORM) && e.hasComponent(Masks.VELOCITY))
                 {
                     TransformComponent transform = (TransformComponent)e.Components[Masks.TRANSFORM];

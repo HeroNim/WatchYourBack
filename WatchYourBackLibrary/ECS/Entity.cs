@@ -24,6 +24,7 @@ namespace WatchYourBackLibrary
     public class Entity
     {
         private int id;
+        private bool drawable;
         private ENTITIES type;
         private int mask;
         private bool isActive;
@@ -36,6 +37,7 @@ namespace WatchYourBackLibrary
             isActive = false;
             components = new Dictionary<Masks, EComponent>();
             id = -1;
+            drawable = true;
         }
 
         public Entity(params EComponent[] args)
@@ -47,6 +49,7 @@ namespace WatchYourBackLibrary
                 this.addComponent(arg);
             }
             id = -1;
+            drawable = true;
         }
 
         public int ID
@@ -63,6 +66,12 @@ namespace WatchYourBackLibrary
         {
             get { return this.type; }
             set { this.type = value; }
+        }
+
+        public bool Drawable
+        {
+            get { return drawable; }
+            set { drawable = value; }
         }
            
 

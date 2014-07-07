@@ -10,15 +10,19 @@ namespace WatchYourBackLibrary
     public enum SWORD
     {
         RANGE = 50,
-        WIDTH = 5,
+        WIDTH = 6,
         SPEED = 20,
         ATTACK_SPEED = 500,
-        ARC = 180
+        ARC = 180,
+        ROTATION_X = (int)WIDTH/2,
+        ROTATION_Y = (int)RANGE
     }
 
     public enum THROWN
     {
         RADIUS = 10,
+        ROTATION_X = RADIUS/2,
+        ROTATION_Y = RADIUS/2,
         SPEED = 10,
         ATTACK_SPEED = 100
     }

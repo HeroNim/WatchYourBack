@@ -22,12 +22,14 @@ namespace WatchYourBack
         private ContentManager content;
         private InputSystem input;
         private int id;
+        private double drawTime;
 
         
 
         public ClientECSManager()
         {
             id = 0;
+            drawTime = 0;
             systems = new List<ESystem>();
             activeEntities = new Dictionary<int, Entity>();
             changedEntities = new Dictionary<int, COMMANDS>();
@@ -126,6 +128,12 @@ namespace WatchYourBack
         }
 
         public double[] Accumulator { get; set; }
+
+        public double DrawTime
+        {
+            get { return drawTime; }
+            set { drawTime = value; }
+        }
 
         public void RemoveAll()
         {

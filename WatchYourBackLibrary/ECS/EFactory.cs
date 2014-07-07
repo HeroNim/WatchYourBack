@@ -53,7 +53,7 @@ namespace WatchYourBackLibrary
             new VelocityComponent(anchorMovement.X, anchorMovement.Y, -(float)SWORD.SPEED),
             new LineColliderComponent(new Vector2(xOrigin + (float)SWORD.WIDTH / 2, yOrigin), new Vector2(xOrigin + (float)SWORD.WIDTH / 2 / 2, yOrigin - (float)SWORD.RANGE), rotationAngle));
             if (hasGraphics)
-                e.addComponent(new GraphicsComponent(new Rectangle((int)xOrigin, (int)yOrigin, (int)SWORD.WIDTH, (int)SWORD.RANGE), texture, 0.1f, new Vector2(texture.Width / 2, texture.Height)));
+                e.addComponent(new GraphicsComponent(new Rectangle((int)xOrigin, (int)yOrigin, (int)SWORD.WIDTH, (int)SWORD.RANGE), texture, rotationAngle, new Vector2(texture.Width / 2, texture.Height)));
             e.Type = ENTITIES.SWORD;
             return e;
             
@@ -70,7 +70,7 @@ namespace WatchYourBackLibrary
             new VelocityComponent(rotationVector.X * (float)THROWN.SPEED, rotationVector.Y * (float)THROWN.SPEED),
             new ColliderComponent(new Rectangle((int)xOrigin, (int)yOrigin, (int)THROWN.RADIUS, (int)THROWN.RADIUS), true));
             if (hasGraphics)
-                e.addComponent(new GraphicsComponent(new Rectangle((int)xOrigin, (int)yOrigin, (int)THROWN.RADIUS, (int)THROWN.RADIUS), texture, 0.1f, new Vector2(texture.Width / 2, texture.Height)));
+                e.addComponent(new GraphicsComponent(new Rectangle((int)xOrigin, (int)yOrigin, (int)THROWN.RADIUS, (int)THROWN.RADIUS), texture, 0, new Vector2(texture.Width / 2, texture.Height)));
             e.Type = ENTITIES.THROWN;
             return e;
 
@@ -101,9 +101,11 @@ namespace WatchYourBackLibrary
 
         public static Entity createSpawn(int x, int y, int width, int height)
         {
-            return new Entity(
+            Entity e = new Entity(
                 new TileComponent(TileType.SPAWN),
                 new TransformComponent(x, y, width, height));
+            e.Drawable = false;
+            return e;
         }
 
         

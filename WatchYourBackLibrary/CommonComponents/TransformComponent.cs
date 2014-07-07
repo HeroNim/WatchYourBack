@@ -25,19 +25,11 @@ namespace WatchYourBackLibrary
         private float rotation;
 
         private bool hasMoved;
+        private Vector2 lookDirection; //Vector between the mouse pointer and the avatar
+        private float lookAngle; //Angle between the lookDirection vector and the y-axis
 
         public override int BitMask { get { return (int)Masks.TRANSFORM; } }
         public override Masks Mask { get { return Masks.TRANSFORM; } }
-        
-
-        //public TransformComponent(float x, float y)
-        //{
-        //    position = new Vector2(x, y);
-        //    width = 0;
-        //    height = 0;
-        //    rotation = 0;
-        //    hasMoved = false;
-        //}
 
         public TransformComponent(float x, float y, int width, int height)
         {
@@ -46,6 +38,8 @@ namespace WatchYourBackLibrary
             this.height = height;
             rotation = 0;
             hasMoved = false;
+            lookDirection = Vector2.Zero;
+            lookAngle = 0;
         }
 
         public TransformComponent(float x, float y, int width, int height, float rotation)
@@ -55,9 +49,9 @@ namespace WatchYourBackLibrary
             this.width = width;
             this.height = height;
             hasMoved = false;
+            lookDirection = Vector2.Zero;
+            lookAngle = 0;
         }
-
-
 
         public float X
         {
@@ -161,5 +155,23 @@ namespace WatchYourBackLibrary
 
             return (float)Math.Sqrt((x * x) + (y * y));
         }
+
+        public Vector2 LookDirection
+        {
+            get { return lookDirection; }
+            set { lookDirection = new Vector2(value.X, value.Y); }
+        }
+
+        public float LookAngle
+        {
+            get { lookAngle = -(float)Math.Atan2(lookDirection.X * Vector2.UnitY.Y, lookDirection.Y * Vector2.UnitY.Y);
+                    if (lookAngle < 0)
+                        lookAngle = (float)(lookAngle + Math.PI * 2);
+                    return lookAngle;
+                    
+            }
+        }
+
+
     }
 }

@@ -13,6 +13,7 @@ using Microsoft.Xna.Framework.GamerServices;
 using Lidgren.Network;
 using WatchYourBackLibrary;
 using System.Threading;
+using System.Diagnostics;
 #endregion
 
 namespace WatchYourBack
@@ -47,7 +48,7 @@ namespace WatchYourBack
         private bool isConnected;
         private bool isPlaying;
         //----------------------------------------------------------------------------------------------------------
-
+        private Stopwatch debug;
 
 
         public ClientGameLoop()
@@ -68,6 +69,7 @@ namespace WatchYourBack
             client = new NetClient(config);
             client.Start();
             //----------------------------------------------------------------------------------------------------------
+            debug = new Stopwatch();
         }
 
         /// <summary>
@@ -141,14 +143,13 @@ namespace WatchYourBack
         protected override void Update(GameTime gameTime)
         {
 
+
             // TODO: Add your update logic here
             if(activeWorld == connectMenu)
                 if (!isPlaying)
                     Connect();
             activeWorld.Manager.update(gameTime.ElapsedGameTime);
             activeWorld = worldStack.Peek();
-
-            
 
             base.Update(gameTime);
         }
@@ -164,9 +165,10 @@ namespace WatchYourBack
             activeWorld.Manager.draw(spriteBatch);
             spriteBatch.End();
 
-           
-
+            activeWorld.Manager.DrawTime = gameTime.ElapsedGameTime.TotalSeconds;
+            
             base.Draw(gameTime);
+            
         }
 
        
@@ -252,9 +254,7 @@ namespace WatchYourBack
             inGameMulti = new World(Worlds.IN_GAME);
             inGameMulti.addManager(new ClientECSManager());
             inGameMulti.Manager.addContent(Content);
-
             inputListener.addWorld(inGameMulti, false);
-
             ClientUpdateSystem networkInput = new ClientUpdateSystem(client);
             inGameMulti.Manager.addSystem(networkInput);
         }

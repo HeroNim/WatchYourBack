@@ -44,6 +44,8 @@ namespace WatchYourBackServer
             NetPeerConfiguration config = new NetPeerConfiguration("WatchYourBack");
             config.EnableMessageType(NetIncomingMessageType.DiscoveryRequest);
             config.Port = 14242;
+            config.EnableUPnP = true;
+            
 
             server = new NetServer(config);
             server.Start();
@@ -60,6 +62,7 @@ namespace WatchYourBackServer
                     {
                         case NetIncomingMessageType.DiscoveryRequest:
                             server.SendDiscoveryResponse(null, msg.SenderEndpoint);
+                            Console.WriteLine("yo");
                             break;
                         case NetIncomingMessageType.VerboseDebugMessage:
                         case NetIncomingMessageType.DebugMessage:
@@ -75,7 +78,7 @@ namespace WatchYourBackServer
                             if (status == NetConnectionStatus.Connected)
                             {
                                 Console.WriteLine(NetUtility.ToHexString(msg.SenderConnection.RemoteUniqueIdentifier) + " connected");
-                                if (server.ConnectionsCount == 1)
+                                if (server.ConnectionsCount == 2)
                                 {
                                     initializing = true;
                                     NetOutgoingMessage om = server.CreateMessage();

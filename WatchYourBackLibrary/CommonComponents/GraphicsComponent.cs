@@ -29,28 +29,28 @@ namespace WatchYourBackLibrary
         private float rotationAngle;
         private Vector2 rotationOrigin;
 
-        public GraphicsComponent(Rectangle rectangle, Texture2D texture)
+        public GraphicsComponent(Rectangle body, Texture2D texture)
         {
             spriteTexture = texture;
-            body = rectangle;
+            this.body = body;
             color = Color.White;
             hasText = false;
         }
 
-        public GraphicsComponent(Rectangle rectangle, Texture2D texture, float rotationAngle, Vector2 rotationOrigin)
+        public GraphicsComponent(Rectangle body, Texture2D texture, float rotationAngle, Vector2 rotationOrigin)
         {
             spriteTexture = texture;
-            body = rectangle;
+            this.body = body;
             color = Color.White;
             this.rotationAngle = rotationAngle;
             this.rotationOrigin = rotationOrigin;
             hasText = false;
         }
 
-        public GraphicsComponent(Rectangle rectangle, Texture2D texture, string text, SpriteFont font, Color fontColor)
+        public GraphicsComponent(Rectangle body, Texture2D texture, string text, SpriteFont font, Color fontColor)
         {
             spriteTexture = texture;
-            body = rectangle;
+            this.body = body;
             this.fontColor = fontColor;
             color = Color.White;
             this.font = font;

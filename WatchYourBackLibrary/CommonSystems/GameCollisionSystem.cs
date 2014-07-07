@@ -14,11 +14,14 @@ namespace WatchYourBackLibrary
      */
     public class GameCollisionSystem : ESystem
     {
+        Dictionary<int, Entity> removeList;
+
         public GameCollisionSystem()
             : base(false, true, 4)
         {
             components += (int)Masks.TRANSFORM;
             components += (int)Masks.COLLIDER;
+            removeList = new Dictionary<int, Entity>();
         }
 
         public override void update(TimeSpan gameTime)
@@ -32,7 +35,7 @@ namespace WatchYourBackLibrary
                     {
                         TransformComponent t2 = (TransformComponent)other.Components[Masks.TRANSFORM];
                         if (!haveSameAllegiance(entity, other))
-                            if (entity != other && entity.hasComponent(Masks.VELOCITY) && !other.hasComponent(Masks.LINE_COLLIDER) && TransformComponent.distanceBetween(t1, t2) < 50)
+                            if (entity != other && entity.hasComponent(Masks.VELOCITY) && !other.hasComponent(Masks.LINE_COLLIDER) && TransformComponent.distanceBetween(t1, t2) < 100)
                             {
                                 if (!entity.hasComponent(Masks.LINE_COLLIDER))
                                     checkBoxCollisions(entity, other);
@@ -43,7 +46,9 @@ namespace WatchYourBackLibrary
 
                     t1.resetLocks();
                 }
-            
+            foreach (Entity e in removeList.Values)
+                manager.removeEntity(e);
+            removeList.Clear();
         }
 
 
@@ -85,7 +90,7 @@ namespace WatchYourBackLibrary
             c1.X += (int)v1.X;
             if (c1.Collider.Intersects(c2.Collider))
             {
-                if (c1.Destructable)
+                if (c1.IsDestructable)
                 {
                     manager.removeEntity(e1);
                     return;
@@ -107,7 +112,8 @@ namespace WatchYourBackLibrary
 
             c1.Y += (int)v1.Y;
             if (c1.Collider.Intersects(c2.Collider))
-                if (c1.Destructable)
+            {
+                if (c1.IsDestructable)
                 {
                     manager.removeEntity(e1);
                     return;
@@ -124,7 +130,42 @@ namespace WatchYourBackLibrary
                             weaponCollider.Y2 -= v1.Y;
                         }
                     }
+            }
             c1.Y -= (int)v1.Y;
+
+            if (t1.XLock == false && t1.YLock == false)
+            {
+                c1.X += (int)v1.X;
+                c1.Y += (int)v1.Y;
+                if (c1.Collider.Intersects(c2.Collider))
+                {
+                    if (c1.IsDestructable)
+                    {
+                        manager.removeEntity(e1);
+                        return;
+                    }
+                    else
+                    {
+
+                        t1.X -= v1.X;
+                        t1.Y -= v1.Y;
+                        t1.XLock = true;
+                        t1.YLock = true;
+                        if (hasWeapon)
+                        {
+                            weaponTransformComponent.X -= v1.X;
+                            weaponCollider.X1 -= v1.X;
+                            weaponCollider.X2 -= v1.X;
+                            weaponTransformComponent.Y -= v1.Y;
+                            weaponCollider.Y1 -= v1.Y;
+                            weaponCollider.Y2 -= v1.Y;
+                        }
+                    }
+                        
+                }
+                c1.X -= (int)v1.X;
+                c1.Y -= (int)v1.Y;
+            }
 
         }
 
@@ -239,6 +280,12 @@ namespace WatchYourBackLibrary
             if (a1.Owner == a2.Owner)
                 return true;
             return false;
+        }
+
+        private void remove(Entity e)
+        {
+            if (!removeList.ContainsKey(e.ID))
+                removeList.Add(e.ID, e);
         }
     }
 }

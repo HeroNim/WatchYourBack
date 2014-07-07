@@ -67,7 +67,9 @@ namespace WatchYourBack
                 if (Keyboard.GetState().IsKeyDown(mappings[KeyBindings.PAUSE]))
                     onFire(new InputArgs(Inputs.PAUSE));   
                 if(ms.LeftButton == ButtonState.Pressed)
-                    onFire(p1.getEntity(), new InputArgs(Inputs.ATTACK, ms.X, ms.Y));
+                    p1.Attack = true;
+                p1.LookX = ms.X;
+                p1.LookY = ms.Y;
             }
         }
 

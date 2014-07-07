@@ -15,26 +15,26 @@ namespace WatchYourBackLibrary
      */
     public class AttackSystem : ESystem
     {
-        private bool listening;
 
-        public AttackSystem() : base(false, true, 7)
+        public AttackSystem() : base(false, true, 6)
         {
-            components += (int)Masks.WIELDER ;
-            listening = false;
+            components += (int)Masks.WIELDER;
+            components += (int)Masks.VELOCITY;
+            components += (int)Masks.TRANSFORM;
+            components += (int)Masks.ALLEGIANCE;
+            components += (int)Masks.PLAYER_INPUT;
         }
 
         public override void update(TimeSpan gameTime)
-        {
-            if (!listening)
-            {
-                manager.Input.inputFired += new EventHandler(checkInput);
-                listening = true;
-            }
-
-            
+        {           
             foreach (Entity entity in activeEntities)
             {
                 WielderComponent wielderComponent = (WielderComponent)entity.Components[Masks.WIELDER];
+                VelocityComponent anchorVelocity = (VelocityComponent)entity.Components[Masks.VELOCITY];
+                TransformComponent anchorTransform = (TransformComponent)entity.Components[Masks.TRANSFORM];
+                AllegianceComponent anchorAllegiance = (AllegianceComponent)entity.Components[Masks.ALLEGIANCE];
+                AvatarInputComponent input = (AvatarInputComponent)entity.Components[Masks.PLAYER_INPUT];
+
                 wielderComponent.ElapsedTime += gameTime.TotalMilliseconds;
                 if (wielderComponent.hasWeapon)
                 {
@@ -46,58 +46,35 @@ namespace WatchYourBackLibrary
                         wielderComponent.RemoveWeapon();
                     }
                 }
-            }
-        }
 
-        private void checkInput(object sender, EventArgs e)
-        {
-            InputArgs args = (InputArgs)e;
-            if (args.InputType == Inputs.ATTACK)
-            {
-
-                Entity source = (Entity)sender;
-                WielderComponent wielderComponent = (WielderComponent)source.Components[Masks.WIELDER];
-                VelocityComponent anchorSpeed = (VelocityComponent)source.Components[Masks.VELOCITY];
-                TransformComponent anchorPosition = (TransformComponent)source.Components[Masks.TRANSFORM];
-                AllegianceComponent anchorAllegiance = (AllegianceComponent)source.Components[Masks.ALLEGIANCE];
-
+              
                 /*
-                 * Get the angle between the mouse and the sword, and start the sword rotated 90 degrees from the mouse vector
+                 * Get the angle between the mouse and the player, and start the sword rotated 90 degrees clockwise from the resulting vector
                  */
-                
-                float xDir = args.MouseX - anchorPosition.Center.X;
-                float yDir = args.MouseY - anchorPosition.Center.Y;
-                Vector2 dir = new Vector2(xDir, yDir);
-                dir.Normalize();
-                Vector2 perpDir = new Vector2(yDir, -xDir);
-                float rotationAngle = -(float)Math.Atan2(perpDir.X * Vector2.UnitY.Y, perpDir.Y * Vector2.UnitY.Y);
-                if (rotationAngle < 0)
-                    rotationAngle = (float)(rotationAngle + Math.PI * 2);
-
-                if (wielderComponent.ElapsedTime >= wielderComponent.AttackSpeed)
+                if (input.Attack == true)
                 {
-                    if (wielderComponent.WeaponType == Weapons.THROWN)
-                    {                       
-                            manager.addEntity(EFactory.createThrown(anchorAllegiance.Owner, anchorPosition.Center.X, anchorPosition.Center.Y, dir, manager.getTexture("WeaponTexture"), manager.hasGraphics()));   
-                    }
-                    else if (wielderComponent.WeaponType == Weapons.SWORD)
-                    {
-                        if (!wielderComponent.hasWeapon)
-                        {
-                            wielderComponent.EquipWeapon(EFactory.createSword(source, anchorAllegiance.Owner, anchorPosition.Center.X, anchorPosition.Center.Y, rotationAngle, anchorSpeed, manager.getTexture("WeaponTexture"), manager.hasGraphics()));
-                            manager.addEntity(wielderComponent.Weapon);
-                            wielderComponent.Weapon.hasComponent(Masks.COLLIDER);
-                        }
-                    }
-                    wielderComponent.ElapsedTime = 0;
+                    Vector2 dir = anchorTransform.LookDirection;
+                    float dirAngle = anchorTransform.LookAngle;
+
+                    float rotationAngle = dirAngle - (float)Math.PI / 2;
                     
+                    if (wielderComponent.ElapsedTime >= wielderComponent.AttackSpeed)
+                    {
+                        if (wielderComponent.WeaponType == Weapons.THROWN)
+                            manager.addEntity(EFactory.createThrown(anchorAllegiance.Owner, anchorTransform.Center.X, anchorTransform.Center.Y, dir, manager.getTexture("WeaponTexture"), manager.hasGraphics()));
+                        else if (wielderComponent.WeaponType == Weapons.SWORD)
+                            if (!wielderComponent.hasWeapon)
+                            {
+                                wielderComponent.EquipWeapon(EFactory.createSword(entity, anchorAllegiance.Owner, anchorTransform.Center.X, anchorTransform.Center.Y, rotationAngle, anchorVelocity, manager.getTexture("WeaponTexture"), manager.hasGraphics()));
+                                manager.addEntity(wielderComponent.Weapon);
+                                wielderComponent.Weapon.hasComponent(Masks.COLLIDER);
+                            }
+                        wielderComponent.ElapsedTime = 0;
+
+                    }
+                    input.Attack = false;
                 }
-                
-
-            }
-
-        }
-
-       
+            }           
+        }       
     }
 }

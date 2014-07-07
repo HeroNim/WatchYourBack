@@ -53,6 +53,8 @@ namespace WatchYourBackLibrary
 
         
         double[] Accumulator { get; set; }
+
+        double DrawTime { get; set; }
        
 
         /*
