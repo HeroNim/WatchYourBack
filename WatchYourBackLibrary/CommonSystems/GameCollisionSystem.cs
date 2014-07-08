@@ -34,8 +34,8 @@ namespace WatchYourBackLibrary
                     foreach (Entity other in activeEntities)
                     {
                         TransformComponent t2 = (TransformComponent)other.Components[Masks.TRANSFORM];
-                        if (!haveSameAllegiance(entity, other))
-                            if (entity != other && entity.hasComponent(Masks.VELOCITY) && !other.hasComponent(Masks.LINE_COLLIDER) && TransformComponent.distanceBetween(t1, t2) < 100)
+                        if (!haveSameAllegiance(entity, other) && TransformComponent.distanceBetween(t1, t2) < 100)
+                            if (entity.hasComponent(Masks.VELOCITY) && !other.hasComponent(Masks.LINE_COLLIDER))
                             {
                                 if (!entity.hasComponent(Masks.LINE_COLLIDER))
                                     checkBoxCollisions(entity, other);
@@ -60,7 +60,7 @@ namespace WatchYourBackLibrary
          * */
         private void checkBoxCollisions(Entity e1, Entity e2)
         {
-
+            bool collided = false;
             //Assign local variables
 
             WielderComponent weaponComponent = null;
@@ -90,6 +90,7 @@ namespace WatchYourBackLibrary
             c1.X += (int)v1.X;
             if (c1.Collider.Intersects(c2.Collider))
             {
+                collided = true;
                 if (c1.IsDestructable)
                 {
                     manager.removeEntity(e1);
@@ -113,12 +114,7 @@ namespace WatchYourBackLibrary
             c1.Y += (int)v1.Y;
             if (c1.Collider.Intersects(c2.Collider))
             {
-                if (c1.IsDestructable)
-                {
-                    manager.removeEntity(e1);
-                    return;
-                }
-                else
+                collided = true;
                     if (t1.YLock != true)
                     {
                         t1.Y -= v1.Y;
@@ -139,33 +135,34 @@ namespace WatchYourBackLibrary
                 c1.Y += (int)v1.Y;
                 if (c1.Collider.Intersects(c2.Collider))
                 {
-                    if (c1.IsDestructable)
-                    {
-                        manager.removeEntity(e1);
-                        return;
-                    }
-                    else
-                    {
+                    collided = true;
 
-                        t1.X -= v1.X;
-                        t1.Y -= v1.Y;
-                        t1.XLock = true;
-                        t1.YLock = true;
-                        if (hasWeapon)
-                        {
-                            weaponTransformComponent.X -= v1.X;
-                            weaponCollider.X1 -= v1.X;
-                            weaponCollider.X2 -= v1.X;
-                            weaponTransformComponent.Y -= v1.Y;
-                            weaponCollider.Y1 -= v1.Y;
-                            weaponCollider.Y2 -= v1.Y;
-                        }
+                    t1.X -= v1.X;
+                    t1.Y -= v1.Y;
+                    t1.XLock = true;
+                    t1.YLock = true;
+                    if (hasWeapon)
+                    {
+                        weaponTransformComponent.X -= v1.X;
+                        weaponCollider.X1 -= v1.X;
+                        weaponCollider.X2 -= v1.X;
+                        weaponTransformComponent.Y -= v1.Y;
+                        weaponCollider.Y1 -= v1.Y;
+                        weaponCollider.Y2 -= v1.Y;
                     }
-                        
                 }
                 c1.X -= (int)v1.X;
                 c1.Y -= (int)v1.Y;
             }
+
+            if (collided == true)
+            {
+                if (c1.IsDestructable)
+                    manager.removeEntity(e1);
+                if(c2.IsDestructable)
+                    manager.removeEntity(e2);
+            }
+
 
         }
 
@@ -256,12 +253,15 @@ namespace WatchYourBackLibrary
 
             if (intersection == true)
             {
+
                 manager.removeEntity(e1);
                 if (e1.hasComponent(Masks.WEAPON))
                 {
                     WeaponComponent w1 = (WeaponComponent)e1.Components[Masks.WEAPON];
-                        ((WielderComponent)w1.Wielder.Components[Masks.WIELDER]).RemoveWeapon();
+                    ((WielderComponent)w1.Wielder.Components[Masks.WIELDER]).RemoveWeapon();
                 }
+                if (c2.IsDestructable)
+                    manager.removeEntity(e2);
             }
         }
 

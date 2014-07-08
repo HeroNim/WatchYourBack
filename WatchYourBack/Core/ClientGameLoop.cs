@@ -46,7 +46,7 @@ namespace WatchYourBack
         NetClient client;
         bool isPinging;
         private bool isConnected;
-        private bool isPlaying;
+        private bool isPlayingOnline;
         //----------------------------------------------------------------------------------------------------------
         private Stopwatch debug;
 
@@ -93,7 +93,7 @@ namespace WatchYourBack
 
             isPinging = false;
             isConnected = false;
-            isPlaying = false;
+            isPlayingOnline = false;
 
             base.Initialize();
         }
@@ -146,7 +146,7 @@ namespace WatchYourBack
 
             // TODO: Add your update logic here
             if(activeWorld == connectMenu)
-                if (!isPlaying)
+                if (!isPlayingOnline)
                     Connect();
             activeWorld.Manager.update(gameTime.ElapsedGameTime);
             activeWorld = worldStack.Peek();
@@ -195,16 +195,18 @@ namespace WatchYourBack
                     case NetIncomingMessageType.Data:
                         // server sent initialization command
                         int confirmation = msg.ReadInt32();
-                        if (confirmation == 1)
+                        if (confirmation == (int)SERVER_COMMANDS.SEND_LEVELS)
                         {
                             NetOutgoingMessage om = client.CreateMessage();
                             om.Write(SerializationHelper.Serialize(levels));
                             client.SendMessage(om, NetDeliveryMethod.ReliableUnordered);
                         }
-                        else if(confirmation == 2)
-                        {
+                        else if(confirmation == (int)SERVER_COMMANDS.START)
+                        {    
                             worldStack.Push(inGameMulti);
                             activeWorld = worldStack.Peek();
+                            isPlayingOnline = true;
+                            
                         }
                         break;
                 }
@@ -251,7 +253,7 @@ namespace WatchYourBack
 
         private void createGameMulti()
         {
-            inGameMulti = new World(Worlds.IN_GAME);
+            inGameMulti = new World(Worlds.IN_GAME_MULTI);
             inGameMulti.addManager(new ClientECSManager());
             inGameMulti.Manager.addContent(Content);
             inputListener.addWorld(inGameMulti, false);
@@ -271,10 +273,17 @@ namespace WatchYourBack
 
         private void reset(World world)
         {
+            inputListener.removeWorld(world);
+
             if (world.MenuType == Worlds.IN_GAME)
                 createGame();
             else if (world.MenuType == Worlds.IN_GAME_MULTI)
+            {
+                client.Disconnect("Disconnecting");
+                isConnected = false;
+                isPlayingOnline = false;
                 createGameMulti();
+            }
             else if (world.MenuType == Worlds.MAIN_MENU)
                 createMainMenu();
             else if (world.MenuType == Worlds.PAUSE_MENU)
@@ -310,6 +319,12 @@ namespace WatchYourBack
                 world.Manager.addSystem((ESystem)toAdd);
                 inputs.Add(world, toAdd);
                 toAdd.inputFired += new EventHandler(inputFired);
+            }
+
+            public void removeWorld(World world)
+            {
+                if (inputs.ContainsKey(world))
+                    inputs.Remove(world);
             }
 
             private void inputFired(object sender, EventArgs e)

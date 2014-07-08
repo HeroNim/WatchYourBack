@@ -72,6 +72,7 @@ namespace WatchYourBackServer
                     }
                 }
 
+                Console.WriteLine(sendData.Count);
                 NetOutgoingMessage om = server.CreateMessage();
                 om.Write(SerializationHelper.Serialize(sendData));
                 server.SendToAll(om, NetDeliveryMethod.UnreliableSequenced);
@@ -85,7 +86,7 @@ namespace WatchYourBackServer
                 }
             }
 
-            while (!updating)
+            while (!updating && manager.Playing == true)
             { 
                 NetIncomingMessage msg;
                 NetworkInputArgs args;
@@ -112,7 +113,8 @@ namespace WatchYourBackServer
                                 NetConnectionStatus status = (NetConnectionStatus)msg.ReadByte();
                                 if (status == NetConnectionStatus.Disconnected)
                                 {
-                                    Console.WriteLine(NetUtility.ToHexString(msg.SenderConnection.RemoteUniqueIdentifier) + " disconnected");
+                                    Console.WriteLine(NetUtility.ToHexString(msg.SenderConnection.RemoteUniqueIdentifier) + " disconnected. Ending game.");
+                                    manager.Playing = false;
                                 }
                                 break;
                             case NetIncomingMessageType.Data:

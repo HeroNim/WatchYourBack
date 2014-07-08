@@ -27,7 +27,6 @@ namespace WatchYourBack
         
         int bufferCount;
         
-        
         List<List<NetworkEntityArgs>> buffer; //Holds incoming messages
 
 
@@ -38,6 +37,7 @@ namespace WatchYourBack
 
         public ClientUpdateSystem(NetClient client) : base(false, true, 2)
         {
+            
             this.client = client;
             bufferCount = 1;
 
@@ -55,7 +55,9 @@ namespace WatchYourBack
 
         public override void update(TimeSpan gameTime)
         {
-            
+            NetOutgoingMessage om;
+
+           
     
 
             MouseState ms = Mouse.GetState();
@@ -73,16 +75,19 @@ namespace WatchYourBack
                 mouseClicked = true;
 
             toSend = new NetworkInputArgs(client.UniqueIdentifier, xInput, yInput, mouseLocation, mouseClicked, manager.DrawTime);
-            NetOutgoingMessage om = client.CreateMessage();
+            om = client.CreateMessage();
             om.Write(SerializationHelper.Serialize(toSend));
             client.SendMessage(om, NetDeliveryMethod.ReliableOrdered); 
             reset();
-            manager.ChangedEntities.Clear();
+            
 
             NetIncomingMessage msg;
 
+
             while ((msg = client.ReadMessage()) != null)
             {
+               
+            
                 switch (msg.MessageType)
                 {
                     case NetIncomingMessageType.Data:                     
@@ -95,13 +100,14 @@ namespace WatchYourBack
             while (buffer.Count != 0 && bufferCount >= 0)
             {
                 List<NetworkEntityArgs> receivedData = buffer[0];
+                Console.WriteLine(buffer[0].Count);
                 buffer.RemoveAt(0);
                 
-                   
+
+
                 foreach (NetworkEntityArgs args in receivedData)
                 {
                     Rectangle body = new Rectangle((int)args.XPos, (int)args.YPos, args.Width, args.Height);
-                    Console.WriteLine(args.XPos);
                     Texture2D texture = null;
                     switch (args.Command)
                     {
@@ -121,13 +127,15 @@ namespace WatchYourBack
                                 graphics.RotationAngle = args.Rotation;
                             }
                             catch (KeyNotFoundException)
-                            {            
+                            {
+            
                                 Console.WriteLine("Modify before Add caught");
                             }
                             break;
                     }
                 }
             }
+            manager.ChangedEntities.Clear();
                 
             
         }

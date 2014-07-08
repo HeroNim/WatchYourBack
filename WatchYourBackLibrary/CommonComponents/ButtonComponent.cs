@@ -15,18 +15,26 @@ namespace WatchYourBackLibrary
         public override Masks Mask { get { return Masks.BUTTON; } }
 
         private Inputs buttonType;
+        private bool focused;
         private InputArgs args;
 
         public ButtonComponent(Inputs type)
         {
             buttonType = type;
             args = new InputArgs(buttonType);
+            focused = false;
             
         }
 
         public InputArgs Args
         {
             get { return args; }
+        }
+
+        public bool Focused
+        {
+            get { return focused; }
+            set { focused = value; }
         }
 
         

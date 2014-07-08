@@ -24,6 +24,8 @@ namespace WatchYourBack
         private int id;
         private double drawTime;
 
+        private bool playing;
+
         
 
         public ClientECSManager()
@@ -36,6 +38,8 @@ namespace WatchYourBack
             removal = new List<Entity>();
             inactiveEntities = new Dictionary<int, Entity>();
         }
+
+        public bool Playing { get { return playing; } set { playing = value; } }
 
         public void addContent(ContentManager content)
         {
@@ -65,7 +69,7 @@ namespace WatchYourBack
 
         public void removeEntity(Entity entity)
         {
-            if (activeEntities.Values.Contains(entity))
+            if (activeEntities.Values.Contains(entity) && !removal.Contains(entity))
             {
                 removal.Add(entity);
                 addChangedEntities(entity, COMMANDS.REMOVE);
@@ -118,13 +122,13 @@ namespace WatchYourBack
 
         public void update(TimeSpan gameTime)
         {
-            RemoveAll();
             //Update the systems
             foreach (ESystem system in systems)
             {
                 if (system.Loop == true)
                     system.updateEntities(gameTime);
-            }    
+            }
+            RemoveAll();
         }
 
         public double[] Accumulator { get; set; }

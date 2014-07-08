@@ -12,12 +12,22 @@ using WatchYourBackLibrary;
 
 namespace WatchYourBackServer
 {
+    public enum SERVER_PROPERTIES
+    {
+        TIME_STEP = 60,
+        MAX_CONNECTIONS = 1,
+        PORT = 14242
+    }
+
+    
+
     class ServerGameLoop
     {
         NetServer server;
         bool initializing;
         bool playing;
         TimeSpan gameTime;
+        NetPeerConfiguration config;
         
 
         float nextUpdate;
@@ -29,11 +39,19 @@ namespace WatchYourBackServer
 
         public ServerGameLoop()
         {
+
+            config = new NetPeerConfiguration("WatchYourBack");
+            config.EnableMessageType(NetIncomingMessageType.DiscoveryRequest);
+            config.Port = (int)SERVER_PROPERTIES.PORT;
+            config.EnableUPnP = true;
+
+            server = new NetServer(config);
+            server.Start();
+
             gameTime = new TimeSpan();
             playing = false;
             initializing = false;
             Initialize();
-            LoadContent();
             while (true)
                 Update();
         }
@@ -41,17 +59,10 @@ namespace WatchYourBackServer
         private void Initialize()
         {
             // TODO: Add your initialization logic here
-            NetPeerConfiguration config = new NetPeerConfiguration("WatchYourBack");
-            config.EnableMessageType(NetIncomingMessageType.DiscoveryRequest);
-            config.Port = 14242;
-            config.EnableUPnP = true;
-            
-
-            server = new NetServer(config);
-            server.Start();
 
             nextUpdate = (float)NetTime.Now;
             levels = new List<LevelTemplate>();
+
 
             NetIncomingMessage msg;
             while (!playing)
@@ -78,11 +89,11 @@ namespace WatchYourBackServer
                             if (status == NetConnectionStatus.Connected)
                             {
                                 Console.WriteLine(NetUtility.ToHexString(msg.SenderConnection.RemoteUniqueIdentifier) + " connected");
-                                if (server.ConnectionsCount == 2)
+                                if (server.ConnectionsCount == (int)SERVER_PROPERTIES.MAX_CONNECTIONS)
                                 {
                                     initializing = true;
                                     NetOutgoingMessage om = server.CreateMessage();
-                                    om.Write(1);
+                                    om.Write((int)SERVER_COMMANDS.SEND_LEVELS);
                                     server.SendMessage(om, server.Connections[0], NetDeliveryMethod.ReliableUnordered);
                                     Console.WriteLine("Initializing");
                                     break;
@@ -106,45 +117,28 @@ namespace WatchYourBackServer
                                     Console.WriteLine(level.ToString());
                                 Console.WriteLine("Starting game");
                                 NetOutgoingMessage om = server.CreateMessage();
-                                om.Write(2);
-                                server.SendToAll(om, NetDeliveryMethod.ReliableUnordered);
+                                int index = 0;
+                                foreach (NetConnection player in server.Connections)
+                                {
+                                    om.Write(index);
+                                    server.SendMessage(om, player, NetDeliveryMethod.ReliableUnordered);
+                                    index++;
+                                }
+
                                 playing = true;
+                                
                             }
 
-                            
+
                             break;
                     }
                 }
             }
+            Thread.Sleep(100);
 
-            //FIXFIXFIXFIXFIXFIXFIX
-            //levels.Add(LevelName.TEST_LEVEL, new LevelTemplate(testLevelLayout));
-            //levels.Add(LevelName.FIRST_LEVEL, new LevelTemplate(levelOne));
-        }
-
-        /// <summary>
-        /// LoadContent will be called once per game and is the place to load
-        /// all of your content.
-        /// </summary>
-        private void LoadContent()
-        {
-            createGame();
-        }
-
-
-
-        //Pseudo-XNA style gametime. Would probably cause problems on a larger scale game (still might).
-        private void Update()
-        {
-            while (true)
-                inGame.Manager.update(gameTime);
-            
-        }
-       
-        private void createGame()
-        {
             inGame = new World(Worlds.IN_GAME);
             inGame.addManager(new ServerECSManager(server.ConnectionsCount));
+            inGame.Manager.Playing = true;
             ServerUpdateSystem input = new ServerUpdateSystem(server);
             inGame.Manager.addSystem(input);
             inGame.Manager.addInput(input);
@@ -156,14 +150,37 @@ namespace WatchYourBackServer
             inGame.Manager.addSystem(new LevelSystem(levels));
             inGame.Manager.addSystem(new AttackSystem());
 
-
+            
+            //FIXFIXFIXFIXFIXFIXFIX
+            //levels.Add(LevelName.TEST_LEVEL, new LevelTemplate(testLevelLayout));
+            //levels.Add(LevelName.FIRST_LEVEL, new LevelTemplate(levelOne));
         }
 
+        /// <summary>
+        /// LoadContent will be called once per game and is the place to load
+        /// all of your content.
+        /// </summary>
        
 
-        private void reset(World world)
+
+
+        //Pseudo-XNA style gametime. Would probably cause problems on a larger scale game (still might).
+        private void Update()
         {
-                createGame();
+            while (true)
+            {
+                while (inGame.Manager.Playing == true)
+                    inGame.Manager.update(gameTime);
+                reset();
+            }
+            
+        }
+
+        private void reset()
+        {
+            Console.WriteLine(server.ConnectionsCount);
+            playing = false;
+                Initialize();
         }
 
         

@@ -13,10 +13,7 @@ using System.Diagnostics;
 
 namespace WatchYourBackServer
 {
-    public enum SERVER_PROPERTIES
-    {
-        TIME_STEP = 60
-    }
+    
 
     /* Manages the systems in the game. Is responsible for initializing, updating, and removing systems as needed. Also contains a list of
      * all the entities which has changed during the last update cycle; this allows for the server to send data to the client on what needs
@@ -35,9 +32,10 @@ namespace WatchYourBackServer
         const double timeStep = 1.0 / (double)SERVER_PROPERTIES.TIME_STEP;
         private Stopwatch debug;
 
-        double[] accumulator;
+        private double[] accumulator;
+        private bool playing;
 
-        
+    
 
         public ServerECSManager(int playerCount)
         {
@@ -49,7 +47,10 @@ namespace WatchYourBackServer
             currentID = 0;
             accumulator = new double[playerCount];
             debug = new Stopwatch();
+
         }
+
+        public bool Playing { get { return playing; } set { playing = value; } }
 
         public void addContent(ContentManager content) { }
 
@@ -76,7 +77,7 @@ namespace WatchYourBackServer
 
         public void removeEntity(Entity entity)
         {
-            if (activeEntities.Values.Contains(entity))
+            if (activeEntities.Values.Contains(entity) && !removal.Contains(entity))
             {
                 removal.Add(entity);
                 addChangedEntities(entity, COMMANDS.REMOVE);
@@ -130,7 +131,6 @@ namespace WatchYourBackServer
         public void update(TimeSpan gameTime)
         {            
             gameTime = TimeSpan.FromTicks((long)(TimeSpan.TicksPerSecond * timeStep));
-            Console.WriteLine(gameTime.TotalSeconds);
             //Update the systems
             foreach (ESystem system in systems)
             {            

@@ -16,43 +16,38 @@ namespace WatchYourBack
     public class MenuInputSystem : ESystem, InputSystem
     {
 
-        private bool clickable;
-        private bool collided;
 
 
          public MenuInputSystem() : base(false, true, 1)
         {
             components += (int)Masks.COLLIDER;
             components += (int)Masks.BUTTON;
-            clickable = false;
-            collided = false;
+
         }
 
          public override void update(TimeSpan gameTime)
         {
             MouseState ms = Mouse.GetState();
-            collided = false;
+            
                 foreach (Entity entity in activeEntities)
                 {
                     ColliderComponent collider = (ColliderComponent)entity.Components[Masks.COLLIDER];
                     ButtonComponent button = (ButtonComponent)entity.Components[Masks.BUTTON];
                     GraphicsComponent graphics = (GraphicsComponent)entity.Components[Masks.GRAPHICS];
 
-                    if (collider.Collider.Contains(ms.X, ms.Y))
+                    if (collider.Collider.Contains(ms.X, ms.Y) && ms.LeftButton == ButtonState.Pressed)
+                        button.Focused = true;
+
+                    else if (ms.LeftButton == ButtonState.Released && button.Focused && collider.Collider.Contains(ms.X, ms.Y))
                     {
-                        collided = true;
-                        if (ms.LeftButton == ButtonState.Pressed && clickable == true)
-                        {
-                            onFire(button.Args);
-                            clickable = false;
-                        }
-                        else if (ms.LeftButton != ButtonState.Pressed)
-                            clickable = true;
-                        
-                    }           
+                        onFire(button.Args);
+                        button.Focused = false;
+                    }
+                    else
+                        button.Focused = false;
+
                 }
-                if (collided == false)
-                    clickable = false;
+               
         }
 
         public event EventHandler inputFired;

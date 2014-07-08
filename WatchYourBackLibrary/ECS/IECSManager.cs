@@ -14,11 +14,17 @@ namespace WatchYourBackLibrary
      * all the entities which has changed during the last update cycle; this allows for the server to send data to the client on what needs
      * to be removed, added, or modified.
      */
+    public enum SERVER_COMMANDS
+    {
+        SEND_LEVELS = 100,
+        START = 0
+    }
+
 
 
     public interface IECSManager
     {
-        
+        bool Playing { get; set; }
 
         void addSystem(ESystem system);
 
