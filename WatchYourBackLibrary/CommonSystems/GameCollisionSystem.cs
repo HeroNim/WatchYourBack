@@ -34,14 +34,24 @@ namespace WatchYourBackLibrary
                     foreach (Entity other in activeEntities)
                     {
                         TransformComponent t2 = (TransformComponent)other.Components[Masks.TRANSFORM];
-                        if (!haveSameAllegiance(entity, other) && TransformComponent.distanceBetween(t1, t2) < 100)
-                            if (entity.hasComponent(Masks.VELOCITY) && !other.hasComponent(Masks.LINE_COLLIDER))
+                        if (!haveSameAllegiance(entity, other) && TransformComponent.distanceBetween(t1, t2) < 100 && entity.hasComponent(Masks.VELOCITY))
+                        {
+                            if (entity.hasComponent(Masks.LINE_COLLIDER)) //Weapons have to check hitboxes
                             {
-                                if (!entity.hasComponent(Masks.LINE_COLLIDER))
-                                    checkBoxCollisions(entity, other);
-                                else if (entity.hasComponent(Masks.LINE_COLLIDER))
-                                    checkLineCollision(entity, other);
+                                if (other.hasComponent(Masks.PLAYER_HITBOX))
+                                    checkHitboxCollision(entity, other);
+                                
+
                             }
+                            if (entity.hasComponent(Masks.RECTANGLE_COLLIDER)) //Bodies have to check other bodies and weapons
+                            {
+                                if (other.hasComponent(Masks.RECTANGLE_COLLIDER))
+                                    checkBoxCollisions(entity, other);
+                                
+                            }
+                            
+                            
+                        }
                     }
 
                     t1.resetLocks();
@@ -71,8 +81,8 @@ namespace WatchYourBackLibrary
             VelocityComponent v1 = (VelocityComponent)e1.Components[Masks.VELOCITY];
             TransformComponent t1 = (TransformComponent)e1.Components[Masks.TRANSFORM];
 
-            ColliderComponent c1 = (ColliderComponent)e1.Components[Masks.COLLIDER];
-            ColliderComponent c2 = (ColliderComponent)e2.Components[Masks.COLLIDER];
+            RectangleColliderComponent c1 = (RectangleColliderComponent)e1.Components[Masks.RECTANGLE_COLLIDER];
+            RectangleColliderComponent c2 = (RectangleColliderComponent)e2.Components[Masks.RECTANGLE_COLLIDER];
 
             if (e1.hasComponent(Masks.WIELDER))
             {
@@ -179,7 +189,7 @@ namespace WatchYourBackLibrary
             if(e2.hasComponent(Masks.TILE))
                 return;
             LineColliderComponent c1 = (LineColliderComponent)e1.Components[Masks.LINE_COLLIDER];
-            ColliderComponent c2 = (ColliderComponent)e2.Components[Masks.COLLIDER];
+            RectangleColliderComponent c2 = (RectangleColliderComponent)e2.Components[Masks.RECTANGLE_COLLIDER];
             VelocityComponent v1 = (VelocityComponent)e1.Components[Masks.VELOCITY];
 
             //Predict collider forward
@@ -265,9 +275,38 @@ namespace WatchYourBackLibrary
             }
         }
 
-        private float lineEquation(Vector2 p1, Vector2 p2, Vector2 corner)
+        private void checkHitboxCollision(Entity e1, Entity e2)
         {
-            return (p2.Y - p1.Y) * corner.X + (p1.X - p2.X) * corner.Y + (p2.X * p1.Y - p1.X * p2.Y);
+            LineColliderComponent c1 = (LineColliderComponent)e1.Components[Masks.LINE_COLLIDER];
+            PlayerHitboxComponent c2 = (PlayerHitboxComponent)e2.Components[Masks.PLAYER_HITBOX];
+
+            float result1 = lineEquation(c1.P1, c1.P2, c2.P1);
+            float result2 = lineEquation(c1.P1, c1.P2, c2.P2);
+            float result3 = lineEquation(c2.P1, c2.P2, c1.P1);
+            float result4 = lineEquation(c2.P1, c2.P2, c1.P2);
+
+            if (result1 * result2 > 0 || result3 * result4 > 0)
+                return;
+
+            
+           
+
+            manager.removeEntity(e1);
+            if (e1.hasComponent(Masks.WEAPON))
+            {
+                WeaponComponent w1 = (WeaponComponent)e1.Components[Masks.WEAPON];
+                ((WielderComponent)w1.Wielder.Components[Masks.WIELDER]).RemoveWeapon();
+                PlayerInfoComponent info = (PlayerInfoComponent)w1.Wielder.Components[Masks.PLAYER_INFO];
+                info.Score++;
+            }
+
+            manager.LevelInfo.Reset = true;
+            Console.WriteLine("Player Hit");
+        }
+
+        private float lineEquation(Vector2 p1, Vector2 p2, Vector2 point)
+        {
+            return (p2.Y - p1.Y) * point.X + (p1.X - p2.X) * point.Y + (p2.X * p1.Y - p1.X * p2.Y);
         }
 
         private bool haveSameAllegiance(Entity e1, Entity e2)

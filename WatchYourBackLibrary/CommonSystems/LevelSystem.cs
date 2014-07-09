@@ -35,12 +35,37 @@ namespace WatchYourBackLibrary
         private Texture2D wallTexture;
         private Texture2D spawnTexture;
 
-        public LevelSystem(List<LevelTemplate> levels) : base(false, true, 1)
+        public LevelSystem(List<LevelTemplate> levels) : base(false, true, 7)
         {
             components += (int)Masks.LEVEL;
             this.levels = levels;
             built = false;
         }
+
+
+        public override void update(TimeSpan gameTime)
+        {
+            if (level == null)
+                initialize();
+
+
+            if (currentLevel == level.CurrentLevel)
+            {
+                if (!built)
+                    buildLevel(currentLevel);
+                else if (level.Reset == true)
+                    resetLevel();
+            }
+            else
+            {
+                clearLevel();
+                currentLevel = level.CurrentLevel;
+                update(gameTime);
+            }
+            
+
+        }
+
 
         public void addLevel(LevelTemplate level)
         {
@@ -62,38 +87,27 @@ namespace WatchYourBackLibrary
                 for (x = 0; x < (int)LevelDimensions.WIDTH; x++)
                 {
                     if (levelTemplate.LevelData[y, x] == (int)TileType.WALL)
-                        manager.addEntity(EFactory.createWall(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE, 40, 40, wallTexture, manager.hasGraphics()));
+                    {
+                        Entity wall = EFactory.createWall(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE, 40, 40, wallTexture, manager.hasGraphics());
+                        manager.addEntity(wall);
+                        //level.Walls.Add(wall);
+                    }
                     if (levelTemplate.LevelData[y, x] == (int)TileType.SPAWN)
                     {
-                        manager.addEntity(EFactory.createSpawn(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE, 40, 40));
-                        manager.addEntity(EFactory.createAvatar(new Rectangle(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE, 40, 40),
-                             (Allegiance)player, Weapons.THROWN, spawnTexture, manager.hasGraphics()));
+                        Entity spawn = EFactory.createSpawn(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE, 40, 40);
+                        Entity avatar =  EFactory.createAvatar(new PlayerInfoComponent((Allegiance)player), new Rectangle(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE, 40, 40),
+                             (Allegiance)player, Weapons.SWORD, spawnTexture, manager.hasGraphics());
+
+                        manager.addEntity(spawn);                        
+                        manager.addEntity(avatar);
+
+                        level.Spawns.Add(spawn);
+                        level.Avatars.Add(avatar);
                         player++;
                     }
                     
                 }
             built = true;
-        }
-
-        public override void update(TimeSpan gameTime)
-        {
-            if (level == null)
-                initialize();
-            else
-            {
-                if (currentLevel == level.CurrentLevel)
-                {
-                    if (!built)
-                        buildLevel(currentLevel);
-                }
-                else
-                {
-                    clearLevel();
-                    currentLevel = level.CurrentLevel;
-                    update(gameTime);
-                }
-            }
-
         }
 
         private void initialize()
@@ -102,6 +116,7 @@ namespace WatchYourBackLibrary
             levelEntity.addComponent(new LevelComponent());
             manager.addEntity(levelEntity);
             level = (LevelComponent)levelEntity.Components[Masks.LEVEL];
+            manager.LevelInfo = level;
             currentLevel = level.CurrentLevel;
             buildLevel(currentLevel);
         }
@@ -114,7 +129,23 @@ namespace WatchYourBackLibrary
                     manager.removeEntity(entity);
             }
             built = false;
+        }
 
+        private void resetLevel()
+        {
+            foreach (Entity e in manager.ActiveEntities.Values)
+                if (e.Type != ENTITIES.WALL)
+                    manager.removeEntity(e);
+            for(int i = 0; i < level.Spawns.Count; i++)
+            {
+                TransformComponent transform = (TransformComponent)level.Spawns[i].Components[Masks.TRANSFORM];
+                PlayerInfoComponent info = (PlayerInfoComponent)level.Avatars[i].Components[Masks.PLAYER_INFO];
+                Entity avatar = EFactory.createAvatar(info, new Rectangle((int)transform.X, (int)transform.Y, 40, 40),
+                             (Allegiance)i, Weapons.SWORD, spawnTexture, manager.hasGraphics());
+                manager.addEntity(avatar);
+                level.Avatars[i] = avatar;
+            }
+            level.Reset = false;
         }
     }
 }

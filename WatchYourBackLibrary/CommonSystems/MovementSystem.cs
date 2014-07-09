@@ -60,13 +60,48 @@ namespace WatchYourBackLibrary
                         collider.P1 = new Vector2(collider.P1.X + velocity.X, collider.P1.Y + velocity.Y);
                         collider.P2 = new Vector2(collider.P2.X + velocity.X, collider.P2.Y + velocity.Y);
                         Vector2 rotation = Vector2.Transform(collider.P2 - collider.P1, Matrix.CreateRotationZ(velocity.RotationSpeed)) + collider.P1;
-                        collider.P2 = rotation;                                            
+                        collider.P2 = rotation;
+                        
+                        //GraphicsComponent graphics = (GraphicsComponent)entity.Components[Masks.GRAPHICS];
+                        //graphics.DebugPoints.Add(collider.P1);
+                        //graphics.DebugPoints.Add(collider.P2);
                     }
-                    else
+                    if (entity.hasComponent(Masks.RECTANGLE_COLLIDER))
                     {
-                        ColliderComponent collider = (ColliderComponent)entity.Components[Masks.COLLIDER];
+                        RectangleColliderComponent collider = (RectangleColliderComponent)entity.Components[Masks.RECTANGLE_COLLIDER];
                         collider.X = (int)transform.X;
                         collider.Y = (int)transform.Y;
+                    }
+                    if(entity.hasComponent(Masks.PLAYER_HITBOX))
+                    {
+                        PlayerHitboxComponent collider = (PlayerHitboxComponent)entity.Components[Masks.PLAYER_HITBOX];
+
+                        //GraphicsComponent graphics = (GraphicsComponent)entity.Components[Masks.GRAPHICS];
+                        //graphics.DebugPoints.Remove(collider.P1);
+                        //graphics.DebugPoints.Remove(collider.P2); 
+                             
+
+                        
+                        collider.P1 = new Vector2(collider.P1.X + velocity.X, collider.P1.Y + velocity.Y);
+                        collider.P2 = new Vector2(collider.P2.X + velocity.X, collider.P2.Y + velocity.Y);
+                        
+                        Vector2 reverse = new Vector2(-transform.LookDirection.X, -transform.LookDirection.Y);
+                        Vector2 perpendicular = new Vector2(reverse.Y, -reverse.X);
+                        reverse.Normalize();
+                        perpendicular.Normalize();
+                        
+                        reverse *= transform.Radius; //A line of length radius pointing in the opposite direction of the player
+                        perpendicular *= collider.Width; //A line pointing units perpendicular to the look direction of the player
+
+                        Vector2 midPoint = new Vector2(transform.Center.X + reverse.X, transform.Center.Y + reverse.Y);
+                        collider.P1 = new Vector2(midPoint.X + perpendicular.X, midPoint.Y + perpendicular.Y); //A point on the tangent
+                        collider.P2 = new Vector2(midPoint.X - perpendicular.X, midPoint.Y - perpendicular.Y); //A point on the tangent
+
+                        //graphics.DebugPoints.Add(collider.P1);
+                        //graphics.DebugPoints.Add(collider.P2); 
+
+
+                        
                     }
                 }
 

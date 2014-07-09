@@ -29,12 +29,15 @@ namespace WatchYourBackLibrary
         private float rotationAngle;
         private Vector2 rotationOrigin;
 
+        private List<Vector2> debugPoints;
+
         public GraphicsComponent(Rectangle body, Texture2D texture)
         {
             spriteTexture = texture;
             this.body = body;
             color = Color.White;
             hasText = false;
+            debugPoints = new List<Vector2>();
         }
 
         public GraphicsComponent(Rectangle body, Texture2D texture, float rotationAngle, Vector2 rotationOrigin)
@@ -45,6 +48,7 @@ namespace WatchYourBackLibrary
             this.rotationAngle = rotationAngle;
             this.rotationOrigin = rotationOrigin;
             hasText = false;
+            debugPoints = new List<Vector2>();
         }
 
         public GraphicsComponent(Rectangle body, Texture2D texture, string text, SpriteFont font, Color fontColor)
@@ -56,6 +60,7 @@ namespace WatchYourBackLibrary
             this.font = font;
             this.text = text;
             hasText = true;
+            debugPoints = new List<Vector2>();
         }
 
  
@@ -72,5 +77,6 @@ namespace WatchYourBackLibrary
         public float RotationAngle { get { return rotationAngle; } set { rotationAngle = value; } }
         public Vector2 RotationOrigin { get { return rotationOrigin; } }
         public bool Rotatable { get { return (rotationAngle != 0); } }
+        public List<Vector2> DebugPoints { get { return debugPoints; } set { debugPoints = value; } }
     }
 }

@@ -5,34 +5,25 @@ using System.Text;
 
 using Microsoft.Xna.Framework;
 
-
 namespace WatchYourBackLibrary
 {
     /*
-     * Defines a collider line simply as two endpoints. When checking collisions, the equation of the line is used to compare the 
-     * line to vertices.
+     * A line collider that is the location a player can be hit in the game
      */
-    public class LineColliderComponent : EComponent
+    public class PlayerHitboxComponent : EComponent
     {
-        public override int BitMask { get { return (int)Masks.LINE_COLLIDER + (int)Masks.COLLIDER; } }
-        public override Masks Mask { get { return Masks.LINE_COLLIDER; } }
+        public override int BitMask { get { return (int)Masks.COLLIDER + (int)Masks.PLAYER_HITBOX; } }
+        public override Masks Mask { get { return Masks.PLAYER_HITBOX; } }
 
+        private float width;
         private Vector2 p1;
         private Vector2 p2;
-        private float rotation;
 
-        public LineColliderComponent(Vector2 p1, Vector2 p2) 
+        public PlayerHitboxComponent(Rectangle body, float width)
         {
-            this.p1 = p1;
-            this.p2 = p2;
-            rotation = 0;
-        }
-
-        public LineColliderComponent(Vector2 point1, Vector2 point2, float rotation)
-        {
-            this.rotation = rotation;
-            p1 = point1;
-            p2 = Vector2.Transform(point2 - p1, Matrix.CreateRotationZ(rotation)) + p1;
+            p1 = Vector2.Zero;
+            p2 = Vector2.Zero;
+            this.width = width;
         }
 
         public Vector2 P1
@@ -70,5 +61,13 @@ namespace WatchYourBackLibrary
             get { return p2.Y; }
             set { p2.Y = value; }
         }
+
+        public float Width
+        {
+            get { return width; }
+            set { width = value; }
+        }
+
+        
     }
 }

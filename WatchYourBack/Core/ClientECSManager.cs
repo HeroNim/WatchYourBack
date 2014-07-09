@@ -15,6 +15,7 @@ namespace WatchYourBack
     public class ClientECSManager : IECSManager
     {
         private List<ESystem> systems;
+        private LevelComponent levelInfo;
         private Dictionary<int, Entity> inactiveEntities;
         private Dictionary<int, Entity> activeEntities;
         private Dictionary<int, COMMANDS> changedEntities;
@@ -79,6 +80,12 @@ namespace WatchYourBack
         public void addInput(InputSystem input)
         {
             this.input = input;
+        }
+
+        public LevelComponent LevelInfo
+        {
+            get { return levelInfo; }
+            set { levelInfo = value; }
         }
 
         public Dictionary<int, Entity> Entities
@@ -183,6 +190,11 @@ namespace WatchYourBack
                     
                     if (graphics.HasText)
                         spriteBatch.DrawString(graphics.Font, graphics.Text, new Vector2(graphics.X, graphics.Y), graphics.FontColor);
+                    foreach(Vector2 point in graphics.DebugPoints)
+                    {
+                        spriteBatch.Draw(graphics.Sprite, new Rectangle((int)point.X, (int)point.Y, 1, 1), Color.White);
+                    }
+                    //graphics.DebugPoints.Clear();
                 }
             }
         }

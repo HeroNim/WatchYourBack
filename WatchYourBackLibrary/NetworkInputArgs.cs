@@ -18,31 +18,34 @@ namespace WatchYourBackLibrary
         private int yInput;
         private int mouseX;
         private int mouseY;
-        private bool clicked;
+        private bool leftClicked;
+        private bool rightClicked;
         private double drawTime;
 
-        public NetworkInputArgs(long sender, int xInput, int yInput, Vector2 mouseLoc, bool clicked, double drawTime)
+        public NetworkInputArgs(long sender, int xInput, int yInput, Vector2 mouseLoc, bool leftClicked, bool rightClicked, double drawTime)
         {
             this.sender = sender;
             this.xInput = xInput;
             this.yInput = yInput;
             mouseX = (int)mouseLoc.X;
             mouseY = (int)mouseLoc.Y;
-            this.clicked = clicked;
+            this.leftClicked = leftClicked;
+            this.rightClicked = rightClicked;
             this.drawTime = drawTime;
 
         }
 
         public override string ToString()
         {
-            return sender + ", " + xInput + ", " + yInput + ", (" + mouseX + ", " + mouseY+"), " + clicked;
+            return sender + ", " + xInput + ", " + yInput + ", (" + mouseX + ", " + mouseY+"), " + leftClicked;
         }
 
         public int XInput { get { return xInput; } }
         public int YInput { get { return yInput; } }
         public int MouseX { get { return mouseX; } }
         public int MouseY { get { return mouseY; } }
-        public bool Clicked { get { return clicked; } }
+        public bool LeftClicked { get { return leftClicked; } }
+        public bool RightClicked { get { return rightClicked; } }
         public double DrawTime { get { return drawTime; } }
         
     }

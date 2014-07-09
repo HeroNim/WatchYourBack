@@ -29,7 +29,7 @@ namespace WatchYourBackServer
 
 
         public ServerUpdateSystem(NetServer server)
-            : base(false, true, 7)
+            : base(false, true, 10)
         {
             components += (int)Masks.PLAYER_INPUT;
             this.server = server;
@@ -72,7 +72,6 @@ namespace WatchYourBackServer
                     }
                 }
 
-                Console.WriteLine(sendData.Count);
                 NetOutgoingMessage om = server.CreateMessage();
                 om.Write(SerializationHelper.Serialize(sendData));
                 server.SendToAll(om, NetDeliveryMethod.UnreliableSequenced);
@@ -138,16 +137,16 @@ namespace WatchYourBackServer
                                 else
                                     playerInputComponent.MoveY = 0;
 
-                                if (args.Clicked)
-                                {
-                                    playerInputComponent.Attack = true;
-                                }
+                                if (args.LeftClicked)
+                                    playerInputComponent.SwingWeapon = true;
+                                if (args.RightClicked)
+                                    playerInputComponent.ThrowWeapon = true;
+
                                 playerInputComponent.LookX = args.MouseX;
                                 playerInputComponent.LookY = args.MouseY;
 
 
 
-                                Console.WriteLine(args.DrawTime);
                                 accumulator[playerIndex] += args.DrawTime;
                                 interpolate(playerIndex, interpolation[playerIndex]);
 

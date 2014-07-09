@@ -9,20 +9,20 @@ using Microsoft.Xna.Framework;
 
 namespace WatchYourBackLibrary
 {
-    public class ColliderComponent : EComponent
+    public class RectangleColliderComponent : EComponent
     {
-        public override int BitMask { get { return (int)Masks.COLLIDER; } }
-        public override Masks Mask { get { return Masks.COLLIDER; } }
+        public override int BitMask { get { return (int)Masks.COLLIDER + (int)Masks.RECTANGLE_COLLIDER; } }
+        public override Masks Mask { get { return Masks.RECTANGLE_COLLIDER; } }
 
         private Rectangle collider;
         private bool destructable;
        
 
-        public ColliderComponent()
+        public RectangleColliderComponent()
         {
         }
 
-        public ColliderComponent(Rectangle r, bool destructable)
+        public RectangleColliderComponent(Rectangle r, bool destructable)
         {
             collider = r;
             this.destructable = destructable;

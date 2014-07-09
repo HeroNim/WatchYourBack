@@ -8,6 +8,7 @@ namespace WatchYourBackLibrary
     [Serializable()]
     public enum ENTITIES
     {
+        PLAYER,
         AVATAR,
         WALL,
         SWORD,
@@ -92,7 +93,7 @@ namespace WatchYourBackLibrary
             {
                 components.Add(component.Mask, component);
                 component.setEntity(this);
-                mask += component.BitMask;
+                mask |= component.BitMask;
             }
         }
 
@@ -102,7 +103,10 @@ namespace WatchYourBackLibrary
             if (hasComponent(component.Mask))
             {
                 components.Remove(component.Mask);
-                mask -= component.BitMask;
+                mask = 0;
+                foreach (EComponent existingComponent in components.Values)
+                    mask |= existingComponent.BitMask;
+                
             }
         }
 

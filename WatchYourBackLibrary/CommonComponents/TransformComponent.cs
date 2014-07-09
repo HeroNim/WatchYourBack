@@ -38,7 +38,7 @@ namespace WatchYourBackLibrary
             this.height = height;
             rotation = 0;
             hasMoved = false;
-            lookDirection = Vector2.Zero;
+            lookDirection = Vector2.UnitX;
             lookAngle = 0;
         }
 
@@ -49,7 +49,7 @@ namespace WatchYourBackLibrary
             this.width = width;
             this.height = height;
             hasMoved = false;
-            lookDirection = Vector2.Zero;
+            lookDirection = Vector2.UnitX;
             lookAngle = 0;
         }
 
@@ -123,6 +123,11 @@ namespace WatchYourBackLibrary
         public Vector2 Center
         {
             get { return new Vector2(position.X + width/2, position.Y + height/2); }
+        }
+
+        public float Radius
+        {
+            get { return (float)Math.Sqrt(Math.Pow(Width, 2) + Math.Pow(Height, 2))/2; }
         }
 
         

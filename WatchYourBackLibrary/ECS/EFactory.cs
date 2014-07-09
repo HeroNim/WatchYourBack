@@ -17,14 +17,25 @@ namespace WatchYourBackLibrary
      */
     public static class EFactory
     {
+        //public static Entity createPlayer(Allegiance player)
+        //{
+        //    Entity e = new Entity(
+        //        new PlayerInfoComponent(player),
+        //    new AllegianceComponent(Allegiance.PLAYER_1));
+        //    e.Type = ENTITIES.AVATAR;
+        //    return e;
+        //}
 
-        public static Entity createAvatar(Rectangle rect, Allegiance player, Weapons weaponType, Texture2D texture, bool hasGraphics)
+
+        public static Entity createAvatar(PlayerInfoComponent info, Rectangle rect, Allegiance player, Weapons weaponType, Texture2D texture, bool hasGraphics)
         {
             Entity e = new Entity(
+            info,
             new AllegianceComponent(player),
             new WielderComponent(weaponType),
             new TransformComponent(rect.X, rect.Y, rect.Width, rect.Height),
-            new ColliderComponent(rect, false),
+            new RectangleColliderComponent(rect, false),
+            new PlayerHitboxComponent(rect, 10),
             new VelocityComponent(0, 0),
             new AvatarInputComponent());
             if (hasGraphics)
@@ -51,7 +62,7 @@ namespace WatchYourBackLibrary
             new TransformComponent(xOrigin, yOrigin, (int)SWORD.WIDTH, (int)SWORD.RANGE, rotationAngle),
             new WeaponComponent(wielder, MathHelper.ToRadians((float)SWORD.ARC)),
             new VelocityComponent(anchorMovement.X, anchorMovement.Y, -(float)SWORD.SPEED),
-            new LineColliderComponent(new Vector2(xOrigin + (float)SWORD.WIDTH / 2, yOrigin), new Vector2(xOrigin + (float)SWORD.WIDTH / 2 / 2, yOrigin - (float)SWORD.RANGE), rotationAngle));
+            new LineColliderComponent(new Vector2(xOrigin, yOrigin), new Vector2(xOrigin + (float)SWORD.WIDTH / 2 / 2, yOrigin - (float)SWORD.RANGE), rotationAngle));
             if (hasGraphics)
                 e.addComponent(new GraphicsComponent(new Rectangle((int)xOrigin, (int)yOrigin, (int)SWORD.WIDTH, (int)SWORD.RANGE), texture, rotationAngle, new Vector2(texture.Width / 2, texture.Height)));
             e.Type = ENTITIES.SWORD;
@@ -68,7 +79,7 @@ namespace WatchYourBackLibrary
             new TransformComponent(xOrigin, yOrigin, (int)THROWN.RADIUS, (int)THROWN.RADIUS),
             new WeaponComponent(),
             new VelocityComponent(rotationVector.X * (float)THROWN.SPEED, rotationVector.Y * (float)THROWN.SPEED),
-            new ColliderComponent(new Rectangle((int)xOrigin, (int)yOrigin, (int)THROWN.RADIUS, (int)THROWN.RADIUS), true));
+            new RectangleColliderComponent(new Rectangle((int)xOrigin, (int)yOrigin, (int)THROWN.RADIUS, (int)THROWN.RADIUS), true));
             if (hasGraphics)
                 e.addComponent(new GraphicsComponent(new Rectangle((int)xOrigin, (int)yOrigin, (int)THROWN.RADIUS, (int)THROWN.RADIUS), texture, 0, new Vector2(texture.Width / 2, texture.Height)));
             e.Type = ENTITIES.THROWN;
@@ -82,7 +93,7 @@ namespace WatchYourBackLibrary
                 return new Entity(
                 new ButtonComponent(type),
                 new TransformComponent(x, y, width, height),
-                new ColliderComponent(new Rectangle(x, y, width, height), false),
+                new RectangleColliderComponent(new Rectangle(x, y, width, height), false),
                 new GraphicsComponent(new Rectangle(x, y, width, height), texture, text, font, Color.Blue));
                 
         }
@@ -92,7 +103,7 @@ namespace WatchYourBackLibrary
             Entity e = new Entity(
                 new TileComponent(TileType.WALL),
                 new TransformComponent(x, y, width, height),
-                new ColliderComponent(new Rectangle(x, y, width, height), false));
+                new RectangleColliderComponent(new Rectangle(x, y, width, height), false));
             if (hasGraphics)
                 e.addComponent(new GraphicsComponent(new Rectangle(x, y, width, height), texture));
             e.Type = ENTITIES.WALL;

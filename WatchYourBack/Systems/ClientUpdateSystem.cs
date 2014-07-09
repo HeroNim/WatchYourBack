@@ -21,7 +21,8 @@ namespace WatchYourBack
         private int xInput;
         private int yInput;
         private Vector2 mouseLocation;
-        private bool mouseClicked;
+        private bool leftMouseClicked;
+        private bool rightMouseClicked;
         List<NetworkEntityArgs> receivedData;
         
         
@@ -35,7 +36,7 @@ namespace WatchYourBack
         private NetClient client;
 
 
-        public ClientUpdateSystem(NetClient client) : base(false, true, 2)
+        public ClientUpdateSystem(NetClient client) : base(false, true, 10)
         {
             
             this.client = client;
@@ -72,9 +73,11 @@ namespace WatchYourBack
             if (Keyboard.GetState().IsKeyDown(mappings[KeyBindings.DOWN]))
                 yInput = 1;
             if (ms.LeftButton == ButtonState.Pressed)
-                mouseClicked = true;
+                leftMouseClicked = true;
+            if (ms.RightButton == ButtonState.Pressed)
+                rightMouseClicked = true;
 
-            toSend = new NetworkInputArgs(client.UniqueIdentifier, xInput, yInput, mouseLocation, mouseClicked, manager.DrawTime);
+            toSend = new NetworkInputArgs(client.UniqueIdentifier, xInput, yInput, mouseLocation, leftMouseClicked, rightMouseClicked, manager.DrawTime);
             om = client.CreateMessage();
             om.Write(SerializationHelper.Serialize(toSend));
             client.SendMessage(om, NetDeliveryMethod.ReliableOrdered); 
@@ -100,7 +103,6 @@ namespace WatchYourBack
             while (buffer.Count != 0 && bufferCount >= 0)
             {
                 List<NetworkEntityArgs> receivedData = buffer[0];
-                Console.WriteLine(buffer[0].Count);
                 buffer.RemoveAt(0);
                 
 
@@ -170,7 +172,8 @@ namespace WatchYourBack
         {
             xInput = 0;
             yInput = 0;
-            mouseClicked = false;
+            leftMouseClicked = false;
+            rightMouseClicked = false;
         }
 
         

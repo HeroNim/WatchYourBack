@@ -11,9 +11,7 @@ namespace WatchYourBackLibrary
 {
     public enum Weapons
     {
-        THROWN,
         SWORD
-
     }
 
    
@@ -30,7 +28,9 @@ namespace WatchYourBackLibrary
         private Entity weapon;
         private Weapons weaponType;
         private double attackTimer;
-        private double elapsedTime;
+        private double throwTimer;
+        private double attackCooldown;
+        private double throwCooldown;
         private double lastUpdate;
         
         
@@ -38,9 +38,8 @@ namespace WatchYourBackLibrary
         {
             lastUpdate = 0;
             if (weapon == Weapons.SWORD)
-                attackTimer = (int)SWORD.ATTACK_SPEED;
-            else if (weapon == Weapons.THROWN)
-                attackTimer = (int)THROWN.ATTACK_SPEED;
+                attackTimer = (double)SWORD.ATTACK_SPEED;
+            throwTimer = (double)THROWN.ATTACK_SPEED;
             weaponType = weapon;
         }
 
@@ -77,16 +76,28 @@ namespace WatchYourBackLibrary
                 this.weapon = weapon;
         }
 
-        public double ElapsedTime
-        {
-            get { return elapsedTime; }
-            set { elapsedTime = value; }
-        }
-
         public double AttackSpeed
         {
             get { return attackTimer; }
             set { attackTimer = value; }
+        }
+
+        public double AttackCooldown
+        {
+            get { return attackCooldown; }
+            set { attackCooldown = value; }
+        }
+
+        public double ThrowSpeed
+        {
+            get { return throwTimer; }
+            set { throwTimer = value; }
+        }
+
+        public double ThrowCooldown
+        {
+            get { return throwCooldown; }
+            set { throwCooldown = value; }
         }
 
         public double LastUpdate

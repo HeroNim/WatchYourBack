@@ -20,7 +20,7 @@ namespace WatchYourBack
 
          public MenuInputSystem() : base(false, true, 1)
         {
-            components += (int)Masks.COLLIDER;
+            components += (int)Masks.RECTANGLE_COLLIDER;
             components += (int)Masks.BUTTON;
 
         }
@@ -31,7 +31,7 @@ namespace WatchYourBack
             
                 foreach (Entity entity in activeEntities)
                 {
-                    ColliderComponent collider = (ColliderComponent)entity.Components[Masks.COLLIDER];
+                    RectangleColliderComponent collider = (RectangleColliderComponent)entity.Components[Masks.RECTANGLE_COLLIDER];
                     ButtonComponent button = (ButtonComponent)entity.Components[Masks.BUTTON];
                     GraphicsComponent graphics = (GraphicsComponent)entity.Components[Masks.GRAPHICS];
 

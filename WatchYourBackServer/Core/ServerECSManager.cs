@@ -24,6 +24,7 @@ namespace WatchYourBackServer
     {
         private int currentID;
         private List<ESystem> systems;
+        private LevelComponent levelInfo;
         private Dictionary<int, Entity> inactiveEntities;
         private Dictionary<int, Entity> activeEntities;
         private Dictionary<int, COMMANDS> changedEntities;
@@ -87,6 +88,12 @@ namespace WatchYourBackServer
         public void addInput(InputSystem input)
         {
             this.input = input;
+        }
+
+        public LevelComponent LevelInfo
+        {
+            get { return levelInfo; }
+            set { levelInfo = value; }
         }
 
         public Dictionary<int, Entity> Entities

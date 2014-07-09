@@ -36,6 +36,12 @@ namespace WatchYourBackLibrary
 
         void addInput(InputSystem input);
 
+        LevelComponent LevelInfo
+        {
+            get;
+            set;
+        }
+
         Dictionary<int, Entity> Entities
         {
             get;
