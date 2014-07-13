@@ -29,6 +29,8 @@ namespace WatchYourBackLibrary
 
         public static Entity createAvatar(PlayerInfoComponent info, Rectangle rect, Allegiance player, Weapons weaponType, Texture2D texture, bool hasGraphics)
         {
+            //Rectangle pos = new Rectangle(rect.X, rect.Y, rect.Width, rect.Height);
+            Vector2 offset = new Vector2(rect.Width / 2, rect.Height / 2);
             Entity e = new Entity(
             info,
             new AllegianceComponent(player),
@@ -39,15 +41,15 @@ namespace WatchYourBackLibrary
             new VelocityComponent(0, 0),
             new AvatarInputComponent());
             if (hasGraphics)
-                e.addComponent(new GraphicsComponent(rect, texture));
+                e.addComponent(new GraphicsComponent(rect, texture, 0, new Vector2(texture.Width/2, texture.Height/2), offset, 0.9f));
             e.Type = ENTITIES.AVATAR;
             return e;
         }
 
-        public static Entity createGraphics(Rectangle rect, float rotation, int ID, Texture2D texture, ENTITIES type)
+        public static Entity createGraphics(Rectangle rect, float rotation, Vector2 rotationOrigin, Vector2 rotationOffset, int ID, Texture2D texture, ENTITIES type, float layer)
         { 
             Entity e = new Entity(
-            new GraphicsComponent(rect, texture, rotation, new Vector2(texture.Width/2, texture.Height)));
+            new GraphicsComponent(rect, texture, rotation, rotationOrigin, rotationOffset, layer));
             e.ID = ID;
             e.Type = type;
             return e;
@@ -55,33 +57,35 @@ namespace WatchYourBackLibrary
 
         
         //Creates a weapon at a point on an entity, while taking the holder's velocity component to allow it to 'stick' to the holder
-        public static Entity createSword(Entity wielder, Allegiance wielderAllegiance, float xOrigin, float yOrigin, float rotationAngle, VelocityComponent anchorMovement, Texture2D texture, bool hasGraphics)
+        public static Entity createSword(Entity wielder, Allegiance wielderAllegiance, TransformComponent transform, float rotationAngle, VelocityComponent anchorMovement, Texture2D texture, bool hasGraphics)
         {
+            Vector2 point = TransformComponent.pointOnCircle(transform.Radius, rotationAngle, transform.Center);
             Entity e = new Entity(
             new AllegianceComponent(wielderAllegiance),
-            new TransformComponent(xOrigin, yOrigin, (int)SWORD.WIDTH, (int)SWORD.RANGE, rotationAngle),
+            new TransformComponent(point, (int)SWORD.WIDTH, (int)SWORD.RANGE, rotationAngle),
             new WeaponComponent(wielder, MathHelper.ToRadians((float)SWORD.ARC)),
             new VelocityComponent(anchorMovement.X, anchorMovement.Y, -(float)SWORD.SPEED),
-            new LineColliderComponent(new Vector2(xOrigin, yOrigin), new Vector2(xOrigin + (float)SWORD.WIDTH / 2 / 2, yOrigin - (float)SWORD.RANGE), rotationAngle));
+            new LineColliderComponent(point, new Vector2(point.X, point.Y - (float)SWORD.RANGE), rotationAngle));
+
             if (hasGraphics)
-                e.addComponent(new GraphicsComponent(new Rectangle((int)xOrigin, (int)yOrigin, (int)SWORD.WIDTH, (int)SWORD.RANGE), texture, rotationAngle, new Vector2(texture.Width / 2, texture.Height)));
+                e.addComponent(new GraphicsComponent(new Rectangle((int)point.X, (int)point.Y, (int)SWORD.WIDTH, (int)SWORD.RANGE), texture, rotationAngle, new Vector2(texture.Width / 2, texture.Height), 0));
             e.Type = ENTITIES.SWORD;
             return e;
             
         }
 
 
-        public static Entity createThrown(Allegiance wielderAllegiance, float xOrigin, float yOrigin, Vector2 rotationVector, Texture2D texture, bool hasGraphics)
+        public static Entity createThrown(Allegiance wielderAllegiance, float xOrigin, float yOrigin, Vector2 rotationVector, float rotationAngle, Texture2D texture, bool hasGraphics)
         {
 
             Entity e = new Entity(
             new AllegianceComponent(wielderAllegiance),
-            new TransformComponent(xOrigin, yOrigin, (int)THROWN.RADIUS, (int)THROWN.RADIUS),
+            new TransformComponent(xOrigin, yOrigin, (int)THROWN.RADIUS, (int)THROWN.RADIUS, rotationAngle),
             new WeaponComponent(),
             new VelocityComponent(rotationVector.X * (float)THROWN.SPEED, rotationVector.Y * (float)THROWN.SPEED),
             new RectangleColliderComponent(new Rectangle((int)xOrigin, (int)yOrigin, (int)THROWN.RADIUS, (int)THROWN.RADIUS), true));
             if (hasGraphics)
-                e.addComponent(new GraphicsComponent(new Rectangle((int)xOrigin, (int)yOrigin, (int)THROWN.RADIUS, (int)THROWN.RADIUS), texture, 0, new Vector2(texture.Width / 2, texture.Height)));
+                e.addComponent(new GraphicsComponent(new Rectangle((int)xOrigin, (int)yOrigin, (int)THROWN.RADIUS, (int)THROWN.RADIUS), texture, rotationAngle, new Vector2(texture.Width / 2, texture.Height), 1));
             e.Type = ENTITIES.THROWN;
             return e;
 
@@ -94,7 +98,7 @@ namespace WatchYourBackLibrary
                 new ButtonComponent(type),
                 new TransformComponent(x, y, width, height),
                 new RectangleColliderComponent(new Rectangle(x, y, width, height), false),
-                new GraphicsComponent(new Rectangle(x, y, width, height), texture, text, font, Color.Blue));
+                new GraphicsComponent(new Rectangle(x, y, width, height), texture, text, font, Color.Blue, 1));
                 
         }
 
@@ -105,7 +109,7 @@ namespace WatchYourBackLibrary
                 new TransformComponent(x, y, width, height),
                 new RectangleColliderComponent(new Rectangle(x, y, width, height), false));
             if (hasGraphics)
-                e.addComponent(new GraphicsComponent(new Rectangle(x, y, width, height), texture));
+                e.addComponent(new GraphicsComponent(new Rectangle(x, y, width, height), texture, 1));
             e.Type = ENTITIES.WALL;
             return e;
         }

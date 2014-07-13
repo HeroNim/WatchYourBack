@@ -126,7 +126,7 @@ namespace WatchYourBackServer
                                 }
 
                                 playing = true;
-                                
+
                             }
 
 
@@ -150,18 +150,9 @@ namespace WatchYourBackServer
             inGame.Manager.addSystem(new LevelSystem(levels));
             inGame.Manager.addSystem(new AttackSystem());
 
-            
-            //FIXFIXFIXFIXFIXFIXFIX
-            //levels.Add(LevelName.TEST_LEVEL, new LevelTemplate(testLevelLayout));
-            //levels.Add(LevelName.FIRST_LEVEL, new LevelTemplate(levelOne));
+
+
         }
-
-        /// <summary>
-        /// LoadContent will be called once per game and is the place to load
-        /// all of your content.
-        /// </summary>
-       
-
 
 
         //Pseudo-XNA style gametime. Would probably cause problems on a larger scale game (still might).

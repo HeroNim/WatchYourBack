@@ -35,16 +35,16 @@ namespace WatchYourBackLibrary
                 float yVel = 0;
 
                 if (input.MoveY == 1)
-                    yVel = 5;
+                    yVel = 4;
                 else if (input.MoveY == -1)
-                    yVel = -5;
+                    yVel = -4;
                 else
                     yVel = 0;
 
                 if (input.MoveX == 1)
-                    xVel = 5;
+                    xVel = 4;
                 else if (input.MoveX == -1)
-                    xVel = -5;
+                    xVel = -4;
                 else
                     xVel = 0;
 
@@ -56,6 +56,7 @@ namespace WatchYourBackLibrary
                 Vector2 dir = new Vector2(xDir, yDir);
                 dir.Normalize();
                 transform.LookDirection = dir;
+                transform.Rotation = transform.LookAngle;
 
 
 

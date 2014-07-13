@@ -42,6 +42,18 @@ namespace WatchYourBackLibrary
             lookAngle = 0;
         }
 
+        public TransformComponent(Vector2 position, int width, int height, float rotation)
+        {
+            this.position = position;
+            this.rotation = rotation;
+            this.width = width;
+            this.height = height;
+            rotation = 0;
+            hasMoved = false;
+            lookDirection = Vector2.UnitX;
+            lookAngle = 0;
+        }
+
         public TransformComponent(float x, float y, int width, int height, float rotation)
         {
             position = new Vector2(x, y);
@@ -125,9 +137,22 @@ namespace WatchYourBackLibrary
             get { return new Vector2(position.X + width/2, position.Y + height/2); }
         }
 
-        public float Radius
+        public float Diagonal
         {
             get { return (float)Math.Sqrt(Math.Pow(Width, 2) + Math.Pow(Height, 2))/2; }
+        }
+
+        public float Radius
+        {
+            get { return (float)Width / 2; }
+        }
+
+        public static Vector2 pointOnCircle(float radius, float angle, Vector2 origin)
+        {
+            float x = -((float)(radius * Math.Cos(angle))) + origin.X;
+            float y = -((float)(radius * Math.Sin(angle))) + origin.Y;
+
+            return new Vector2(x, y);
         }
 
         

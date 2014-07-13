@@ -81,6 +81,7 @@ namespace WatchYourBackServer
                 updating = false;
                 for (int i = 0; i < accumulator.Length; i++ )
                 {
+                    Console.WriteLine(accumulator[i]);
                     accumulator[i] -= timeStep;
                 }
             }
@@ -90,9 +91,9 @@ namespace WatchYourBackServer
                 NetIncomingMessage msg;
                 NetworkInputArgs args;
                 AvatarInputComponent playerInputComponent;
-                
 
 
+               
                 while ((msg = server.ReadMessage()) != null)
                 {
                         playerIndex = playerMap[msg.SenderConnection.RemoteUniqueIdentifier];
@@ -157,9 +158,9 @@ namespace WatchYourBackServer
                     
                    
                 }
-               
 
-                for(int i = 0; i < manager.Accumulator.Length; i++)
+                Console.WriteLine(accumulator[0]);
+                for(int i = 0; i < accumulator.Length; i++)
                 {
                     if (accumulator[i] < timeStep)
                     {

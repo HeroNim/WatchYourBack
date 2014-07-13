@@ -10,10 +10,10 @@ namespace WatchYourBackLibrary
     public enum SWORD
     {
         RANGE = 50,
-        WIDTH = 6,
-        SPEED = 20,
+        WIDTH = 8,
+        SPEED = 2,
         ATTACK_SPEED = 500,
-        ARC = 180,
+        ARC = 720,
         ROTATION_X = (int)WIDTH/2,
         ROTATION_Y = (int)RANGE
     }
@@ -23,8 +23,8 @@ namespace WatchYourBackLibrary
         RADIUS = 10,
         ROTATION_X = RADIUS/2,
         ROTATION_Y = RADIUS/2,
-        SPEED = 10,
-        ATTACK_SPEED = 100
+        SPEED = 5,
+        ATTACK_SPEED = 500
     }
     public class WeaponComponent : EComponent
     {

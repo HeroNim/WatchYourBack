@@ -60,6 +60,7 @@ namespace WatchYourBack
             graphics.IsFullScreen = true;
             this.IsMouseVisible = true;
             Content.RootDirectory = "Content";
+            this.TargetElapsedTime = TimeSpan.FromSeconds(1.0f / 120.0f);
             
 
             //----------------------------------------------------------------------------------------------------------
@@ -161,7 +162,7 @@ namespace WatchYourBack
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-            spriteBatch.Begin();
+            spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
             activeWorld.Manager.draw(spriteBatch);
             spriteBatch.End();
 

@@ -62,13 +62,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="LevelOne.png">
-      <Name>LevelOne</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="WallTexture.png">
       <Name>WallTexture</Name>
       <Importer>TextureImporter</Importer>
@@ -92,6 +85,34 @@
   <ItemGroup>
     <Compile Include="WeaponTexture.png">
       <Name>WeaponTexture</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="PlayerTexture.png">
+      <Name>PlayerTexture</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="LevelOne.png">
+      <Name>LevelOne</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="SwordTexture.png">
+      <Name>SwordTexture</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ThrownTexture.png">
+      <Name>ThrownTexture</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

@@ -182,19 +182,16 @@ namespace WatchYourBack
                 if (entity.hasComponent(Masks.GRAPHICS))
                 {
                     GraphicsComponent graphics = (GraphicsComponent)entity.Components[Masks.GRAPHICS];
-                    if (graphics.Rotatable == true)
-                        spriteBatch.Draw(graphics.Sprite, graphics.Body, new Rectangle(0,0, graphics.Sprite.Width, graphics.Sprite.Height), 
-                            graphics.SpriteColor, graphics.RotationAngle, graphics.RotationOrigin, SpriteEffects.None, 1);
-                    else
-                        spriteBatch.Draw(graphics.Sprite, graphics.Body, graphics.SpriteColor);
+                    spriteBatch.Draw(graphics.Sprite, graphics.Body, new Rectangle(0,0, graphics.Sprite.Width, graphics.Sprite.Height), 
+                            graphics.SpriteColor, graphics.RotationAngle, graphics.RotationOrigin, SpriteEffects.None, graphics.Layer);                  
                     
                     if (graphics.HasText)
-                        spriteBatch.DrawString(graphics.Font, graphics.Text, new Vector2(graphics.X, graphics.Y), graphics.FontColor);
+                        spriteBatch.DrawString(graphics.Font, graphics.Text, new Vector2(graphics.X, graphics.Y), graphics.FontColor, 0, graphics.RotationOrigin, 1, SpriteEffects.None, 0);
                     foreach(Vector2 point in graphics.DebugPoints)
                     {
-                        spriteBatch.Draw(graphics.Sprite, new Rectangle((int)point.X, (int)point.Y, 1, 1), Color.White);
+                        spriteBatch.Draw(graphics.Sprite, new Rectangle((int)point.X, (int)point.Y, 3, 3), Color.Black);
                     }
-                    //graphics.DebugPoints.Clear();
+                    graphics.DebugPoints.Clear();
                 }
             }
         }

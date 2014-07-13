@@ -100,13 +100,7 @@ namespace WatchYourBackLibrary
             c1.X += (int)v1.X;
             if (c1.Collider.Intersects(c2.Collider))
             {
-                collided = true;
-                if (c1.IsDestructable)
-                {
-                    manager.removeEntity(e1);
-                    return;
-                }
-                else
+                collided = true; 
                     if (t1.XLock != true)
                     {
                         t1.X -= v1.X;
@@ -168,10 +162,11 @@ namespace WatchYourBackLibrary
             if (collided == true)
             {
                 if (c1.IsDestructable)
-                    manager.removeEntity(e1);
+                   remove(e1);
                 if(c2.IsDestructable)
-                    manager.removeEntity(e2);
+                   remove(e2);
             }
+
 
 
         }
@@ -264,14 +259,14 @@ namespace WatchYourBackLibrary
             if (intersection == true)
             {
 
-                manager.removeEntity(e1);
+                remove(e1);
                 if (e1.hasComponent(Masks.WEAPON))
                 {
                     WeaponComponent w1 = (WeaponComponent)e1.Components[Masks.WEAPON];
                     ((WielderComponent)w1.Wielder.Components[Masks.WIELDER]).RemoveWeapon();
                 }
                 if (c2.IsDestructable)
-                    manager.removeEntity(e2);
+                    remove(e2);
             }
         }
 
@@ -291,7 +286,7 @@ namespace WatchYourBackLibrary
             
            
 
-            manager.removeEntity(e1);
+            remove(e1);
             if (e1.hasComponent(Masks.WEAPON))
             {
                 WeaponComponent w1 = (WeaponComponent)e1.Components[Masks.WEAPON];

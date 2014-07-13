@@ -15,10 +15,10 @@ namespace WatchYourBackLibrary
 
     enum LevelDimensions
     {
-        WIDTH = 32,
-        HEIGHT = 18,
-        X_SCALE = 40,
-        Y_SCALE = 40
+        WIDTH = 64,
+        HEIGHT = 36,
+        X_SCALE = 20,
+        Y_SCALE = 20
     };
 
     /*
@@ -77,7 +77,7 @@ namespace WatchYourBackLibrary
             if (manager.hasGraphics())
             {
                 wallTexture = manager.getTexture("WallTexture");
-                spawnTexture = manager.getTexture("SpawnTexture");
+                spawnTexture = manager.getTexture("PlayerTexture");
             }
             int player = 1;
 
@@ -88,15 +88,15 @@ namespace WatchYourBackLibrary
                 {
                     if (levelTemplate.LevelData[y, x] == (int)TileType.WALL)
                     {
-                        Entity wall = EFactory.createWall(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE, 40, 40, wallTexture, manager.hasGraphics());
+                        Entity wall = EFactory.createWall(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE, (int)LevelDimensions.X_SCALE, (int)LevelDimensions.Y_SCALE, wallTexture, manager.hasGraphics());
                         manager.addEntity(wall);
                         //level.Walls.Add(wall);
                     }
                     if (levelTemplate.LevelData[y, x] == (int)TileType.SPAWN)
                     {
-                        Entity spawn = EFactory.createSpawn(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE, 40, 40);
-                        Entity avatar =  EFactory.createAvatar(new PlayerInfoComponent((Allegiance)player), new Rectangle(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE, 40, 40),
-                             (Allegiance)player, Weapons.SWORD, spawnTexture, manager.hasGraphics());
+                        Entity spawn = EFactory.createSpawn(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE, (int)LevelDimensions.X_SCALE, (int)LevelDimensions.Y_SCALE);
+                        Entity avatar = EFactory.createAvatar(new PlayerInfoComponent((Allegiance)player), new Rectangle(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE, 
+                           40, 40), (Allegiance)player, Weapons.SWORD, spawnTexture, manager.hasGraphics());
 
                         manager.addEntity(spawn);                        
                         manager.addEntity(avatar);
