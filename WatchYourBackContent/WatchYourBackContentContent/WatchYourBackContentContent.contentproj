@@ -104,15 +104,15 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="SwordTexture.png">
-      <Name>SwordTexture</Name>
+    <Compile Include="ThrownTexture.png">
+      <Name>ThrownTexture</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ThrownTexture.png">
-      <Name>ThrownTexture</Name>
+    <Compile Include="SwordTexture.png">
+      <Name>SwordTexture</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

@@ -106,7 +106,13 @@ namespace WatchYourBackLibrary
 
         public float Rotation
         {
-            get { return rotation; }
+            get {
+                if (rotation < 0)
+                    rotation += (float)Math.PI * 2;
+                if (rotation > Math.PI * 2)
+                    rotation -= (float)Math.PI * 2; 
+                return rotation % ((float)Math.PI * 2);
+            }
             set
             {
                 if (rotation != value)
@@ -114,6 +120,27 @@ namespace WatchYourBackLibrary
                     rotation = value;
                     hasMoved = true;
                 }
+            }
+        }
+
+        public Vector2 LookDirection
+        {
+            get { return lookDirection; }
+            set { lookDirection = new Vector2(value.X, value.Y); }
+        }
+
+        public float LookAngle
+        {
+            get
+            {
+                lookAngle = -(float)Math.Atan2(lookDirection.X * Vector2.UnitY.Y, lookDirection.Y * Vector2.UnitY.Y) + (float)Math.PI; //Stupid xna
+                if (lookAngle < 0)
+                    lookAngle += (float)Math.PI * 2;
+                if (lookAngle > Math.PI * 2) 
+                    lookAngle -= (float)Math.PI * 2; 
+                
+                return lookAngle;
+
             }
         }
 
@@ -186,21 +213,7 @@ namespace WatchYourBackLibrary
             return (float)Math.Sqrt((x * x) + (y * y));
         }
 
-        public Vector2 LookDirection
-        {
-            get { return lookDirection; }
-            set { lookDirection = new Vector2(value.X, value.Y); }
-        }
-
-        public float LookAngle
-        {
-            get { lookAngle = -(float)Math.Atan2(lookDirection.X * Vector2.UnitY.Y, lookDirection.Y * Vector2.UnitY.Y);
-                    if (lookAngle < 0)
-                        lookAngle = (float)(lookAngle + Math.PI * 2);
-                    return lookAngle;
-                    
-            }
-        }
+        
 
 
     }

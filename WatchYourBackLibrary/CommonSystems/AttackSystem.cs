@@ -37,7 +37,8 @@ namespace WatchYourBackLibrary
 
                 Vector2 dir = anchorTransform.LookDirection;
                 float dirAngle = anchorTransform.LookAngle;
-                float perpAngle = dirAngle - (float)Math.PI / 2;
+                float perpAngle = dirAngle + (float)Math.PI / 2;
+               
 
                 wielderComponent.AttackCooldown += gameTime.TotalMilliseconds;
                 wielderComponent.ThrowCooldown += gameTime.TotalMilliseconds;

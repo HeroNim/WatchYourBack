@@ -13,7 +13,7 @@ namespace WatchYourBackLibrary
         WIDTH = 8,
         SPEED = 2,
         ATTACK_SPEED = 500,
-        ARC = 720,
+        ARC = 110,
         ROTATION_X = (int)WIDTH/2,
         ROTATION_Y = (int)RANGE
     }

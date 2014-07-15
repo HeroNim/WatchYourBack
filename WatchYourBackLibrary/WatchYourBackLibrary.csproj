@@ -69,6 +69,7 @@
     <Compile Include="ECS\IECSManager.cs" />
     <Compile Include="CommonSystems\InputSystem.cs" />
     <Compile Include="ECS\World.cs" />
+    <Compile Include="HelperFunctions.cs" />
     <Compile Include="InputArgs.cs" />
     <Compile Include="LevelTemplate.cs" />
     <Compile Include="NetworkInputArgs.cs" />

@@ -30,21 +30,28 @@ namespace WatchYourBackLibrary
                 AvatarInputComponent input = (AvatarInputComponent)entity.Components[Masks.PLAYER_INPUT];
                 VelocityComponent velocity = (VelocityComponent)entity.Components[Masks.VELOCITY];
                 TransformComponent transform = (TransformComponent)entity.Components[Masks.TRANSFORM];
+                AllegianceComponent allegiance = (AllegianceComponent)entity.Components[Masks.ALLEGIANCE];
+
+                Vector2 rotationVector = HelperFunctions.AngleToVector(transform.Rotation);
+                float relativeAngle = HelperFunctions.Angle(velocity.Velocity, rotationVector);
+                float speedModifier = 1;
+                if (relativeAngle > Math.PI / 2)
+                    speedModifier = 1.0f / 2.0f;
 
                 float xVel = 0;
                 float yVel = 0;
 
                 if (input.MoveY == 1)
-                    yVel = 4;
+                    yVel = 4 * speedModifier;
                 else if (input.MoveY == -1)
-                    yVel = -4;
+                    yVel = -4 * speedModifier;
                 else
                     yVel = 0;
 
                 if (input.MoveX == 1)
-                    xVel = 4;
+                    xVel = 4 * speedModifier;
                 else if (input.MoveX == -1)
-                    xVel = -4;
+                    xVel = -4 * speedModifier;
                 else
                     xVel = 0;
 
@@ -56,7 +63,19 @@ namespace WatchYourBackLibrary
                 Vector2 dir = new Vector2(xDir, yDir);
                 dir.Normalize();
                 transform.LookDirection = dir;
-                transform.Rotation = transform.LookAngle;
+
+               
+                float angle = transform.LookAngle - transform.Rotation;
+                angle = HelperFunctions.Normalize(angle);
+                if (angle > Math.PI)
+                   velocity.RotationSpeed = -5;
+                if (angle < Math.PI)
+                    velocity.RotationSpeed = 5;
+                if (angle < 0.1f || angle > (float)Math.PI*2 - 0.1f)
+                    velocity.RotationSpeed = 0;
+                    
+                
+
 
 
 

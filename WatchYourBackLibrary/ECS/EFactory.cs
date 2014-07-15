@@ -37,7 +37,7 @@ namespace WatchYourBackLibrary
             new WielderComponent(weaponType),
             new TransformComponent(rect.X, rect.Y, rect.Width, rect.Height),
             new RectangleColliderComponent(rect, false),
-            new PlayerHitboxComponent(rect, 10),
+            new PlayerHitboxComponent(rect, 10, -Vector2.UnitY),
             new VelocityComponent(0, 0),
             new AvatarInputComponent());
             if (hasGraphics)
@@ -57,9 +57,11 @@ namespace WatchYourBackLibrary
 
         
         //Creates a weapon at a point on an entity, while taking the holder's velocity component to allow it to 'stick' to the holder
-        public static Entity createSword(Entity wielder, Allegiance wielderAllegiance, TransformComponent transform, float rotationAngle, VelocityComponent anchorMovement, Texture2D texture, bool hasGraphics)
+        public static Entity createSword(Entity wielder, Allegiance wielderAllegiance, TransformComponent anchorTransform, float rotationAngle, VelocityComponent anchorMovement, Texture2D texture, bool hasGraphics)
         {
-            Vector2 point = TransformComponent.pointOnCircle(transform.Radius, rotationAngle, transform.Center);
+            Vector2 point = TransformComponent.pointOnCircle(anchorTransform.Radius, rotationAngle, anchorTransform.Center);
+            Vector2 rotation = Vector2.Transform(point - anchorTransform.Center, Matrix.CreateRotationZ((float)(Math.PI/4))) + anchorTransform.Center;
+            point = rotation;
             Entity e = new Entity(
             new AllegianceComponent(wielderAllegiance),
             new TransformComponent(point, (int)SWORD.WIDTH, (int)SWORD.RANGE, rotationAngle),

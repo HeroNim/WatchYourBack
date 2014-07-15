@@ -71,10 +71,12 @@ namespace WatchYourBackLibrary
         private void checkBoxCollisions(Entity e1, Entity e2)
         {
             bool collided = false;
+            int displacement;
             //Assign local variables
 
             WielderComponent weaponComponent = null;
             TransformComponent weaponTransformComponent = null;
+            VelocityComponent weaponVelocityComponent = null;
             LineColliderComponent weaponCollider = null;
             bool hasWeapon = false;
 
@@ -90,6 +92,7 @@ namespace WatchYourBackLibrary
                 if (weaponComponent.hasWeapon)
                 {
                     weaponTransformComponent = (TransformComponent)weaponComponent.Weapon.Components[Masks.TRANSFORM];
+                    weaponVelocityComponent = (VelocityComponent)weaponComponent.Weapon.Components[Masks.VELOCITY];
                     weaponCollider = (LineColliderComponent)weaponComponent.Weapon.Components[Masks.LINE_COLLIDER];
                     hasWeapon = true;
                 }
@@ -97,67 +100,94 @@ namespace WatchYourBackLibrary
 
             //Check collisions
 
-            c1.X += (int)v1.X;
+            //c1.X += (int)v1.X;
+            //if (c1.Collider.Intersects(c2.Collider))
+            //{
+            //    collided = true; 
+            //        if (t1.XLock != true)
+            //        {
+            //            t1.X -= v1.X;
+            //            t1.XLock = true;
+            //            if (hasWeapon)
+            //            {
+            //                weaponTransformComponent.X -= v1.X;
+            //                weaponCollider.X1 -= v1.X;
+            //                weaponCollider.X2 -= v1.X;
+            //            }
+            //        }
+            //}
+            //c1.X -= (int)v1.X;
+
+            //c1.Y += (int)v1.Y;
+            //if (c1.Collider.Intersects(c2.Collider))
+            //{
+            //    collided = true;
+            //        if (t1.YLock != true)
+            //        {
+            //            t1.Y -= v1.Y;
+            //            t1.YLock = true;
+            //            if (hasWeapon)
+            //            {
+            //                weaponTransformComponent.Y -= v1.Y;
+            //                weaponCollider.Y1 -= v1.Y;
+            //                weaponCollider.Y2 -= v1.Y;
+            //            }
+            //        }
+            //}
+            //c1.Y -= (int)v1.Y;
+
+            //if (t1.XLock == false && t1.YLock == false)
+            //{
+            //    c1.X += (int)v1.X;
+            //    c1.Y += (int)v1.Y;
+            //    if (c1.Collider.Intersects(c2.Collider))
+            //    {
+            //        collided = true;
+
+            //        t1.X -= v1.X;
+            //        t1.Y -= v1.Y;
+            //        t1.XLock = true;
+            //        t1.YLock = true;
+            //        if (hasWeapon)
+            //        {
+            //            weaponTransformComponent.X -= v1.X;
+            //            weaponCollider.X1 -= v1.X;
+            //            weaponCollider.X2 -= v1.X;
+            //            weaponTransformComponent.Y -= v1.Y;
+            //            weaponCollider.Y1 -= v1.Y;
+            //            weaponCollider.Y2 -= v1.Y;
+            //        }
+            //    }
+            //    c1.X -= (int)v1.X;
+            //    c1.Y -= (int)v1.Y;
+            //}
+            displacement = (int)v1.X;
+            c1.X += displacement;
             if (c1.Collider.Intersects(c2.Collider))
             {
-                collided = true; 
-                    if (t1.XLock != true)
-                    {
-                        t1.X -= v1.X;
-                        t1.XLock = true;
-                        if (hasWeapon)
-                        {
-                            weaponTransformComponent.X -= v1.X;
-                            weaponCollider.X1 -= v1.X;
-                            weaponCollider.X2 -= v1.X;
-                        }
-                    }
+                collided = true;                
+                v1.X = 0;
+                    if (hasWeapon)
+                        weaponVelocityComponent.X = 0;
+  
+                
             }
-            c1.X -= (int)v1.X;
+            c1.X -= displacement;
 
-            c1.Y += (int)v1.Y;
+            displacement = (int)v1.Y;
+            c1.Y += displacement;
             if (c1.Collider.Intersects(c2.Collider))
             {
                 collided = true;
-                    if (t1.YLock != true)
-                    {
-                        t1.Y -= v1.Y;
-                        t1.YLock = true;
-                        if (hasWeapon)
-                        {
-                            weaponTransformComponent.Y -= v1.Y;
-                            weaponCollider.Y1 -= v1.Y;
-                            weaponCollider.Y2 -= v1.Y;
-                        }
-                    }
-            }
-            c1.Y -= (int)v1.Y;
+                v1.Y = 0;
+                if (hasWeapon)
+                    weaponVelocityComponent.Y = 0;
 
-            if (t1.XLock == false && t1.YLock == false)
-            {
-                c1.X += (int)v1.X;
-                c1.Y += (int)v1.Y;
-                if (c1.Collider.Intersects(c2.Collider))
-                {
-                    collided = true;
 
-                    t1.X -= v1.X;
-                    t1.Y -= v1.Y;
-                    t1.XLock = true;
-                    t1.YLock = true;
-                    if (hasWeapon)
-                    {
-                        weaponTransformComponent.X -= v1.X;
-                        weaponCollider.X1 -= v1.X;
-                        weaponCollider.X2 -= v1.X;
-                        weaponTransformComponent.Y -= v1.Y;
-                        weaponCollider.Y1 -= v1.Y;
-                        weaponCollider.Y2 -= v1.Y;
-                    }
-                }
-                c1.X -= (int)v1.X;
-                c1.Y -= (int)v1.Y;
             }
+            c1.Y -= displacement;
+  
+
 
             if (collided == true)
             {

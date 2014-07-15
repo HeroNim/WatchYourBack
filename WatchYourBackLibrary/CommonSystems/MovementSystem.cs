@@ -48,11 +48,15 @@ namespace WatchYourBackLibrary
 
                 if (entity.hasComponent(Masks.WEAPON))
                 {
-                    WeaponComponent weapon = (WeaponComponent)entity.Components[Masks.WEAPON];
-                    weapon.Arc += Math.Abs(velocity.RotationSpeed);
-                    TransformComponent anchorTransform = (TransformComponent)weapon.Wielder.Components[Masks.TRANSFORM];
-                    Vector2 rotation = Vector2.Transform(transform.Position - anchorTransform.Center, Matrix.CreateRotationZ(velocity.RotationSpeed)) + anchorTransform.Center;
-                    transform.Position = rotation;
+                    if (entity.Type == ENTITIES.SWORD)
+                    {
+                        WeaponComponent weapon = (WeaponComponent)entity.Components[Masks.WEAPON];
+                        weapon.Arc += Math.Abs(velocity.RotationSpeed);
+
+                        VelocityComponent anchorVelocity = (VelocityComponent)weapon.Wielder.Components[Masks.VELOCITY];
+                        transform.Rotation += anchorVelocity.RotationSpeed;
+                    }
+                   
                     
                 }
                 
@@ -63,14 +67,20 @@ namespace WatchYourBackLibrary
                         LineColliderComponent collider = (LineColliderComponent)entity.Components[Masks.LINE_COLLIDER];
                         WeaponComponent weapon = (WeaponComponent)entity.Components[Masks.WEAPON];
                         TransformComponent anchorTransform = (TransformComponent)weapon.Wielder.Components[Masks.TRANSFORM];
+                        VelocityComponent anchorVelocity = (VelocityComponent)weapon.Wielder.Components[Masks.VELOCITY];
                         
 
                         collider.P1 = new Vector2(collider.P1.X + velocity.X, collider.P1.Y + velocity.Y);
                         collider.P2 = new Vector2(collider.P2.X + velocity.X, collider.P2.Y + velocity.Y);
-                        Vector2 rotation1 = Vector2.Transform(collider.P1 - anchorTransform.Center, Matrix.CreateRotationZ(velocity.RotationSpeed)) + anchorTransform.Center;
-                        Vector2 rotation2 = Vector2.Transform(collider.P2 - anchorTransform.Center, Matrix.CreateRotationZ(velocity.RotationSpeed)) + anchorTransform.Center;
+                        Vector2 rotation1 = Vector2.Transform(collider.P1 - anchorTransform.Center, Matrix.CreateRotationZ(velocity.RotationSpeed + anchorVelocity.RotationSpeed)) + anchorTransform.Center;
+                        Vector2 rotation2 = Vector2.Transform(collider.P2 - anchorTransform.Center, Matrix.CreateRotationZ(velocity.RotationSpeed + anchorVelocity.RotationSpeed)) + anchorTransform.Center;
+
                         collider.P1 = rotation1;
                         collider.P2 = rotation2;
+
+
+                        Vector2 rotation = Vector2.Transform(transform.Position - anchorTransform.Center, Matrix.CreateRotationZ(velocity.RotationSpeed + anchorVelocity.RotationSpeed)) + anchorTransform.Center;
+                        transform.Position = rotation;
                         
                         GraphicsComponent graphics = (GraphicsComponent)entity.Components[Masks.GRAPHICS];
                         graphics.DebugPoints.Add(collider.P1);
@@ -95,17 +105,13 @@ namespace WatchYourBackLibrary
                         collider.P1 = new Vector2(collider.P1.X + velocity.X, collider.P1.Y + velocity.Y);
                         collider.P2 = new Vector2(collider.P2.X + velocity.X, collider.P2.Y + velocity.Y);
                         
-                        Vector2 reverse = new Vector2(-transform.LookDirection.X, -transform.LookDirection.Y);
-                        Vector2 perpendicular = new Vector2(reverse.Y, -reverse.X);
-                        reverse.Normalize();
-                        perpendicular.Normalize();
-                        
-                        reverse *= transform.Diagonal; //A line of length radius pointing in the opposite direction of the player
-                        perpendicular *= collider.Width; //A line pointing units perpendicular to the look direction of the player
+                       
+                        Vector2 rotation1 = Vector2.Transform(collider.P1 - transform.Center, Matrix.CreateRotationZ(velocity.RotationSpeed)) + transform.Center;
+                        Vector2 rotation2 = Vector2.Transform(collider.P2 - transform.Center, Matrix.CreateRotationZ(velocity.RotationSpeed)) + transform.Center;
+                        collider.P1 = rotation1;
+                        collider.P2 = rotation2;
 
-                        Vector2 midPoint = new Vector2(transform.Center.X + reverse.X, transform.Center.Y + reverse.Y);
-                        collider.P1 = new Vector2(midPoint.X + perpendicular.X, midPoint.Y + perpendicular.Y); //A point on the tangent
-                        collider.P2 = new Vector2(midPoint.X - perpendicular.X, midPoint.Y - perpendicular.Y); //A point on the tangent
+
 
                         graphics.DebugPoints.Add(collider.P1);
                         graphics.DebugPoints.Add(collider.P2); 
