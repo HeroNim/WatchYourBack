@@ -34,30 +34,30 @@ namespace WatchYourBackLibrary
 
                 Vector2 rotationVector = HelperFunctions.AngleToVector(transform.Rotation);
                 float relativeAngle = HelperFunctions.Angle(velocity.Velocity, rotationVector);
-                float speedModifier = 1;
-                if (relativeAngle > Math.PI / 2)
-                    speedModifier = 1.0f / 2.0f;
 
-                float xVel = 0;
-                float yVel = 0;
+                if (relativeAngle > Math.PI / 2)
+                    velocity.VelocityModifier = 1.0f / 2.0f;
+                //else if dashing, velocity modifier = 2.0f;
+                else
+                    velocity.VelocityModifier = 1;
+
+                
 
                 if (input.MoveY == 1)
-                    yVel = 4 * speedModifier;
+                    velocity.Y = 4;
                 else if (input.MoveY == -1)
-                    yVel = -4 * speedModifier;
+                    velocity.Y = -4;
                 else
-                    yVel = 0;
+                    velocity.Y = 0;
 
                 if (input.MoveX == 1)
-                    xVel = 4 * speedModifier;
+                    velocity.X = 4;
                 else if (input.MoveX == -1)
-                    xVel = -4 * speedModifier;
+                    velocity.X = -4;
                 else
-                    xVel = 0;
+                    velocity.X = 0;
 
-                velocity.Y = yVel;
-                velocity.X = xVel;
-
+             
                 float xDir = input.LookX - transform.Center.X;
                 float yDir = input.LookY - transform.Center.Y;
                 Vector2 dir = new Vector2(xDir, yDir);
@@ -85,8 +85,8 @@ namespace WatchYourBackLibrary
                     {
                         Entity weapon = ((WielderComponent)entity.Components[Masks.WIELDER]).Weapon;
                         VelocityComponent weaponVelocityComponent = (VelocityComponent)weapon.Components[Masks.VELOCITY];
-                        weaponVelocityComponent.Y = yVel;
-                        weaponVelocityComponent.X = xVel;
+                        weaponVelocityComponent.Y = velocity.Y;
+                        weaponVelocityComponent.X = velocity.X;
                     }
                 }
             }

@@ -11,7 +11,7 @@ namespace WatchYourBackLibrary
     {
         RANGE = 50,
         WIDTH = 8,
-        SPEED = 2,
+        SPEED = 5,
         ATTACK_SPEED = 500,
         ARC = 110,
         ROTATION_X = (int)WIDTH/2,
@@ -23,7 +23,7 @@ namespace WatchYourBackLibrary
         RADIUS = 10,
         ROTATION_X = RADIUS/2,
         ROTATION_Y = RADIUS/2,
-        SPEED = 5,
+        SPEED = 10,
         ATTACK_SPEED = 500
     }
     public class WeaponComponent : EComponent

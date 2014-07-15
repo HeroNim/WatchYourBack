@@ -35,9 +35,11 @@ namespace WatchYourBackLibrary
                 AllegianceComponent anchorAllegiance = (AllegianceComponent)entity.Components[Masks.ALLEGIANCE];
                 AvatarInputComponent input = (AvatarInputComponent)entity.Components[Masks.PLAYER_INPUT];
 
-                Vector2 dir = anchorTransform.LookDirection;
-                float dirAngle = anchorTransform.LookAngle;
-                float perpAngle = dirAngle + (float)Math.PI / 2;
+                Vector2 lookDir = anchorTransform.LookDirection;
+                float lookAngle = anchorTransform.LookAngle;
+
+
+                float perpAngle = anchorTransform.Rotation + (float)Math.PI / 2;
                
 
                 wielderComponent.AttackCooldown += gameTime.TotalMilliseconds;
@@ -78,7 +80,7 @@ namespace WatchYourBackLibrary
                 {
                     if (wielderComponent.ThrowCooldown >= wielderComponent.ThrowSpeed)
                     {
-                        manager.addEntity(EFactory.createThrown(anchorAllegiance.Owner, anchorTransform.Center.X, anchorTransform.Center.Y, dir, dirAngle, manager.getTexture("ThrownTexture"), manager.hasGraphics()));
+                        manager.addEntity(EFactory.createThrown(anchorAllegiance.Owner, anchorTransform.Center.X, anchorTransform.Center.Y, lookDir, lookAngle, manager.getTexture("ThrownTexture"), manager.hasGraphics()));
                         wielderComponent.ThrowCooldown = 0;
                     }
                     input.ThrowWeapon = false;

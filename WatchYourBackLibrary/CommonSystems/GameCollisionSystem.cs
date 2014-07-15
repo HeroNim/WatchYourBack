@@ -100,67 +100,7 @@ namespace WatchYourBackLibrary
 
             //Check collisions
 
-            //c1.X += (int)v1.X;
-            //if (c1.Collider.Intersects(c2.Collider))
-            //{
-            //    collided = true; 
-            //        if (t1.XLock != true)
-            //        {
-            //            t1.X -= v1.X;
-            //            t1.XLock = true;
-            //            if (hasWeapon)
-            //            {
-            //                weaponTransformComponent.X -= v1.X;
-            //                weaponCollider.X1 -= v1.X;
-            //                weaponCollider.X2 -= v1.X;
-            //            }
-            //        }
-            //}
-            //c1.X -= (int)v1.X;
-
-            //c1.Y += (int)v1.Y;
-            //if (c1.Collider.Intersects(c2.Collider))
-            //{
-            //    collided = true;
-            //        if (t1.YLock != true)
-            //        {
-            //            t1.Y -= v1.Y;
-            //            t1.YLock = true;
-            //            if (hasWeapon)
-            //            {
-            //                weaponTransformComponent.Y -= v1.Y;
-            //                weaponCollider.Y1 -= v1.Y;
-            //                weaponCollider.Y2 -= v1.Y;
-            //            }
-            //        }
-            //}
-            //c1.Y -= (int)v1.Y;
-
-            //if (t1.XLock == false && t1.YLock == false)
-            //{
-            //    c1.X += (int)v1.X;
-            //    c1.Y += (int)v1.Y;
-            //    if (c1.Collider.Intersects(c2.Collider))
-            //    {
-            //        collided = true;
-
-            //        t1.X -= v1.X;
-            //        t1.Y -= v1.Y;
-            //        t1.XLock = true;
-            //        t1.YLock = true;
-            //        if (hasWeapon)
-            //        {
-            //            weaponTransformComponent.X -= v1.X;
-            //            weaponCollider.X1 -= v1.X;
-            //            weaponCollider.X2 -= v1.X;
-            //            weaponTransformComponent.Y -= v1.Y;
-            //            weaponCollider.Y1 -= v1.Y;
-            //            weaponCollider.Y2 -= v1.Y;
-            //        }
-            //    }
-            //    c1.X -= (int)v1.X;
-            //    c1.Y -= (int)v1.Y;
-            //}
+         
             displacement = (int)v1.X;
             c1.X += displacement;
             if (c1.Collider.Intersects(c2.Collider))

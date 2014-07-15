@@ -19,35 +19,44 @@ namespace WatchYourBackLibrary
         public override Masks Mask { get { return Masks.VELOCITY; } }
 
         private Vector2 velocity;
+        private float velocityModifier;
         private float rotationSpeed;
 
         public VelocityComponent(float x, float y)
         {  
             velocity = new Vector2(x,y);
+            velocityModifier = 1;
             rotationSpeed = 0;
         }
 
         public VelocityComponent(float x, float y, float rotation)
         {
             velocity = new Vector2(x, y);
-            rotationSpeed = rotation/100;
+            velocityModifier = 1;
+            rotationSpeed = rotation / 100;
         }
 
         public Vector2 Velocity
         {
-            get { return velocity; }
+            get { return new Vector2(velocity.X * velocityModifier, velocity.Y * velocityModifier); }
             set { velocity = value; }
+        }
+
+        public float VelocityModifier
+        {
+            get { return velocityModifier; }
+            set { velocityModifier = value; }
         }
 
         public float X
         {
-            get { return velocity.X; }
+            get { return Velocity.X; }
             set { velocity.X = value; }
         }
 
         public float Y
         {
-            get { return velocity.Y; }
+            get { return Velocity.Y; }
             set { velocity.Y = value; }
         }
 
