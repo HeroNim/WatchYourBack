@@ -19,6 +19,7 @@ namespace WatchYourBackLibrary
         public override Masks Mask { get { return Masks.GRAPHICS; } }
 
         private Texture2D spriteTexture;
+        private Rectangle sourceRectangle;
         private Rectangle body;
         private Color color;
         private Color fontColor;
@@ -36,6 +37,7 @@ namespace WatchYourBackLibrary
         public GraphicsComponent(Rectangle body, Texture2D texture, float layer)
         {
             spriteTexture = texture;
+            sourceRectangle = spriteTexture.Bounds;
             this.body = body;
             color = Color.White;
             this.rotationAngle = 0;
@@ -47,9 +49,25 @@ namespace WatchYourBackLibrary
             this.layer = layer;
         }
 
+        public GraphicsComponent(Rectangle body, Texture2D texture, Rectangle sourceRectangle, float layer)
+        {
+            spriteTexture = texture;
+            this.sourceRectangle = sourceRectangle;
+            this.body = body;
+            color = Color.White;
+            this.rotationAngle = 0;
+            this.rotationOrigin = Vector2.Zero;
+            this.rotationOffset = Vector2.Zero;
+
+            hasText = false;
+            debugPoints = new List<Vector2>();
+            this.layer = layer;
+        }
+
         public GraphicsComponent(Rectangle body, Texture2D texture, float rotationAngle, Vector2 rotationOrigin, float layer)
         {
             spriteTexture = texture;
+            sourceRectangle = spriteTexture.Bounds;
             this.body = body;
             color = Color.White;
             this.rotationAngle = rotationAngle;
@@ -60,9 +78,10 @@ namespace WatchYourBackLibrary
             this.layer = layer;
         }
 
-        public GraphicsComponent(Rectangle body, Texture2D texture, float rotationAngle, Vector2 rotationOrigin, Vector2 rotationOffset, float layer)
+        public GraphicsComponent(Rectangle body, Texture2D texture, Rectangle sourceRectangle, float rotationAngle, Vector2 rotationOrigin, Vector2 rotationOffset, float layer)
         {
             spriteTexture = texture;
+            this.sourceRectangle = sourceRectangle;
             this.body = body;
             color = Color.White;
             this.rotationAngle = rotationAngle;
@@ -91,6 +110,7 @@ namespace WatchYourBackLibrary
         public int Y { get { return Body.Y; } set { body.Y = value; } }
 
         public Texture2D Sprite { get { return spriteTexture; } }
+        public Rectangle SourceRectangle { get { return sourceRectangle; } set { sourceRectangle = value; } }
         public Rectangle Body { get { return new Rectangle(body.X + (int)rotationOffset.X, body.Y + (int)rotationOffset.Y, body.Width, body.Height); ; } set { body = value; } }
         public Color SpriteColor { get { return color; } set { color = value; } }
         public Color FontColor { get { return fontColor; } set { fontColor = value; } }

@@ -28,6 +28,7 @@ namespace WatchYourBack
         float layer;
         Vector2 rotationOrigin;
         Vector2 rotationOffset;
+        Rectangle sourceRectangle;
         
         int bufferCount;
         
@@ -48,6 +49,8 @@ namespace WatchYourBack
             layer = 0;
             rotationOrigin = Vector2.Zero;
             rotationOffset = Vector2.Zero;
+            sourceRectangle = Rectangle.Empty;
+            
 
             receivedData = new List<NetworkEntityArgs>();
             buffer = new List<List<NetworkEntityArgs>>();
@@ -122,7 +125,7 @@ namespace WatchYourBack
                         case COMMANDS.ADD:
                             getGraphics(args);
                             
-                            manager.addEntity(EFactory.createGraphics(body, args.Rotation, rotationOrigin, rotationOffset, args.ID, texture, args.Type, layer));
+                            manager.addEntity(EFactory.createGraphics(body, args.Rotation, rotationOrigin, rotationOffset, args.ID, texture, sourceRectangle, args.Type, layer));
                             break;
                         case COMMANDS.REMOVE:
                             manager.ActiveEntities.Remove(args.ID);
@@ -157,31 +160,36 @@ namespace WatchYourBack
                     texture = manager.getTexture("PlayerTexture");
                     layer = 1;
                     rotationOrigin = new Vector2(texture.Width/2, texture.Height/2);
-                    rotationOffset = new Vector2(args.Width / 2, args.Height / 2); 
+                    rotationOffset = new Vector2(args.Width / 2, args.Height / 2);
+                    sourceRectangle = texture.Bounds;
                     break;
                 case ENTITIES.SWORD:
                     texture = manager.getTexture("SwordTexture");
                     layer = 0;
                     rotationOrigin = new Vector2(texture.Width/2, texture.Height);
-                    rotationOffset = Vector2.Zero; 
+                    rotationOffset = Vector2.Zero;
+                    sourceRectangle = texture.Bounds;
                     break;
                 case ENTITIES.THROWN:
                     texture = manager.getTexture("ThrownTexture");
                     layer = 0;
                     rotationOrigin = Vector2.Zero;
-                    rotationOffset = Vector2.Zero; 
+                    rotationOffset = Vector2.Zero;
+                    sourceRectangle = texture.Bounds;
                     break;
                 case ENTITIES.WALL:
-                    texture = manager.getTexture("WallTexture");
+                    texture = manager.getTexture("TileTextures/TileAtlas");
                     layer = 1;
                     rotationOrigin = Vector2.Zero;
-                    rotationOffset = Vector2.Zero; 
+                    rotationOffset = Vector2.Zero;
+                    sourceRectangle = new Rectangle((int)LevelDimensions.X_SCALE * args.TextureIndex, 0, (int)LevelDimensions.X_SCALE, (int)LevelDimensions.Y_SCALE);
                     break;
                 default:
                     texture = null;
                     layer = 1;
                     rotationOrigin = Vector2.Zero;
-                    rotationOffset = Vector2.Zero; 
+                    rotationOffset = Vector2.Zero;
+                    sourceRectangle = Rectangle.Empty;
                     break;
 
             }
@@ -195,6 +203,7 @@ namespace WatchYourBack
             yInput = 0;
             leftMouseClicked = false;
             rightMouseClicked = false;
+
 
         }
 

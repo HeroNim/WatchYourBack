@@ -41,15 +41,15 @@ namespace WatchYourBackLibrary
             new VelocityComponent(0, 0),
             new AvatarInputComponent());
             if (hasGraphics)
-                e.addComponent(new GraphicsComponent(rect, texture, 0, new Vector2(texture.Width/2, texture.Height/2), offset, 0.9f));
+                e.addComponent(new GraphicsComponent(rect, texture, texture.Bounds, 0, new Vector2(texture.Width/2, texture.Height/2), offset, 0.9f));
             e.Type = ENTITIES.AVATAR;
             return e;
         }
 
-        public static Entity createGraphics(Rectangle rect, float rotation, Vector2 rotationOrigin, Vector2 rotationOffset, int ID, Texture2D texture, ENTITIES type, float layer)
+        public static Entity createGraphics(Rectangle rect, float rotation, Vector2 rotationOrigin, Vector2 rotationOffset, int ID, Texture2D texture, Rectangle sourceRectangle, ENTITIES type, float layer)
         { 
             Entity e = new Entity(
-            new GraphicsComponent(rect, texture, rotation, rotationOrigin, rotationOffset, layer));
+            new GraphicsComponent(rect, texture, sourceRectangle, rotation, rotationOrigin, rotationOffset, layer));
             e.ID = ID;
             e.Type = type;
             return e;
@@ -59,13 +59,13 @@ namespace WatchYourBackLibrary
         //Creates a weapon at a point on an entity, while taking the holder's velocity component to allow it to 'stick' to the holder
         public static Entity createSword(Entity wielder, Allegiance wielderAllegiance, TransformComponent anchorTransform, float rotationAngle, VelocityComponent anchorMovement, Texture2D texture, bool hasGraphics)
         {
-            Vector2 point = TransformComponent.pointOnCircle(anchorTransform.Radius, rotationAngle, anchorTransform.Center);
+            Vector2 point = HelperFunctions.pointOnCircle(anchorTransform.Radius, rotationAngle, anchorTransform.Center);
             Vector2 rotation = Vector2.Transform(point - anchorTransform.Center, Matrix.CreateRotationZ((float)(Math.PI/4))) + anchorTransform.Center;
             point = rotation;
             Entity e = new Entity(
             new AllegianceComponent(wielderAllegiance),
             new TransformComponent(point, (int)SWORD.WIDTH, (int)SWORD.RANGE, rotationAngle),
-            new WeaponComponent(wielder, MathHelper.ToRadians((float)SWORD.ARC)),
+            new WeaponComponent(wielder, MathHelper.ToRadians((float)SWORD.ARC), true),
             new VelocityComponent(anchorMovement.X, anchorMovement.Y, -(float)SWORD.SPEED),
             new LineColliderComponent(point, new Vector2(point.X, point.Y - (float)SWORD.RANGE), rotationAngle));
 
@@ -104,14 +104,14 @@ namespace WatchYourBackLibrary
                 
         }
 
-        public static Entity createWall(int x, int y, int width, int height, Texture2D texture, bool hasGraphics)
+        public static Entity createWall(int x, int y, int width, int height, Texture2D texture, int atlasIndex, bool hasGraphics)
         {
             Entity e = new Entity(
-                new TileComponent(TileType.WALL),
+                new TileComponent(TileType.WALL, atlasIndex),
                 new TransformComponent(x, y, width, height),
                 new RectangleColliderComponent(new Rectangle(x, y, width, height), false));
             if (hasGraphics)
-                e.addComponent(new GraphicsComponent(new Rectangle(x, y, width, height), texture, 1));
+                e.addComponent(new GraphicsComponent(new Rectangle(x, y, width, height), texture, new Rectangle((int)LevelDimensions.X_SCALE * atlasIndex, 0, (int)LevelDimensions.X_SCALE, (int)LevelDimensions.Y_SCALE), 1));
             e.Type = ENTITIES.WALL;
             return e;
         }

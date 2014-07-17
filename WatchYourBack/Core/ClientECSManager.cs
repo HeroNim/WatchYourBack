@@ -182,7 +182,7 @@ namespace WatchYourBack
                 if (entity.hasComponent(Masks.GRAPHICS))
                 {
                     GraphicsComponent graphics = (GraphicsComponent)entity.Components[Masks.GRAPHICS];
-                    spriteBatch.Draw(graphics.Sprite, graphics.Body, new Rectangle(0,0, graphics.Sprite.Width, graphics.Sprite.Height), 
+                    spriteBatch.Draw(graphics.Sprite, graphics.Body, graphics.SourceRectangle, 
                             graphics.SpriteColor, graphics.RotationAngle, graphics.RotationOrigin, SpriteEffects.None, graphics.Layer);                  
                     
                     if (graphics.HasText)

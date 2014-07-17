@@ -13,7 +13,7 @@ namespace WatchYourBackLibrary
 {
     
 
-    enum LevelDimensions
+    public enum LevelDimensions
     {
         WIDTH = 64,
         HEIGHT = 36,
@@ -76,7 +76,7 @@ namespace WatchYourBackLibrary
         {
             if (manager.hasGraphics())
             {
-                wallTexture = manager.getTexture("WallTexture");
+                wallTexture = manager.getTexture("TileTextures/TileAtlas");
                 spawnTexture = manager.getTexture("PlayerTexture");
             }
             int player = 1;
@@ -88,9 +88,9 @@ namespace WatchYourBackLibrary
                 {
                     if (levelTemplate.LevelData[y, x] == (int)TileType.WALL)
                     {
-                        Entity wall = EFactory.createWall(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE, (int)LevelDimensions.X_SCALE, (int)LevelDimensions.Y_SCALE, wallTexture, manager.hasGraphics());
+                        Entity wall = EFactory.createWall(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE, (int)LevelDimensions.X_SCALE, (int)LevelDimensions.Y_SCALE, wallTexture, levelTemplate.TileIndex[y, x], manager.hasGraphics());
                         manager.addEntity(wall);
-                        //level.Walls.Add(wall);
+                        
                     }
                     if (levelTemplate.LevelData[y, x] == (int)TileType.SPAWN)
                     {

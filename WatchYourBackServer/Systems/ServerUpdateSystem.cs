@@ -68,7 +68,14 @@ namespace WatchYourBackServer
                     if (e.hasComponent(Masks.TRANSFORM) && e.Drawable == true)
                     {
                         TransformComponent transform = (TransformComponent)e.Components[Masks.TRANSFORM];
-                        sendData.Add(new NetworkEntityArgs(e.Type, manager.ChangedEntities[id], e.ID, transform.X, transform.Y, transform.Width, transform.Height, transform.Rotation));
+                        if (e.hasComponent(Masks.TILE))
+                        {
+                            TileComponent tile = (TileComponent)e.Components[Masks.TILE];
+                            sendData.Add(new NetworkEntityArgs(e.Type, manager.ChangedEntities[id], e.ID, transform.X, transform.Y, transform.Width, transform.Height, transform.Rotation, tile.AtlasIndex));
+                        }
+                        else
+
+                            sendData.Add(new NetworkEntityArgs(e.Type, manager.ChangedEntities[id], e.ID, transform.X, transform.Y, transform.Width, transform.Height, transform.Rotation, 0));
                     }
                 }
 
@@ -81,7 +88,6 @@ namespace WatchYourBackServer
                 updating = false;
                 for (int i = 0; i < accumulator.Length; i++ )
                 {
-                    Console.WriteLine(accumulator[i]);
                     accumulator[i] -= timeStep;
                 }
             }
@@ -159,7 +165,6 @@ namespace WatchYourBackServer
                    
                 }
 
-                Console.WriteLine(accumulator[0]);
                 for(int i = 0; i < accumulator.Length; i++)
                 {
                     if (accumulator[i] < timeStep)
@@ -209,7 +214,14 @@ namespace WatchYourBackServer
                     float x = transform.X + (float)(velocity.X * interpolationFactor);
                     float y = transform.Y + (float)(velocity.Y * interpolationFactor);
                     float rotation = transform.Rotation + (float)(velocity.RotationSpeed * interpolationFactor);
-                    sendData.Add(new NetworkEntityArgs(e.Type, COMMANDS.MODIFY, e.ID, x, y, transform.Width, transform.Height, rotation));
+                    
+                    if(e.hasComponent(Masks.TILE))
+                    {
+                        TileComponent tile = (TileComponent)e.Components[Masks.TILE];
+                        sendData.Add(new NetworkEntityArgs(e.Type, COMMANDS.MODIFY, e.ID, x, y, transform.Width, transform.Height, rotation, tile.AtlasIndex));
+                    }
+                    else
+                        sendData.Add(new NetworkEntityArgs(e.Type, COMMANDS.MODIFY, e.ID, x, y, transform.Width, transform.Height, rotation, 0));
                 }
             }
 

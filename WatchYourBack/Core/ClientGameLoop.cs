@@ -161,7 +161,7 @@ namespace WatchYourBack
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Orange);
             spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
             activeWorld.Manager.draw(spriteBatch);
             spriteBatch.End();

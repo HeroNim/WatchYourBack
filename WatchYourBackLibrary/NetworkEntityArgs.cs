@@ -24,8 +24,9 @@ namespace WatchYourBackLibrary
         private int width;
         private int height;
         private float rotation;
+        private int textureIndex;
 
-        public NetworkEntityArgs(ENTITIES type, COMMANDS command, int id, float xPos, float yPos, int width, int height, float rotation)
+        public NetworkEntityArgs(ENTITIES type, COMMANDS command, int id, float xPos, float yPos, int width, int height, float rotation, int textureIndex)
         {
             this.type = type;
             this.id = id;
@@ -35,6 +36,7 @@ namespace WatchYourBackLibrary
             this.height = height;
             this.rotation = rotation;
             this.command = command;
+            this.textureIndex = textureIndex;
         }
 
         public COMMANDS Command { get { return command; } }
@@ -45,6 +47,7 @@ namespace WatchYourBackLibrary
         public int Width { get { return width; } }
         public int Height { get { return height; } }
         public float Rotation { get { return rotation; } }
+        public int TextureIndex { get { return textureIndex; } }
 
     }
 }

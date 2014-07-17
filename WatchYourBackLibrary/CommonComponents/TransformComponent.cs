@@ -20,8 +20,7 @@ namespace WatchYourBackLibrary
         private int width;
         private int height;
 
-        private bool xLock;
-        private bool yLock;
+
         private float rotation;
 
         private bool hasMoved;
@@ -38,7 +37,7 @@ namespace WatchYourBackLibrary
             this.height = height;
             rotation = 0;
             hasMoved = false;
-            lookDirection = Vector2.UnitX;
+            lookDirection = Vector2.Zero;
             lookAngle = 0;
         }
 
@@ -50,7 +49,7 @@ namespace WatchYourBackLibrary
             this.height = height;
             rotation = 0;
             hasMoved = false;
-            lookDirection = Vector2.UnitX;
+            lookDirection = Vector2.Zero;
             lookAngle = 0;
         }
 
@@ -61,7 +60,7 @@ namespace WatchYourBackLibrary
             this.width = width;
             this.height = height;
             hasMoved = false;
-            lookDirection = Vector2.UnitX;
+            lookDirection = Vector2.Zero;
             lookAngle = 0;
         }
 
@@ -137,10 +136,10 @@ namespace WatchYourBackLibrary
                 if (lookAngle < 0)
                     lookAngle += (float)Math.PI * 2;
                 if (lookAngle > Math.PI * 2) 
-                    lookAngle -= (float)Math.PI * 2; 
-                
+                    lookAngle -= (float)Math.PI * 2;
+                if (lookDirection == Vector2.Zero)
+                    lookAngle = 0;
                 return lookAngle;
-
             }
         }
 
@@ -174,36 +173,7 @@ namespace WatchYourBackLibrary
             get { return (float)Width / 2; }
         }
 
-        public static Vector2 pointOnCircle(float radius, float angle, Vector2 origin)
-        {
-            float x = -((float)(radius * Math.Cos(angle))) + origin.X;
-            float y = -((float)(radius * Math.Sin(angle))) + origin.Y;
-
-            return new Vector2(x, y);
-        }
-
         
-
-        /*
-         * The locks are used to stop the entity from jittering when there are multiple collisions 
-         */
-        public bool XLock
-        {
-            get { return xLock; }
-            set { xLock = value; }
-        }
-
-        public bool YLock
-        {
-            get { return yLock; }
-            set { yLock = value; }
-        }
-
-        public void resetLocks()
-        {
-            xLock = false;
-            yLock = false;
-        }
 
         public static float distanceBetween(TransformComponent t1, TransformComponent t2)
         {

@@ -11,7 +11,7 @@ namespace WatchYourBackLibrary
     {
         RANGE = 50,
         WIDTH = 8,
-        SPEED = 5,
+        SPEED = 6,
         ATTACK_SPEED = 500,
         ARC = 110,
         ROTATION_X = (int)WIDTH/2,
@@ -23,25 +23,30 @@ namespace WatchYourBackLibrary
         RADIUS = 10,
         ROTATION_X = RADIUS/2,
         ROTATION_Y = RADIUS/2,
-        SPEED = 10,
+        SPEED = 11,
         ATTACK_SPEED = 500
     }
+
+    /*
+     * Contains info regarding the various properties of weapons, such as their arc, and if they are anchored to their wielder (such as a sword) or not (thrown weapon)
+     */
     public class WeaponComponent : EComponent
     {
         public override int BitMask { get { return (int)Masks.WEAPON; } }
         public override Masks Mask { get { return Masks.WEAPON; } }
 
-
+        private bool anchored;
         private float arc;
         private float maxArc;
 
         private Entity wielder;
 
-        public WeaponComponent(Entity wielder, float maxArc)
+        public WeaponComponent(Entity wielder, float maxArc, bool anchored)
         {
             this.wielder = wielder;
             arc = 0;
             this.maxArc = maxArc;
+            this.anchored = anchored;
         }
 
         public WeaponComponent()
@@ -49,6 +54,7 @@ namespace WatchYourBackLibrary
             this.wielder = null;
             arc = 0;
             maxArc = 0;
+            this.anchored = false;
         }
 
         public Entity Wielder
@@ -65,6 +71,11 @@ namespace WatchYourBackLibrary
         public float MaxArc
         {
             get { return maxArc; }
+        }
+
+        public bool Anchored
+        {
+            get { return anchored; }
         }
 
 

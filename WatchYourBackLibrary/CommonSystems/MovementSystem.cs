@@ -30,9 +30,24 @@ namespace WatchYourBackLibrary
 
             foreach (Entity entity in activeEntities)
             {
-                TransformComponent transform = (TransformComponent)entity.Components[Masks.TRANSFORM];
-                
+                TransformComponent transform = (TransformComponent)entity.Components[Masks.TRANSFORM];             
                 VelocityComponent velocity = (VelocityComponent)entity.Components[Masks.VELOCITY];
+
+                if (entity.hasComponent(Masks.WEAPON))
+                {                 
+                        WeaponComponent weapon = (WeaponComponent)entity.Components[Masks.WEAPON];
+                        weapon.Arc += Math.Abs(velocity.RotationSpeed);
+
+                        if (weapon.Anchored == true)
+                        {
+                            VelocityComponent anchorVelocity = (VelocityComponent)weapon.Wielder.Components[Masks.VELOCITY];
+                            transform.Rotation += anchorVelocity.RotationSpeed;
+                            velocity.X = anchorVelocity.X;
+                            velocity.Y = anchorVelocity.Y;
+                        }
+                    
+                }
+
                 transform.Position = new Vector2(transform.X + velocity.X, transform.Y + velocity.Y);
                 transform.Rotation += velocity.RotationSpeed;
                 
@@ -46,19 +61,7 @@ namespace WatchYourBackLibrary
                     
                 }
 
-                if (entity.hasComponent(Masks.WEAPON))
-                {
-                    if (entity.Type == ENTITIES.SWORD)
-                    {
-                        WeaponComponent weapon = (WeaponComponent)entity.Components[Masks.WEAPON];
-                        weapon.Arc += Math.Abs(velocity.RotationSpeed);
-
-                        VelocityComponent anchorVelocity = (VelocityComponent)weapon.Wielder.Components[Masks.VELOCITY];
-                        transform.Rotation += anchorVelocity.RotationSpeed;
-                    }
-                   
-                    
-                }
+                
                 
                 if (entity.hasComponent(Masks.COLLIDER))
                 {
@@ -82,9 +85,9 @@ namespace WatchYourBackLibrary
                         Vector2 rotation = Vector2.Transform(transform.Position - anchorTransform.Center, Matrix.CreateRotationZ(velocity.RotationSpeed + anchorVelocity.RotationSpeed)) + anchorTransform.Center;
                         transform.Position = rotation;
                         
-                        GraphicsComponent graphics = (GraphicsComponent)entity.Components[Masks.GRAPHICS];
-                        graphics.DebugPoints.Add(collider.P1);
-                        graphics.DebugPoints.Add(collider.P2);
+                        //GraphicsComponent graphics = (GraphicsComponent)entity.Components[Masks.GRAPHICS];
+                        //graphics.DebugPoints.Add(collider.P1);
+                        //graphics.DebugPoints.Add(collider.P2);
                     }
                     if (entity.hasComponent(Masks.RECTANGLE_COLLIDER))
                     {

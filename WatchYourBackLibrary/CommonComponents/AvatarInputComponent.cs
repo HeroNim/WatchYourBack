@@ -29,8 +29,8 @@ namespace WatchYourBackLibrary
         {
             swingWeapon = false;
             throwWeapon = false;
-            lookX = 0;
-            lookY = 0;
+            lookX = -1;
+            lookY = -1;
             moveX = 0;
             moveY = 0;
         }

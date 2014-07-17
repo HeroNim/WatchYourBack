@@ -27,6 +27,8 @@ namespace WatchYourBackLibrary
         {
             foreach (Entity entity in activeEntities)
             {
+                float xDir = 0;
+                float yDir = 0;
                 AvatarInputComponent input = (AvatarInputComponent)entity.Components[Masks.PLAYER_INPUT];
                 VelocityComponent velocity = (VelocityComponent)entity.Components[Masks.VELOCITY];
                 TransformComponent transform = (TransformComponent)entity.Components[Masks.TRANSFORM];
@@ -57,9 +59,11 @@ namespace WatchYourBackLibrary
                 else
                     velocity.X = 0;
 
-             
-                float xDir = input.LookX - transform.Center.X;
-                float yDir = input.LookY - transform.Center.Y;
+                if (input.LookX > -1 && input.LookY > -1)
+                {
+                    xDir = input.LookX - transform.Center.X;
+                    yDir = input.LookY - transform.Center.Y;
+                }
                 Vector2 dir = new Vector2(xDir, yDir);
                 dir.Normalize();
                 transform.LookDirection = dir;
@@ -73,8 +77,8 @@ namespace WatchYourBackLibrary
                     velocity.RotationSpeed = 5;
                 if (angle < 0.1f || angle > (float)Math.PI*2 - 0.1f)
                     velocity.RotationSpeed = 0;
-                    
                 
+
 
 
 

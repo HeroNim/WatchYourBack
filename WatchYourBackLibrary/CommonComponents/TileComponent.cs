@@ -17,15 +17,29 @@ namespace WatchYourBackLibrary
         public override Masks Mask { get { return Masks.TILE; } }
 
         private TileType type;
+        private int atlasIndex;
 
         public TileComponent(TileType type)
         {
             this.type = type;
+            atlasIndex = 0;
+        }
+
+        public TileComponent(TileType type, int index)
+        {
+            this.type = type;
+            atlasIndex = index;
         }
 
         public TileType Type
         {
             get { return type; }
+        }
+
+        public int AtlasIndex
+        {
+            get { return atlasIndex; }
+            set { atlasIndex = value; }
         }
       
         
