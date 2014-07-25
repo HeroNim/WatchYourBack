@@ -53,8 +53,6 @@ namespace WatchYourBackServer
 
         public bool Playing { get { return playing; } set { playing = value; } }
 
-        public void addContent(ContentManager content) { }
-
         public void addSystem(ESystem system)
         {
             systems.Add(system);
@@ -195,11 +193,6 @@ namespace WatchYourBackServer
         public InputSystem Input
         {
             get { return input; }
-        }
-
-        public Texture2D getTexture(string fileName)
-        {
-            return null;
         }
 
         

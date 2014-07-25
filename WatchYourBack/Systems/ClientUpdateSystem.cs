@@ -25,7 +25,6 @@ namespace WatchYourBack
         private bool rightMouseClicked;
         private bool dash;
         List<NetworkEntityArgs> receivedData;
-        Texture2D texture;
         float layer;
         Vector2 rotationOrigin;
         Vector2 rotationOffset;
@@ -46,7 +45,6 @@ namespace WatchYourBack
             
             this.client = client;
             bufferCount = 1;
-            texture = null;
             layer = 0;
             rotationOrigin = Vector2.Zero;
             rotationOffset = Vector2.Zero;
@@ -126,11 +124,10 @@ namespace WatchYourBack
                     switch (args.Command)
                     {
                         case COMMANDS.ADD:
-                            getGraphics(args);
                             if(args.SubIndex != null)
-                                manager.addEntity(EFactory.createGraphics(body, args.Rotation, rotationOrigin, rotationOffset, args.ID, texture, args.SubIndex, args.Type, layer));
+                                manager.addEntity(EFactory.createGraphics(body, args.Rotation, rotationOrigin, rotationOffset, args.ID, args.SubIndex, args.Type, layer));
                             else
-                                manager.addEntity(EFactory.createGraphics(body, args.Rotation, rotationOrigin, rotationOffset, args.ID, texture, sourceRectangle, args.Type, layer));
+                                manager.addEntity(EFactory.createGraphics(body, args.Rotation, rotationOrigin, rotationOffset, args.ID, sourceRectangle, args.Type, layer));
                             break;
                         case COMMANDS.REMOVE:
                             manager.ActiveEntities.Remove(args.ID);
@@ -156,50 +153,7 @@ namespace WatchYourBack
                 
             
         }
-
-        private void getGraphics(NetworkEntityArgs args)
-        {
-            switch (args.Type)
-            {
-                case ENTITIES.AVATAR:
-                    texture = manager.getTexture("PlayerTexture");
-                    layer = 1;
-                    rotationOrigin = new Vector2(texture.Width/2, texture.Height/2);
-                    rotationOffset = new Vector2(args.Width / 2, args.Height / 2);
-                    sourceRectangle = texture.Bounds;
-                    break;
-                case ENTITIES.SWORD:
-                    texture = manager.getTexture("SwordTexture");
-                    layer = 0;
-                    rotationOrigin = new Vector2(texture.Width/2, texture.Height);
-                    rotationOffset = Vector2.Zero;
-                    sourceRectangle = texture.Bounds;
-                    break;
-                case ENTITIES.THROWN:
-                    texture = manager.getTexture("ThrownTexture");
-                    layer = 0;
-                    rotationOrigin = Vector2.Zero;
-                    rotationOffset = Vector2.Zero;
-                    sourceRectangle = texture.Bounds;
-                    break;
-                case ENTITIES.WALL:
-                    texture = manager.getTexture("TileTextures/WallTextureAtlas2");
-                    layer = 1;
-                    rotationOrigin = Vector2.Zero;
-                    rotationOffset = Vector2.Zero;                  
-                    break;
-                default:
-                    texture = null;
-                    layer = 1;
-                    rotationOrigin = Vector2.Zero;
-                    rotationOffset = Vector2.Zero;
-                    sourceRectangle = Rectangle.Empty;
-                    break;
-
-            }
-            
-        }
-        
+      
 
         private void reset()
         {

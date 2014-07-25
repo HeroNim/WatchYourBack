@@ -20,7 +20,6 @@ namespace WatchYourBack
         private Dictionary<int, Entity> activeEntities;
         private Dictionary<int, COMMANDS> changedEntities;
         private List<Entity> removal;
-        private ContentManager content;
         private InputSystem input;
         private int id;
         private double drawTime;
@@ -41,11 +40,6 @@ namespace WatchYourBack
         }
 
         public bool Playing { get { return playing; } set { playing = value; } }
-
-        public void addContent(ContentManager content)
-        {
-            this.content = content;
-        }
 
         public void addSystem(ESystem system)
         {
@@ -204,12 +198,7 @@ namespace WatchYourBack
         {
             return true;
         }
-
-        public Texture2D getTexture(string fileName)
-        {
-            return content.Load<Texture2D>(fileName);
-        }
-
+      
         public InputSystem Input
         {
             get { return input; }

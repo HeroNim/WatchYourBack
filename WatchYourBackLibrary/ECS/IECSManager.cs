@@ -78,10 +78,6 @@ namespace WatchYourBackLibrary
         void draw(SpriteBatch spriteBatch);
 
         bool hasGraphics();
-
-        Texture2D getTexture(string fileName);
-
-        void addContent(ContentManager content);
        
         InputSystem Input
         {

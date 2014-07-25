@@ -32,8 +32,6 @@ namespace WatchYourBackLibrary
         private LevelName currentLevel;
         private LevelComponent level;
         private bool built;
-        private Texture2D wallTexture;
-        private Texture2D spawnTexture;
 
         public LevelSystem(List<LevelTemplate> levels) : base(false, true, 7)
         {
@@ -74,11 +72,6 @@ namespace WatchYourBackLibrary
 
         private void buildLevel(LevelName levelName)
         {
-            if (manager.hasGraphics())
-            {
-                wallTexture = manager.getTexture("TileTextures/WallTextureAtlas");
-                spawnTexture = manager.getTexture("PlayerTexture");
-            }
             int player = 1;
 
             LevelTemplate levelTemplate = levels.Find(o => o.Name == levelName);
@@ -89,7 +82,7 @@ namespace WatchYourBackLibrary
                     if (levelTemplate.LevelData[y, x] == (int)TileType.WALL)
                     {
                         Entity wall = EFactory.createWall(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE, (int)LevelDimensions.X_SCALE, (int)LevelDimensions.Y_SCALE, 
-                            wallTexture, levelTemplate.SubIndex(y, x), manager.hasGraphics());
+                            levelTemplate.SubIndex(y, x), manager.hasGraphics());
                         manager.addEntity(wall);
                         
                     }
@@ -97,7 +90,7 @@ namespace WatchYourBackLibrary
                     {
                         Entity spawn = EFactory.createSpawn(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE, (int)LevelDimensions.X_SCALE, (int)LevelDimensions.Y_SCALE);
                         Entity avatar = EFactory.createAvatar(new PlayerInfoComponent((Allegiance)player), new Rectangle(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE, 
-                           40, 40), (Allegiance)player, Weapons.SWORD, spawnTexture, manager.hasGraphics());
+                           40, 40), (Allegiance)player, Weapons.SWORD, manager.hasGraphics());
 
                         manager.addEntity(spawn);                        
                         manager.addEntity(avatar);
@@ -142,7 +135,7 @@ namespace WatchYourBackLibrary
                 TransformComponent transform = (TransformComponent)level.Spawns[i].Components[Masks.TRANSFORM];
                 PlayerInfoComponent info = (PlayerInfoComponent)level.Avatars[i].Components[Masks.PLAYER_INFO];
                 Entity avatar = EFactory.createAvatar(info, new Rectangle((int)transform.X, (int)transform.Y, 40, 40),
-                             (Allegiance)i, Weapons.SWORD, spawnTexture, manager.hasGraphics());
+                             (Allegiance)i, Weapons.SWORD, manager.hasGraphics());
                 manager.addEntity(avatar);
                 level.Avatars[i] = avatar;
             }

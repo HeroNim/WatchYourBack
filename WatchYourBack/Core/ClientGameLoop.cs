@@ -39,10 +39,6 @@ namespace WatchYourBack
 
         List<LevelTemplate> levels;
 
-        Texture2D avatarTexture;
-        Texture2D buttonTexture;
-        SpriteFont testFont;
-
         //----------------------------------------------------------------------------------------------------------
         NetClient client;
         bool isPinging;
@@ -88,14 +84,15 @@ namespace WatchYourBack
 
             Texture2D testLevelLayout = Content.Load<Texture2D>("TestLevel");
             Texture2D levelOne = Content.Load<Texture2D>("LevelOne");
-            testFont = Content.Load<SpriteFont>("TestFont");
             levels = new List<LevelTemplate>();
             levels.Add(new LevelTemplate(levelOne, LevelName.FIRST_LEVEL));
+            
 
 
             isPinging = false;
             isConnected = false;
             isPlayingOnline = false;
+            EFactory.content = Content;
 
             base.Initialize();
         }
@@ -109,14 +106,6 @@ namespace WatchYourBack
             // Create a new SpriteBatch, which can be used to draw textures.
 
             spriteBatch = new SpriteBatch(GraphicsDevice);
-
-
-            avatarTexture = new Texture2D(GraphicsDevice, 1, 1);
-            avatarTexture.SetData(new[] { Color.White });
-
-            buttonTexture = Content.Load<Texture2D>("ButtonFrame");
-
-
 
             createMainMenu();
             createConnectMenu();
@@ -222,21 +211,19 @@ namespace WatchYourBack
         {
             mainMenu = new World(Worlds.MAIN_MENU);
             mainMenu.addManager(new ClientECSManager());
-            mainMenu.Manager.addContent(Content);
             inputListener.addWorld(mainMenu, true);
-            mainMenu.Manager.addEntity(EFactory.createButton(GraphicsDevice.Viewport.Width / 2 - buttonTexture.Width / 2, (int)((float)GraphicsDevice.Viewport.Height / 2f) - buttonTexture.Height / 2, 200, 50, Inputs.START_SINGLE, buttonTexture, "Singleplayer", testFont));
-            mainMenu.Manager.addEntity(EFactory.createButton(GraphicsDevice.Viewport.Width / 2 - buttonTexture.Width / 2, (int)((float)GraphicsDevice.Viewport.Height / (10f/6f)) - buttonTexture.Height / 2, 200, 50, Inputs.START_MUTLI, buttonTexture, "Multiplayer", testFont));
-            mainMenu.Manager.addEntity(EFactory.createButton(GraphicsDevice.Viewport.Width / 2 - buttonTexture.Width / 2, (int)((float)GraphicsDevice.Viewport.Height / (10f/8f)) - buttonTexture.Height / 2, 200, 50, Inputs.EXIT, buttonTexture, "Exit", testFont));
+            mainMenu.Manager.addEntity(EFactory.createButton(GraphicsDevice.Viewport.Width / 2, (int)((float)GraphicsDevice.Viewport.Height / 2f), 200, 50, Inputs.START_SINGLE, "Start"));
+            mainMenu.Manager.addEntity(EFactory.createButton(GraphicsDevice.Viewport.Width / 2, (int)((float)GraphicsDevice.Viewport.Height / (10f/6f)), 200, 50, Inputs.START_MUTLI, "Start"));
+            mainMenu.Manager.addEntity(EFactory.createButton(GraphicsDevice.Viewport.Width / 2, (int)((float)GraphicsDevice.Viewport.Height / (10f/8f)), 200, 50, Inputs.EXIT, "Exit"));
         }
 
         private void createConnectMenu()
         {
             connectMenu = new World(Worlds.CONNECT_MENU);
             connectMenu.addManager(new ClientECSManager());
-            connectMenu.Manager.addContent(Content);
             inputListener.addWorld(connectMenu, true);
-            connectMenu.Manager.addEntity(EFactory.createButton(GraphicsDevice.Viewport.Width / 2 - buttonTexture.Width / 2, (int)((float)GraphicsDevice.Viewport.Height / 2f) - buttonTexture.Height / 2, 200, 50, Inputs.START_MUTLI, buttonTexture, "Connect", testFont));
-            connectMenu.Manager.addEntity(EFactory.createButton(GraphicsDevice.Viewport.Width / 2 - buttonTexture.Width / 2, (int)((float)GraphicsDevice.Viewport.Height / (10f / 8f)) - buttonTexture.Height / 2, 200, 50, Inputs.EXIT, buttonTexture, "Back", testFont));
+            connectMenu.Manager.addEntity(EFactory.createButton(GraphicsDevice.Viewport.Width / 2, (int)((float)GraphicsDevice.Viewport.Height / 2f), 200, 50, Inputs.START_MUTLI, "Connect"));
+            connectMenu.Manager.addEntity(EFactory.createButton(GraphicsDevice.Viewport.Width / 2, (int)((float)GraphicsDevice.Viewport.Height / (10f / 8f)), 200, 50, Inputs.EXIT, "Back"));
         }
 
         private void createGame()
@@ -244,7 +231,6 @@ namespace WatchYourBack
 
             inGame = new World(Worlds.IN_GAME);
             inGame.addManager(new ClientECSManager());
-            inGame.Manager.addContent(Content);
             inputListener.addWorld(inGame, false);
 
             inGame.Manager.addSystem(new AvatarInputSystem());
@@ -259,7 +245,6 @@ namespace WatchYourBack
         {
             inGameMulti = new World(Worlds.IN_GAME_MULTI);
             inGameMulti.addManager(new ClientECSManager());
-            inGameMulti.Manager.addContent(Content);
             inputListener.addWorld(inGameMulti, false);
             ClientUpdateSystem networkInput = new ClientUpdateSystem(client);
             inGameMulti.Manager.addSystem(networkInput);
@@ -269,10 +254,9 @@ namespace WatchYourBack
         {
             pauseMenu = new World(Worlds.PAUSE_MENU);
             pauseMenu.addManager(new ClientECSManager());
-            pauseMenu.Manager.addContent(Content);
             inputListener.addWorld(pauseMenu, true);
-            pauseMenu.Manager.addEntity(EFactory.createButton(GraphicsDevice.Viewport.Width / 2 - buttonTexture.Width / 2, (int)((float)GraphicsDevice.Viewport.Height / 3.2f) - buttonTexture.Height / 2, 200, 50, Inputs.RESUME, buttonTexture, "Resume", testFont));
-            pauseMenu.Manager.addEntity(EFactory.createButton(GraphicsDevice.Viewport.Width / 2 - buttonTexture.Width / 2, (int)((float)GraphicsDevice.Viewport.Height / (10f / 8f)) - buttonTexture.Height / 2, 200, 50, Inputs.EXIT, buttonTexture, "Exit to menu", testFont));
+            pauseMenu.Manager.addEntity(EFactory.createButton(GraphicsDevice.Viewport.Width / 2, (int)((float)GraphicsDevice.Viewport.Height / 3.2f), 200, 50, Inputs.RESUME, "Resume"));
+            pauseMenu.Manager.addEntity(EFactory.createButton(GraphicsDevice.Viewport.Width / 2, (int)((float)GraphicsDevice.Viewport.Height / (10f / 8f)), 200, 50, Inputs.EXIT, "ExitToMenu"));
         }
 
         private void reset(World world)

@@ -62,34 +62,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="WallTexture.png">
-      <Name>WallTexture</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="SpawnTexture.png">
-      <Name>SpawnTexture</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="ButtonTexture.png">
-      <Name>ButtonTexture</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="WeaponTexture.png">
-      <Name>WeaponTexture</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="PlayerTexture.png">
       <Name>PlayerTexture</Name>
       <Importer>TextureImporter</Importer>
@@ -118,7 +90,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ButtonFrame.png">
+    <Compile Include="Buttons\ButtonFrame.png">
       <Name>ButtonFrame</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
@@ -127,6 +99,45 @@
   <ItemGroup>
     <Compile Include="TileTextures\WallTextureAtlas.png">
       <Name>WallTextureAtlas</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Buttons\BackText.png">
+      <Name>BackText</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Buttons\ConnectText.png">
+      <Name>ConnectText</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Buttons\ContinueText.png">
+      <Name>ContinueText</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Buttons\ExitText.png">
+      <Name>ExitText</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Buttons\ExitToMenuText.png">
+      <Name>ExitToMenuText</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Buttons\ResumeText.png">
+      <Name>ResumeText</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Buttons\StartText.png">
+      <Name>StartText</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
