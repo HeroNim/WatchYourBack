@@ -21,6 +21,7 @@ namespace WatchYourBackLibrary
             components += (int)Masks.PLAYER_INPUT;
             components += (int)Masks.VELOCITY;
             components += (int)Masks.TRANSFORM;
+            components += (int)Masks.WIELDER;
         }
 
         public override void update(TimeSpan gameTime)
@@ -30,57 +31,65 @@ namespace WatchYourBackLibrary
                 float xDir = 0;
                 float yDir = 0;
                 AvatarInputComponent input = (AvatarInputComponent)entity.Components[Masks.PLAYER_INPUT];
+                StatusComponent status = (StatusComponent)entity.Components[Masks.STATUS];
                 VelocityComponent velocity = (VelocityComponent)entity.Components[Masks.VELOCITY];
                 TransformComponent transform = (TransformComponent)entity.Components[Masks.TRANSFORM];
-                AllegianceComponent allegiance = (AllegianceComponent)entity.Components[Masks.ALLEGIANCE];
+                WielderComponent wielder = (WielderComponent)entity.Components[Masks.WIELDER];
 
                 Vector2 rotationVector = HelperFunctions.AngleToVector(transform.Rotation);
                 float relativeAngle = HelperFunctions.Angle(velocity.Velocity, rotationVector);
 
+                status.IterateTimers((float)gameTime.TotalMilliseconds);
+                if (input.Dash == true)
+                    status.ApplyStatus(Status.Dashing, 200f, 1000f);
+                input.Dash = false;
+                
+
                 if (relativeAngle > Math.PI / 2)
                     velocity.VelocityModifier = 1.0f / 2.0f;
-                //else if dashing, velocity modifier = 2.0f;
                 else
                     velocity.VelocityModifier = 1;
 
-                
+                if (status.getDuration(Status.Dashing) > 0)
+                    velocity.VelocityModifier *= 2;
+                    
+                velocity.Velocity = Vector2.Zero;
+                velocity.RotationSpeed = 0;
 
-                if (input.MoveY == 1)
-                    velocity.Y = 4;
-                else if (input.MoveY == -1)
-                    velocity.Y = -4;
-                else
-                    velocity.Y = 0;
-
-                if (input.MoveX == 1)
-                    velocity.X = 4;
-                else if (input.MoveX == -1)
-                    velocity.X = -4;
-                else
-                    velocity.X = 0;
-
-                if (input.LookX > -1 && input.LookY > -1)
+                if (status.getDuration(Status.Paralyzed) <= 0)
                 {
-                    xDir = input.LookX - transform.Center.X;
-                    yDir = input.LookY - transform.Center.Y;
+                    if (input.MoveY == 1)
+                        velocity.Y = 4;
+                    else if (input.MoveY == -1)
+                        velocity.Y = -4;
+
+                    if (input.MoveX == 1)
+                        velocity.X = 4;
+                    else if (input.MoveX == -1)
+                        velocity.X = -4;
+
+                    if (input.LookX > -1 && input.LookY > -1)
+                    {
+                        xDir = input.LookX - transform.Center.X;
+                        yDir = input.LookY - transform.Center.Y;
+                    }
+
+                    Vector2 dir = new Vector2(xDir, yDir);
+                    dir.Normalize();
+                    transform.LookDirection = dir;
+                    float angle = transform.LookAngle - transform.Rotation;
+                    angle = HelperFunctions.Normalize(angle);
+                    
+                    if (!wielder.hasWeapon)
+                    {
+                        if (angle > Math.PI)
+                            velocity.RotationSpeed = -5;
+                        if (angle < Math.PI)
+                            velocity.RotationSpeed = 5;
+                        if (angle < 0.1f || angle > (float)Math.PI * 2 - 0.1f)
+                            velocity.RotationSpeed = 0;
+                    }
                 }
-                Vector2 dir = new Vector2(xDir, yDir);
-                dir.Normalize();
-                transform.LookDirection = dir;
-
-               
-                float angle = transform.LookAngle - transform.Rotation;
-                angle = HelperFunctions.Normalize(angle);
-                if (angle > Math.PI)
-                   velocity.RotationSpeed = -5;
-                if (angle < Math.PI)
-                    velocity.RotationSpeed = 5;
-                if (angle < 0.1f || angle > (float)Math.PI*2 - 0.1f)
-                    velocity.RotationSpeed = 0;
-                
-
-
-
 
 
                 if(entity.hasComponent(Masks.WIELDER))

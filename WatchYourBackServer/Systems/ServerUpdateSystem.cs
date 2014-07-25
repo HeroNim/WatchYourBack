@@ -44,8 +44,6 @@ namespace WatchYourBackServer
                 playerMap.Add(player.RemoteUniqueIdentifier, playerIndex);
                 playerIndex++;
             }
-
-
         }
 
 
@@ -71,7 +69,7 @@ namespace WatchYourBackServer
                         if (e.hasComponent(Masks.TILE))
                         {
                             TileComponent tile = (TileComponent)e.Components[Masks.TILE];
-                            sendData.Add(new NetworkEntityArgs(e.Type, manager.ChangedEntities[id], e.ID, transform.X, transform.Y, transform.Width, transform.Height, transform.Rotation, tile.AtlasIndex));
+                            sendData.Add(new NetworkEntityArgs(e.Type, manager.ChangedEntities[id], e.ID, transform.X, transform.Y, transform.Width, transform.Height, transform.Rotation, tile.SubIndex));
                         }
                         else
 
@@ -148,6 +146,8 @@ namespace WatchYourBackServer
                                     playerInputComponent.SwingWeapon = true;
                                 if (args.RightClicked)
                                     playerInputComponent.ThrowWeapon = true;
+                                if (args.Dash)
+                                    playerInputComponent.Dash = true;
 
                                 playerInputComponent.LookX = args.MouseX;
                                 playerInputComponent.LookY = args.MouseY;
@@ -156,7 +156,6 @@ namespace WatchYourBackServer
 
                                 accumulator[playerIndex] += args.DrawTime;
                                 interpolate(playerIndex, interpolation[playerIndex]);
-
                                 break;
                         
                     }

@@ -21,6 +21,7 @@ namespace WatchYourBackLibrary
         private Vector2 p2;
         private float rotation;
 
+
         public LineColliderComponent(Vector2 p1, Vector2 p2) 
         {
             this.p1 = p1;

@@ -24,7 +24,9 @@ namespace WatchYourBackLibrary
         ALLEGIANCE = 1 << 13,
         PLAYER_HITBOX = 1 << 14,
         RECTANGLE_COLLIDER = 1 << 15,
-        PLAYER_INFO = 1 << 16
+        PLAYER_INFO = 1 << 16,
+        CIRCLE_COLLIDER = 1 << 17,
+        STATUS = 1 << 18
     };
 
     /* Components that make up each entity. Ideally contains only data and the methods needed to access them; 

@@ -35,28 +35,23 @@ namespace WatchYourBackLibrary
                     foreach (Entity other in activeEntities)
                     {
                         TransformComponent t2 = (TransformComponent)other.Components[Masks.TRANSFORM];
+
                         if (!haveSameAllegiance(entity, other) && TransformComponent.distanceBetween(t1, t2) < 100 && entity.hasComponent(Masks.VELOCITY))
                         {
-                            if (entity.hasComponent(Masks.LINE_COLLIDER)) //Weapons have to check hitboxes
+                            if (entity.hasComponent(Masks.LINE_COLLIDER))
                             {
-                                if (other.hasComponent(Masks.PLAYER_HITBOX))
-                                    checkHitboxCollision(entity, other);                                
+                                if (other.hasComponent(Masks.PLAYER_HITBOX)) // Line - Hitbox
+                                    if (HelperFunctions.checkLine_HitboxCollision(entity, other))
+                                        ResolveCollisions(entity, other, Masks.LINE_COLLIDER, Masks.PLAYER_HITBOX);
+                                if (other.hasComponent(Masks.CIRCLE_COLLIDER)) // Line - Circle
+                                    if (HelperFunctions.checkLine_CircleCollision(entity, other))
+                                        ResolveCollisions(entity, other, Masks.LINE_COLLIDER, Masks.CIRCLE_COLLIDER);
                             }
-                            if (entity.hasComponent(Masks.RECTANGLE_COLLIDER)) //Bodies have to check other bodies and weapons
+                            if (entity.hasComponent(Masks.RECTANGLE_COLLIDER))
                             {
-                                RectangleColliderComponent c1 = (RectangleColliderComponent)entity.Components[Masks.RECTANGLE_COLLIDER];
-                                if (other.hasComponent(Masks.RECTANGLE_COLLIDER))
-                                {
-                                    RectangleColliderComponent c2 = (RectangleColliderComponent)other.Components[Masks.RECTANGLE_COLLIDER];
-                                    if (HelperFunctions.checkBoxCollisions(entity, other))
-                                    {
-                                        if (c1.IsDestructable)
-                                            remove(entity);
-                                        if (c2.IsDestructable)
-                                            remove(other);
-                                    }
-                                }
-                             
+                                if (other.hasComponent(Masks.RECTANGLE_COLLIDER)) // Rectangle - Rectangle
+                                    if (HelperFunctions.checkRectangle_RectangleCollisions(entity, other))
+                                        ResolveCollisions(entity, other, Masks.RECTANGLE_COLLIDER, Masks.RECTANGLE_COLLIDER);                           
                             }                                                       
                         }
                     }
@@ -66,30 +61,50 @@ namespace WatchYourBackLibrary
             removeList.Clear();
         }
 
-        private void checkHitboxCollision(Entity e1, Entity e2)
+       
+
+        private void ResolveCollisions(Entity e1, Entity e2, Masks collider1, Masks collider2)
         {
-            LineColliderComponent c1 = (LineColliderComponent)e1.Components[Masks.LINE_COLLIDER];
-            PlayerHitboxComponent c2 = (PlayerHitboxComponent)e2.Components[Masks.PLAYER_HITBOX];
-
-            float result1 = HelperFunctions.lineEquation(c1.P1, c1.P2, c2.P1);
-            float result2 = HelperFunctions.lineEquation(c1.P1, c1.P2, c2.P2);
-            float result3 = HelperFunctions.lineEquation(c2.P1, c2.P2, c1.P1);
-            float result4 = HelperFunctions.lineEquation(c2.P1, c2.P2, c1.P2);
-
-            if (result1 * result2 > 0 || result3 * result4 > 0)
-                return;
-                      
-            remove(e1);
-            if (e1.hasComponent(Masks.WEAPON))
+            if (e1.IsDestructable)
             {
-                WeaponComponent w1 = (WeaponComponent)e1.Components[Masks.WEAPON];
-                ((WielderComponent)w1.Wielder.Components[Masks.WIELDER]).RemoveWeapon();
-                PlayerInfoComponent info = (PlayerInfoComponent)w1.Wielder.Components[Masks.PLAYER_INFO];
-                info.Score++;
+                remove(e1);
+                if (e1.hasComponent(Masks.WEAPON))
+                {
+                    WeaponComponent wielder = (WeaponComponent)e1.Components[Masks.WEAPON];
+                    if(wielder.Wielder != null)
+                        ((WielderComponent)wielder.Wielder.Components[Masks.WIELDER]).RemoveWeapon();
+
+                }
+            }
+            if (e2.IsDestructable)
+            {
+                remove(e2);
+                if (e2.hasComponent(Masks.WEAPON))
+                {
+                    WeaponComponent wielder = (WeaponComponent)e2.Components[Masks.WEAPON];
+                    if (wielder.Wielder != null)
+                        ((WielderComponent)wielder.Wielder.Components[Masks.WIELDER]).RemoveWeapon();
+                }
             }
 
-            manager.LevelInfo.Reset = true;
-            Console.WriteLine("Player Hit");
+            if(e1.Type == ENTITIES.SWORD)
+                if(collider2 == Masks.PLAYER_HITBOX)
+                {
+                    WeaponComponent wielder = (WeaponComponent)e1.Components[Masks.WEAPON];
+                    PlayerInfoComponent info = (PlayerInfoComponent)wielder.Wielder.Components[Masks.PLAYER_INFO];
+                    info.Score++;
+                    manager.LevelInfo.Reset = true;
+                    Console.WriteLine("Player Hit");
+                }
+
+            if (e1.Type == ENTITIES.THROWN)
+                if (e2.Type == ENTITIES.AVATAR)
+                {
+                    StatusComponent avatarInfo = (StatusComponent)e2.Components[Masks.STATUS];
+                    avatarInfo.ApplyStatus(Status.Paralyzed, 1000f, 0);
+                    Console.WriteLine("Paralyzed");
+                }
+
         }
 
         

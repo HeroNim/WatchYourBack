@@ -117,10 +117,16 @@
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <Compile Include="TileTextures\TileAtlas.png">
-      <Name>TileAtlas</Name>
+    <Compile Include="ButtonFrame.png">
+      <Name>ButtonFrame</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="TileTextures\WallTextureAtlas.png">
+      <Name>WallTextureAtlas</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

@@ -18,6 +18,7 @@ namespace WatchYourBackLibrary
         
         private int moveX;
         private int moveY;
+        private bool dash;
         private bool swingWeapon;
         private bool throwWeapon;
         private float lookX;
@@ -33,6 +34,8 @@ namespace WatchYourBackLibrary
             lookY = -1;
             moveX = 0;
             moveY = 0;
+            dash = false;
+            
         }
 
        
@@ -41,7 +44,9 @@ namespace WatchYourBackLibrary
         public bool SwingWeapon { get { return swingWeapon; } set { swingWeapon = value; } }
         public bool ThrowWeapon { get { return throwWeapon; } set { throwWeapon = value; } }
         public float LookX { get { return lookX; } set { lookX = value; } }
-        public float LookY{ get { return lookY; } set { lookY = value; } }
+        public float LookY { get { return lookY; } set { lookY = value; } }
+        public bool Dash { get { return dash; } set { dash = value; } }
+        
 
         public void MoveReset()
         {

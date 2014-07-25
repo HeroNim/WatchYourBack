@@ -15,17 +15,10 @@ namespace WatchYourBackLibrary
         public override Masks Mask { get { return Masks.RECTANGLE_COLLIDER; } }
 
         private Rectangle collider;
-        private bool destructable;
-       
 
-        public RectangleColliderComponent()
-        {
-        }
-
-        public RectangleColliderComponent(Rectangle r, bool destructable)
+        public RectangleColliderComponent(Rectangle r)
         {
             collider = r;
-            this.destructable = destructable;
         }
 
         public int X
@@ -57,15 +50,6 @@ namespace WatchYourBackLibrary
             get { return collider; }
             set { collider = value; }
         }
-
-        public bool IsDestructable
-        {
-            get { return destructable; }
-            set { destructable = value; }
-        }
-
         
-
-
     }
 }

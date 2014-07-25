@@ -18,7 +18,8 @@ namespace WatchYourBack
         UP,
         DOWN,
         PAUSE,
-        ATTACK
+        ATTACK,
+        DASH
     }
     /*
      * Takes the state of the game, and modifies what recieves input in that state. For example, in a Playing state, the input should go to the player and the AI should be active,
@@ -32,12 +33,13 @@ namespace WatchYourBack
         {
             components += (int)Masks.PLAYER_INPUT;
             mappings = new Dictionary<KeyBindings, Keys>();
-            mappings.Add(KeyBindings.LEFT, Keys.Left);
-            mappings.Add(KeyBindings.RIGHT, Keys.Right);
-            mappings.Add(KeyBindings.UP, Keys.Up);
-            mappings.Add(KeyBindings.DOWN, Keys.Down);
+            mappings.Add(KeyBindings.LEFT, Keys.A);
+            mappings.Add(KeyBindings.RIGHT, Keys.D);
+            mappings.Add(KeyBindings.UP, Keys.W);
+            mappings.Add(KeyBindings.DOWN, Keys.S);
             mappings.Add(KeyBindings.PAUSE, Keys.Escape);
-            mappings.Add(KeyBindings.ATTACK, Keys.Space);
+            mappings.Add(KeyBindings.DASH, Keys.Space);
+            
         }
 
         public override void update(TimeSpan gameTime)
@@ -63,7 +65,10 @@ namespace WatchYourBack
                     p1.MoveY = 1;
                 else
                     p1.MoveY = 0;
-
+                if (Keyboard.GetState().IsKeyDown(mappings[KeyBindings.DASH]))
+                    p1.Dash = true;
+                else
+                    p1.Dash = false;
                 if(ms.LeftButton == ButtonState.Pressed)
                     p1.SwingWeapon = true;
                 if (ms.RightButton == ButtonState.Pressed)

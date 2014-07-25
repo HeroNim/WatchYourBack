@@ -40,6 +40,7 @@ namespace WatchYourBack
         List<LevelTemplate> levels;
 
         Texture2D avatarTexture;
+        Texture2D buttonTexture;
         SpriteFont testFont;
 
         //----------------------------------------------------------------------------------------------------------
@@ -113,6 +114,8 @@ namespace WatchYourBack
             avatarTexture = new Texture2D(GraphicsDevice, 1, 1);
             avatarTexture.SetData(new[] { Color.White });
 
+            buttonTexture = Content.Load<Texture2D>("ButtonFrame");
+
 
 
             createMainMenu();
@@ -161,7 +164,7 @@ namespace WatchYourBack
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Orange);
+            GraphicsDevice.Clear(Color.DarkGray);
             spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
             activeWorld.Manager.draw(spriteBatch);
             spriteBatch.End();
@@ -221,9 +224,9 @@ namespace WatchYourBack
             mainMenu.addManager(new ClientECSManager());
             mainMenu.Manager.addContent(Content);
             inputListener.addWorld(mainMenu, true);
-            mainMenu.Manager.addEntity(EFactory.createButton(50, 50, 50, 50, Inputs.START_SINGLE, avatarTexture, "Singleplayer", testFont));
-            mainMenu.Manager.addEntity(EFactory.createButton(50, 200, 50, 50, Inputs.START_MUTLI, avatarTexture, "Multiplayer", testFont));
-            mainMenu.Manager.addEntity(EFactory.createButton(50, 350, 50, 50, Inputs.EXIT, avatarTexture, "Exit", testFont));
+            mainMenu.Manager.addEntity(EFactory.createButton(GraphicsDevice.Viewport.Width / 2 - buttonTexture.Width / 2, (int)((float)GraphicsDevice.Viewport.Height / 2f) - buttonTexture.Height / 2, 200, 50, Inputs.START_SINGLE, buttonTexture, "Singleplayer", testFont));
+            mainMenu.Manager.addEntity(EFactory.createButton(GraphicsDevice.Viewport.Width / 2 - buttonTexture.Width / 2, (int)((float)GraphicsDevice.Viewport.Height / (10f/6f)) - buttonTexture.Height / 2, 200, 50, Inputs.START_MUTLI, buttonTexture, "Multiplayer", testFont));
+            mainMenu.Manager.addEntity(EFactory.createButton(GraphicsDevice.Viewport.Width / 2 - buttonTexture.Width / 2, (int)((float)GraphicsDevice.Viewport.Height / (10f/8f)) - buttonTexture.Height / 2, 200, 50, Inputs.EXIT, buttonTexture, "Exit", testFont));
         }
 
         private void createConnectMenu()
@@ -232,8 +235,8 @@ namespace WatchYourBack
             connectMenu.addManager(new ClientECSManager());
             connectMenu.Manager.addContent(Content);
             inputListener.addWorld(connectMenu, true);
-            connectMenu.Manager.addEntity(EFactory.createButton(50, 200, 50, 50, Inputs.START_MUTLI, avatarTexture, "Connect", testFont));
-            connectMenu.Manager.addEntity(EFactory.createButton(50, 350, 50, 50, Inputs.EXIT, avatarTexture, "Back", testFont));
+            connectMenu.Manager.addEntity(EFactory.createButton(GraphicsDevice.Viewport.Width / 2 - buttonTexture.Width / 2, (int)((float)GraphicsDevice.Viewport.Height / 2f) - buttonTexture.Height / 2, 200, 50, Inputs.START_MUTLI, buttonTexture, "Connect", testFont));
+            connectMenu.Manager.addEntity(EFactory.createButton(GraphicsDevice.Viewport.Width / 2 - buttonTexture.Width / 2, (int)((float)GraphicsDevice.Viewport.Height / (10f / 8f)) - buttonTexture.Height / 2, 200, 50, Inputs.EXIT, buttonTexture, "Back", testFont));
         }
 
         private void createGame()
@@ -268,8 +271,8 @@ namespace WatchYourBack
             pauseMenu.addManager(new ClientECSManager());
             pauseMenu.Manager.addContent(Content);
             inputListener.addWorld(pauseMenu, true);
-            pauseMenu.Manager.addEntity(EFactory.createButton(50, 50, 50, 50, Inputs.RESUME, avatarTexture, "Resume", testFont));
-            pauseMenu.Manager.addEntity(EFactory.createButton(50, 200, 50, 50, Inputs.EXIT, avatarTexture, "Exit to menu", testFont));
+            pauseMenu.Manager.addEntity(EFactory.createButton(GraphicsDevice.Viewport.Width / 2 - buttonTexture.Width / 2, (int)((float)GraphicsDevice.Viewport.Height / 3.2f) - buttonTexture.Height / 2, 200, 50, Inputs.RESUME, buttonTexture, "Resume", testFont));
+            pauseMenu.Manager.addEntity(EFactory.createButton(GraphicsDevice.Viewport.Width / 2 - buttonTexture.Width / 2, (int)((float)GraphicsDevice.Viewport.Height / (10f / 8f)) - buttonTexture.Height / 2, 200, 50, Inputs.EXIT, buttonTexture, "Exit to menu", testFont));
         }
 
         private void reset(World world)

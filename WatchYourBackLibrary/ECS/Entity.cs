@@ -25,6 +25,7 @@ namespace WatchYourBackLibrary
     public class Entity
     {
         private int id;
+        private bool destructable;
         private bool drawable;
         private ENTITIES type;
         private int mask;
@@ -39,18 +40,26 @@ namespace WatchYourBackLibrary
             components = new Dictionary<Masks, EComponent>();
             id = -1;
             drawable = true;
+            destructable = false;
         }
 
         public Entity(params EComponent[] args)
         {
             isActive = false;
             components = new Dictionary<Masks, EComponent>();
-            foreach(EComponent arg in args)
+            foreach (EComponent arg in args)
             {
                 this.addComponent(arg);
             }
             id = -1;
             drawable = true;
+            destructable = false;
+        }
+
+        public Entity(bool destructable, params EComponent[] args) 
+            : this(args)
+        {
+            this.destructable = destructable;
         }
 
         public int ID
@@ -130,6 +139,11 @@ namespace WatchYourBackLibrary
         public EComponent getGraphics
         {
             get { return components[Masks.GRAPHICS]; }
+        }
+
+        public bool IsDestructable
+        {
+            get{return destructable;}
         }
 
         public int Mask { get { return mask; } }

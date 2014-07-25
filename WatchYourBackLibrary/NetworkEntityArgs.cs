@@ -25,8 +25,9 @@ namespace WatchYourBackLibrary
         private int height;
         private float rotation;
         private int textureIndex;
+        private int[,] subIndex;
 
-        public NetworkEntityArgs(ENTITIES type, COMMANDS command, int id, float xPos, float yPos, int width, int height, float rotation, int textureIndex)
+        public NetworkEntityArgs(ENTITIES type, COMMANDS command, int id, float xPos, float yPos, int width, int height, float rotation)
         {
             this.type = type;
             this.id = id;
@@ -36,7 +37,19 @@ namespace WatchYourBackLibrary
             this.height = height;
             this.rotation = rotation;
             this.command = command;
+        }
+
+        public NetworkEntityArgs(ENTITIES type, COMMANDS command, int id, float xPos, float yPos, int width, int height, float rotation, int textureIndex)
+            : this(type, command, id, xPos, yPos, width, height, rotation)
+        {
             this.textureIndex = textureIndex;
+            this.subIndex = null;
+        }
+
+        public NetworkEntityArgs(ENTITIES type, COMMANDS command, int id, float xPos, float yPos, int width, int height, float rotation, int[,] textureIndex)
+            : this(type, command, id, xPos, yPos, width, height, rotation)
+        {
+            this.subIndex = textureIndex;
         }
 
         public COMMANDS Command { get { return command; } }
@@ -48,6 +61,7 @@ namespace WatchYourBackLibrary
         public int Height { get { return height; } }
         public float Rotation { get { return rotation; } }
         public int TextureIndex { get { return textureIndex; } }
+        public int[,] SubIndex { get { return subIndex; } }
 
     }
 }

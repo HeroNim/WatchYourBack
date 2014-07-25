@@ -20,9 +20,10 @@ namespace WatchYourBackLibrary
         private int mouseY;
         private bool leftClicked;
         private bool rightClicked;
+        private bool dash;
         private double drawTime;
 
-        public NetworkInputArgs(long sender, int xInput, int yInput, Vector2 mouseLoc, bool leftClicked, bool rightClicked, double drawTime)
+        public NetworkInputArgs(long sender, int xInput, int yInput, Vector2 mouseLoc, bool leftClicked, bool rightClicked, double drawTime, bool dash)
         {
             this.sender = sender;
             this.xInput = xInput;
@@ -32,6 +33,7 @@ namespace WatchYourBackLibrary
             this.leftClicked = leftClicked;
             this.rightClicked = rightClicked;
             this.drawTime = drawTime;
+            this.dash = dash;
 
         }
 
@@ -47,6 +49,7 @@ namespace WatchYourBackLibrary
         public bool LeftClicked { get { return leftClicked; } }
         public bool RightClicked { get { return rightClicked; } }
         public double DrawTime { get { return drawTime; } }
+        public bool Dash { get { return dash; } }
         
     }
 }

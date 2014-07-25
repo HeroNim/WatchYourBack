@@ -64,7 +64,7 @@ namespace WatchYourBackLibrary
          * the weapon moves with the entity.
          */
         
-        public static bool checkBoxCollisions(Entity e1, Entity e2)
+        public static bool checkRectangle_RectangleCollisions(Entity e1, Entity e2)
         {
             bool collided = false;
             int displacement;
@@ -97,6 +97,59 @@ namespace WatchYourBackLibrary
             c1.Y -= displacement;
 
             return collided;
+        }
+
+        public static bool checkLine_HitboxCollision(Entity e1, Entity e2)
+        {
+            LineColliderComponent c1 = (LineColliderComponent)e1.Components[Masks.LINE_COLLIDER];
+            PlayerHitboxComponent c2 = (PlayerHitboxComponent)e2.Components[Masks.PLAYER_HITBOX];
+
+            float result1 = HelperFunctions.lineEquation(c1.P1, c1.P2, c2.P1);
+            float result2 = HelperFunctions.lineEquation(c1.P1, c1.P2, c2.P2);
+            float result3 = HelperFunctions.lineEquation(c2.P1, c2.P2, c1.P1);
+            float result4 = HelperFunctions.lineEquation(c2.P1, c2.P2, c1.P2);
+
+            if (result1 * result2 > 0 || result3 * result4 > 0)
+                return false;
+
+            return true;
+        }
+
+        public static bool checkLine_CircleCollision(Entity e1, Entity e2)
+        {
+
+            LineColliderComponent c1 = (LineColliderComponent)e1.Components[Masks.LINE_COLLIDER];
+            CircleColliderComponent c2 = (CircleColliderComponent)e2.Components[Masks.CIRCLE_COLLIDER];
+
+
+            Vector2 toCircle = new Vector2(c2.Center.X - c1.P2.X, c2.Center.Y - c1.P2.Y);
+            if (toCircle.Length() <= c2.Radius)
+                return true;
+
+
+            Vector2 weaponCollider = new Vector2(c1.P1.X - c1.P2.X, c1.P1.Y - c1.P2.Y);
+            float weaponColliderLength = weaponCollider.Length();
+
+            Vector2 direction = weaponCollider;
+            direction.Normalize();
+
+            float sProjection = Vector2.Dot(toCircle, direction);
+            Vector2 projectionPoint = direction * sProjection;
+
+            toCircle = c1.P2 + projectionPoint;
+
+            float test = Vector2.Dot(projectionPoint, weaponCollider);
+            if (test <= 0 || test >= Math.Pow(weaponColliderLength, 2))
+                return false;
+
+            Vector2 perpVector = new Vector2(c2.Center.X - toCircle.X, c2.Center.Y - toCircle.Y);
+            float length = perpVector.Length();
+
+            if (length <= c2.Radius)
+                return true;
+
+            return false;
+
         }
 
         /*

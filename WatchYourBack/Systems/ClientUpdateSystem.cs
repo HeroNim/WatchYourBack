@@ -23,6 +23,7 @@ namespace WatchYourBack
         private Vector2 mouseLocation;
         private bool leftMouseClicked;
         private bool rightMouseClicked;
+        private bool dash;
         List<NetworkEntityArgs> receivedData;
         Texture2D texture;
         float layer;
@@ -55,12 +56,12 @@ namespace WatchYourBack
             receivedData = new List<NetworkEntityArgs>();
             buffer = new List<List<NetworkEntityArgs>>();
             mappings = new Dictionary<KeyBindings, Keys>();
-            mappings.Add(KeyBindings.LEFT, Keys.Left);
-            mappings.Add(KeyBindings.RIGHT, Keys.Right);
-            mappings.Add(KeyBindings.UP, Keys.Up);
-            mappings.Add(KeyBindings.DOWN, Keys.Down);
+            mappings.Add(KeyBindings.LEFT, Keys.A);
+            mappings.Add(KeyBindings.RIGHT, Keys.D);
+            mappings.Add(KeyBindings.UP, Keys.W);
+            mappings.Add(KeyBindings.DOWN, Keys.S);
             mappings.Add(KeyBindings.PAUSE, Keys.Escape);
-            mappings.Add(KeyBindings.ATTACK, Keys.Space);
+            mappings.Add(KeyBindings.DASH, Keys.Space);
 
         }
 
@@ -82,12 +83,14 @@ namespace WatchYourBack
                 yInput = -1;
             if (Keyboard.GetState().IsKeyDown(mappings[KeyBindings.DOWN]))
                 yInput = 1;
+            if (Keyboard.GetState().IsKeyDown(mappings[KeyBindings.DASH]))
+                dash = true;
             if (ms.LeftButton == ButtonState.Pressed)
                 leftMouseClicked = true;
             if (ms.RightButton == ButtonState.Pressed)
                 rightMouseClicked = true;
 
-            toSend = new NetworkInputArgs(client.UniqueIdentifier, xInput, yInput, mouseLocation, leftMouseClicked, rightMouseClicked, manager.DrawTime);
+            toSend = new NetworkInputArgs(client.UniqueIdentifier, xInput, yInput, mouseLocation, leftMouseClicked, rightMouseClicked, manager.DrawTime, dash);
             om = client.CreateMessage();
             om.Write(SerializationHelper.Serialize(toSend));
             client.SendMessage(om, NetDeliveryMethod.ReliableOrdered); 
@@ -124,8 +127,10 @@ namespace WatchYourBack
                     {
                         case COMMANDS.ADD:
                             getGraphics(args);
-                            
-                            manager.addEntity(EFactory.createGraphics(body, args.Rotation, rotationOrigin, rotationOffset, args.ID, texture, sourceRectangle, args.Type, layer));
+                            if(args.SubIndex != null)
+                                manager.addEntity(EFactory.createGraphics(body, args.Rotation, rotationOrigin, rotationOffset, args.ID, texture, args.SubIndex, args.Type, layer));
+                            else
+                                manager.addEntity(EFactory.createGraphics(body, args.Rotation, rotationOrigin, rotationOffset, args.ID, texture, sourceRectangle, args.Type, layer));
                             break;
                         case COMMANDS.REMOVE:
                             manager.ActiveEntities.Remove(args.ID);
@@ -178,11 +183,10 @@ namespace WatchYourBack
                     sourceRectangle = texture.Bounds;
                     break;
                 case ENTITIES.WALL:
-                    texture = manager.getTexture("TileTextures/TileAtlas");
+                    texture = manager.getTexture("TileTextures/WallTextureAtlas2");
                     layer = 1;
                     rotationOrigin = Vector2.Zero;
-                    rotationOffset = Vector2.Zero;
-                    sourceRectangle = new Rectangle((int)LevelDimensions.X_SCALE * args.TextureIndex, 0, (int)LevelDimensions.X_SCALE, (int)LevelDimensions.Y_SCALE);
+                    rotationOffset = Vector2.Zero;                  
                     break;
                 default:
                     texture = null;
@@ -203,6 +207,7 @@ namespace WatchYourBack
             yInput = 0;
             leftMouseClicked = false;
             rightMouseClicked = false;
+            dash = false;
 
 
         }

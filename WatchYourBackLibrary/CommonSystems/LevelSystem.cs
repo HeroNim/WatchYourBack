@@ -76,7 +76,7 @@ namespace WatchYourBackLibrary
         {
             if (manager.hasGraphics())
             {
-                wallTexture = manager.getTexture("TileTextures/TileAtlas");
+                wallTexture = manager.getTexture("TileTextures/WallTextureAtlas");
                 spawnTexture = manager.getTexture("PlayerTexture");
             }
             int player = 1;
@@ -88,7 +88,8 @@ namespace WatchYourBackLibrary
                 {
                     if (levelTemplate.LevelData[y, x] == (int)TileType.WALL)
                     {
-                        Entity wall = EFactory.createWall(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE, (int)LevelDimensions.X_SCALE, (int)LevelDimensions.Y_SCALE, wallTexture, levelTemplate.TileIndex[y, x], manager.hasGraphics());
+                        Entity wall = EFactory.createWall(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE, (int)LevelDimensions.X_SCALE, (int)LevelDimensions.Y_SCALE, 
+                            wallTexture, levelTemplate.SubIndex(y, x), manager.hasGraphics());
                         manager.addEntity(wall);
                         
                     }

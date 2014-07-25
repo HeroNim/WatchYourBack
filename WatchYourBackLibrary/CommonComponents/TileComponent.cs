@@ -18,6 +18,7 @@ namespace WatchYourBackLibrary
 
         private TileType type;
         private int atlasIndex;
+        private int[,] subIndex;
 
         public TileComponent(TileType type)
         {
@@ -29,6 +30,14 @@ namespace WatchYourBackLibrary
         {
             this.type = type;
             atlasIndex = index;
+            subIndex = null;
+        }
+
+        public TileComponent(TileType type, int[,] index)
+        {
+            this.type = type;
+            subIndex = index;
+            atlasIndex = 0;
         }
 
         public TileType Type
@@ -40,6 +49,12 @@ namespace WatchYourBackLibrary
         {
             get { return atlasIndex; }
             set { atlasIndex = value; }
+        }
+
+        public int[,] SubIndex
+        {
+            get { return subIndex; }
+            set { subIndex = value; }
         }
       
         
