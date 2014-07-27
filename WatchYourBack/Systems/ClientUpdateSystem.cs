@@ -24,7 +24,7 @@ namespace WatchYourBack
         private bool leftMouseClicked;
         private bool rightMouseClicked;
         private bool dash;
-        List<NetworkEntityArgs> receivedData;
+        List<EventArgs> receivedData;
         float layer;
         Vector2 rotationOrigin;
         Vector2 rotationOffset;
@@ -32,12 +32,13 @@ namespace WatchYourBack
         
         int bufferCount;
         
-        List<List<NetworkEntityArgs>> buffer; //Holds incoming messages
+        List<List<EventArgs>> buffer; //Holds incoming messages
 
 
 
         private NetworkInputArgs toSend;
         private NetClient client;
+        private ClientECSManager thisManager;
 
 
         public ClientUpdateSystem(NetClient client) : base(false, true, 10)
@@ -49,10 +50,10 @@ namespace WatchYourBack
             rotationOrigin = Vector2.Zero;
             rotationOffset = Vector2.Zero;
             sourceRectangle = Rectangle.Empty;
-            
 
-            receivedData = new List<NetworkEntityArgs>();
-            buffer = new List<List<NetworkEntityArgs>>();
+
+            receivedData = new List<EventArgs>();
+            buffer = new List<List<EventArgs>>();
             mappings = new Dictionary<KeyBindings, Keys>();
             mappings.Add(KeyBindings.LEFT, Keys.A);
             mappings.Add(KeyBindings.RIGHT, Keys.D);
@@ -61,10 +62,12 @@ namespace WatchYourBack
             mappings.Add(KeyBindings.PAUSE, Keys.Escape);
             mappings.Add(KeyBindings.DASH, Keys.Space);
 
+            
         }
 
         public override void update(TimeSpan gameTime)
         {
+            thisManager = (ClientECSManager)manager;
             NetOutgoingMessage om;
 
            
@@ -104,8 +107,8 @@ namespace WatchYourBack
             
                 switch (msg.MessageType)
                 {
-                    case NetIncomingMessageType.Data:                     
-                        buffer.Add(SerializationHelper.DeserializeObject<List<NetworkEntityArgs>>(msg.ReadBytes(msg.LengthBytes)));
+                    case NetIncomingMessageType.Data:
+                        buffer.Add(SerializationHelper.DeserializeObject<List<EventArgs>>(msg.ReadBytes(msg.LengthBytes)));
                         client.Recycle(msg);
                         break;
                 }
@@ -113,39 +116,48 @@ namespace WatchYourBack
 
             while (buffer.Count != 0 && bufferCount >= 0)
             {
-                List<NetworkEntityArgs> receivedData = buffer[0];
+                List<EventArgs> receivedData = buffer[0];
                 buffer.RemoveAt(0);
-                
 
 
-                foreach (NetworkEntityArgs args in receivedData)
+
+                foreach (EventArgs arg in receivedData)
                 {
-                    Rectangle body = new Rectangle((int)args.XPos, (int)args.YPos, args.Width, args.Height);
-                    switch (args.Command)
+                    if (arg is NetworkEntityArgs)
                     {
-                        case COMMANDS.ADD:
-                            if(args.SubIndex != null)
-                                manager.addEntity(EFactory.createGraphics(body, args.Rotation, rotationOrigin, rotationOffset, args.ID, args.SubIndex, args.Type, layer));
-                            else
-                                manager.addEntity(EFactory.createGraphics(body, args.Rotation, rotationOrigin, rotationOffset, args.ID, sourceRectangle, args.Type, layer));
-                            break;
-                        case COMMANDS.REMOVE:
-                            manager.ActiveEntities.Remove(args.ID);
-                            break;
-                        case COMMANDS.MODIFY:
-                            try
-                            {
-                                Entity e = manager.ActiveEntities[args.ID];
-                                GraphicsComponent graphics = (GraphicsComponent)e.Components[Masks.GRAPHICS];
-                                graphics.Body = body;
-                                graphics.RotationAngle = args.Rotation;
-                            }
-                            catch (KeyNotFoundException)
-                            {
-            
-                                Console.WriteLine("Modify before Add caught");
-                            }
-                            break;
+                        NetworkEntityArgs args = (NetworkEntityArgs)arg;
+                        Rectangle body = new Rectangle((int)args.XPos, (int)args.YPos, args.Width, args.Height);
+                        switch (args.Command)
+                        {
+                            case COMMANDS.ADD:
+                                if (args.SubIndex != null)
+                                    manager.addEntity(EFactory.createGraphics(body, args.Rotation, rotationOrigin, rotationOffset, args.ID, args.SubIndex, args.Type, layer));
+                                else
+                                    manager.addEntity(EFactory.createGraphics(body, args.Rotation, rotationOrigin, rotationOffset, args.ID, sourceRectangle, args.Type, layer));
+                                break;
+                            case COMMANDS.REMOVE:
+                                manager.ActiveEntities.Remove(args.ID);
+                                break;
+                            case COMMANDS.MODIFY:
+                                try
+                                {
+                                    Entity e = manager.ActiveEntities[args.ID];
+                                    GraphicsComponent graphics = (GraphicsComponent)e.Components[Masks.GRAPHICS];
+                                    graphics.Body = body;
+                                    graphics.RotationAngle = args.Rotation;
+                                }
+                                catch (KeyNotFoundException)
+                                {
+
+                                    Console.WriteLine("Modify before Add caught");
+                                }
+                                break;
+                        }
+                    }
+                    else if(arg is NetworkGameArgs)
+                    {
+                        NetworkGameArgs args = (NetworkGameArgs)arg;
+                        thisManager.UI.updateUI(args.Scores[0], args.Scores[1], args.Time);
                     }
                 }
             }

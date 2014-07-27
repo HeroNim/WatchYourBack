@@ -26,6 +26,7 @@ namespace WatchYourBackLibrary
 
         private List<Vector2> debugPoints;
 
+
         public GraphicsInfo(Rectangle body, Texture2D texture, float layer)
         {
             spriteTexture = texture;
@@ -61,9 +62,13 @@ namespace WatchYourBackLibrary
             this.rotationOffset = rotationOffset;          
         }
 
-        public GraphicsInfo(Rectangle body, Texture2D texture, string text, SpriteFont font, Color fontColor, float layer)
-            : this(body, texture, layer)
-        {           
+        public GraphicsInfo(Rectangle body, string text, SpriteFont font, Color fontColor, float layer)        
+        {
+            this.body = body;
+            color = Color.White;
+            this.rotationAngle = 0;
+            this.rotationOrigin = Vector2.Zero;
+            this.rotationOffset = Vector2.Zero;
             this.fontColor = fontColor;            
             this.font = font;
             this.text = text;

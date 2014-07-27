@@ -42,8 +42,7 @@ namespace WatchYourBackLibrary
                 float perpAngle = anchorTransform.Rotation + (float)Math.PI / 2;
                
 
-                wielderComponent.AttackCooldown += gameTime.TotalMilliseconds;
-                wielderComponent.ThrowCooldown += gameTime.TotalMilliseconds;
+               
 
                 if (wielderComponent.hasWeapon)
                 {
@@ -62,7 +61,7 @@ namespace WatchYourBackLibrary
                  */
                 if (input.SwingWeapon == true)
                 {                   
-                    if (wielderComponent.AttackCooldown >= wielderComponent.AttackSpeed)
+                    if (wielderComponent.AttackCooldown)
                     {
                         if (wielderComponent.WeaponType == Weapons.SWORD)
                             if (!wielderComponent.hasWeapon)
@@ -71,17 +70,19 @@ namespace WatchYourBackLibrary
                                 manager.addEntity(wielderComponent.Weapon);
                                 wielderComponent.Weapon.hasComponent(Masks.COLLIDER);
                             }
-                        wielderComponent.AttackCooldown = 0;
+                        wielderComponent.AttackCooldown = false;
+                        wielderComponent.AttackSpeed.Start();
 
                     }
                     input.SwingWeapon = false;
                 }
                 if(input.ThrowWeapon == true)
                 {
-                    if (wielderComponent.ThrowCooldown >= wielderComponent.ThrowSpeed)
+                    if (wielderComponent.ThrowCooldown)
                     {
                         manager.addEntity(EFactory.createThrown(anchorAllegiance.Owner, anchorTransform.Center.X, anchorTransform.Center.Y, lookDir, lookAngle, manager.hasGraphics()));
-                        wielderComponent.ThrowCooldown = 0;
+                        wielderComponent.ThrowCooldown = false;
+                        wielderComponent.ThrowSpeed.Start();
                     }
                     input.ThrowWeapon = false;
 

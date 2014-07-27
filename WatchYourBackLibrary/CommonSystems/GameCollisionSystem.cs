@@ -64,7 +64,7 @@ namespace WatchYourBackLibrary
        
 
         private void ResolveCollisions(Entity e1, Entity e2, Masks collider1, Masks collider2)
-        {
+        {           
             if (e1.IsDestructable)
             {
                 remove(e1);

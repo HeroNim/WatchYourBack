@@ -29,7 +29,14 @@ namespace WatchYourBackLibrary
         //    e.Type = ENTITIES.AVATAR;
         //    return e;
         //}
-
+        public static Entity createDisplay(Rectangle rect)
+        {
+            SpriteFont font = content.Load<SpriteFont>("TestFont");
+            Entity e = new Entity(false,
+                new TransformComponent(rect),
+                new GraphicsComponent(rect, "", font, Color.Black, 0, "Display"));
+            return e;                                     
+        }
 
         public static Entity createAvatar(PlayerInfoComponent info, Rectangle rect, Allegiance player, Weapons weaponType, bool hasGraphics)
         {
@@ -39,7 +46,7 @@ namespace WatchYourBackLibrary
             info,
             new AllegianceComponent(player),
             new WielderComponent(weaponType),
-            new TransformComponent(rect.X, rect.Y, rect.Width, rect.Height),
+            new TransformComponent(rect),
             new RectangleColliderComponent(rect),
             new PlayerHitboxComponent(rect, 10, -Vector2.UnitY),
             new CircleColliderComponent(new Vector2(rect.Center.X, rect.Center.Y), rect.Width/2, false),
@@ -134,7 +141,7 @@ namespace WatchYourBackLibrary
             if (hasGraphics)
             {
                 Texture2D myTexture = content.Load<Texture2D>("SwordTexture");
-                e.addComponent(new GraphicsComponent(new Rectangle((int)point.X, (int)point.Y, (int)SWORD.WIDTH, (int)SWORD.RANGE), myTexture, rotationAngle, new Vector2(myTexture.Width / 2, myTexture.Height), 0, "Sword"));
+                e.addComponent(new GraphicsComponent(new Rectangle((int)point.X, (int)point.Y, (int)SWORD.WIDTH, (int)SWORD.RANGE), myTexture, rotationAngle, new Vector2(myTexture.Width / 2, myTexture.Height), 0.8f, "Sword"));
             }
             e.Type = ENTITIES.SWORD;
             return e;

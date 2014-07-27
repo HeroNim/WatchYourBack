@@ -18,14 +18,18 @@ namespace WatchYourBackServer
 {
     class ServerUpdateSystem : ESystem, InputSystem
     {
+
         NetServer server;
-        List<NetworkEntityArgs> sendData;
+        List<EventArgs> sendData;
         bool updating;
         int playerIndex;
         const double timeStep = 1.0 / (double)SERVER_PROPERTIES.TIME_STEP;
         double[] interpolation;
         double[] accumulator;
+
+        LevelComponent level;
         Dictionary<long, int> playerMap;
+        int[] scores;
 
 
         public ServerUpdateSystem(NetServer server)
@@ -33,10 +37,13 @@ namespace WatchYourBackServer
         {
             components += (int)Masks.PLAYER_INPUT;
             this.server = server;
-            sendData = new List<NetworkEntityArgs>();
+            sendData = new List<EventArgs>();
             interpolation = new double[server.ConnectionsCount];
             updating = true;
             playerIndex = 0;
+            
+
+            scores = new int[2];
             playerMap = new Dictionary<long, int>();
 
             foreach(NetConnection player in server.Connections)
@@ -58,6 +65,14 @@ namespace WatchYourBackServer
          */
         public override void update(TimeSpan gameTime)
         {
+            if (level == null)
+                foreach (Entity e in manager.ActiveEntities.Values)
+                    if (e.hasComponent(Masks.LEVEL))
+                    {
+                        level = (LevelComponent)e.Components[Masks.LEVEL];
+                        break;
+                    }
+
             if (updating)
             {
                 foreach (int id in manager.ChangedEntities.Keys)
@@ -72,10 +87,17 @@ namespace WatchYourBackServer
                             sendData.Add(new NetworkEntityArgs(e.Type, manager.ChangedEntities[id], e.ID, transform.X, transform.Y, transform.Width, transform.Height, transform.Rotation, tile.SubIndex));
                         }
                         else
-
                             sendData.Add(new NetworkEntityArgs(e.Type, manager.ChangedEntities[id], e.ID, transform.X, transform.Y, transform.Width, transform.Height, transform.Rotation, 0));
                     }
                 }
+
+                for (int i = 0; i < 2; i++)
+                {
+                    
+                    PlayerInfoComponent p = (PlayerInfoComponent)level.Avatars[i].Components[Masks.PLAYER_INFO];
+                    scores[i] = p.Score;
+                }
+                sendData.Add(new NetworkGameArgs(scores, level.GameTime));
 
                 NetOutgoingMessage om = server.CreateMessage();
                 om.Write(SerializationHelper.Serialize(sendData));
@@ -126,7 +148,7 @@ namespace WatchYourBackServer
                                 // The client sent input to the server
                                 //
                                 args = SerializationHelper.DeserializeObject<NetworkInputArgs>(msg.ReadBytes(msg.LengthBytes));
-                                playerInputComponent = (AvatarInputComponent)activeEntities[playerIndex].Components[Masks.PLAYER_INPUT];
+                                playerInputComponent = (AvatarInputComponent)level.Avatars[playerIndex].Components[Masks.PLAYER_INPUT];
 
                                 if (args.XInput == 1)
                                     playerInputComponent.MoveX = 1;
@@ -154,26 +176,29 @@ namespace WatchYourBackServer
 
 
 
-                                accumulator[playerIndex] += args.DrawTime;
+                                accumulator[playerIndex] += args.DrawTime;                               
+                                if (accumulator[playerIndex] < timeStep)
+                                    interpolation[playerIndex] = accumulator[playerIndex] / timeStep;                                  
                                 interpolate(playerIndex, interpolation[playerIndex]);
                                 break;
                         
                     }
                     server.Recycle(msg);
-                    
-                   
+
+                    for (int i = 0; i < accumulator.Length; i++)
+                    {
+                        if (accumulator[i] < timeStep)
+                        {
+                            updating = false;
+                            break;
+                        }
+                        updating = true;
+                    }
+                    if (updating)
+                        break;
                 }
 
-                for(int i = 0; i < accumulator.Length; i++)
-                {
-                    if (accumulator[i] < timeStep)
-                    {
-                        updating = false;
-                        interpolation[i] = (accumulator[i] % timeStep) / timeStep;
-                        break;
-                    }
-                    updating = true;
-                }
+                
             }
 
 

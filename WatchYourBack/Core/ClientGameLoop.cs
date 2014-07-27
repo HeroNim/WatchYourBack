@@ -228,9 +228,12 @@ namespace WatchYourBack
 
         private void createGame()
         {
-
+            ClientECSManager gameManager = new ClientECSManager();
+            UIInfo gameUI = new UIInfo(GraphicsDevice);
+            gameManager.addUI(gameUI);
             inGame = new World(Worlds.IN_GAME);
-            inGame.addManager(new ClientECSManager());
+            inGame.addManager(gameManager);
+            
             inputListener.addWorld(inGame, false);
 
             inGame.Manager.addSystem(new AvatarInputSystem());
@@ -238,14 +241,20 @@ namespace WatchYourBack
             inGame.Manager.addSystem(new MovementSystem());
             inGame.Manager.addSystem(new LevelSystem(levels));
             inGame.Manager.addSystem(new AttackSystem());
+            inGame.Manager.addSystem(new UIUpdateSystem(gameUI));
 
         }
 
         private void createGameMulti()
         {
+            ClientECSManager gameManager = new ClientECSManager();
+            UIInfo gameUI = new UIInfo(GraphicsDevice);
+            gameManager.addUI(gameUI);
             inGameMulti = new World(Worlds.IN_GAME_MULTI);
-            inGameMulti.addManager(new ClientECSManager());
+            inGameMulti.addManager(gameManager);
+
             inputListener.addWorld(inGameMulti, false);
+
             ClientUpdateSystem networkInput = new ClientUpdateSystem(client);
             inGameMulti.Manager.addSystem(networkInput);
         }

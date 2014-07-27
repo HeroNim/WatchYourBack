@@ -54,10 +54,10 @@ namespace WatchYourBackLibrary
             graphics.Add(key, main);          
         }
 
-        public GraphicsComponent(Rectangle body, Texture2D texture, string text, SpriteFont font, Color fontColor, float layer, string key)
+        public GraphicsComponent(Rectangle body, string text, SpriteFont font, Color fontColor, float layer, string key)
             : this()
         {
-            main = new GraphicsInfo(body, texture, text, font, fontColor, layer);
+            main = new GraphicsInfo(body, text, font, fontColor, layer);
             graphics.Add(key, main);         
         }
 

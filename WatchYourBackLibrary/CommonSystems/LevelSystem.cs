@@ -50,7 +50,10 @@ namespace WatchYourBackLibrary
             if (currentLevel == level.CurrentLevel)
             {
                 if (!built)
+                {
                     buildLevel(currentLevel);
+                    level.Start();
+                }
                 else if (level.Reset == true)
                     resetLevel();
             }
@@ -60,8 +63,7 @@ namespace WatchYourBackLibrary
                 currentLevel = level.CurrentLevel;
                 update(gameTime);
             }
-            
-
+                             
         }
 
 
@@ -81,26 +83,28 @@ namespace WatchYourBackLibrary
                 {
                     if (levelTemplate.LevelData[y, x] == (int)TileType.WALL)
                     {
-                        Entity wall = EFactory.createWall(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE, (int)LevelDimensions.X_SCALE, (int)LevelDimensions.Y_SCALE, 
+                        Entity wall = EFactory.createWall(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE, (int)LevelDimensions.X_SCALE, (int)LevelDimensions.Y_SCALE,
                             levelTemplate.SubIndex(y, x), manager.hasGraphics());
                         manager.addEntity(wall);
-                        
+                        level.Walls.Add(wall);
+
                     }
                     if (levelTemplate.LevelData[y, x] == (int)TileType.SPAWN)
                     {
                         Entity spawn = EFactory.createSpawn(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE, (int)LevelDimensions.X_SCALE, (int)LevelDimensions.Y_SCALE);
-                        Entity avatar = EFactory.createAvatar(new PlayerInfoComponent((Allegiance)player), new Rectangle(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE, 
+                        Entity avatar = EFactory.createAvatar(new PlayerInfoComponent((Allegiance)player), new Rectangle(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE,
                            40, 40), (Allegiance)player, Weapons.SWORD, manager.hasGraphics());
 
-                        manager.addEntity(spawn);                        
+                        manager.addEntity(spawn);
                         manager.addEntity(avatar);
 
                         level.Spawns.Add(spawn);
                         level.Avatars.Add(avatar);
                         player++;
                     }
-                    
+
                 }
+            level.GameTime = 300;
             built = true;
         }
 
@@ -112,32 +116,35 @@ namespace WatchYourBackLibrary
             level = (LevelComponent)levelEntity.Components[Masks.LEVEL];
             manager.LevelInfo = level;
             currentLevel = level.CurrentLevel;
-            buildLevel(currentLevel);
+           
         }
 
+        //Removes all entities from the level, apart from information and ui entities
         private void clearLevel()
         {
-            foreach(Entity entity in manager.ActiveEntities.Values)
-            {
-                if (entity.hasComponent(Masks.TILE))
+            foreach (Entity entity in manager.ActiveEntities.Values)
+                if(level.Contains(entity) || entity.IsDestructable)
                     manager.removeEntity(entity);
-            }
+            level.ResetLevel();
             built = false;
         }
 
+        //Resets a level, moving avatars back to their spawns and removing destructable entities such as swords or thrown weapons
         private void resetLevel()
         {
-            foreach (Entity e in manager.ActiveEntities.Values)
-                if (e.Type != ENTITIES.WALL)
-                    manager.removeEntity(e);
-            for(int i = 0; i < level.Spawns.Count; i++)
+            foreach (Entity entity in manager.ActiveEntities.Values)
+                if (entity.IsDestructable)
+                    manager.removeEntity(entity);
+            for(int i = 0; i < level.Avatars.Count; i++)
             {
+                manager.removeEntity(level.Avatars[i]);
                 TransformComponent transform = (TransformComponent)level.Spawns[i].Components[Masks.TRANSFORM];
                 PlayerInfoComponent info = (PlayerInfoComponent)level.Avatars[i].Components[Masks.PLAYER_INFO];
                 Entity avatar = EFactory.createAvatar(info, new Rectangle((int)transform.X, (int)transform.Y, 40, 40),
                              (Allegiance)i, Weapons.SWORD, manager.hasGraphics());
                 manager.addEntity(avatar);
                 level.Avatars[i] = avatar;
+                
             }
             level.Reset = false;
         }

@@ -14,10 +14,12 @@ namespace WatchYourBack
     //Manages the systems in the game. Is responsible for initializing, updating, and removing systems as needed.
     public class ClientECSManager : IECSManager
     {
+        private UIInfo ui;
         private List<ESystem> systems;
         private LevelComponent levelInfo;
         private Dictionary<int, Entity> inactiveEntities;
         private Dictionary<int, Entity> activeEntities;
+        private Dictionary<int, Entity> uiEntities;
         private Dictionary<int, COMMANDS> changedEntities;
         private List<Entity> removal;
         private InputSystem input;
@@ -30,9 +32,11 @@ namespace WatchYourBack
 
         public ClientECSManager()
         {
+            ui = null;
             id = 0;
             drawTime = 0;
             systems = new List<ESystem>();
+            uiEntities = new Dictionary<int, Entity>();
             activeEntities = new Dictionary<int, Entity>();
             changedEntities = new Dictionary<int, COMMANDS>();
             removal = new List<Entity>();
@@ -40,6 +44,31 @@ namespace WatchYourBack
         }
 
         public bool Playing { get { return playing; } set { playing = value; } }
+
+        public void addUI(UIInfo info)
+        {
+            ui = info;
+            foreach (Entity e in ui.UIElements)
+            {
+                if (e.ID == -1)
+                {
+                    e.ID = id;
+                    id++;
+                }
+                e.initialize();
+                uiEntities.Add(e.ID, e);
+            }
+        }
+
+        public UIInfo UI
+        {
+            get { return ui; }
+        }
+
+        public Dictionary<int, Entity> UIEntities
+        {
+            get { return uiEntities; }
+        }
 
         public void addSystem(ESystem system)
         {
@@ -55,11 +84,13 @@ namespace WatchYourBack
 
         public void addEntity(Entity entity)
         {
-            
-            entity.ID = id;
-            id++;
-            entity.initialize();
-            activeEntities.Add(entity.ID, entity);
+            if (entity.ID == -1)
+            {
+                entity.ID = id;
+                id++;
+            }
+                entity.initialize();
+                activeEntities.Add(entity.ID, entity);               
         }
 
         public void removeEntity(Entity entity)
@@ -129,6 +160,7 @@ namespace WatchYourBack
                 if (system.Loop == true)
                     system.updateEntities(gameTime);
             }
+            
             RemoveAll();
         }
 
@@ -179,16 +211,41 @@ namespace WatchYourBack
                     GraphicsComponent graphics = (GraphicsComponent)entity.Components[Masks.GRAPHICS];
                     foreach (GraphicsInfo sprite in graphics.Sprites.Values)
                     {
-                        spriteBatch.Draw(sprite.Sprite, sprite.Body, sprite.SourceRectangle,
-                                sprite.SpriteColor, sprite.RotationAngle, sprite.RotationOrigin, SpriteEffects.None, sprite.Layer);
-
                         if (sprite.HasText)
                             spriteBatch.DrawString(sprite.Font, sprite.Text, new Vector2(sprite.X, sprite.Y), sprite.FontColor, 0, sprite.RotationOrigin, 1, SpriteEffects.None, 0);
-                        foreach (Vector2 point in sprite.DebugPoints)
+                        else
                         {
-                            spriteBatch.Draw(sprite.Sprite, new Rectangle((int)point.X, (int)point.Y, 3, 3), Color.Black);
+                            spriteBatch.Draw(sprite.Sprite, sprite.Body, sprite.SourceRectangle,
+                                    sprite.SpriteColor, sprite.RotationAngle, sprite.RotationOrigin, SpriteEffects.None, sprite.Layer);
+                            foreach (Vector2 point in sprite.DebugPoints)
+                            {
+                                spriteBatch.Draw(sprite.Sprite, new Rectangle((int)point.X, (int)point.Y, 3, 3), Color.Black);
+                            }
+                            sprite.DebugPoints.Clear();
                         }
-                        sprite.DebugPoints.Clear();
+                    }
+                }
+            }
+            foreach (Entity entity in UIEntities.Values)
+            {
+                if (entity.hasComponent(Masks.GRAPHICS))
+                {
+
+                    GraphicsComponent graphics = (GraphicsComponent)entity.Components[Masks.GRAPHICS];
+                    foreach (GraphicsInfo sprite in graphics.Sprites.Values)
+                    {
+                        if (sprite.HasText)
+                            spriteBatch.DrawString(sprite.Font, sprite.Text, new Vector2(sprite.X, sprite.Y), sprite.FontColor, 0, sprite.RotationOrigin, 1, SpriteEffects.None, 0);
+                        else
+                        {
+                            spriteBatch.Draw(sprite.Sprite, sprite.Body, sprite.SourceRectangle,
+                                    sprite.SpriteColor, sprite.RotationAngle, sprite.RotationOrigin, SpriteEffects.None, sprite.Layer);
+                            foreach (Vector2 point in sprite.DebugPoints)
+                            {
+                                spriteBatch.Draw(sprite.Sprite, new Rectangle((int)point.X, (int)point.Y, 3, 3), Color.Black);
+                            }
+                            sprite.DebugPoints.Clear();
+                        }
                     }
                 }
             }

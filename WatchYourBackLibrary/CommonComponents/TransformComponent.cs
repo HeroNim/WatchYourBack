@@ -41,6 +41,10 @@ namespace WatchYourBackLibrary
             lookAngle = 0;
         }
 
+        public TransformComponent(Rectangle rect)
+            : this(rect.X, rect.Y, rect.Width, rect.Height) { }
+        
+
         public TransformComponent(Vector2 position, int width, int height, float rotation)
         {
             this.position = position;
@@ -75,6 +79,11 @@ namespace WatchYourBackLibrary
                     hasMoved = true;
                 }
             }
+        }
+
+        public Rectangle Body
+        {
+            get { return new Rectangle((int)X, (int)Y, Width, Height); }
         }
 
         public float Y

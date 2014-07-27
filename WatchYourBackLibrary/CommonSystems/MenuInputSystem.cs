@@ -15,39 +15,33 @@ namespace WatchYourBack
      */
     public class MenuInputSystem : ESystem, InputSystem
     {
-
-
-
-         public MenuInputSystem() : base(false, true, 1)
+        public MenuInputSystem()
+            : base(false, true, 1)
         {
             components += (int)Masks.RECTANGLE_COLLIDER;
             components += (int)Masks.BUTTON;
-
         }
 
-         public override void update(TimeSpan gameTime)
+        public override void update(TimeSpan gameTime)
         {
             MouseState ms = Mouse.GetState();
-            
-                foreach (Entity entity in activeEntities)
+
+            foreach (Entity entity in activeEntities)
+            {
+                RectangleColliderComponent collider = (RectangleColliderComponent)entity.Components[Masks.RECTANGLE_COLLIDER];
+                ButtonComponent button = (ButtonComponent)entity.Components[Masks.BUTTON];
+
+                if (collider.Collider.Contains(ms.X, ms.Y) && ms.LeftButton == ButtonState.Pressed)
+                    button.Focused = true;
+
+                else if (ms.LeftButton == ButtonState.Released && button.Focused && collider.Collider.Contains(ms.X, ms.Y))
                 {
-                    RectangleColliderComponent collider = (RectangleColliderComponent)entity.Components[Masks.RECTANGLE_COLLIDER];
-                    ButtonComponent button = (ButtonComponent)entity.Components[Masks.BUTTON];
-                    GraphicsComponent graphics = (GraphicsComponent)entity.Components[Masks.GRAPHICS];
-
-                    if (collider.Collider.Contains(ms.X, ms.Y) && ms.LeftButton == ButtonState.Pressed)
-                        button.Focused = true;
-
-                    else if (ms.LeftButton == ButtonState.Released && button.Focused && collider.Collider.Contains(ms.X, ms.Y))
-                    {
-                        onFire(button.Args);
-                        button.Focused = false;
-                    }
-                    else
-                        button.Focused = false;
-
+                    onFire(button.Args);
+                    button.Focused = false;
                 }
-               
+                else
+                    button.Focused = false;
+            }
         }
 
         public event EventHandler inputFired;

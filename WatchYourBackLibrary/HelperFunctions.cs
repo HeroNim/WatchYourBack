@@ -30,12 +30,9 @@ namespace WatchYourBackLibrary
         public static float Angle(Vector2 v1, Vector2 v2)
         {
             float dotProduct = Vector2.Dot(v1, v2);
-
             float mag1 = (float)Math.Sqrt(Math.Pow(v1.X, 2) + Math.Pow(v1.Y, 2));
             float mag2 = (float)Math.Sqrt(Math.Pow(v2.X, 2) + Math.Pow(v2.Y, 2));
-
             float cosAngle = dotProduct / (Math.Abs(mag1) * Math.Abs(mag2));
-
             return (float)Math.Acos(cosAngle);
         }
 
@@ -52,7 +49,6 @@ namespace WatchYourBackLibrary
         {
             float x = -((float)(radius * Math.Cos(angle))) + origin.X;
             float y = -((float)(radius * Math.Sin(angle))) + origin.Y;
-
             return new Vector2(x, y);
         }
 
@@ -71,7 +67,6 @@ namespace WatchYourBackLibrary
             //Assign local variables
 
             VelocityComponent v1 = (VelocityComponent)e1.Components[Masks.VELOCITY];
-
             RectangleColliderComponent c1 = (RectangleColliderComponent)e1.Components[Masks.RECTANGLE_COLLIDER];
             RectangleColliderComponent c2 = (RectangleColliderComponent)e2.Components[Masks.RECTANGLE_COLLIDER];
 

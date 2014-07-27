@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Timers;
 
 using WatchYourBackLibrary;
 
@@ -27,10 +28,10 @@ namespace WatchYourBackLibrary
 
         private Entity weapon;
         private Weapons weaponType;
-        private double attackTimer;
-        private double throwTimer;
-        private double attackCooldown;
-        private double throwCooldown;
+        private Timer attackTimer;
+        private Timer throwTimer;
+        private bool attackCooldown;
+        private bool throwCooldown;
         private double lastUpdate;
         
         
@@ -38,9 +39,15 @@ namespace WatchYourBackLibrary
         {
             lastUpdate = 0;
             if (weapon == Weapons.SWORD)
-                attackTimer = (double)SWORD.ATTACK_SPEED;
-            throwTimer = (double)THROWN.ATTACK_SPEED;
+            {
+                attackTimer = new Timer((double)SWORD.ATTACK_SPEED);
+                attackTimer.Elapsed += weaponReady;
+            }
+            throwTimer = new Timer((double)THROWN.ATTACK_SPEED);
+            throwTimer.Elapsed += thrownReady;
             weaponType = weapon;
+            attackTimer.Start();
+            throwTimer.Start();
         }
 
         public Entity Weapon
@@ -76,25 +83,25 @@ namespace WatchYourBackLibrary
                 this.weapon = weapon;
         }
 
-        public double AttackSpeed
+        public Timer AttackSpeed
         {
             get { return attackTimer; }
             set { attackTimer = value; }
         }
 
-        public double AttackCooldown
+        public bool AttackCooldown
         {
             get { return attackCooldown; }
             set { attackCooldown = value; }
         }
 
-        public double ThrowSpeed
+        public Timer ThrowSpeed
         {
             get { return throwTimer; }
             set { throwTimer = value; }
         }
 
-        public double ThrowCooldown
+        public bool ThrowCooldown
         {
             get { return throwCooldown; }
             set { throwCooldown = value; }
@@ -104,6 +111,18 @@ namespace WatchYourBackLibrary
         {
             get { return lastUpdate; }
             set { lastUpdate = value; }
+        }
+
+        private void weaponReady(object sender, EventArgs e)
+        {
+            attackCooldown = true;
+            attackTimer.Stop();
+        }
+
+        private void thrownReady(object sender, EventArgs e)
+        {
+            throwCooldown = true;
+            throwTimer.Stop();
         }
 
         
