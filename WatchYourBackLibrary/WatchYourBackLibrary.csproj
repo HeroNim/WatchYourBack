@@ -46,11 +46,9 @@
     <Compile Include="CommonComponents\AvatarInputComponent.cs" />
     <Compile Include="CommonComponents\ButtonComponent.cs" />
     <Compile Include="CommonComponents\RectangleColliderComponent.cs" />
-    <Compile Include="CommonComponents\DebugComponent.cs" />
     <Compile Include="CommonComponents\LevelComponent.cs" />
     <Compile Include="CommonComponents\LineColliderComponent.cs" />
     <Compile Include="CommonComponents\TileComponent.cs" />
-    <Compile Include="CommonComponents\TimerComponent.cs" />
     <Compile Include="CommonComponents\TransformComponent.cs" />
     <Compile Include="CommonComponents\VelocityComponent.cs" />
     <Compile Include="CommonComponents\WeaponComponent.cs" />

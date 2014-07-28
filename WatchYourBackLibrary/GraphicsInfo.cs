@@ -8,6 +8,10 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace WatchYourBackLibrary
 {
+
+    /// <summary>
+    /// Contains all the information the game system needs to render an entity.
+    /// </summary>
     public class GraphicsInfo
     {
         private Texture2D spriteTexture;
@@ -24,6 +28,7 @@ namespace WatchYourBackLibrary
         private Vector2 rotationOrigin;
         private Vector2 rotationOffset;
 
+        private bool visible;
         private List<Vector2> debugPoints;
 
 
@@ -40,6 +45,7 @@ namespace WatchYourBackLibrary
             hasText = false;
             debugPoints = new List<Vector2>();            
             this.layer = layer;
+            visible = true;
         }
 
          public GraphicsInfo(Rectangle body, Texture2D texture, Rectangle sourceRectangle, float layer)
@@ -72,7 +78,8 @@ namespace WatchYourBackLibrary
             this.fontColor = fontColor;            
             this.font = font;
             this.text = text;
-            hasText = true;            
+            hasText = true;
+            visible = true;
         }
 
         
@@ -93,5 +100,6 @@ namespace WatchYourBackLibrary
         public bool Rotatable { get { return (rotationAngle != 0); } }
         public List<Vector2> DebugPoints { get { return debugPoints; } set { debugPoints = value; } }
         public float Layer { get { return layer; } set { layer = value; } }
+        public bool Visible { get { return visible; } set { visible = value; } }
     }
 }

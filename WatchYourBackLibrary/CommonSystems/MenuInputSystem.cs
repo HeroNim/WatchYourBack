@@ -10,9 +10,10 @@ using WatchYourBackLibrary;
 
 namespace WatchYourBack
 {
-    /*
-     * Checks for collisions between mouseclicks and menu elements, and activates the appropriate response.
-     */
+    
+    /// <summary>
+    ///  Checks for collisions between mouseclicks and menu elements, and activates the appropriate response based on which element was clicked.
+    /// </summary>
     public class MenuInputSystem : ESystem, InputSystem
     {
         public MenuInputSystem()
@@ -30,9 +31,12 @@ namespace WatchYourBack
             {
                 RectangleColliderComponent collider = (RectangleColliderComponent)entity.Components[Masks.RECTANGLE_COLLIDER];
                 ButtonComponent button = (ButtonComponent)entity.Components[Masks.BUTTON];
+                GraphicsComponent g = (GraphicsComponent)entity.Components[Masks.GRAPHICS];
 
                 if (collider.Collider.Contains(ms.X, ms.Y) && ms.LeftButton == ButtonState.Pressed)
+                {
                     button.Focused = true;
+                }
 
                 else if (ms.LeftButton == ButtonState.Released && button.Focused && collider.Collider.Contains(ms.X, ms.Y))
                 {
@@ -41,6 +45,12 @@ namespace WatchYourBack
                 }
                 else
                     button.Focused = false;
+
+                
+                if (button.Focused)
+                    g.Sprites["Frame"].Visible = false;
+                else
+                    g.Sprites["Frame"].Visible = true;
             }
         }
 

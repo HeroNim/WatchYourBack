@@ -9,9 +9,10 @@ using Microsoft.Xna.Framework;
 
 namespace WatchYourBackLibrary
 {
-    /*
-     * Holds the velocity of the entity 
-     */
+
+    /// <summary>
+    /// The component which holds the velocity data of an entity.
+    /// </summary>
     public class VelocityComponent : EComponent
     {
 

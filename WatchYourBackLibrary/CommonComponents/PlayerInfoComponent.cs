@@ -5,6 +5,10 @@ using System.Text;
 
 namespace WatchYourBackLibrary
 {
+
+    /// <summary>
+    /// The component which holds all the information about the player, such as their avatar, allegiance, and score.
+    /// </summary>
     public class PlayerInfoComponent : EComponent
     {
         public override int BitMask { get { return (int)Masks.PLAYER_INFO; } }

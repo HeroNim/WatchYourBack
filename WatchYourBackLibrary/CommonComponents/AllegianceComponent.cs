@@ -12,24 +12,27 @@ namespace WatchYourBackLibrary
         PLAYER_2 = 2
     }
 
-    //A component that tells the game who's 'team' the entity belongs to.
+    /// <summary>
+    /// The component that tells the game who's 'team' the entity belongs to. Largely used to determine which entities should interact
+    /// with each other.
+    /// </summary>
     public class AllegianceComponent : EComponent
     {
         public override int BitMask { get { return (int)Masks.ALLEGIANCE; } }
         public override Masks Mask { get { return Masks.ALLEGIANCE; } }
 
 
-        private Allegiance ownedBy;
+        private Allegiance myAllegiance;
 
         public AllegianceComponent(Allegiance owner)
         {
-            ownedBy = owner;
+            myAllegiance = owner;
         }
 
-        public Allegiance Owner
+        public Allegiance MyAllegiance
         {
-            get { return ownedBy; }
-            set { ownedBy = value; }
+            get { return myAllegiance; }
+            set { myAllegiance = value; }
         }
 
        

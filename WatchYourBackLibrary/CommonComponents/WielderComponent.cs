@@ -17,9 +17,10 @@ namespace WatchYourBackLibrary
 
    
 
-    /*
-     * Holds the info for the weapon, including it's range and the total extent of it's rotation if swung.
-     */
+    
+    /// <summary>
+    /// The component which holds the info for the wielder of a weapon, such as the cooldown on their attacks and the type of weapons they use.
+    /// </summary>
     public class WielderComponent : EComponent
     {
 

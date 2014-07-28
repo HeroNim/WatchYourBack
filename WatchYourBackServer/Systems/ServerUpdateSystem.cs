@@ -16,6 +16,7 @@ using WatchYourBackLibrary;
 
 namespace WatchYourBackServer
 {
+    
     class ServerUpdateSystem : ESystem, InputSystem
     {
 
@@ -31,7 +32,7 @@ namespace WatchYourBackServer
         Dictionary<long, int> playerMap;
         int[] scores;
 
-
+        
         public ServerUpdateSystem(NetServer server)
             : base(false, true, 10)
         {
@@ -54,19 +55,24 @@ namespace WatchYourBackServer
         }
 
 
-        /*
-         * The update loop pulls all the draw rates of the players, and adds that value to their accumulators. When EVERY accumulator has more time than the fixed
-         * update rate, the server updates the entities. In the meantime, any player that is waiting on an update will receive interpolated graphics values whenever
-         * they send input, based on the ratio between how much time is in their accumulator and the fixed update rate. This means that every player should receive
-         * at least one packet from the server per cycle.
-         * 
-         * For example, if one player is drawing four times faster than another, the faster player will receive four interpolated values before receiving an actual update.
-         * To the client, the interpolated values are no different than an actual update; however, the server side entities are not actually updated when interpolation occurs.
-         */
+ 
+         
+
+        /// <summary>
+        /// The update loop updates the status of all the entities the player is responsible for drawing, and sends the resulting data to the players. It also is responsible
+        /// for receiving input from the players, and appropriately dealing with it.
+        /// </summary>
+        /// <remarks>
+        /// The update loop pulls all the draw rates of the players, and adds that value to their accumulators. When EVERY accumulator has more time than the fixed
+        /// update rate, the server updates the entities. In the meantime, any player that is waiting on an update will receive interpolated graphics values whenever
+        /// they send input, based on the ratio between how much time is in their accumulator and the fixed update rate. This means that every player should receive
+        /// at least one packet from the server per cycle.
+        /// </remarks>
+        /// <param name="gameTime">The update time of the game</param>
         public override void update(TimeSpan gameTime)
         {
             if (level == null)
-                foreach (Entity e in manager.ActiveEntities.Values)
+                foreach (Entity e in manager.Entities.Values)
                     if (e.hasComponent(Masks.LEVEL))
                     {
                         level = (LevelComponent)e.Components[Masks.LEVEL];
@@ -77,7 +83,7 @@ namespace WatchYourBackServer
             {
                 foreach (int id in manager.ChangedEntities.Keys)
                 {
-                    Entity e = manager.ActiveEntities[id];
+                    Entity e = manager.Entities[id];
                     if (e.hasComponent(Masks.TRANSFORM) && e.Drawable == true)
                     {
                         TransformComponent transform = (TransformComponent)e.Components[Masks.TRANSFORM];
@@ -113,74 +119,80 @@ namespace WatchYourBackServer
             }
 
             while (!updating && manager.Playing == true)
-            { 
+            {
                 NetIncomingMessage msg;
                 NetworkInputArgs args;
                 AvatarInputComponent playerInputComponent;
 
 
-               
+
                 while ((msg = server.ReadMessage()) != null)
                 {
-                        playerIndex = playerMap[msg.SenderConnection.RemoteUniqueIdentifier];
-                        switch (msg.MessageType)
-                        {
-                            case NetIncomingMessageType.DiscoveryRequest:
-                            case NetIncomingMessageType.VerboseDebugMessage:
-                            case NetIncomingMessageType.DebugMessage:
-                            case NetIncomingMessageType.WarningMessage:
-                            case NetIncomingMessageType.ErrorMessage:
-                                //
-                                // Just print diagnostic messages to console
-                                //
-                                Console.WriteLine(msg.ReadString());
-                                break;
-                            case NetIncomingMessageType.StatusChanged:
-                                NetConnectionStatus status = (NetConnectionStatus)msg.ReadByte();
-                                if (status == NetConnectionStatus.Disconnected)
-                                {
-                                    Console.WriteLine(NetUtility.ToHexString(msg.SenderConnection.RemoteUniqueIdentifier) + " disconnected. Ending game.");
-                                    manager.Playing = false;
-                                }
-                                break;
-                            case NetIncomingMessageType.Data:
-                                //
-                                // The client sent input to the server
-                                //
-                                args = SerializationHelper.DeserializeObject<NetworkInputArgs>(msg.ReadBytes(msg.LengthBytes));
-                                playerInputComponent = (AvatarInputComponent)level.Avatars[playerIndex].Components[Masks.PLAYER_INPUT];
+                    playerIndex = playerMap[msg.SenderConnection.RemoteUniqueIdentifier];
+                    switch (msg.MessageType)
+                    {
+                        case NetIncomingMessageType.DiscoveryRequest:
+                        case NetIncomingMessageType.VerboseDebugMessage:
+                        case NetIncomingMessageType.DebugMessage:
+                        case NetIncomingMessageType.WarningMessage:
+                        case NetIncomingMessageType.ErrorMessage:
+                            //
+                            // Just print diagnostic messages to console
+                            //
+                            Console.WriteLine(msg.ReadString());
+                            break;
+                        case NetIncomingMessageType.StatusChanged:
+                            NetConnectionStatus status = (NetConnectionStatus)msg.ReadByte();
+                            if (status == NetConnectionStatus.Disconnected)
+                            {
+                                Console.WriteLine(NetUtility.ToHexString(msg.SenderConnection.RemoteUniqueIdentifier) + " disconnected. Ending game.");
+                                manager.Playing = false;
+                            }
+                            break;
+                        case NetIncomingMessageType.Data:
+                            //
+                            // The client sent input to the server
+                            //
+                            args = SerializationHelper.DeserializeObject<NetworkInputArgs>(msg.ReadBytes(msg.LengthBytes));
+                            playerInputComponent = (AvatarInputComponent)level.Avatars[playerIndex].Components[Masks.PLAYER_INPUT];
 
-                                if (args.XInput == 1)
-                                    playerInputComponent.MoveX = 1;
-                                else if (args.XInput == -1)
-                                    playerInputComponent.MoveX = -1;
-                                else
-                                    playerInputComponent.MoveX = 0;
+                            if (args.XInput == 1)
+                                playerInputComponent.MoveX = 1;
+                            else if (args.XInput == -1)
+                                playerInputComponent.MoveX = -1;
+                            else
+                                playerInputComponent.MoveX = 0;
 
-                                if (args.YInput == 1)
-                                    playerInputComponent.MoveY = 1;
-                                else if (args.YInput == -1)
-                                    playerInputComponent.MoveY = -1;
-                                else
-                                    playerInputComponent.MoveY = 0;
+                            if (args.YInput == 1)
+                                playerInputComponent.MoveY = 1;
+                            else if (args.YInput == -1)
+                                playerInputComponent.MoveY = -1;
+                            else
+                                playerInputComponent.MoveY = 0;
 
-                                if (args.LeftClicked)
-                                    playerInputComponent.SwingWeapon = true;
-                                if (args.RightClicked)
-                                    playerInputComponent.ThrowWeapon = true;
-                                if (args.Dash)
-                                    playerInputComponent.Dash = true;
+                            if (args.LeftClicked)
+                                playerInputComponent.SwingWeapon = true;
+                            if (args.RightClicked)
+                                playerInputComponent.ThrowWeapon = true;
+                            if (args.Dash)
+                                playerInputComponent.Dash = true;
 
-                                playerInputComponent.LookX = args.MouseX;
-                                playerInputComponent.LookY = args.MouseY;
+                            playerInputComponent.LookX = args.MouseX;
+                            playerInputComponent.LookY = args.MouseY;
 
 
 
-                                accumulator[playerIndex] += args.DrawTime;                               
-                                if (accumulator[playerIndex] < timeStep)
-                                    interpolation[playerIndex] = accumulator[playerIndex] / timeStep;                                  
-                                interpolate(playerIndex, interpolation[playerIndex]);
-                                break;
+                            accumulator[playerIndex] += args.DrawTime;
+                            if (accumulator[playerIndex] < timeStep)
+                                interpolation[playerIndex] = accumulator[playerIndex] / timeStep;
+                            interpolate(interpolation[playerIndex]);
+
+                            NetOutgoingMessage om = server.CreateMessage();
+                            om.Write(SerializationHelper.Serialize(sendData));
+                            server.SendMessage(om, server.Connections[playerIndex], NetDeliveryMethod.ReliableOrdered);
+                            sendData.Clear();
+
+                            break;
                         
                     }
                     server.Recycle(msg);
@@ -226,11 +238,16 @@ namespace WatchYourBackServer
                 inputFired(sender, e);
         }
 
-        private void interpolate(int playerIndex, double interpolationFactor)
+        /// <summary>
+        /// Interpolates a new position for each entity based on the interpolation factor, without actually changing the location of the entity. This allows
+        /// each player to draw entities as they should see them, depending on their update rates.
+        /// </summary>
+        /// <param name="interpolationFactor">The ratio between the player's elapsed time and the update rate of the server</param>
+        private void interpolate(double interpolationFactor)
         {
             foreach(int id in manager.ChangedEntities.Values)
             {
-                Entity e = manager.ActiveEntities[id];
+                Entity e = manager.Entities[id];
                 if(e.hasComponent(Masks.TRANSFORM) && e.hasComponent(Masks.VELOCITY))
                 {
                     TransformComponent transform = (TransformComponent)e.Components[Masks.TRANSFORM];
@@ -248,11 +265,6 @@ namespace WatchYourBackServer
                         sendData.Add(new NetworkEntityArgs(e.Type, COMMANDS.MODIFY, e.ID, x, y, transform.Width, transform.Height, rotation, 0));
                 }
             }
-
-            NetOutgoingMessage om = server.CreateMessage();
-            om.Write(SerializationHelper.Serialize(sendData));
-            server.SendMessage(om, server.Connections[playerIndex], NetDeliveryMethod.ReliableOrdered);
-            sendData.Clear();
         }
 
         public double[] Accumulator

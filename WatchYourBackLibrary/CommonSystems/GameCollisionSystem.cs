@@ -116,7 +116,7 @@ namespace WatchYourBackLibrary
             AllegianceComponent a1 = (AllegianceComponent)e1.Components[Masks.ALLEGIANCE];
             AllegianceComponent a2 = (AllegianceComponent)e2.Components[Masks.ALLEGIANCE];
 
-            if (a1.Owner == a2.Owner)
+            if (a1.MyAllegiance == a2.MyAllegiance)
                 return true;
             return false;
         }

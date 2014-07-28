@@ -15,25 +15,23 @@ namespace WatchYourBackServer
 {
     
 
-    /* Manages the systems in the game. Is responsible for initializing, updating, and removing systems as needed. Also contains a list of
-     * all the entities which has changed during the last update cycle; this allows for the server to send data to the client on what needs
-     * to be removed, added, or modified.
-     */
+
     
+    /// <summary>
+    /// The server side version of the ECSManager. Manages the entities and systems in the game; it is responsible for initializing, updating, and removing them as needed.
+    /// Unlike the client version of the ECSManager, it is not responsible for drawing any graphical elements that entities might have.
+    /// </summary>
     public class ServerECSManager : IECSManager
     {
         private int currentID;
         private List<ESystem> systems;
         private LevelComponent levelInfo;
-        private Dictionary<int, Entity> inactiveEntities;
         private Dictionary<int, Entity> activeEntities;
         private Dictionary<int, COMMANDS> changedEntities;
         private List<Entity> removal;
         private InputSystem input;
         const double timeStep = 1.0 / (double)SERVER_PROPERTIES.TIME_STEP;
-        private Stopwatch debug;
 
-        private double[] accumulator;
         private bool playing;
 
     
@@ -44,10 +42,7 @@ namespace WatchYourBackServer
             activeEntities = new Dictionary<int, Entity>();
             changedEntities = new Dictionary<int, COMMANDS>();
             removal = new List<Entity>();
-            inactiveEntities = new Dictionary<int, Entity>();
             currentID = 0;
-            accumulator = new double[playerCount];
-            debug = new Stopwatch();
 
         }
 
@@ -92,14 +87,9 @@ namespace WatchYourBackServer
         {
             get { return levelInfo; }
             set { levelInfo = value; }
-        }
+        }        
 
         public Dictionary<int, Entity> Entities
-        {
-            get { return inactiveEntities; } 
-        }
-
-        public Dictionary<int, Entity> ActiveEntities
         {
             get { return activeEntities; }
         }
@@ -117,15 +107,7 @@ namespace WatchYourBackServer
                 changedEntities[e.ID] = COMMANDS.REMOVE;
         }
 
-        public void clearEntities()
-        {
-            foreach(Entity entity in removal)
-            {
-                inactiveEntities.Remove(entity.ID);
-                activeEntities.Remove(entity.ID);
-            }
-            removal.Clear();
-        }
+       
 
         /*
          * Updates the entity lists of the manager, moving active/inactive entities to their proper lists. Any systems that run
@@ -137,58 +119,28 @@ namespace WatchYourBackServer
         {            
             gameTime = TimeSpan.FromTicks((long)(TimeSpan.TicksPerSecond * timeStep));
             //Update the systems
-            foreach (ESystem system in systems)
-            {            
+            foreach (ESystem system in systems)            
                 if (system.Loop == true)
                     system.updateEntities(gameTime);   
-            }
-        }
-
-        public double[] Accumulator
-        {
-            get { return accumulator; }
-            set { accumulator = value; }
-        }
-
-        public double DrawTime { get; set; }
+        }      
 
         public void RemoveAll()
         {
-            clearEntities();
-            foreach (Entity entity in inactiveEntities.Values)
-                if (entity.IsActive)
-                {
-                    activeEntities.Add(entity.ID, entity);
-                    removal.Add(entity);
-                }
-
-            foreach (Entity entity in removal)
-                inactiveEntities.Remove(entity.ID);
-            removal.Clear();
-
-            foreach (Entity entity in activeEntities.Values)
-                if (!entity.IsActive)
-                {
-                    inactiveEntities.Add(entity.ID, entity);
-                    removal.Add(entity);
-                }
-
             foreach (Entity entity in removal)
                 activeEntities.Remove(entity.ID);
             removal.Clear();
-        }
-
-        /*
-         * Has the sprite batch draw all the entities that have a graphics component 
-         */
+            foreach (Entity entity in activeEntities.Values)
+                if (!entity.IsActive)
+                    removal.Add(entity);
+            foreach (Entity entity in removal)
+                activeEntities.Remove(entity.ID);
+            removal.Clear();
+        }       
 
         public bool hasGraphics()
         {
             return false;
         }
-
-        public void draw(SpriteBatch spriteBatch) { }
-        
 
         public InputSystem Input
         {

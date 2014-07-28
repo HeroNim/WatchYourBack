@@ -20,7 +20,10 @@ namespace WatchYourBackServer
     }
 
     
-
+    /// <summary>
+    /// The main game loop for the server. If no game is running, it waits for clients to connect. Once two clients connect, it begins the game. If a client disconnects, 
+    /// it goes back to waiting for clients to connect.
+    /// </summary>
     class ServerGameLoop
     {
         NetServer server;
@@ -140,9 +143,9 @@ namespace WatchYourBackServer
             inGame.addManager(new ServerECSManager(server.ConnectionsCount));
             inGame.Manager.Playing = true;
             ServerUpdateSystem input = new ServerUpdateSystem(server);
+            input.Accumulator = new double[server.ConnectionsCount];
             inGame.Manager.addSystem(input);
             inGame.Manager.addInput(input);
-            input.Accumulator = inGame.Manager.Accumulator;
 
             inGame.Manager.addSystem(new AvatarInputSystem());
             inGame.Manager.addSystem(new GameCollisionSystem());

@@ -15,6 +15,9 @@ using WatchYourBackLibrary;
 
 namespace WatchYourBack
 {
+    /// <summary>
+    /// The system responsible for updating and sending updates to the server when playing online.
+    /// </summary>
     class ClientUpdateSystem : ESystem
     {
         private Dictionary<KeyBindings, Keys> mappings;
@@ -38,7 +41,7 @@ namespace WatchYourBack
 
         private NetworkInputArgs toSend;
         private NetClient client;
-        private ClientECSManager thisManager;
+        private ClientECSManager activeManager;
 
 
         public ClientUpdateSystem(NetClient client) : base(false, true, 10)
@@ -65,9 +68,13 @@ namespace WatchYourBack
             
         }
 
+        /// <summary>
+        /// The update loop updates the status of all the entities the player is responsible for drawing, as well as updating any UI elements as needed. It also sends player input to the server.
+        /// </summary>
+        /// <param name="gameTime">The update time of the game</param>
         public override void update(TimeSpan gameTime)
         {
-            thisManager = (ClientECSManager)manager;
+            activeManager = (ClientECSManager)manager;
             NetOutgoingMessage om;
 
            
@@ -91,7 +98,7 @@ namespace WatchYourBack
             if (ms.RightButton == ButtonState.Pressed)
                 rightMouseClicked = true;
 
-            toSend = new NetworkInputArgs(client.UniqueIdentifier, xInput, yInput, mouseLocation, leftMouseClicked, rightMouseClicked, manager.DrawTime, dash);
+            toSend = new NetworkInputArgs(client.UniqueIdentifier, xInput, yInput, mouseLocation, leftMouseClicked, rightMouseClicked, activeManager.DrawTime, dash);
             om = client.CreateMessage();
             om.Write(SerializationHelper.Serialize(toSend));
             client.SendMessage(om, NetDeliveryMethod.ReliableOrdered); 
@@ -136,12 +143,12 @@ namespace WatchYourBack
                                     manager.addEntity(EFactory.createGraphics(body, args.Rotation, rotationOrigin, rotationOffset, args.ID, sourceRectangle, args.Type, layer));
                                 break;
                             case COMMANDS.REMOVE:
-                                manager.ActiveEntities.Remove(args.ID);
+                                manager.Entities.Remove(args.ID);
                                 break;
                             case COMMANDS.MODIFY:
                                 try
                                 {
-                                    Entity e = manager.ActiveEntities[args.ID];
+                                    Entity e = manager.Entities[args.ID];
                                     GraphicsComponent graphics = (GraphicsComponent)e.Components[Masks.GRAPHICS];
                                     graphics.Body = body;
                                     graphics.RotationAngle = args.Rotation;
@@ -157,7 +164,7 @@ namespace WatchYourBack
                     else if(arg is NetworkGameArgs)
                     {
                         NetworkGameArgs args = (NetworkGameArgs)arg;
-                        thisManager.UI.updateUI(args.Scores[0], args.Scores[1], args.Time);
+                        activeManager.UI.updateUI(args.Scores[0], args.Scores[1], args.Time);
                     }
                 }
             }
@@ -166,7 +173,9 @@ namespace WatchYourBack
             
         }
       
-
+        /// <summary>
+        /// Resets the inputs to default values.
+        /// </summary>
         private void reset()
         {
             xInput = 0;

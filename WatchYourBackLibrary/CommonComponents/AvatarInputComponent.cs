@@ -7,15 +7,15 @@ using WatchYourBackLibrary;
 
 namespace WatchYourBackLibrary
 {
-    /*
-     * Holds the data containing the current inputs to the avatar
-     */
+   
+    /// <summary>
+    /// The component that holds the data containing the current inputs to the avatar
+    /// </summary>
     public class AvatarInputComponent : EComponent
     {
         public override int BitMask { get { return (int)Masks.PLAYER_INPUT; } }
         public override Masks Mask { get { return Masks.PLAYER_INPUT; } }
-
-        
+       
         private int moveX;
         private int moveY;
         private bool dash;
@@ -23,8 +23,6 @@ namespace WatchYourBackLibrary
         private bool throwWeapon;
         private float lookX;
         private float lookY;
-
-
 
         public AvatarInputComponent()
         {
@@ -34,11 +32,9 @@ namespace WatchYourBackLibrary
             lookY = -1;
             moveX = 0;
             moveY = 0;
-            dash = false;
-            
+            dash = false;          
         }
-
-       
+      
         public int MoveX { get { return moveX; } set { moveX = value; } }
         public int MoveY { get { return moveY; } set { moveY = value; } }
         public bool SwingWeapon { get { return swingWeapon; } set { swingWeapon = value; } }
@@ -47,13 +43,10 @@ namespace WatchYourBackLibrary
         public float LookY { get { return lookY; } set { lookY = value; } }
         public bool Dash { get { return dash; } set { dash = value; } }
         
-
         public void MoveReset()
         {
             moveX = 0;
             moveY = 0;
-        }
-
-        
+        }       
     }
 }

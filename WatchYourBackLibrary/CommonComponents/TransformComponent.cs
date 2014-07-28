@@ -10,16 +10,16 @@ using Microsoft.Xna.Framework;
 
 namespace WatchYourBackLibrary
 {
-    /*
-     * Holds the position and rotation of the entity
-    */
 
+    /// <summary>
+    /// The component which holds the data on the physical properties of an entity, such as it's position and size, as well as some
+    /// methods for determining various aspects of those properties.
+    /// </summary>
     public class TransformComponent : EComponent
     {
         private Vector2 position;
         private int width;
         private int height;
-
 
         private float rotation;
 
@@ -44,29 +44,14 @@ namespace WatchYourBackLibrary
         public TransformComponent(Rectangle rect)
             : this(rect.X, rect.Y, rect.Width, rect.Height) { }
         
-
         public TransformComponent(Vector2 position, int width, int height, float rotation)
+            : this(position.X, position.Y, width, height)
         {
-            this.position = position;
-            this.rotation = rotation;
-            this.width = width;
-            this.height = height;
-            rotation = 0;
-            hasMoved = false;
-            lookDirection = Vector2.Zero;
-            lookAngle = 0;
+            this.rotation = rotation;                    
         }
 
         public TransformComponent(float x, float y, int width, int height, float rotation)
-        {
-            position = new Vector2(x, y);
-            this.rotation = rotation;
-            this.width = width;
-            this.height = height;
-            hasMoved = false;
-            lookDirection = Vector2.Zero;
-            lookAngle = 0;
-        }
+            : this(new Vector2(x, y), width, height, rotation){ }
 
         public float X
         {

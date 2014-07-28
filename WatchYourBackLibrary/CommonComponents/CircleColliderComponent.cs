@@ -7,6 +7,10 @@ using Microsoft.Xna.Framework;
 
 namespace WatchYourBackLibrary
 {
+    /// <summary>
+    /// The component that represents a circular collider, determined by it's radius and position, as well
+    /// as some helpful methods for determining various properties of the circle.
+    /// </summary>
     public class CircleColliderComponent : EComponent
     {
         public override int BitMask { get { return (int)Masks.COLLIDER + (int)Masks.CIRCLE_COLLIDER; } }
@@ -15,7 +19,6 @@ namespace WatchYourBackLibrary
         private float radius;
         private Vector2 center;
        
-
         public CircleColliderComponent(Vector2 center, float radius, bool destructable)
         {
             this.center = center;
@@ -45,9 +48,7 @@ namespace WatchYourBackLibrary
             get { return radius; }
             set { radius = value; }
         }
-
-       
-
+      
         public Vector2 PointOnCircle (Vector2 vector)
         {
             float angle = HelperFunctions.VectorToAngle(vector);

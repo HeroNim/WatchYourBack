@@ -9,9 +9,10 @@ using Microsoft.Xna.Framework.Graphics;
 namespace WatchYourBackLibrary
 {
 
-    /* 
-     * Holds all the information the graphics device needs to render an entity.
-     */
+   
+    /// <summary>
+    /// The component which holds all the graphical information of an entity, as well as get/setters for the information of the primary sprite of the entity.
+    /// </summary>
     public class GraphicsComponent : EComponent
     {
 

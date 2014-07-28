@@ -15,9 +15,10 @@ namespace WatchYourBackLibrary
         Score = 2
     }
 
-    /*
-     * Holds the level data, such as the current level, and whether or not the level has actually started.
-     */
+    
+    /// <summary>
+    /// The component which holds the level data, such as the current level and the time left in the level.
+    /// </summary>
     public class LevelComponent : EComponent
     {
         public override int BitMask { get { return (int)Masks.LEVEL; } }

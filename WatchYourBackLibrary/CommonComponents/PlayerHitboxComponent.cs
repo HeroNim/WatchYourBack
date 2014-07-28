@@ -7,9 +7,10 @@ using Microsoft.Xna.Framework;
 
 namespace WatchYourBackLibrary
 {
-    /*
-     * A line collider that is the location a player can be hit in the game
-     */
+    /// <summary>
+    /// A component that represents a line collider, determined by two points, that is contained only on the avatars and 
+    /// is where the players are attempting to hit.
+    /// </summary>
     public class PlayerHitboxComponent : EComponent
     {
         public override int BitMask { get { return (int)Masks.COLLIDER + (int)Masks.PLAYER_HITBOX; } }

@@ -11,13 +11,17 @@ using WatchYourBackLibrary;
 
 namespace WatchYourBack
 {
-    //Manages the systems in the game. Is responsible for initializing, updating, and removing systems as needed.
+    
+    
+    /// <summary>
+    /// The client side version of the ECS Manager. Manages the entities and systems in the game; it is responsible for initializing, updating, and removing them as needed.
+    /// It is also responsible for drawing any graphical elements that entities might have via XNA's built-in draw functions.
+    /// </summary>
     public class ClientECSManager : IECSManager
     {
         private UIInfo ui;
         private List<ESystem> systems;
         private LevelComponent levelInfo;
-        private Dictionary<int, Entity> inactiveEntities;
         private Dictionary<int, Entity> activeEntities;
         private Dictionary<int, Entity> uiEntities;
         private Dictionary<int, COMMANDS> changedEntities;
@@ -40,7 +44,6 @@ namespace WatchYourBack
             activeEntities = new Dictionary<int, Entity>();
             changedEntities = new Dictionary<int, COMMANDS>();
             removal = new List<Entity>();
-            inactiveEntities = new Dictionary<int, Entity>();
         }
 
         public bool Playing { get { return playing; } set { playing = value; } }
@@ -113,12 +116,9 @@ namespace WatchYourBack
             set { levelInfo = value; }
         }
 
-        public Dictionary<int, Entity> Entities
-        {
-            get { return inactiveEntities; } 
-        }
+       
 
-        public Dictionary<int, Entity> ActiveEntities
+        public Dictionary<int, Entity> Entities
         {
             get { return activeEntities; }
         }
@@ -136,15 +136,7 @@ namespace WatchYourBack
                 changedEntities[e.ID] = COMMANDS.REMOVE;
         }
 
-        public void clearEntities()
-        {
-            foreach(Entity entity in removal)
-            {
-                inactiveEntities.Remove(entity.ID);
-                activeEntities.Remove(entity.ID);
-            }
-            removal.Clear();
-        }
+       
 
         /*
          * Updates the entity lists of the manager, moving active/inactive entities to their proper lists. Any systems that run
@@ -156,15 +148,11 @@ namespace WatchYourBack
         {
             //Update the systems
             foreach (ESystem system in systems)
-            {
                 if (system.Loop == true)
                     system.updateEntities(gameTime);
-            }
             
             RemoveAll();
         }
-
-        public double[] Accumulator { get; set; }
 
         public double DrawTime
         {
@@ -174,33 +162,18 @@ namespace WatchYourBack
 
         public void RemoveAll()
         {
-            clearEntities();
-            foreach (Entity entity in inactiveEntities.Values)
-                if (entity.IsActive)
-                {
-                    activeEntities.Add(entity.ID, entity);
-                    removal.Add(entity);
-                }
-
             foreach (Entity entity in removal)
-                inactiveEntities.Remove(entity.ID);
-            removal.Clear();
-
+                activeEntities.Remove(entity.ID);
+            removal.Clear();                 
             foreach (Entity entity in activeEntities.Values)
                 if (!entity.IsActive)
-                {
-                    inactiveEntities.Add(entity.ID, entity);
                     removal.Add(entity);
-                }
-
             foreach (Entity entity in removal)
                 activeEntities.Remove(entity.ID);
             removal.Clear();
-        }
+        }      
 
-        /*
-         * Has the sprite batch draw all the entities that have a graphics component 
-         */
+        
         public void draw(SpriteBatch spriteBatch)
         {
             foreach (Entity entity in activeEntities.Values)
@@ -211,17 +184,20 @@ namespace WatchYourBack
                     GraphicsComponent graphics = (GraphicsComponent)entity.Components[Masks.GRAPHICS];
                     foreach (GraphicsInfo sprite in graphics.Sprites.Values)
                     {
-                        if (sprite.HasText)
-                            spriteBatch.DrawString(sprite.Font, sprite.Text, new Vector2(sprite.X, sprite.Y), sprite.FontColor, 0, sprite.RotationOrigin, 1, SpriteEffects.None, 0);
-                        else
+                        if (sprite.Visible == true)
                         {
-                            spriteBatch.Draw(sprite.Sprite, sprite.Body, sprite.SourceRectangle,
-                                    sprite.SpriteColor, sprite.RotationAngle, sprite.RotationOrigin, SpriteEffects.None, sprite.Layer);
-                            foreach (Vector2 point in sprite.DebugPoints)
+                            if (sprite.HasText)
+                                spriteBatch.DrawString(sprite.Font, sprite.Text, new Vector2(sprite.X, sprite.Y), sprite.FontColor, 0, sprite.RotationOrigin, 1, SpriteEffects.None, 0);
+                            else
                             {
-                                spriteBatch.Draw(sprite.Sprite, new Rectangle((int)point.X, (int)point.Y, 3, 3), Color.Black);
+                                spriteBatch.Draw(sprite.Sprite, sprite.Body, sprite.SourceRectangle,
+                                        sprite.SpriteColor, sprite.RotationAngle, sprite.RotationOrigin, SpriteEffects.None, sprite.Layer);
+                                foreach (Vector2 point in sprite.DebugPoints)
+                                {
+                                    spriteBatch.Draw(sprite.Sprite, new Rectangle((int)point.X, (int)point.Y, 3, 3), Color.Black);
+                                }
+                                sprite.DebugPoints.Clear();
                             }
-                            sprite.DebugPoints.Clear();
                         }
                     }
                 }

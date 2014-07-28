@@ -8,7 +8,10 @@ using WatchYourBackLibrary;
 namespace WatchYourBackLibrary
 {
   
-
+    /// <summary>
+    /// The component that holds information relevant to a button, such as the function of the button and whether
+    /// it has been focused.
+    /// </summary>
     public class ButtonComponent : EComponent
     {
         public override int BitMask { get { return (int)Masks.BUTTON; } }

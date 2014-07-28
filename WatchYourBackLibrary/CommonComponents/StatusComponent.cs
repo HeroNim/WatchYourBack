@@ -12,6 +12,11 @@ namespace WatchYourBackLibrary
         Dashing
     }
 
+
+    /// <summary>
+    /// The component which holds all the data on the status effects on an avatar, including negative affects such as paralysis,
+    /// and positive effects such as buffs.
+    /// </summary>
     public class StatusComponent : EComponent
     {
         public override int BitMask { get { return (int)Masks.STATUS; } }

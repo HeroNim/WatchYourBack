@@ -9,6 +9,9 @@ using Microsoft.Xna.Framework;
 
 namespace WatchYourBackLibrary
 {
+    /// <summary>
+    /// The component that represents an axis-alligned rectangle collider, determined by XNA's rectangle class.
+    /// </summary>
     public class RectangleColliderComponent : EComponent
     {
         public override int BitMask { get { return (int)Masks.COLLIDER + (int)Masks.RECTANGLE_COLLIDER; } }

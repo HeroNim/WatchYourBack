@@ -27,9 +27,11 @@ namespace WatchYourBackLibrary
         ATTACK_SPEED = 500
     }
 
-    /*
-     * Contains info regarding the various properties of weapons, such as their arc, and if they are anchored to their wielder (such as a sword) or not (thrown weapon)
-     */
+    
+    /// <summary>
+    /// The component which contains info regarding the various properties of weapons, such as their arc,
+    /// and if they are anchored to their wielder (such as a sword) or not (thrown weapon)
+    /// </summary>
     public class WeaponComponent : EComponent
     {
         public override int BitMask { get { return (int)Masks.WEAPON; } }

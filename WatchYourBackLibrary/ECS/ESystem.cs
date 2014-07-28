@@ -36,7 +36,7 @@ namespace WatchYourBackLibrary
         public void initialize(IECSManager manager)
         {
             this.manager = manager;
-            entities = manager.ActiveEntities;
+            entities = manager.Entities;
 
         }
 

@@ -25,6 +25,9 @@ namespace WatchYourBackLibrary
      * Holds all the levels in the game, and manages which one should be loaded at any time.
      */
 
+    /// <summary>
+    /// The system which manages the levels of the game. Contains a level component which holds the information, and methods to build, update, and reset levels.
+    /// </summary>
     public class LevelSystem : ESystem
     {
 
@@ -72,6 +75,11 @@ namespace WatchYourBackLibrary
             levels.Add(level);
         }
 
+        /// <summary>
+        /// Builds a level, including all the entities which are intrinsic to the level, such as walls and spawn points, as well as initializing it by adding
+        /// the initial avatars and starting the game timer.
+        /// </summary>
+        /// <param name="levelName">The name of the level to be built</param>
         private void buildLevel(LevelName levelName)
         {
             int player = 1;
@@ -108,6 +116,9 @@ namespace WatchYourBackLibrary
             built = true;
         }
 
+        /// <summary>
+        /// Initializes the system when the game starts, loading the first level and updating the manager accordingly.
+        /// </summary>
         private void initialize()
         {         
             Entity levelEntity = new Entity();
@@ -119,20 +130,25 @@ namespace WatchYourBackLibrary
            
         }
 
-        //Removes all entities from the level, apart from information and ui entities
+        
+        /// <summary>
+        /// Removes all entities from the level, apart from information and ui entities
+        /// </summary>
         private void clearLevel()
         {
-            foreach (Entity entity in manager.ActiveEntities.Values)
+            foreach (Entity entity in manager.Entities.Values)
                 if(level.Contains(entity) || entity.IsDestructable)
                     manager.removeEntity(entity);
             level.ResetLevel();
             built = false;
         }
-
-        //Resets a level, moving avatars back to their spawns and removing destructable entities such as swords or thrown weapons
+       
+        /// <summary>
+        /// Resets a level, moving avatars back to their spawns and removing destructable entities such as swords or thrown weapons
+        /// </summary>
         private void resetLevel()
         {
-            foreach (Entity entity in manager.ActiveEntities.Values)
+            foreach (Entity entity in manager.Entities.Values)
                 if (entity.IsDestructable)
                     manager.removeEntity(entity);
             for(int i = 0; i < level.Avatars.Count; i++)

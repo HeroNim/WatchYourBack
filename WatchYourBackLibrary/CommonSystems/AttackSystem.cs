@@ -66,7 +66,7 @@ namespace WatchYourBackLibrary
                         if (wielderComponent.WeaponType == Weapons.SWORD)
                             if (!wielderComponent.hasWeapon)
                             {
-                                wielderComponent.EquipWeapon(EFactory.createSword(entity, anchorAllegiance.Owner, anchorTransform, perpAngle, anchorVelocity, manager.hasGraphics()));
+                                wielderComponent.EquipWeapon(EFactory.createSword(entity, anchorAllegiance.MyAllegiance, anchorTransform, perpAngle, anchorVelocity, manager.hasGraphics()));
                                 manager.addEntity(wielderComponent.Weapon);
                                 wielderComponent.Weapon.hasComponent(Masks.COLLIDER);
                             }
@@ -80,7 +80,7 @@ namespace WatchYourBackLibrary
                 {
                     if (wielderComponent.ThrowCooldown)
                     {
-                        manager.addEntity(EFactory.createThrown(anchorAllegiance.Owner, anchorTransform.Center.X, anchorTransform.Center.Y, lookDir, lookAngle, manager.hasGraphics()));
+                        manager.addEntity(EFactory.createThrown(anchorAllegiance.MyAllegiance, anchorTransform.Center.X, anchorTransform.Center.Y, lookDir, lookAngle, manager.hasGraphics()));
                         wielderComponent.ThrowCooldown = false;
                         wielderComponent.ThrowSpeed.Start();
                     }

@@ -26,6 +26,7 @@ namespace WatchYourBack
 
         Stack<World> worldStack;
         World activeWorld;
+        ClientECSManager activeManager;
 
         World mainMenu;
         World connectMenu;
@@ -115,6 +116,7 @@ namespace WatchYourBack
 
             worldStack.Push(mainMenu);
             activeWorld = worldStack.Peek();
+            activeManager = (ClientECSManager)activeWorld.Manager;
 
             // TODO: use this.Content to load your game content here
         }
@@ -141,8 +143,9 @@ namespace WatchYourBack
             if(activeWorld == connectMenu)
                 if (!isPlayingOnline)
                     Connect();
-            activeWorld.Manager.update(gameTime.ElapsedGameTime);
+            activeManager.update(gameTime.ElapsedGameTime);
             activeWorld = worldStack.Peek();
+            activeManager = (ClientECSManager)activeWorld.Manager;
 
             base.Update(gameTime);
         }
@@ -155,10 +158,10 @@ namespace WatchYourBack
         {
             GraphicsDevice.Clear(Color.DarkGray);
             spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
-            activeWorld.Manager.draw(spriteBatch);
+            activeManager.draw(spriteBatch);
             spriteBatch.End();
 
-            activeWorld.Manager.DrawTime = gameTime.ElapsedGameTime.TotalSeconds;
+            activeManager.DrawTime = gameTime.ElapsedGameTime.TotalSeconds;
             
             base.Draw(gameTime);
             

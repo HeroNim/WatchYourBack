@@ -8,10 +8,9 @@ using Microsoft.Xna.Framework;
 
 namespace WatchYourBackLibrary
 {
-    /*
-     * Defines a collider line simply as two endpoints. When checking collisions, the equation of the line is used to compare the 
-     * line to vertices.
-     */
+    /// <summary>
+    /// The component that represents a line collider, determined by two points.
+    /// </summary>
     public class LineColliderComponent : EComponent
     {
         public override int BitMask { get { return (int)Masks.LINE_COLLIDER + (int)Masks.COLLIDER; } }

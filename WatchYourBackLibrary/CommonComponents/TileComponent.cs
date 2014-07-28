@@ -10,7 +10,10 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace WatchYourBackLibrary
 {
-    //Used to store what type a terrain tile is, such as a wall or a spawn point
+    
+    /// <summary>
+    /// The component used to store what type of terrain a tile is, such as a wall or a spawn point.
+    /// </summary>
     public class TileComponent : EComponent
     {
         public override int BitMask { get { return (int)Masks.TILE; } }
