@@ -8,7 +8,9 @@ using Microsoft.Xna.Framework;
 namespace WatchYourBackLibrary
 {
     
-
+    /// <summary>
+    /// Arguments sent by the client to the server, informing it of player input
+    /// </summary>
     [Serializable()]
     public class NetworkInputArgs : EventArgs
     {

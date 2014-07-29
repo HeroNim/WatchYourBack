@@ -8,6 +8,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace WatchYourBackLibrary
 {
+    /// <summary>
+    /// Contains all the data for the UI of the game, such as time and score displays.
+    /// </summary>
     public class UIInfo
     {
         private Entity p1Display;

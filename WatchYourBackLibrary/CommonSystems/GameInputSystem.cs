@@ -21,10 +21,11 @@ namespace WatchYourBack
         ATTACK,
         DASH
     }
-    /*
-     * Takes the state of the game, and modifies what recieves input in that state. For example, in a Playing state, the input should go to the player and the AI should be active,
-     * while in a Menu state, the input should go to the menu and the AI should be inactive.
-     */
+   
+
+    /// <summary>
+    /// The system which takes the state of the game, and appropriately informs object which require input. 
+    /// </summary>
     public class GameInputSystem : ESystem, InputSystem
     {
         private Dictionary<KeyBindings, Keys> mappings;
@@ -44,7 +45,6 @@ namespace WatchYourBack
 
         public override void update(TimeSpan gameTime)
         {
-            //If (state == Playing)
             AvatarInputComponent p1;
 
             foreach(Entity entity in activeEntities)

@@ -7,26 +7,50 @@ using Microsoft.Xna.Framework;
 
 namespace WatchYourBackLibrary
 {
+    /// <summary>
+    /// A list of functions that can be helpful in the program, such as trigonometric functions that are not included in the standard
+    /// XNA or C# codebase, or collision detection functions.
+    /// </summary>
     public static class HelperFunctions
     {
         
-        //Returns the diagonal length of a rectangle
+        
+        /// <summary>
+        /// Returns the diagonal length of a rectangle
+        /// </summary>
+        /// <param name="rect">The rectangle to measure</param>
+        /// <returns>The length from opposite corners</returns>
         public static float Diagonal (Rectangle rect)
         {
            return (float)Math.Sqrt(Math.Pow(rect.Width, 2) + Math.Pow(rect.Height, 2)) / 2;
         }
 
+        /// <summary>
+        /// Converts an angle to a unit vector, based on the XNA coordinate system.
+        /// </summary>
+        /// <param name="angle">The angle, clockwise from the vertical</param>
+        /// <returns>A unit vector in the direction of the angle</returns>
         public static Vector2 AngleToVector(float angle)
         {
             return new Vector2((float)Math.Sin(angle), -(float)Math.Cos(angle));
         }
 
+        /// <summary>
+        /// Converts a vector to an angle, based on the XNA coordinate system.
+        /// </summary>
+        /// <param name="vector">A vector</param>
+        /// <returns>An angle clockwise from the vetical</returns>
         public static float VectorToAngle(Vector2 vector)
         {
             return (float)Math.Atan2(vector.X, vector.Y);
         }
 
-        //Returns the angle between two vectors
+        /// <summary>
+        /// Finds the angle between two vectors
+        /// </summary>
+        /// <param name="v1">A vector</param>
+        /// <param name="v2">A vector</param>
+        /// <returns>The angle between the two vectors</returns>
         public static float Angle(Vector2 v1, Vector2 v2)
         {
             float dotProduct = Vector2.Dot(v1, v2);
@@ -36,6 +60,11 @@ namespace WatchYourBackLibrary
             return (float)Math.Acos(cosAngle);
         }
 
+        /// <summary>
+        /// Takes an angle, and converts it to an angle between 0 and 2pi.
+        /// </summary>
+        /// <param name="angle">An angle</param>
+        /// <returns>An angle between 0 and 2pi</returns>
         public static float Normalize (float angle)
         {
             if(angle > Math.PI * 2)
@@ -45,6 +74,13 @@ namespace WatchYourBackLibrary
             return angle;
         }
 
+        /// <summary>
+        /// Finds a point on the circumference of a circle
+        /// </summary>
+        /// <param name="radius">The radius of the circle</param>
+        /// <param name="angle">The angle clockwise from the vertical of the point to be found</param>
+        /// <param name="origin">The center of the circle</param>
+        /// <returns>A point</returns>
         public static Vector2 pointOnCircle(float radius, float angle, Vector2 origin)
         {
             float x = -((float)(radius * Math.Cos(angle))) + origin.X;
@@ -53,13 +89,14 @@ namespace WatchYourBackLibrary
         }
 
 
-         /*
-         * Checks two entities for collisions. The first entity extends its collider in the x and y directions, and checks for collisions. If they will collide,
-         * the entity is moved back one step, and the collider returns to its original position. After all collisions have been checked, the movement
-         * system resets the colliders to be centered on their respective entities again. Also checks for weapons on the entity; if it has one, it makes sure
-         * the weapon moves with the entity.
-         */
         
+        
+        /// <summary>
+        /// Checks two entities for collisions, given that both have rectangle colliders.
+        /// </summary>
+        /// <param name="e1">The first entity</param>
+        /// <param name="e2">The second entity</param>
+        /// <returns>True if colliding</returns>
         public static bool checkRectangle_RectangleCollisions(Entity e1, Entity e2)
         {
             bool collided = false;
@@ -94,6 +131,12 @@ namespace WatchYourBackLibrary
             return collided;
         }
 
+        /// <summary>
+        /// Checks two entities for collisions, given that both have line colliders. 
+        /// </summary>
+        /// <param name="e1">The first entity</param>
+        /// <param name="e2">The second entity</param>
+        /// <returns>True if colliding</returns>
         public static bool checkLine_HitboxCollision(Entity e1, Entity e2)
         {
             LineColliderComponent c1 = (LineColliderComponent)e1.Components[Masks.LINE_COLLIDER];
@@ -110,6 +153,12 @@ namespace WatchYourBackLibrary
             return true;
         }
 
+        /// <summary>
+        /// Checks two entities for collisions, given the first has a line collider and the second a circle collider.
+        /// </summary>
+        /// <param name="e1">The first entity</param>
+        /// <param name="e2">The second entity</param>
+        /// <returns>True if colliding</returns>
         public static bool checkLine_CircleCollision(Entity e1, Entity e2)
         {
 
@@ -147,15 +196,15 @@ namespace WatchYourBackLibrary
 
         }
 
-        /*
-        * Checks for an intersection between a line defined by two endpoints and a rectangle. After predicting forward the collider, each corner of the rectangle
-        * is checked to make sure it is on the same side of the line. If they are not, then the function then checks to see if
-        * each set of endpoints has at least one value within the rectangle's width or height for each axis. If there is, there is
-        * an intersection.
-        * 
-        * At this point, only weapons have line colliders, so if there is an intersection, the method simply removes the weapon
-        */
-        public static bool checkLineCollision(Entity e1, Entity e2)
+
+
+        /// <summary>
+        /// Checks two entities for collisions, given the first has a line collider and the second a rectangle collider.
+        /// </summary>
+        /// <param name="e1">The first entity</param>
+        /// <param name="e2">The second entity</param>
+        /// <returns>True if colliding</returns>
+        public static bool checkLine_RectangleCollision(Entity e1, Entity e2)
         {
             LineColliderComponent c1 = (LineColliderComponent)e1.Components[Masks.LINE_COLLIDER];
             RectangleColliderComponent c2 = (RectangleColliderComponent)e2.Components[Masks.RECTANGLE_COLLIDER];
@@ -231,6 +280,13 @@ namespace WatchYourBackLibrary
             return intersection;
         }
 
+        /// <summary>
+        /// Checks if a given point is contained above, below, or on a line
+        /// </summary>
+        /// <param name="p1">A point on the line</param>
+        /// <param name="p2">A point on the line</param>
+        /// <param name="point">The point to check</param>
+        /// <returns>Zero if on the line, positive or negative if not</returns>
         public static float lineEquation(Vector2 p1, Vector2 p2, Vector2 point)
         {
             return (p2.Y - p1.Y) * point.X + (p1.X - p2.X) * point.Y + (p2.X * p1.Y - p1.X * p2.Y);

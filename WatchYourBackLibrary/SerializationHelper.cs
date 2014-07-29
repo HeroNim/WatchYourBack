@@ -8,6 +8,9 @@ using System.IO;
 
 namespace WatchYourBackLibrary
 {
+    /// <summary>
+    /// Contains methods to serialize and deserialize information
+    /// </summary>
     public static class SerializationHelper
     {
         public static byte[] Serialize(object objectToSerialize)

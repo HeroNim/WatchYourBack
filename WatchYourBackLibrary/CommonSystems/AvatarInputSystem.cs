@@ -10,9 +10,11 @@ using WatchYourBackLibrary;
 namespace WatchYourBackLibrary
 {
 
-    /*
-     * Adjusts aspects of the Avatars given various inputs by the players
-     */
+  
+
+    /// <summary>
+    /// The system responsible for adjusting properties of the avatars given various inputs by the players
+    /// </summary>
     public class AvatarInputSystem : ESystem
     {
         public AvatarInputSystem()
@@ -40,11 +42,11 @@ namespace WatchYourBackLibrary
                 float relativeAngle = HelperFunctions.Angle(velocity.Velocity, rotationVector);
 
                 status.IterateTimers((float)gameTime.TotalMilliseconds);
+
                 if (input.Dash == true)
                     status.ApplyStatus(Status.Dashing, 200f, 1000f);
                 input.Dash = false;
                 
-
                 if (relativeAngle > Math.PI / 2)
                     velocity.VelocityModifier = 1.0f / 2.0f;
                 else

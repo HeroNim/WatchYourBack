@@ -16,7 +16,9 @@ using WatchYourBackLibrary;
 
 namespace WatchYourBackServer
 {
-    
+    /// <summary>
+    /// The system responsible for updating and sending updates to the client when playing online.
+    /// </summary>
     class ServerUpdateSystem : ESystem, InputSystem
     {
 

@@ -17,6 +17,9 @@ namespace WatchYourBackLibrary
         ATTACK
     };
 
+    /// <summary>
+    /// Arguments sent by the client locally, informing the game of player input
+    /// </summary>
     public class InputArgs : EventArgs
     {
         private Inputs type;

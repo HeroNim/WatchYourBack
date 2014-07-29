@@ -10,9 +10,10 @@ using WatchYourBackLibrary;
 
 namespace WatchYourBackLibrary
 {
-    /*
-     * The system responsible for waiting for attack commands, and creating the appropriate attacks, such as sword swings. (abilities?)
-     */
+    
+    /// <summary>
+    /// The system responsible for waiting for attack commands, and creating the appropriate attacks, such as sword swings.
+    /// </summary>
     public class AttackSystem : ESystem
     {
 
@@ -38,12 +39,9 @@ namespace WatchYourBackLibrary
                 Vector2 lookDir = anchorTransform.LookDirection;
                 float lookAngle = anchorTransform.LookAngle;
 
-
-                float perpAngle = anchorTransform.Rotation + (float)Math.PI / 2;
-               
-
-               
-
+                //Get the angle between the mouse and the player, and start the sword rotated 90 degrees clockwise from the resulting vector
+                float perpAngle = anchorTransform.Rotation + (float)Math.PI / 2;  
+                          
                 if (wielderComponent.hasWeapon)
                 {
                     Entity weapon = wielderComponent.Weapon;
@@ -54,11 +52,8 @@ namespace WatchYourBackLibrary
                         wielderComponent.RemoveWeapon();
                     }
                 }
-
               
-                /*
-                 * Get the angle between the mouse and the player, and start the sword rotated 90 degrees clockwise from the resulting vector
-                 */
+                
                 if (input.SwingWeapon == true)
                 {                   
                     if (wielderComponent.AttackCooldown)
@@ -85,7 +80,6 @@ namespace WatchYourBackLibrary
                         wielderComponent.ThrowSpeed.Start();
                     }
                     input.ThrowWeapon = false;
-
                 }
             }           
         }       

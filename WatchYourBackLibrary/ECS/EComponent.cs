@@ -17,8 +17,6 @@ namespace WatchYourBackLibrary
         LEVEL = 1 << 6,
         BUTTON = 1 << 7,
         WIELDER = 1 << 8,
-        DEBUG = 1 << 9,
-        TIMER = 1 << 10,
         LINE_COLLIDER = 1 << 11,
         WEAPON = 1 << 12,
         ALLEGIANCE = 1 << 13,
@@ -29,13 +27,17 @@ namespace WatchYourBackLibrary
         STATUS = 1 << 18
     };
 
-    /* Components that make up each entity. Ideally contains only data and the methods needed to access them; 
-     * however, for smaller programs and tightly coupled components, it may be simpler to include the logic in the components themselves.
-     * Also contains the value of the component-specific bitmask used to quickly lookup and compare components and entities.
-     * 
-     * When creating components, the mask is the identity of each component, while the bitmask is the number representing the component itself. If you wish to have
-     * a component which is the 'subclass' of another component, add the value of the parent's mask to the subclass's bitmask.
-     */
+   
+
+    /// <summary>
+    /// Components that make up each entity. Ideally contains only data and the methods needed to access them.
+    /// Also contains the value of the component-specific bitmask used to quickly lookup and compare components and entities.
+    /// When creating components, the mask is the identity of each component, while the bitmask is the number representing the component itself.
+    /// </summary>
+    /// <remarks>
+    /// For smaller programs and tightly coupled components, it may be simpler to include the logic in the components themselves.
+    /// If you wish to have a component which is the 'subclass' of another component, add the value of the parent's mask to the subclass's bitmask.
+    /// </remarks>
     public abstract class EComponent
     {
         public abstract Masks Mask { get; }

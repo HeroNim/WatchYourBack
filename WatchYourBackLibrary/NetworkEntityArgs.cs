@@ -13,6 +13,9 @@ namespace WatchYourBackLibrary
         MODIFY
     }
 
+    /// <summary>
+    /// Arguments sent by the server to the client, containing information about entities to draw and how to draw them.
+    /// </summary>
     [Serializable()]
     public class NetworkEntityArgs : EventArgs
     {

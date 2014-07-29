@@ -7,6 +7,9 @@ using Microsoft.Xna.Framework;
 
 namespace WatchYourBackLibrary
 {
+    /// <summary>
+    /// A system used to update elements of the game's UI, such as the score and timer displays
+    /// </summary>
     public class UIUpdateSystem : ESystem
     {
         LevelComponent level;

@@ -14,14 +14,13 @@ namespace WatchYourBackLibrary
         SWORD,
         THROWN
     }
-    /* 
-     * Container for all the components that make up game objects. Contains a list of all the components contained, and methods to modify said components. Each entity
-     * can have only one of each component. Each component has a component-specific bit; combining these into a bitmask for the entity allows for quick lookup and comparison
-     * using bitwise operators.
-     */
-
     
-
+    
+    /// <summary>
+    /// Container for all the components that make up game objects. Contains a list of all the components contained, and methods to modify said components. Each entity
+    /// can have only one of each component. Each component has a component-specific bit; combining these into a bitmask for the entity allows for quick lookup and comparison
+    /// using bitwise operators.
+    /// </summary>
     public class Entity
     {
         private int id;
@@ -85,7 +84,11 @@ namespace WatchYourBackLibrary
         }
            
 
-        //Checks if the entity has a component of this type already
+        /// <summary>
+        /// Checks if the entity has a component of this type already
+        /// </summary>
+        /// <param name="bitMask">The bitmask of the component</param>
+        /// <returns>True if the entity has the component</returns>
         public bool hasComponent(Masks bitMask)
         {
             if ((this.mask & (int)bitMask) != 0)
@@ -95,7 +98,10 @@ namespace WatchYourBackLibrary
             
         }
 
-        //Add a component to the entity
+        /// <summary>
+        /// Add a component to the entity
+        /// </summary>
+        /// <param name="component">The component to add</param>
         public void addComponent(EComponent component)
         {
             if (!hasComponent(component.Mask))
@@ -106,7 +112,11 @@ namespace WatchYourBackLibrary
             }
         }
 
-        //Remove a component from the entity
+
+        /// <summary>
+        /// Remove a component from the entity
+        /// </summary>
+        /// <param name="component">The component to remove</param>
         public void removeComponent(EComponent component)
         {
             if (hasComponent(component.Mask))
@@ -118,8 +128,10 @@ namespace WatchYourBackLibrary
                 
             }
         }
-
-        //Initialize the entity. This sets the entity to active, and initializes all of it's components as well
+      
+        /// <summary>
+        /// Initialize the entity. This sets the entity to active, and initializes all of it's components as well
+        /// </summary>
         public void initialize()
         {
             isActive = true;

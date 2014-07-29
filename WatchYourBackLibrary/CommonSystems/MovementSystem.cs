@@ -10,10 +10,12 @@ using WatchYourBackLibrary;
 
 namespace WatchYourBackLibrary
 {
-    /*
-     * The system used to move all entities. Finds all entities that have a transform and velocity component, then uses
-     * the relevant data to adjust their position. Also adjusts any variables in extra components that rely on movement.
-     */
+
+
+    /// <summary>
+    /// The system used to move all entities. Finds all entities that have a transform and velocity component, then uses
+    /// the relevant data to adjust their position. Also adjusts any variables in extra components that rely on movement.
+    /// </summary>
     public class MovementSystem : ESystem
     {
 

@@ -7,11 +7,14 @@ using Microsoft.Xna.Framework;
 
 namespace WatchYourBackLibrary
 {
-    /* All Systems must inherit from this class. All logic for the game must be done in the systems. All systems are either exclusive or not: exclusive systems only act on entities that contain the
-     * exact components that the system acts on, whereas nonexclusive systems will act on all entities that contain the necessary components, even if they have extra components. Each system
-     * also must specifiy whether they want to be updated during the update loop, or the draw loop. Finally, all systems must have a priority value that is used to determine the order in which
-     * each system is updated during the update loop.
-     */
+
+
+    /// <summary>
+    /// All Systems must inherit from this class. All logic for the game must be done in the systems. All systems are either exclusive or not: exclusive systems only act on entities that contain the
+    /// exact components that the system acts on, whereas nonexclusive systems will act on all entities that contain the necessary components, even if they have extra components. Each system
+    /// also must specifiy whether they want to be updated during the update loop, or the draw loop. Finally, all systems must have a priority value that is used to determine the order in which
+    /// each system is updated during the update loop. 
+    /// </summary>
     public abstract class ESystem
     {
         private Dictionary<int, Entity> entities;
@@ -32,7 +35,11 @@ namespace WatchYourBackLibrary
             components = 0;
         }
         
-        //Initializes the system, pulling the entity list from the manager, and making sure that all of it's components are actually components.
+        
+        /// <summary>
+        /// Initializes the system, pulling the entity list from the manager.
+        /// </summary>
+        /// <param name="manager">The ECS manager the system is attached to</param>
         public void initialize(IECSManager manager)
         {
             this.manager = manager;
@@ -40,8 +47,12 @@ namespace WatchYourBackLibrary
 
         }
 
-        //Checks each entity on the entity list for matching components. If it is not exclusive, the entity must simply have the components; if it is,
-        //the entity must have only those components. The applicable entities are then updated.
+        
+        /// <summary>
+        /// Checks each entity on the entity list for matching components. If it is not exclusive, the entity must simply have the components; if it is,
+        /// the entity must have only those components. The applicable entities are then updated.
+        /// </summary>
+        /// <param name="gameTime">The time since the last update</param>
         public void updateEntities(TimeSpan gameTime)
         {
             activeEntities.Clear();
@@ -67,7 +78,10 @@ namespace WatchYourBackLibrary
 
         public bool Loop { get { return updateLoop; } }
 
-        //Logic goes here
+        /// <summary>
+        /// All the logic of the system is done here.
+        /// </summary>
+        /// <param name="gameTime">The time since the last update</param>
         public abstract void update(TimeSpan gameTime);
     }
 }

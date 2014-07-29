@@ -12,6 +12,10 @@ namespace WatchYourBackLibrary
     /*
      * Checks for collisions between game objects, and resolves them appropriately; destroys destructible objects, stops moving objects etc.
      */
+
+    /// <summary>
+    /// The system responsible for checking for collisions between game objects, and resolving them appropriately; destroy destructible objects, stop moving objects etc.
+    /// </summary>
     public class GameCollisionSystem : ESystem
     {
         Dictionary<int, Entity> removeList;
@@ -24,19 +28,21 @@ namespace WatchYourBackLibrary
             removeList = new Dictionary<int, Entity>();
         }
 
+        /// <summary>
+        /// Checks entities against other entities every update cycle, and calls the appropriate collision check for each pairing; then, any collisions are resolved.
+        /// </summary>
+        /// <remarks>Checks entities that have velocity components against other entities with different allegiances. This reduces the majority of unneccessary collision checks.</remarks>
+        /// <param name="gameTime">The time since the last update</param>
         public override void update(TimeSpan gameTime)
-        {
-            
+        {    
             foreach (Entity entity in activeEntities)
                 if (entity.hasComponent(Masks.VELOCITY))
                 {
                     TransformComponent t1 = (TransformComponent)entity.Components[Masks.TRANSFORM];
-
                     foreach (Entity other in activeEntities)
                     {
                         TransformComponent t2 = (TransformComponent)other.Components[Masks.TRANSFORM];
-
-                        if (!haveSameAllegiance(entity, other) && TransformComponent.distanceBetween(t1, t2) < 100 && entity.hasComponent(Masks.VELOCITY))
+                        if (!haveSameAllegiance(entity, other) && TransformComponent.distanceBetween(t1, t2) < 100)
                         {
                             if (entity.hasComponent(Masks.LINE_COLLIDER))
                             {
@@ -62,7 +68,13 @@ namespace WatchYourBackLibrary
         }
 
        
-
+        /// <summary>
+        /// Resolves collisions, with different results depending on the types of colliders that interacted
+        /// </summary>
+        /// <param name="e1">The first entity</param>
+        /// <param name="e2">The second entity</param>
+        /// <param name="collider1">The type of the first entity's collider</param>
+        /// <param name="collider2">The type of the second entity's collider</param>
         private void ResolveCollisions(Entity e1, Entity e2, Masks collider1, Masks collider2)
         {           
             if (e1.IsDestructable)

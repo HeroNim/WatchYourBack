@@ -21,9 +21,6 @@ namespace WatchYourBackLibrary
         Y_SCALE = 20
     };
 
-    /*
-     * Holds all the levels in the game, and manages which one should be loaded at any time.
-     */
 
     /// <summary>
     /// The system which manages the levels of the game. Contains a level component which holds the information, and methods to build, update, and reset levels.

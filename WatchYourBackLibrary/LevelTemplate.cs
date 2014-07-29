@@ -24,6 +24,10 @@ namespace WatchYourBackLibrary
         FIRST_LEVEL
     };
 
+    /// <summary>
+    /// Takes an image of a level, and converts the image into all the information about the level, such as the location of the walls and spawns,
+    /// which can then be read by the server or client to create the level itself.
+    /// </summary>
    [Serializable()]
     public class LevelTemplate : ISerializable
     {
@@ -117,6 +121,8 @@ namespace WatchYourBackLibrary
                                     }
                                 }
 
+
+                                //Reorder some of the atlas indices to produce rotations
                                 if (i % 2 == 0)
                                 {
                                     if(wallAtlasIndex == 3)                                        
@@ -137,9 +143,9 @@ namespace WatchYourBackLibrary
                                     if (j % 2 != 0 && (wallAtlasIndex == 2 || wallAtlasIndex == 5))
                                         wallAtlasIndex += 8;
                                     if (j % 2 == 0 && wallAtlasIndex == 0)
-                                        wallAtlasIndex += 15;
+                                        wallAtlasIndex = 15;
                                     if (j % 2 != 0 && wallAtlasIndex == 0)
-                                        wallAtlasIndex += 16;
+                                        wallAtlasIndex = 16;
                                 }
 
                                 if(j % 2 == 0)
@@ -155,80 +161,7 @@ namespace WatchYourBackLibrary
                         }                      
                     }                         
                 }
-            }
-
-            //for (int y = 0; y < cornerTextureIndex.GetLength(0); y++)
-            //{
-            //    for (int x = 0; x < cornerTextureIndex.GetLength(1); x++)
-            //    {
-            //        if (cornerTextureIndex[y, x] == -1)
-            //            Console.Write(" ");
-            //        else
-            //        {
-            //            switch(cornerTextureIndex[y, x])
-            //            {
-            //                case 0:
-            //                    Console.Write("C");
-            //                    break;
-            //                case 1:
-            //                    Console.Write("T");
-            //                    break;
-            //                case 2:
-            //                    Console.Write("5");
-            //                    break;
-            //                case 3:
-            //                    Console.Write("B");
-            //                    break;
-            //                case 4:
-            //                    Console.Write("R");
-            //                    break;
-            //                case 5:
-            //                    Console.Write("1");
-            //                    break;
-            //                case 6:
-            //                    Console.Write("L");
-            //                    break;
-            //                case 7:
-            //                    Console.Write("O");
-            //                    break;
-            //                case 8:
-            //                    Console.Write("6");
-            //                    break;
-            //                case 9:
-            //                    Console.Write("7");
-            //                    break;
-            //                case 10:
-            //                    Console.Write("8");
-            //                    break;
-            //                case 11:
-            //                    Console.Write("2");
-            //                    break;
-            //                case 12:
-            //                    Console.Write("3");
-            //                    break;
-            //                case 13:
-            //                    Console.Write("4");
-            //                    break;
-            //                case 14:
-            //                    Console.Write("C");
-            //                    break;
-            //                case 15:
-            //                    Console.Write("C");
-            //                    break;
-            //                case 16:
-            //                    Console.Write("C");
-            //                    break;
-                            
-
-            //            }
-                        
-            //        }
-            //    }
-            //    Console.WriteLine();
-            //}
-
-
-
+            }       
                     for (int y = 0; y < levelImage.Height; y++)
                     {
                         for (int x = 0; x < levelImage.Width; x++)
