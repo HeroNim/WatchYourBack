@@ -19,22 +19,22 @@ namespace WatchYourBackLibrary
 
         public AttackSystem() : base(false, true, 6)
         {
-            components += (int)Masks.WIELDER;
-            components += (int)Masks.VELOCITY;
-            components += (int)Masks.TRANSFORM;
-            components += (int)Masks.ALLEGIANCE;
-            components += (int)Masks.PLAYER_INPUT;
+            components += (int)Masks.Wielder;
+            components += (int)Masks.Velocity;
+            components += (int)Masks.Transform;
+            components += (int)Masks.Allegiance;
+            components += (int)Masks.PlayerInput;
         }
 
         public override void update(TimeSpan gameTime)
         {           
             foreach (Entity entity in activeEntities)
             {
-                WielderComponent wielderComponent = (WielderComponent)entity.Components[Masks.WIELDER];
-                VelocityComponent anchorVelocity = (VelocityComponent)entity.Components[Masks.VELOCITY];
-                TransformComponent anchorTransform = (TransformComponent)entity.Components[Masks.TRANSFORM];
-                AllegianceComponent anchorAllegiance = (AllegianceComponent)entity.Components[Masks.ALLEGIANCE];
-                AvatarInputComponent input = (AvatarInputComponent)entity.Components[Masks.PLAYER_INPUT];
+                WielderComponent wielderComponent = (WielderComponent)entity.Components[Masks.Wielder];
+                VelocityComponent anchorVelocity = (VelocityComponent)entity.Components[Masks.Velocity];
+                TransformComponent anchorTransform = (TransformComponent)entity.Components[Masks.Transform];
+                AllegianceComponent anchorAllegiance = (AllegianceComponent)entity.Components[Masks.Allegiance];
+                AvatarInputComponent input = (AvatarInputComponent)entity.Components[Masks.PlayerInput];
 
                 Vector2 lookDir = anchorTransform.LookDirection;
                 float lookAngle = anchorTransform.LookAngle;
@@ -45,7 +45,7 @@ namespace WatchYourBackLibrary
                 if (wielderComponent.hasWeapon)
                 {
                     Entity weapon = wielderComponent.Weapon;
-                    WeaponComponent weaponComponent = (WeaponComponent)weapon.Components[Masks.WEAPON];
+                    WeaponComponent weaponComponent = (WeaponComponent)weapon.Components[Masks.Weapon];
                     if (weaponComponent.Arc >= weaponComponent.MaxArc)
                     {
                         manager.removeEntity(weapon);
@@ -61,9 +61,9 @@ namespace WatchYourBackLibrary
                         if (wielderComponent.WeaponType == Weapons.SWORD)
                             if (!wielderComponent.hasWeapon)
                             {
-                                wielderComponent.EquipWeapon(EFactory.createSword(entity, anchorAllegiance.MyAllegiance, anchorTransform, perpAngle, anchorVelocity, manager.hasGraphics()));
+                                wielderComponent.EquipWeapon(EFactory.createSword(entity, anchorAllegiance.MyAllegiance, anchorTransform, perpAngle, manager.hasGraphics()));
                                 manager.addEntity(wielderComponent.Weapon);
-                                wielderComponent.Weapon.hasComponent(Masks.COLLIDER);
+                                wielderComponent.Weapon.hasComponent(Masks.Collider);
                             }
                         wielderComponent.AttackCooldown = false;
                         wielderComponent.AttackSpeed.Start();

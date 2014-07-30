@@ -13,8 +13,8 @@ namespace WatchYourBackLibrary
     /// </summary>
     public class AvatarInputComponent : EComponent
     {
-        public override int BitMask { get { return (int)Masks.PLAYER_INPUT; } }
-        public override Masks Mask { get { return Masks.PLAYER_INPUT; } }
+        public override int BitMask { get { return (int)Masks.PlayerInput; } }
+        public override Masks Mask { get { return Masks.PlayerInput; } }
        
         private int moveX;
         private int moveY;

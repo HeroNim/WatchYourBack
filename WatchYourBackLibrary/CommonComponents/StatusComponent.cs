@@ -19,8 +19,8 @@ namespace WatchYourBackLibrary
     /// </summary>
     public class StatusComponent : EComponent
     {
-        public override int BitMask { get { return (int)Masks.STATUS; } }
-        public override Masks Mask { get { return Masks.STATUS; } }
+        public override int BitMask { get { return (int)Masks.Status; } }
+        public override Masks Mask { get { return Masks.Status; } }
 
         private Dictionary<Status, float[]> currentStatus;
         private List<Status> keys;

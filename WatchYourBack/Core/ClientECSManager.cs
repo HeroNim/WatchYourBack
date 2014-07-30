@@ -23,7 +23,6 @@ namespace WatchYourBack
         private List<ESystem> systems;
         private LevelComponent levelInfo;
         private Dictionary<int, Entity> activeEntities;
-        private Dictionary<int, Entity> uiEntities;
         private Dictionary<int, COMMANDS> changedEntities;
         private List<Entity> removal;
         private InputSystem input;
@@ -40,7 +39,6 @@ namespace WatchYourBack
             id = 0;
             drawTime = 0;
             systems = new List<ESystem>();
-            uiEntities = new Dictionary<int, Entity>();
             activeEntities = new Dictionary<int, Entity>();
             changedEntities = new Dictionary<int, COMMANDS>();
             removal = new List<Entity>();
@@ -53,24 +51,13 @@ namespace WatchYourBack
             ui = info;
             foreach (Entity e in ui.UIElements)
             {
-                if (e.ID == -1)
-                {
-                    e.ID = id;
-                    id++;
-                }
-                e.initialize();
-                uiEntities.Add(e.ID, e);
+                addEntity(e);
             }
         }
 
         public UIInfo UI
         {
             get { return ui; }
-        }
-
-        public Dictionary<int, Entity> UIEntities
-        {
-            get { return uiEntities; }
         }
 
         public void addSystem(ESystem system)
@@ -87,13 +74,19 @@ namespace WatchYourBack
 
         public void addEntity(Entity entity)
         {
-            if (entity.ID == -1)
-            {
-                entity.ID = id;
+            entity.ClientID = assignID();
+            entity.initialize();
+            activeEntities.Add(entity.ClientID, entity);
+            addChangedEntities(entity, COMMANDS.ADD);
+        }
+
+        public int assignID()
+        {
+            id = 0;
+            while (activeEntities.Keys.Contains(id))
                 id++;
-            }
-                entity.initialize();
-                activeEntities.Add(entity.ID, entity);               
+            return id;
+
         }
 
         public void removeEntity(Entity entity)
@@ -130,10 +123,10 @@ namespace WatchYourBack
 
         public void addChangedEntities(Entity e, COMMANDS c)
         {
-            if (!changedEntities.Keys.Contains(e.ID))
-                changedEntities.Add(e.ID, c);
-            else if (changedEntities.Keys.Contains(e.ID) && changedEntities[e.ID] != COMMANDS.REMOVE && c == COMMANDS.REMOVE)
-                changedEntities[e.ID] = COMMANDS.REMOVE;
+            if (!changedEntities.Keys.Contains(e.ClientID))
+                changedEntities.Add(e.ClientID, c);
+            else if (changedEntities.Keys.Contains(e.ClientID) && changedEntities[e.ClientID] != COMMANDS.REMOVE && c == COMMANDS.REMOVE)
+                changedEntities[e.ClientID] = COMMANDS.REMOVE;
         }
 
        
@@ -163,13 +156,13 @@ namespace WatchYourBack
         public void RemoveAll()
         {
             foreach (Entity entity in removal)
-                activeEntities.Remove(entity.ID);
+                activeEntities.Remove(entity.ClientID);
             removal.Clear();                 
             foreach (Entity entity in activeEntities.Values)
                 if (!entity.IsActive)
                     removal.Add(entity);
             foreach (Entity entity in removal)
-                activeEntities.Remove(entity.ID);
+                activeEntities.Remove(entity.ClientID);
             removal.Clear();
         }      
 
@@ -178,10 +171,10 @@ namespace WatchYourBack
         {
             foreach (Entity entity in activeEntities.Values)
             {
-                if (entity.hasComponent(Masks.GRAPHICS))
+                if (entity.hasComponent(Masks.Graphics))
                 {
                     
-                    GraphicsComponent graphics = (GraphicsComponent)entity.Components[Masks.GRAPHICS];
+                    GraphicsComponent graphics = (GraphicsComponent)entity.Components[Masks.Graphics];
                     foreach (GraphicsInfo sprite in graphics.Sprites.Values)
                     {
                         if (sprite.Visible == true)
@@ -202,29 +195,7 @@ namespace WatchYourBack
                     }
                 }
             }
-            foreach (Entity entity in UIEntities.Values)
-            {
-                if (entity.hasComponent(Masks.GRAPHICS))
-                {
-
-                    GraphicsComponent graphics = (GraphicsComponent)entity.Components[Masks.GRAPHICS];
-                    foreach (GraphicsInfo sprite in graphics.Sprites.Values)
-                    {
-                        if (sprite.HasText)
-                            spriteBatch.DrawString(sprite.Font, sprite.Text, new Vector2(sprite.X, sprite.Y), sprite.FontColor, 0, sprite.RotationOrigin, 1, SpriteEffects.None, 0);
-                        else
-                        {
-                            spriteBatch.Draw(sprite.Sprite, sprite.Body, sprite.SourceRectangle,
-                                    sprite.SpriteColor, sprite.RotationAngle, sprite.RotationOrigin, SpriteEffects.None, sprite.Layer);
-                            foreach (Vector2 point in sprite.DebugPoints)
-                            {
-                                spriteBatch.Draw(sprite.Sprite, new Rectangle((int)point.X, (int)point.Y, 3, 3), Color.Black);
-                            }
-                            sprite.DebugPoints.Clear();
-                        }
-                    }
-                }
-            }
+            
         }
     
         public bool hasGraphics()

@@ -34,8 +34,8 @@ namespace WatchYourBackLibrary
     /// </summary>
     public class WeaponComponent : EComponent
     {
-        public override int BitMask { get { return (int)Masks.WEAPON; } }
-        public override Masks Mask { get { return Masks.WEAPON; } }
+        public override int BitMask { get { return (int)Masks.Weapon; } }
+        public override Masks Mask { get { return Masks.Weapon; } }
 
         private bool anchored;
         private float arc;

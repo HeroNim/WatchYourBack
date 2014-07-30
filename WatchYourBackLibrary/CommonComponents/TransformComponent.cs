@@ -22,13 +22,20 @@ namespace WatchYourBackLibrary
         private int height;
 
         private float rotation;
+        private Vector2 rotationPoint;
 
         private bool hasMoved;
         private Vector2 lookDirection; //Vector between the mouse pointer and the avatar
         private float lookAngle; //Angle between the lookDirection vector and the y-axis
 
-        public override int BitMask { get { return (int)Masks.TRANSFORM; } }
-        public override Masks Mask { get { return Masks.TRANSFORM; } }
+        private Entity parent;
+
+        public override int BitMask { get { return (int)Masks.Transform; } }
+        public override Masks Mask { get { return Masks.Transform; } }
+
+        public TransformComponent(float x, float y)
+            : this(x, y, 0, 0) {}           
+        
 
         public TransformComponent(float x, float y, int width, int height)
         {
@@ -36,9 +43,11 @@ namespace WatchYourBackLibrary
             this.width = width;
             this.height = height;
             rotation = 0;
+            rotationPoint = position;
             hasMoved = false;
             lookDirection = Vector2.Zero;
             lookAngle = 0;
+            parent = null;
         }
 
         public TransformComponent(Rectangle rect)
@@ -61,6 +70,7 @@ namespace WatchYourBackLibrary
                 if (position.X != value)
                 {
                     position.X = value;
+
                     hasMoved = true;
                 }
             }
@@ -115,6 +125,11 @@ namespace WatchYourBackLibrary
                 }
             }
         }
+        public Vector2 RotationPoint
+        {
+            get { return rotationPoint; }
+            set { rotationPoint = value; }
+        }
 
         public Vector2 LookDirection
         {
@@ -167,7 +182,16 @@ namespace WatchYourBackLibrary
             get { return (float)Width / 2; }
         }
 
-        
+        public Entity Parent
+        {
+            get { return parent; }
+            set { parent = value; }
+        }
+
+        public bool hasParent
+        {
+            get { return (parent != null); }
+        }
 
         public static float distanceBetween(TransformComponent t1, TransformComponent t2)
         {

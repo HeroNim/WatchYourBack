@@ -11,8 +11,8 @@ namespace WatchYourBackLibrary
     /// </summary>
     public class PlayerInfoComponent : EComponent
     {
-        public override int BitMask { get { return (int)Masks.PLAYER_INFO; } }
-        public override Masks Mask { get { return Masks.PLAYER_INFO; } }
+        public override int BitMask { get { return (int)Masks.PlayerInfo; } }
+        public override Masks Mask { get { return Masks.PlayerInfo; } }
 
         private Allegiance playerNum;
         private Entity avatar;

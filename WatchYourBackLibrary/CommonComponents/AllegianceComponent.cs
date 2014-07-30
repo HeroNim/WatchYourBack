@@ -18,8 +18,8 @@ namespace WatchYourBackLibrary
     /// </summary>
     public class AllegianceComponent : EComponent
     {
-        public override int BitMask { get { return (int)Masks.ALLEGIANCE; } }
-        public override Masks Mask { get { return Masks.ALLEGIANCE; } }
+        public override int BitMask { get { return (int)Masks.Allegiance; } }
+        public override Masks Mask { get { return Masks.Allegiance; } }
 
 
         private Allegiance myAllegiance;

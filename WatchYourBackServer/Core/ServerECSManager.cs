@@ -62,11 +62,19 @@ namespace WatchYourBackServer
 
         public void addEntity(Entity entity)
         {
-            entity.ID = currentID;
-            currentID++;
+            entity.ServerID = assignID();
             entity.initialize();
-            activeEntities.Add(entity.ID, entity);
+            activeEntities.Add(entity.ServerID, entity);
             addChangedEntities(entity, COMMANDS.ADD);
+        }
+
+        public int assignID()
+        {
+            currentID = 0;
+            while (activeEntities.Keys.Contains(currentID))
+                currentID++;
+            return currentID;
+
         }
 
         public void removeEntity(Entity entity)
@@ -101,10 +109,10 @@ namespace WatchYourBackServer
 
         public void addChangedEntities(Entity e, COMMANDS c)
         {
-            if (!changedEntities.Keys.Contains(e.ID))
-                changedEntities.Add(e.ID, c);
-            else if (changedEntities.Keys.Contains(e.ID) && changedEntities[e.ID] != COMMANDS.REMOVE && c == COMMANDS.REMOVE)
-                changedEntities[e.ID] = COMMANDS.REMOVE;
+            if (!changedEntities.Keys.Contains(e.ServerID))
+                changedEntities.Add(e.ServerID, c);
+            else if (changedEntities.Keys.Contains(e.ServerID) && changedEntities[e.ServerID] != COMMANDS.REMOVE && c == COMMANDS.REMOVE)
+                changedEntities[e.ServerID] = COMMANDS.REMOVE;
         }
 
        
@@ -127,13 +135,13 @@ namespace WatchYourBackServer
         public void RemoveAll()
         {
             foreach (Entity entity in removal)
-                activeEntities.Remove(entity.ID);
+                activeEntities.Remove(entity.ServerID);
             removal.Clear();
             foreach (Entity entity in activeEntities.Values)
                 if (!entity.IsActive)
                     removal.Add(entity);
             foreach (Entity entity in removal)
-                activeEntities.Remove(entity.ID);
+                activeEntities.Remove(entity.ServerID);
             removal.Clear();
         }       
 

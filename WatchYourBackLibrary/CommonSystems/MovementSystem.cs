@@ -18,106 +18,124 @@ namespace WatchYourBackLibrary
     /// </summary>
     public class MovementSystem : ESystem
     {
+        TransformComponent transform;
+        VelocityComponent velocity;
 
+        TransformComponent anchorTransform;
+        VelocityComponent anchorVelocity;
+
+        float xVel;
+        float yVel;
+        float rotationSpeed;
 
         public MovementSystem()
             : base(false, true, 5)
         {
-            components += (int)Masks.TRANSFORM;
-            components += (int)Masks.VELOCITY;
+            components += (int)Masks.Transform;
+            components += (int)Masks.Velocity;
         }
 
         public override void update(TimeSpan gameTime)
         {
             foreach (Entity entity in activeEntities)
             {
-                TransformComponent transform = (TransformComponent)entity.Components[Masks.TRANSFORM];
-                VelocityComponent velocity = (VelocityComponent)entity.Components[Masks.VELOCITY];
+
+                transform = (TransformComponent)entity.Components[Masks.Transform];
+                velocity = (VelocityComponent)entity.Components[Masks.Velocity];
+                anchorTransform = null;
+                anchorVelocity = null;
+                xVel = velocity.X;
+                yVel = velocity.Y;
+                rotationSpeed = velocity.RotationSpeed;
+
+                if (transform.hasParent)
+                {
+                    anchorTransform = (TransformComponent)transform.Parent.Components[Masks.Transform];
+                    anchorVelocity = (VelocityComponent)transform.Parent.Components[Masks.Velocity];
+                    xVel += anchorVelocity.X;
+                    yVel += anchorVelocity.Y;
+                    rotationSpeed += anchorVelocity.RotationSpeed;
+                }
+                
+                //Move entity
+                transform.Position = new Vector2(transform.X + xVel, transform.Y + yVel);
+                transform.RotationPoint = new Vector2(transform.RotationPoint.X + xVel, transform.RotationPoint.Y + yVel);
+                
+                //Rotate entity
+                transform.Rotation += rotationSpeed;
+                Vector2 rotation = Vector2.Transform(transform.Position - transform.RotationPoint, Matrix.CreateRotationZ(rotationSpeed)) + transform.RotationPoint;
+                transform.Position = rotation;
 
                 //Update weapons
-                if (entity.hasComponent(Masks.WEAPON))
+                if (entity.hasComponent(Masks.Weapon))
                 {
-                    WeaponComponent weapon = (WeaponComponent)entity.Components[Masks.WEAPON];
-                    weapon.Arc += Math.Abs(velocity.RotationSpeed);
-
-                    if (weapon.Anchored == true)
-                    {
-                        VelocityComponent anchorVelocity = (VelocityComponent)weapon.Wielder.Components[Masks.VELOCITY];
-                        transform.Rotation += anchorVelocity.RotationSpeed;
-                        velocity.X = anchorVelocity.X;
-                        velocity.Y = anchorVelocity.Y;
-                    }
+                    WeaponComponent weapon = (WeaponComponent)entity.Components[Masks.Weapon];
+                    weapon.Arc += Math.Abs(velocity.RotationSpeed);            
                 }
-                transform.Position = new Vector2(transform.X + velocity.X, transform.Y + velocity.Y);
-                transform.Rotation += velocity.RotationSpeed;
 
                 //Update graphics
-                if (entity.hasComponent(Masks.GRAPHICS))
+                if (entity.hasComponent(Masks.Graphics))
                 {
-                    GraphicsComponent graphics = (GraphicsComponent)entity.Components[Masks.GRAPHICS];
+                    GraphicsComponent graphics = (GraphicsComponent)entity.Components[Masks.Graphics];
                     graphics.X = (int)transform.X;
                     graphics.Y = (int)transform.Y;
                     graphics.RotationAngle = transform.Rotation;
                 }
 
                 //Update colliders
-                if (entity.hasComponent(Masks.COLLIDER))
+                if (entity.hasComponent(Masks.Collider))
                 {
-                    if (entity.hasComponent(Masks.RECTANGLE_COLLIDER))
+                    if (entity.hasComponent(Masks.RectangleCollider))
                     {
-                        RectangleColliderComponent collider = (RectangleColliderComponent)entity.Components[Masks.RECTANGLE_COLLIDER];
-                        collider.X = (int)transform.X;
-                        collider.Y = (int)transform.Y;
+                        RectangleColliderComponent collider = (RectangleColliderComponent)entity.Components[Masks.RectangleCollider];
+                        collider.X = (int)collider.Anchor.X;
+                        collider.Y = (int)collider.Anchor.Y;
                     }
 
-                    if (entity.hasComponent(Masks.CIRCLE_COLLIDER))
+                    if (entity.hasComponent(Masks.CircleCollider))
                     {
-                        CircleColliderComponent collider = (CircleColliderComponent)entity.Components[Masks.CIRCLE_COLLIDER];
-                        collider.X = (int)transform.Center.X;
-                        collider.Y = (int)transform.Center.Y;
+                        CircleColliderComponent collider = (CircleColliderComponent)entity.Components[Masks.CircleCollider];
+                        collider.X = (int)collider.Anchor.Center.X;
+                        collider.Y = (int)collider.Anchor.Center.Y;
                     }
 
-                    if (entity.hasComponent(Masks.LINE_COLLIDER))
+                    if (entity.hasComponent(Masks.LineCollider))
                     {
-                        
-
-                        LineColliderComponent collider = (LineColliderComponent)entity.Components[Masks.LINE_COLLIDER];
-                        WeaponComponent weapon = (WeaponComponent)entity.Components[Masks.WEAPON];
-                        TransformComponent anchorTransform = (TransformComponent)weapon.Wielder.Components[Masks.TRANSFORM];
-                        VelocityComponent anchorVelocity = (VelocityComponent)weapon.Wielder.Components[Masks.VELOCITY];
-
-                        collider.P1 = new Vector2(collider.P1.X + velocity.X, collider.P1.Y + velocity.Y);
-                        collider.P2 = new Vector2(collider.P2.X + velocity.X, collider.P2.Y + velocity.Y);
-                        Vector2 rotation1 = Vector2.Transform(collider.P1 - anchorTransform.Center, Matrix.CreateRotationZ(velocity.RotationSpeed + anchorVelocity.RotationSpeed)) + anchorTransform.Center;
-                        Vector2 rotation2 = Vector2.Transform(collider.P2 - anchorTransform.Center, Matrix.CreateRotationZ(velocity.RotationSpeed + anchorVelocity.RotationSpeed)) + anchorTransform.Center;
-
-                        collider.P1 = rotation1;
-                        collider.P2 = rotation2;
-
-                        Vector2 rotation = Vector2.Transform(transform.Position - anchorTransform.Center, Matrix.CreateRotationZ(velocity.RotationSpeed + anchorVelocity.RotationSpeed)) + anchorTransform.Center;
-                        transform.Position = rotation;
-
-                        
-                        
-                    }
-
-                    if (entity.hasComponent(Masks.PLAYER_HITBOX))
-                    {
-                        //GraphicsComponent g = (GraphicsComponent)entity.Components[Masks.GRAPHICS];
+                        //GraphicsComponent g = (GraphicsComponent)entity.Components[Masks.Graphics];
                         //g.DebugPoints.Clear();
 
-                        PlayerHitboxComponent collider = (PlayerHitboxComponent)entity.Components[Masks.PLAYER_HITBOX];
+                        LineColliderComponent collider = (LineColliderComponent)entity.Components[Masks.LineCollider];
+                       
+                        collider.P1 = new Vector2(collider.P1.X + xVel, collider.P1.Y + yVel);
+                        collider.P2 = new Vector2(collider.P2.X + xVel, collider.P2.Y + yVel);
+                        Vector2 rotation1 = Vector2.Transform(collider.P1 - anchorTransform.Center, Matrix.CreateRotationZ(rotationSpeed)) + anchorTransform.Center;
+                        Vector2 rotation2 = Vector2.Transform(collider.P2 - anchorTransform.Center, Matrix.CreateRotationZ(rotationSpeed)) + anchorTransform.Center;
 
-                        collider.P1 = new Vector2(collider.P1.X + velocity.X, collider.P1.Y + velocity.Y);
-                        collider.P2 = new Vector2(collider.P2.X + velocity.X, collider.P2.Y + velocity.Y);
+                        collider.P1 = rotation1;
+                        collider.P2 = rotation2;                       
 
-                        Vector2 rotation1 = Vector2.Transform(collider.P1 - transform.Center, Matrix.CreateRotationZ(velocity.RotationSpeed)) + transform.Center;
-                        Vector2 rotation2 = Vector2.Transform(collider.P2 - transform.Center, Matrix.CreateRotationZ(velocity.RotationSpeed)) + transform.Center;
+                        //g.DebugPoints.Add(collider.P1);
+                        //g.DebugPoints.Add(collider.P2);
+                        
+                    }
+
+                    if (entity.hasComponent(Masks.PlayerHitbox))
+                    {
+                       // GraphicsComponent g = (GraphicsComponent)entity.Components[Masks.GRAPHICS];
+                       // g.DebugPoints.Clear();
+
+                        PlayerHitboxComponent collider = (PlayerHitboxComponent)entity.Components[Masks.PlayerHitbox];
+
+                        collider.P1 = new Vector2(collider.P1.X + xVel, collider.P1.Y + yVel);
+                        collider.P2 = new Vector2(collider.P2.X + xVel, collider.P2.Y + yVel);
+
+                        Vector2 rotation1 = Vector2.Transform(collider.P1 - transform.Center, Matrix.CreateRotationZ(rotationSpeed)) + transform.Center;
+                        Vector2 rotation2 = Vector2.Transform(collider.P2 - transform.Center, Matrix.CreateRotationZ(rotationSpeed)) + transform.Center;
                         collider.P1 = rotation1;
                         collider.P2 = rotation2;
 
                         //g.DebugPoints.Add(collider.P1);
-                        //g.DebugPoints.Add(collider.P2);
+                       // g.DebugPoints.Add(collider.P2);
                     }
                 }
 

@@ -24,8 +24,8 @@ namespace WatchYourBackLibrary
     public class WielderComponent : EComponent
     {
 
-        public override int BitMask { get { return (int)Masks.WIELDER; } }
-        public override Masks Mask { get { return Masks.WIELDER; } }
+        public override int BitMask { get { return (int)Masks.Wielder; } }
+        public override Masks Mask { get { return Masks.Wielder; } }
 
         private Entity weapon;
         private Weapons weaponType;

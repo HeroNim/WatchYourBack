@@ -32,7 +32,7 @@ namespace WatchYourBack
         public GameInputSystem()
             : base(false, true, 2)
         {
-            components += (int)Masks.PLAYER_INPUT;
+            components += (int)Masks.PlayerInput;
             mappings = new Dictionary<KeyBindings, Keys>();
             mappings.Add(KeyBindings.LEFT, Keys.A);
             mappings.Add(KeyBindings.RIGHT, Keys.D);
@@ -49,7 +49,7 @@ namespace WatchYourBack
 
             foreach(Entity entity in activeEntities)
             {
-                p1 = (AvatarInputComponent)entity.Components[Masks.PLAYER_INPUT];
+                p1 = (AvatarInputComponent)entity.Components[Masks.PlayerInput];
                 MouseState ms = Mouse.GetState();
                 
                 if (Keyboard.GetState().IsKeyDown(mappings[KeyBindings.RIGHT]))

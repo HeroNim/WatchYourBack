@@ -13,8 +13,8 @@ namespace WatchYourBackLibrary
     /// </summary>
     public class LineColliderComponent : EComponent
     {
-        public override int BitMask { get { return (int)Masks.LINE_COLLIDER + (int)Masks.COLLIDER; } }
-        public override Masks Mask { get { return Masks.LINE_COLLIDER; } }
+        public override int BitMask { get { return (int)Masks.LineCollider + (int)Masks.Collider; } }
+        public override Masks Mask { get { return Masks.LineCollider; } }
 
         private Vector2 p1;
         private Vector2 p2;

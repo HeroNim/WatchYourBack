@@ -41,6 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommonComponents\SoundEffectComponent.cs" />
+    <Compile Include="CommonSystems\AudioSystem.cs" />
     <Compile Include="CommonComponents\CircleColliderComponent.cs" />
     <Compile Include="CommonComponents\AllegianceComponent.cs" />
     <Compile Include="CommonComponents\AvatarInputComponent.cs" />
@@ -81,6 +83,7 @@
     <Compile Include="SerializationHelper.cs" />
     <Compile Include="CommonComponents\StatusComponent.cs" />
     <Compile Include="CommonSystems\UIUpdateSystem.cs" />
+    <Compile Include="CommonComponents\SongComponent.cs" />
     <Compile Include="UI.cs" />
   </ItemGroup>
   <ItemGroup />

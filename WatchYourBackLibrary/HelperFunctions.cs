@@ -103,9 +103,9 @@ namespace WatchYourBackLibrary
             int displacement;
             //Assign local variables
 
-            VelocityComponent v1 = (VelocityComponent)e1.Components[Masks.VELOCITY];
-            RectangleColliderComponent c1 = (RectangleColliderComponent)e1.Components[Masks.RECTANGLE_COLLIDER];
-            RectangleColliderComponent c2 = (RectangleColliderComponent)e2.Components[Masks.RECTANGLE_COLLIDER];
+            VelocityComponent v1 = (VelocityComponent)e1.Components[Masks.Velocity];
+            RectangleColliderComponent c1 = (RectangleColliderComponent)e1.Components[Masks.RectangleCollider];
+            RectangleColliderComponent c2 = (RectangleColliderComponent)e2.Components[Masks.RectangleCollider];
 
 
             //Check collisions
@@ -139,8 +139,8 @@ namespace WatchYourBackLibrary
         /// <returns>True if colliding</returns>
         public static bool checkLine_HitboxCollision(Entity e1, Entity e2)
         {
-            LineColliderComponent c1 = (LineColliderComponent)e1.Components[Masks.LINE_COLLIDER];
-            PlayerHitboxComponent c2 = (PlayerHitboxComponent)e2.Components[Masks.PLAYER_HITBOX];
+            LineColliderComponent c1 = (LineColliderComponent)e1.Components[Masks.LineCollider];
+            PlayerHitboxComponent c2 = (PlayerHitboxComponent)e2.Components[Masks.PlayerHitbox];
 
             float result1 = HelperFunctions.lineEquation(c1.P1, c1.P2, c2.P1);
             float result2 = HelperFunctions.lineEquation(c1.P1, c1.P2, c2.P2);
@@ -162,8 +162,8 @@ namespace WatchYourBackLibrary
         public static bool checkLine_CircleCollision(Entity e1, Entity e2)
         {
 
-            LineColliderComponent c1 = (LineColliderComponent)e1.Components[Masks.LINE_COLLIDER];
-            CircleColliderComponent c2 = (CircleColliderComponent)e2.Components[Masks.CIRCLE_COLLIDER];
+            LineColliderComponent c1 = (LineColliderComponent)e1.Components[Masks.LineCollider];
+            CircleColliderComponent c2 = (CircleColliderComponent)e2.Components[Masks.CircleCollider];
 
 
             Vector2 toCircle = new Vector2(c2.Center.X - c1.P2.X, c2.Center.Y - c1.P2.Y);
@@ -206,9 +206,9 @@ namespace WatchYourBackLibrary
         /// <returns>True if colliding</returns>
         public static bool checkLine_RectangleCollision(Entity e1, Entity e2)
         {
-            LineColliderComponent c1 = (LineColliderComponent)e1.Components[Masks.LINE_COLLIDER];
-            RectangleColliderComponent c2 = (RectangleColliderComponent)e2.Components[Masks.RECTANGLE_COLLIDER];
-            VelocityComponent v1 = (VelocityComponent)e1.Components[Masks.VELOCITY];
+            LineColliderComponent c1 = (LineColliderComponent)e1.Components[Masks.LineCollider];
+            RectangleColliderComponent c2 = (RectangleColliderComponent)e2.Components[Masks.RectangleCollider];
+            VelocityComponent v1 = (VelocityComponent)e1.Components[Masks.Velocity];
 
             //Predict collider forward
 

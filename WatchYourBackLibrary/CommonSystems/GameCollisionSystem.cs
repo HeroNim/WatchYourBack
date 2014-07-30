@@ -23,8 +23,8 @@ namespace WatchYourBackLibrary
         public GameCollisionSystem()
             : base(false, true, 4)
         {
-            components += (int)Masks.TRANSFORM;
-            components += (int)Masks.COLLIDER;
+            components += (int)Masks.Transform;
+            components += (int)Masks.Collider;
             removeList = new Dictionary<int, Entity>();
         }
 
@@ -36,28 +36,28 @@ namespace WatchYourBackLibrary
         public override void update(TimeSpan gameTime)
         {    
             foreach (Entity entity in activeEntities)
-                if (entity.hasComponent(Masks.VELOCITY))
+                if (entity.hasComponent(Masks.Velocity))
                 {
-                    TransformComponent t1 = (TransformComponent)entity.Components[Masks.TRANSFORM];
+                    TransformComponent t1 = (TransformComponent)entity.Components[Masks.Transform];
                     foreach (Entity other in activeEntities)
                     {
-                        TransformComponent t2 = (TransformComponent)other.Components[Masks.TRANSFORM];
+                        TransformComponent t2 = (TransformComponent)other.Components[Masks.Transform];
                         if (!haveSameAllegiance(entity, other) && TransformComponent.distanceBetween(t1, t2) < 100)
                         {
-                            if (entity.hasComponent(Masks.LINE_COLLIDER))
+                            if (entity.hasComponent(Masks.LineCollider))
                             {
-                                if (other.hasComponent(Masks.PLAYER_HITBOX)) // Line - Hitbox
+                                if (other.hasComponent(Masks.PlayerHitbox)) // Line - Hitbox
                                     if (HelperFunctions.checkLine_HitboxCollision(entity, other))
-                                        ResolveCollisions(entity, other, Masks.LINE_COLLIDER, Masks.PLAYER_HITBOX);
-                                if (other.hasComponent(Masks.CIRCLE_COLLIDER)) // Line - Circle
+                                        ResolveCollisions(entity, other, Masks.LineCollider, Masks.PlayerHitbox);
+                                if (other.hasComponent(Masks.CircleCollider)) // Line - Circle
                                     if (HelperFunctions.checkLine_CircleCollision(entity, other))
-                                        ResolveCollisions(entity, other, Masks.LINE_COLLIDER, Masks.CIRCLE_COLLIDER);
+                                        ResolveCollisions(entity, other, Masks.LineCollider, Masks.CircleCollider);
                             }
-                            if (entity.hasComponent(Masks.RECTANGLE_COLLIDER))
+                            if (entity.hasComponent(Masks.RectangleCollider))
                             {
-                                if (other.hasComponent(Masks.RECTANGLE_COLLIDER)) // Rectangle - Rectangle
+                                if (other.hasComponent(Masks.RectangleCollider)) // Rectangle - Rectangle
                                     if (HelperFunctions.checkRectangle_RectangleCollisions(entity, other))
-                                        ResolveCollisions(entity, other, Masks.RECTANGLE_COLLIDER, Masks.RECTANGLE_COLLIDER);                           
+                                        ResolveCollisions(entity, other, Masks.RectangleCollider, Masks.RectangleCollider);                           
                             }                                                       
                         }
                     }
@@ -80,30 +80,30 @@ namespace WatchYourBackLibrary
             if (e1.IsDestructable)
             {
                 remove(e1);
-                if (e1.hasComponent(Masks.WEAPON))
+                if (e1.hasComponent(Masks.Weapon))
                 {
-                    WeaponComponent wielder = (WeaponComponent)e1.Components[Masks.WEAPON];
+                    WeaponComponent wielder = (WeaponComponent)e1.Components[Masks.Weapon];
                     if(wielder.Wielder != null)
-                        ((WielderComponent)wielder.Wielder.Components[Masks.WIELDER]).RemoveWeapon();
+                        ((WielderComponent)wielder.Wielder.Components[Masks.Wielder]).RemoveWeapon();
 
                 }
             }
             if (e2.IsDestructable)
             {
                 remove(e2);
-                if (e2.hasComponent(Masks.WEAPON))
+                if (e2.hasComponent(Masks.Weapon))
                 {
-                    WeaponComponent wielder = (WeaponComponent)e2.Components[Masks.WEAPON];
+                    WeaponComponent wielder = (WeaponComponent)e2.Components[Masks.Weapon];
                     if (wielder.Wielder != null)
-                        ((WielderComponent)wielder.Wielder.Components[Masks.WIELDER]).RemoveWeapon();
+                        ((WielderComponent)wielder.Wielder.Components[Masks.Wielder]).RemoveWeapon();
                 }
             }
 
             if(e1.Type == ENTITIES.SWORD)
-                if(collider2 == Masks.PLAYER_HITBOX)
+                if(collider2 == Masks.PlayerHitbox)
                 {
-                    WeaponComponent wielder = (WeaponComponent)e1.Components[Masks.WEAPON];
-                    PlayerInfoComponent info = (PlayerInfoComponent)wielder.Wielder.Components[Masks.PLAYER_INFO];
+                    WeaponComponent wielder = (WeaponComponent)e1.Components[Masks.Weapon];
+                    PlayerInfoComponent info = (PlayerInfoComponent)wielder.Wielder.Components[Masks.PlayerInfo];
                     info.Score++;
                     manager.LevelInfo.Reset = true;
                     Console.WriteLine("Player Hit");
@@ -112,7 +112,7 @@ namespace WatchYourBackLibrary
             if (e1.Type == ENTITIES.THROWN)
                 if (e2.Type == ENTITIES.AVATAR)
                 {
-                    StatusComponent avatarInfo = (StatusComponent)e2.Components[Masks.STATUS];
+                    StatusComponent avatarInfo = (StatusComponent)e2.Components[Masks.Status];
                     avatarInfo.ApplyStatus(Status.Paralyzed, 1000f, 0);
                     Console.WriteLine("Paralyzed");
                 }
@@ -123,10 +123,10 @@ namespace WatchYourBackLibrary
 
         private bool haveSameAllegiance(Entity e1, Entity e2)
         {
-            if (!e1.hasComponent(Masks.ALLEGIANCE) || !e2.hasComponent(Masks.ALLEGIANCE))
+            if (!e1.hasComponent(Masks.Allegiance) || !e2.hasComponent(Masks.Allegiance))
                 return false;
-            AllegianceComponent a1 = (AllegianceComponent)e1.Components[Masks.ALLEGIANCE];
-            AllegianceComponent a2 = (AllegianceComponent)e2.Components[Masks.ALLEGIANCE];
+            AllegianceComponent a1 = (AllegianceComponent)e1.Components[Masks.Allegiance];
+            AllegianceComponent a2 = (AllegianceComponent)e2.Components[Masks.Allegiance];
 
             if (a1.MyAllegiance == a2.MyAllegiance)
                 return true;
@@ -135,8 +135,8 @@ namespace WatchYourBackLibrary
 
         private void remove(Entity e)
         {
-            if (!removeList.ContainsKey(e.ID))
-                removeList.Add(e.ID, e);
+            if (!removeList.ContainsKey(e.ClientID))
+                removeList.Add(e.ClientID, e);
         }
     }
 }

@@ -16,8 +16,8 @@ namespace WatchYourBackLibrary
     public class VelocityComponent : EComponent
     {
 
-        public override int BitMask { get { return (int)Masks.VELOCITY; } }
-        public override Masks Mask { get { return Masks.VELOCITY; } }
+        public override int BitMask { get { return (int)Masks.Velocity; } }
+        public override Masks Mask { get { return Masks.Velocity; } }
 
         private Vector2 velocity;
         private float velocityModifier;

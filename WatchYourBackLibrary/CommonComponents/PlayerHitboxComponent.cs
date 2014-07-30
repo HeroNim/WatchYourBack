@@ -13,8 +13,8 @@ namespace WatchYourBackLibrary
     /// </summary>
     public class PlayerHitboxComponent : EComponent
     {
-        public override int BitMask { get { return (int)Masks.COLLIDER + (int)Masks.PLAYER_HITBOX; } }
-        public override Masks Mask { get { return Masks.PLAYER_HITBOX; } }
+        public override int BitMask { get { return (int)Masks.Collider + (int)Masks.PlayerHitbox; } }
+        public override Masks Mask { get { return Masks.PlayerHitbox; } }
 
         private float width;
         private Vector2 p1;

@@ -20,6 +20,7 @@ namespace WatchYourBack
     /// </summary>
     class ClientUpdateSystem : ESystem
     {
+        private Dictionary<int, int> entityIDMappings;
         private Dictionary<KeyBindings, Keys> mappings;
         private int xInput;
         private int yInput;
@@ -54,7 +55,7 @@ namespace WatchYourBack
             rotationOffset = Vector2.Zero;
             sourceRectangle = Rectangle.Empty;
 
-
+            entityIDMappings = new Dictionary<int, int>();
             receivedData = new List<EventArgs>();
             buffer = new List<List<EventArgs>>();
             mappings = new Dictionary<KeyBindings, Keys>();
@@ -134,22 +135,34 @@ namespace WatchYourBack
                     {
                         NetworkEntityArgs args = (NetworkEntityArgs)arg;
                         Rectangle body = new Rectangle((int)args.XPos, (int)args.YPos, args.Width, args.Height);
+                        Entity e;
                         switch (args.Command)
                         {
                             case COMMANDS.ADD:
+                                
                                 if (args.SubIndex != null)
-                                    manager.addEntity(EFactory.createGraphics(body, args.Rotation, rotationOrigin, rotationOffset, args.ID, args.SubIndex, args.Type, layer));
+                                {
+                                    e = EFactory.createGraphics(body, args.Rotation, rotationOrigin, rotationOffset, args.ID, args.SubIndex, args.Type, layer);
+                                    manager.addEntity(e);
+                                }
+
                                 else
-                                    manager.addEntity(EFactory.createGraphics(body, args.Rotation, rotationOrigin, rotationOffset, args.ID, sourceRectangle, args.Type, layer));
+                                {
+                                    e = EFactory.createGraphics(body, args.Rotation, rotationOrigin, rotationOffset, args.ID, sourceRectangle, args.Type, layer);
+                                    manager.addEntity(e);
+                                }
+                                entityIDMappings.Add(args.ID, e.ClientID);
+                                
                                 break;
                             case COMMANDS.REMOVE:
-                                manager.Entities.Remove(args.ID);
+                                manager.Entities.Remove(entityIDMappings[args.ID]);
+                                entityIDMappings.Remove(args.ID);
                                 break;
                             case COMMANDS.MODIFY:
                                 try
                                 {
-                                    Entity e = manager.Entities[args.ID];
-                                    GraphicsComponent graphics = (GraphicsComponent)e.Components[Masks.GRAPHICS];
+                                    e = manager.Entities[entityIDMappings[args.ID]];
+                                    GraphicsComponent graphics = (GraphicsComponent)e.Components[Masks.Graphics];
                                     graphics.Body = body;
                                     graphics.RotationAngle = args.Rotation;
                                 }

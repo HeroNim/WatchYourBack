@@ -20,10 +20,10 @@ namespace WatchYourBackLibrary
         public AvatarInputSystem()
             : base(false, true, 3)
         {
-            components += (int)Masks.PLAYER_INPUT;
-            components += (int)Masks.VELOCITY;
-            components += (int)Masks.TRANSFORM;
-            components += (int)Masks.WIELDER;
+            components += (int)Masks.PlayerInput;
+            components += (int)Masks.Velocity;
+            components += (int)Masks.Transform;
+            components += (int)Masks.Wielder;
         }
 
         public override void update(TimeSpan gameTime)
@@ -32,11 +32,11 @@ namespace WatchYourBackLibrary
             {
                 float xDir = 0;
                 float yDir = 0;
-                AvatarInputComponent input = (AvatarInputComponent)entity.Components[Masks.PLAYER_INPUT];
-                StatusComponent status = (StatusComponent)entity.Components[Masks.STATUS];
-                VelocityComponent velocity = (VelocityComponent)entity.Components[Masks.VELOCITY];
-                TransformComponent transform = (TransformComponent)entity.Components[Masks.TRANSFORM];
-                WielderComponent wielder = (WielderComponent)entity.Components[Masks.WIELDER];
+                AvatarInputComponent input = (AvatarInputComponent)entity.Components[Masks.PlayerInput];
+                StatusComponent status = (StatusComponent)entity.Components[Masks.Status];
+                VelocityComponent velocity = (VelocityComponent)entity.Components[Masks.Velocity];
+                TransformComponent transform = (TransformComponent)entity.Components[Masks.Transform];
+                WielderComponent wielder = (WielderComponent)entity.Components[Masks.Wielder];
 
                 Vector2 rotationVector = HelperFunctions.AngleToVector(transform.Rotation);
                 float relativeAngle = HelperFunctions.Angle(velocity.Velocity, rotationVector);
@@ -94,16 +94,16 @@ namespace WatchYourBackLibrary
                 }
 
 
-                if(entity.hasComponent(Masks.WIELDER))
-                {
-                    if (((WielderComponent)entity.Components[Masks.WIELDER]).hasWeapon)
-                    {
-                        Entity weapon = ((WielderComponent)entity.Components[Masks.WIELDER]).Weapon;
-                        VelocityComponent weaponVelocityComponent = (VelocityComponent)weapon.Components[Masks.VELOCITY];
-                        weaponVelocityComponent.Y = velocity.Y;
-                        weaponVelocityComponent.X = velocity.X;
-                    }
-                }
+                //if(entity.hasComponent(Masks.WIELDER))
+                //{
+                //    if (((WielderComponent)entity.Components[Masks.WIELDER]).hasWeapon)
+                //    {
+                //        Entity weapon = ((WielderComponent)entity.Components[Masks.WIELDER]).Weapon;
+                //        VelocityComponent weaponVelocityComponent = (VelocityComponent)weapon.Components[Masks.VELOCITY];
+                //        weaponVelocityComponent.Y = velocity.Y;
+                //        weaponVelocityComponent.X = velocity.X;
+                //    }
+                //}
             }
         }
     }

@@ -16,8 +16,8 @@ namespace WatchYourBackLibrary
     /// </summary>
     public class TileComponent : EComponent
     {
-        public override int BitMask { get { return (int)Masks.TILE; } }
-        public override Masks Mask { get { return Masks.TILE; } }
+        public override int BitMask { get { return (int)Masks.Tile; } }
+        public override Masks Mask { get { return Masks.Tile; } }
 
         private TileType type;
         private int atlasIndex;

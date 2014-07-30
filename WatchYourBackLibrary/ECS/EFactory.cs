@@ -8,6 +8,8 @@ using WatchYourBackLibrary;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Media;
 
 
 namespace WatchYourBackLibrary
@@ -32,7 +34,7 @@ namespace WatchYourBackLibrary
             SpriteFont font = content.Load<SpriteFont>("TestFont");
             Entity e = new Entity(false,
                 new TransformComponent(rect),
-                new GraphicsComponent(rect, "", font, Color.Black, 0, "Display"));
+                new GraphicsComponent(rect, "", font, Color.Red, 0, "Display"));
             return e;                                     
         }
 
@@ -43,19 +45,20 @@ namespace WatchYourBackLibrary
         /// <param name="rect">The location and size of the avatar</param>
         /// <param name="player">The player's allegiance, used to determine what should collide with what</param>
         /// <param name="weaponType">The identity of the avatar's primary weapon</param>
-        /// <param name="hasGraphics">A flag identifying whether the enttiy should have graphics or not</param>
+        /// <param name="hasGraphics">A flag identifying whether the entity should have graphics or not</param>
         /// <returns>An avatar entity</returns>
         public static Entity createAvatar(PlayerInfoComponent info, Rectangle rect, Allegiance player, Weapons weaponType, bool hasGraphics)
         {
             Vector2 offset = new Vector2(rect.Width / 2, rect.Height / 2);
+            TransformComponent transform = new TransformComponent(rect);
             Entity e = new Entity(false,
             info,
             new AllegianceComponent(player),
             new WielderComponent(weaponType),
-            new TransformComponent(rect),
-            new RectangleColliderComponent(rect),
+            transform,
+            new RectangleColliderComponent(rect, transform),
             new PlayerHitboxComponent(rect, 10, -Vector2.UnitY),
-            new CircleColliderComponent(new Vector2(rect.Center.X, rect.Center.Y), rect.Width/2, false),
+            new CircleColliderComponent(new Vector2(rect.Center.X, rect.Center.Y), rect.Width/2, transform),
             new VelocityComponent(0, 0),
             new StatusComponent(),
             new AvatarInputComponent());
@@ -116,7 +119,7 @@ namespace WatchYourBackLibrary
             }
             Entity e = new Entity(
             new GraphicsComponent(rect, texture, sourceRectangle, rotation, rotationOrigin, rotationOffset, layer, type.ToString()));
-            e.ID = ID;
+            e.ClientID = ID;
             e.Type = type;
             return e;
         }
@@ -143,7 +146,7 @@ namespace WatchYourBackLibrary
                 g.Sprites.Add("BottomLeft", new GraphicsInfo(new Rectangle(rect.X, rect.Y + rect.Height / 2, rect.Width / 2, rect.Height / 2), texture, new Rectangle((int)LevelDimensions.X_SCALE / 2 * textureIndex[1, 0], 0, (int)LevelDimensions.X_SCALE / 2, (int)LevelDimensions.Y_SCALE / 2), 1));
                 g.Sprites.Add("BottomRight", new GraphicsInfo(new Rectangle(rect.X + rect.Width / 2, rect.Y + rect.Height / 2, rect.Width / 2, rect.Height / 2), texture, new Rectangle((int)LevelDimensions.X_SCALE / 2 * textureIndex[1, 1], 0, (int)LevelDimensions.X_SCALE / 2, (int)LevelDimensions.Y_SCALE / 2), 1));
                 e.addComponent(g);
-            e.ID = ID;
+            e.ServerID = ID;
             e.Type = type;
             return e;
         }
@@ -156,19 +159,22 @@ namespace WatchYourBackLibrary
         /// <param name="wielderAllegiance">The allegiance of the wielder</param>
         /// <param name="anchorTransform">The position of the wielder.</param>
         /// <param name="rotationAngle">The initial rotation of the sword</param>
-        /// <param name="anchorMovement">The velocity of the wielder.</param>
         /// <param name="hasGraphics">A flag identifying whether the enttiy should have graphics or not</param>
         /// <returns>A sword entity anchored at the wielder</returns>
-        public static Entity createSword(Entity wielder, Allegiance wielderAllegiance, TransformComponent anchorTransform, float rotationAngle, VelocityComponent anchorMovement, bool hasGraphics)
+        public static Entity createSword(Entity wielder, Allegiance wielderAllegiance, TransformComponent anchorTransform, float rotationAngle, bool hasGraphics)
         {
+            
             Vector2 point = HelperFunctions.pointOnCircle(anchorTransform.Radius, rotationAngle, anchorTransform.Center);
             Vector2 rotation = Vector2.Transform(point - anchorTransform.Center, Matrix.CreateRotationZ((float)(Math.PI/4))) + anchorTransform.Center;
             point = rotation;
+            TransformComponent transform = new TransformComponent(point, (int)SWORD.WIDTH, (int)SWORD.RANGE, rotationAngle);
+            transform.Parent = wielder;
+            transform.RotationPoint = anchorTransform.Center;
             Entity e = new Entity(true,
             new AllegianceComponent(wielderAllegiance),
-            new TransformComponent(point, (int)SWORD.WIDTH, (int)SWORD.RANGE, rotationAngle),
+            transform,
             new WeaponComponent(wielder, MathHelper.ToRadians((float)SWORD.ARC), true),
-            new VelocityComponent(anchorMovement.X, anchorMovement.Y, -(float)SWORD.SPEED),
+            new VelocityComponent(0, 0, -(float)SWORD.SPEED),
             new LineColliderComponent(point, new Vector2(point.X, point.Y - (float)SWORD.RANGE), rotationAngle));
 
             if (hasGraphics)
@@ -193,13 +199,13 @@ namespace WatchYourBackLibrary
         /// <returns>A thrown weapon entity</returns>
         public static Entity createThrown(Allegiance wielderAllegiance, float xOrigin, float yOrigin, Vector2 rotationVector, float rotationAngle, bool hasGraphics)
         {
-
+            TransformComponent transform = new TransformComponent(xOrigin, yOrigin, (int)THROWN.RADIUS, (int)THROWN.RADIUS, rotationAngle);
             Entity e = new Entity(true,
             new AllegianceComponent(wielderAllegiance),
-            new TransformComponent(xOrigin, yOrigin, (int)THROWN.RADIUS, (int)THROWN.RADIUS, rotationAngle),
+            transform,
             new WeaponComponent(),
             new VelocityComponent(rotationVector.X * (float)THROWN.SPEED, rotationVector.Y * (float)THROWN.SPEED),
-            new RectangleColliderComponent(new Rectangle((int)xOrigin, (int)yOrigin, (int)THROWN.RADIUS, (int)THROWN.RADIUS)));
+            new RectangleColliderComponent(transform.Body, transform));
             if (hasGraphics)
             {
                 Texture2D myTexture = content.Load<Texture2D>("ThrownTexture");
@@ -223,17 +229,19 @@ namespace WatchYourBackLibrary
         public static Entity createButton(int x, int y, int width, int height, Inputs type, string text)
         {
             Texture2D frame = content.Load<Texture2D>("Buttons/ButtonFrame");
-            Texture2D clickedFrame = content.Load<Texture2D>("Buttons/ButtonFrameClicked");
+            Texture2D clickedFrame = content.Load<Texture2D>("Buttons/ButtonFrameClicked");         
             x -= frame.Width / 2;
             y -= frame.Height / 2;
+
+            TransformComponent transform = new TransformComponent(x, y, width, height);
             GraphicsComponent g = new GraphicsComponent(new Rectangle(x, y, width, height), frame, 0.99f, "Frame");
             g.Sprites.Add("ClickedFrame", new GraphicsInfo(g.Body, clickedFrame, 1f));
             g.Sprites.Add("Text", new GraphicsInfo(g.Body, content.Load<Texture2D>("Buttons/" + text + "Text"), 0.98f));
 
             return new Entity(false,
             new ButtonComponent(type),
-            new TransformComponent(x, y, width, height),
-            new RectangleColliderComponent(new Rectangle(x, y, width, height)),
+            transform,
+            new RectangleColliderComponent(transform.Body, transform),
             g);
 
         }
@@ -250,10 +258,11 @@ namespace WatchYourBackLibrary
         /// <returns>A wall segment entity</returns>
         public static Entity createWall(int x, int y, int width, int height, int[,] atlasIndex, bool hasGraphics)
         {
+            TransformComponent transform = new TransformComponent(x, y, width, height);
             Entity e = new Entity(false,
                 new TileComponent(TileType.WALL, atlasIndex),
-                new TransformComponent(x, y, width, height),
-                new RectangleColliderComponent(new Rectangle(x, y, width, height)));
+                transform,
+                new RectangleColliderComponent(transform.Body, transform));
             if (hasGraphics)
             {
                 Texture2D myTexture = content.Load<Texture2D>("TileTextures/WallTextureAtlas");
@@ -285,7 +294,28 @@ namespace WatchYourBackLibrary
             return e;
         }
 
-        
+        /// <summary>
+        /// Creates an audio clip.
+        /// </summary>
+        /// <returns>A sound effect entity</returns>
+        public static Entity createAudio(int x, int y, string fileName, bool looping = false)
+        {
+            TransformComponent transform = new TransformComponent(x, y);
+            Entity e = new Entity(
+                transform,
+                new SoundEffectComponent(content.Load<SoundEffect>(fileName), 1f, 0f, 0f, looping));
+            return e;
+        }
+
+        /// <summary>
+        /// Creates a song clip.
+        /// </summary>
+        /// <returns>A song entity</returns>
+        public static Entity createSong(string fileName)
+        {           
+            Entity e = new Entity(new SongComponent(content.Load<Song>(fileName)));
+            return e;
+        }
 
         
     }

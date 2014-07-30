@@ -21,8 +21,8 @@ namespace WatchYourBackLibrary
     /// </summary>
     public class LevelComponent : EComponent
     {
-        public override int BitMask { get { return (int)Masks.LEVEL; } }
-        public override Masks Mask { get { return Masks.LEVEL; } }
+        public override int BitMask { get { return (int)Masks.Level; } }
+        public override Masks Mask { get { return Masks.Level; } }
 
         private List<List<Entity>> allEntities;
         private List<Entity> spawns;

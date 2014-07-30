@@ -8,23 +8,26 @@ namespace WatchYourBackLibrary
 {
     public enum Masks
     {
-        TRANSFORM = 1 << 0,
-        VELOCITY = 1 << 1,
-        GRAPHICS = 1 << 2,
-        COLLIDER = 1 << 3,
-        PLAYER_INPUT = 1 << 4,
-        TILE = 1 << 5,
-        LEVEL = 1 << 6,
-        BUTTON = 1 << 7,
-        WIELDER = 1 << 8,
-        LINE_COLLIDER = 1 << 11,
-        WEAPON = 1 << 12,
-        ALLEGIANCE = 1 << 13,
-        PLAYER_HITBOX = 1 << 14,
-        RECTANGLE_COLLIDER = 1 << 15,
-        PLAYER_INFO = 1 << 16,
-        CIRCLE_COLLIDER = 1 << 17,
-        STATUS = 1 << 18
+        Transform = 1 << 0,
+        Velocity = 1 << 1,
+        Graphics = 1 << 2,
+        Collider = 1 << 3,
+        PlayerInput = 1 << 4,
+        Tile = 1 << 5,
+        Level = 1 << 6,
+        Button = 1 << 7,
+        Wielder = 1 << 8,
+        Audio = 1 << 9,
+        SoundEffect = 1 << 10,
+        LineCollider = 1 << 11,
+        Weapon = 1 << 12,
+        Allegiance = 1 << 13,
+        PlayerHitbox = 1 << 14,
+        RectangleCollider = 1 << 15,
+        PlayerInfo = 1 << 16,
+        CircleCollider = 1 << 17,
+        Status = 1 << 18,
+        Song = 1 << 19
     };
 
    

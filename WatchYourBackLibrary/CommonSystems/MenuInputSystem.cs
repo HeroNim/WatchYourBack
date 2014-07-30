@@ -19,8 +19,8 @@ namespace WatchYourBack
         public MenuInputSystem()
             : base(false, true, 1)
         {
-            components += (int)Masks.RECTANGLE_COLLIDER;
-            components += (int)Masks.BUTTON;
+            components += (int)Masks.RectangleCollider;
+            components += (int)Masks.Button;
         }
 
         public override void update(TimeSpan gameTime)
@@ -29,9 +29,9 @@ namespace WatchYourBack
 
             foreach (Entity entity in activeEntities)
             {
-                RectangleColliderComponent collider = (RectangleColliderComponent)entity.Components[Masks.RECTANGLE_COLLIDER];
-                ButtonComponent button = (ButtonComponent)entity.Components[Masks.BUTTON];
-                GraphicsComponent g = (GraphicsComponent)entity.Components[Masks.GRAPHICS];
+                RectangleColliderComponent collider = (RectangleColliderComponent)entity.Components[Masks.RectangleCollider];
+                ButtonComponent button = (ButtonComponent)entity.Components[Masks.Button];
+                GraphicsComponent g = (GraphicsComponent)entity.Components[Masks.Graphics];
 
                 if (collider.Collider.Contains(ms.X, ms.Y) && ms.LeftButton == ButtonState.Pressed)
                 {

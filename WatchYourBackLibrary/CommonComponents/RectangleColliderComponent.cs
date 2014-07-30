@@ -14,14 +14,17 @@ namespace WatchYourBackLibrary
     /// </summary>
     public class RectangleColliderComponent : EComponent
     {
-        public override int BitMask { get { return (int)Masks.COLLIDER + (int)Masks.RECTANGLE_COLLIDER; } }
-        public override Masks Mask { get { return Masks.RECTANGLE_COLLIDER; } }
+        public override int BitMask { get { return (int)Masks.Collider + (int)Masks.RectangleCollider; } }
+        public override Masks Mask { get { return Masks.RectangleCollider; } }
 
         private Rectangle collider;
+        private TransformComponent anchor;
 
-        public RectangleColliderComponent(Rectangle r)
+        
+        public RectangleColliderComponent(Rectangle r, TransformComponent anchor)
         {
             collider = r;
+            this.anchor = anchor;
         }
 
         public int X
@@ -52,6 +55,12 @@ namespace WatchYourBackLibrary
         {
             get { return collider; }
             set { collider = value; }
+        }
+
+        public TransformComponent Anchor
+        {
+            get { return anchor; }
+            set { anchor = value; }
         }
         
     }

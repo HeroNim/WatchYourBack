@@ -27,6 +27,7 @@ namespace WatchYourBack
         Stack<World> worldStack;
         World activeWorld;
         ClientECSManager activeManager;
+        
 
         World mainMenu;
         World connectMenu;
@@ -117,6 +118,7 @@ namespace WatchYourBack
             worldStack.Push(mainMenu);
             activeWorld = worldStack.Peek();
             activeManager = (ClientECSManager)activeWorld.Manager;
+            
 
             // TODO: use this.Content to load your game content here
         }
@@ -245,6 +247,8 @@ namespace WatchYourBack
             inGame.Manager.addSystem(new LevelSystem(levels));
             inGame.Manager.addSystem(new AttackSystem());
             inGame.Manager.addSystem(new UIUpdateSystem(gameUI));
+            inGame.Manager.addSystem(new AudioSystem());
+            inGame.Manager.addEntity(EFactory.createSong("Sounds/Music/HeroRemix"));
 
         }
 
@@ -260,6 +264,7 @@ namespace WatchYourBack
 
             ClientUpdateSystem networkInput = new ClientUpdateSystem(client);
             inGameMulti.Manager.addSystem(networkInput);
+            inGameMulti.Manager.addSystem(new AudioSystem());
         }
 
         private void createPauseMenu()

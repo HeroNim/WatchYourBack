@@ -16,8 +16,8 @@ namespace WatchYourBackLibrary
     public class GraphicsComponent : EComponent
     {
 
-        public override int BitMask { get { return (int)Masks.GRAPHICS; } }
-        public override Masks Mask { get { return Masks.GRAPHICS; } }
+        public override int BitMask { get { return (int)Masks.Graphics; } }
+        public override Masks Mask { get { return Masks.Graphics; } }
         
         private Dictionary<string, GraphicsInfo> graphics;
         private GraphicsInfo main;

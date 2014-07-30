@@ -35,7 +35,7 @@ namespace WatchYourBackLibrary
 
         public LevelSystem(List<LevelTemplate> levels) : base(false, true, 7)
         {
-            components += (int)Masks.LEVEL;
+            components += (int)Masks.Level;
             this.levels = levels;
             built = false;
         }
@@ -109,7 +109,7 @@ namespace WatchYourBackLibrary
                     }
 
                 }
-            level.GameTime = 300;
+            level.GameTime = 10;
             built = true;
         }
 
@@ -121,7 +121,7 @@ namespace WatchYourBackLibrary
             Entity levelEntity = new Entity();
             levelEntity.addComponent(new LevelComponent());
             manager.addEntity(levelEntity);
-            level = (LevelComponent)levelEntity.Components[Masks.LEVEL];
+            level = (LevelComponent)levelEntity.Components[Masks.Level];
             manager.LevelInfo = level;
             currentLevel = level.CurrentLevel;
            
@@ -134,7 +134,7 @@ namespace WatchYourBackLibrary
         private void clearLevel()
         {
             foreach (Entity entity in manager.Entities.Values)
-                if(level.Contains(entity) || entity.IsDestructable)
+                if(level.Contains(entity))
                     manager.removeEntity(entity);
             level.ResetLevel();
             built = false;
@@ -151,8 +151,8 @@ namespace WatchYourBackLibrary
             for(int i = 0; i < level.Avatars.Count; i++)
             {
                 manager.removeEntity(level.Avatars[i]);
-                TransformComponent transform = (TransformComponent)level.Spawns[i].Components[Masks.TRANSFORM];
-                PlayerInfoComponent info = (PlayerInfoComponent)level.Avatars[i].Components[Masks.PLAYER_INFO];
+                TransformComponent transform = (TransformComponent)level.Spawns[i].Components[Masks.Transform];
+                PlayerInfoComponent info = (PlayerInfoComponent)level.Avatars[i].Components[Masks.PlayerInfo];
                 Entity avatar = EFactory.createAvatar(info, new Rectangle((int)transform.X, (int)transform.Y, 40, 40),
                              (Allegiance)i, Weapons.SWORD, manager.hasGraphics());
                 manager.addEntity(avatar);

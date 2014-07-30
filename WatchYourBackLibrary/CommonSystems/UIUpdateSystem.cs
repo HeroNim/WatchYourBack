@@ -18,15 +18,15 @@ namespace WatchYourBackLibrary
         public UIUpdateSystem(UIInfo ui)
             : base(false, true, 9)
         {
-            components += (int)Masks.PLAYER_INFO;
+            components += (int)Masks.PlayerInfo;
             this.ui = ui;
             
         }
         public override void update(TimeSpan gameTime)
         {
             level = manager.LevelInfo;
-            PlayerInfoComponent p1 = (PlayerInfoComponent)level.Avatars[0].Components[Masks.PLAYER_INFO];
-            PlayerInfoComponent p2 = (PlayerInfoComponent)level.Avatars[1].Components[Masks.PLAYER_INFO];
+            PlayerInfoComponent p1 = (PlayerInfoComponent)level.Avatars[0].Components[Masks.PlayerInfo];
+            PlayerInfoComponent p2 = (PlayerInfoComponent)level.Avatars[1].Components[Masks.PlayerInfo];
             ui.updateUI(p1.Score, p2.Score, level.GameTime);                                 
         }
 

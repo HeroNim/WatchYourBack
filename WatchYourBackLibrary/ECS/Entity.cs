@@ -23,7 +23,8 @@ namespace WatchYourBackLibrary
     /// </summary>
     public class Entity
     {
-        private int id;
+        private int clientID;
+        private int serverID;
         private bool destructable;
         private bool drawable;
         private ENTITIES type;
@@ -37,7 +38,8 @@ namespace WatchYourBackLibrary
         {
             isActive = false;
             components = new Dictionary<Masks, EComponent>();
-            id = -1;
+            clientID = -1;
+            serverID = -1;
             drawable = true;
             destructable = false;
         }
@@ -50,7 +52,8 @@ namespace WatchYourBackLibrary
             {
                 this.addComponent(arg);
             }
-            id = -1;
+            clientID = -1;
+            serverID = -1;
             drawable = true;
             destructable = false;
         }
@@ -61,13 +64,21 @@ namespace WatchYourBackLibrary
             this.destructable = destructable;
         }
 
-        public int ID
+        public int ClientID
         {
-            get { return this.id; }
+            get { return this.clientID; }
             set
             {
-                if (this.id == -1)
-                    this.id = value;
+                    this.clientID = value;
+            }
+        }
+
+        public int ServerID
+        {
+            get { return this.serverID; }
+            set
+            {
+                    this.serverID = value;
             }
         }
 
@@ -150,7 +161,7 @@ namespace WatchYourBackLibrary
 
         public EComponent getGraphics
         {
-            get { return components[Masks.GRAPHICS]; }
+            get { return components[Masks.Graphics]; }
         }
 
         public bool IsDestructable

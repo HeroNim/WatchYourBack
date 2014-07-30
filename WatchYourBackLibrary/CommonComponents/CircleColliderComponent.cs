@@ -13,16 +13,19 @@ namespace WatchYourBackLibrary
     /// </summary>
     public class CircleColliderComponent : EComponent
     {
-        public override int BitMask { get { return (int)Masks.COLLIDER + (int)Masks.CIRCLE_COLLIDER; } }
-        public override Masks Mask { get { return Masks.CIRCLE_COLLIDER; } }
+        public override int BitMask { get { return (int)Masks.Collider + (int)Masks.CircleCollider; } }
+        public override Masks Mask { get { return Masks.CircleCollider; } }
 
         private float radius;
         private Vector2 center;
+
+        private TransformComponent anchor;
        
-        public CircleColliderComponent(Vector2 center, float radius, bool destructable)
+        public CircleColliderComponent(Vector2 center, float radius, TransformComponent anchor)
         {
             this.center = center;
             this.radius = radius;
+            this.anchor = anchor;
         }
 
         public float X
@@ -47,6 +50,12 @@ namespace WatchYourBackLibrary
         {
             get { return radius; }
             set { radius = value; }
+        }
+
+        public TransformComponent Anchor
+        {
+            get { return anchor; }
+            set { anchor = value;  }
         }
       
         public Vector2 PointOnCircle (Vector2 vector)

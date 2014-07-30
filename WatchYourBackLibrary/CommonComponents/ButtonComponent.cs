@@ -14,8 +14,8 @@ namespace WatchYourBackLibrary
     /// </summary>
     public class ButtonComponent : EComponent
     {
-        public override int BitMask { get { return (int)Masks.BUTTON; } }
-        public override Masks Mask { get { return Masks.BUTTON; } }
+        public override int BitMask { get { return (int)Masks.Button; } }
+        public override Masks Mask { get { return Masks.Button; } }
 
         private Inputs buttonType;
         private bool focused;
