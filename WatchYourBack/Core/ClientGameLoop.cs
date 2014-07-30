@@ -355,7 +355,7 @@ namespace WatchYourBack
                     if (args.InputType == Inputs.START_MUTLI && !game.isConnected && !game.isPinging)
                     {
                         game.isPinging = true;
-                        game.client.DiscoverLocalPeers(14242);
+                        game.client.DiscoverKnownPeer("70.79.76.32", 14242);
                         Console.WriteLine("Starting pings");
                     }
                     if (args.InputType == Inputs.EXIT)
