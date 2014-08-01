@@ -27,7 +27,6 @@ namespace WatchYourBackLibrary
         PlayerInfo = 1 << 16,
         CircleCollider = 1 << 17,
         Status = 1 << 18,
-        Song = 1 << 19
     };
 
    

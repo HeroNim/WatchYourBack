@@ -5,48 +5,62 @@ using System.Text;
 
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Media;
+using Microsoft.Xna.Framework.Content;
 
 namespace WatchYourBackLibrary
 {
     public class AudioSystem : ESystem
     {
         private SongCollection songList;
+        private List<SoundEffectInstance> sounds;
+        private ContentManager content;
 
-        public AudioSystem()
+        public AudioSystem(ContentManager content)
             : base(false, true, 11)
         {
+            this.content = content;
             components += (int)Masks.Audio;
             songList = new SongCollection();
+            sounds = new List<SoundEffectInstance>();
             MediaPlayer.IsRepeating = true;
+            
+        }
+
+        public override void initialize(IECSManager manager)
+        {
+            base.initialize(manager);
+            foreach (ESystem system in manager.Systems)
+                system.inputFired += new EventHandler(EventListener);
         }
 
         public override void update(TimeSpan gameTime)
         {
-            foreach(Entity e in activeEntities)
-            {
-                if (e.hasComponent(Masks.SoundEffect))
-                {
-                    SoundEffectComponent audio = (SoundEffectComponent)e.Components[Masks.SoundEffect];
-
-                    if (audio.Played == false)
-                        audio.Sound.Play();
-                    else
-                        if (audio.Sound.State == SoundState.Stopped)
-                            manager.removeEntity(e);
-                }
-                else if(e.hasComponent(Masks.Song))
-                {
-                    SongComponent audio = (SongComponent)e.Components[Masks.Song];
-                    if (!songList.Contains(audio.Song))
-                    {
-                        songList.Add(audio.Song);
-                        if (MediaPlayer.State == MediaState.Stopped)
-                            MediaPlayer.Play(songList);
-                    }
-                    manager.removeEntity(e);
-                }
-            }
             
+            foreach (SoundEffectInstance audio in sounds)
+                if (audio.State == SoundState.Stopped)
+                    audio.Dispose();
+
+            if (songList.Count != 0 && MediaPlayer.State == MediaState.Stopped)
+                MediaPlayer.Play(songList);
+        }
+
+        public SongCollection Songs
+        {
+            get { return songList; }
+            set { songList = value; }
+        }
+
+        public override void EventListener(object sender, EventArgs e)
+        {
+            if (e is SoundArgs)
+            {
+                SoundArgs s = (SoundArgs)e;
+                SoundEffectInstance sound = content.Load<SoundEffect>(s.FileName).CreateInstance();
+                if (s.Loop == true)
+                    sound.IsLooped = true;
+                sounds.Add(sound);
+                sound.Play();
+            }
         }
     }
 }

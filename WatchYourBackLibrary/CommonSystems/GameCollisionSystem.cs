@@ -82,9 +82,10 @@ namespace WatchYourBackLibrary
                 remove(e1);
                 if (e1.hasComponent(Masks.Weapon))
                 {
-                    WeaponComponent wielder = (WeaponComponent)e1.Components[Masks.Weapon];
-                    if(wielder.Wielder != null)
-                        ((WielderComponent)wielder.Wielder.Components[Masks.Wielder]).RemoveWeapon();
+                    WeaponComponent weapon = (WeaponComponent)e1.Components[Masks.Weapon];
+                    if(weapon.Wielder != null)
+                        ((WielderComponent)weapon.Wielder.Components[Masks.Wielder]).RemoveWeapon();
+                    onFire(new SoundArgs(0, 0, "Sounds/SFX/ImpactSound"));
 
                 }
             }
@@ -115,6 +116,7 @@ namespace WatchYourBackLibrary
                     StatusComponent avatarInfo = (StatusComponent)e2.Components[Masks.Status];
                     avatarInfo.ApplyStatus(Status.Paralyzed, 1000f, 0);
                     Console.WriteLine("Paralyzed");
+                    onFire(new SoundArgs(0, 0, "Sounds/SFX/StunSound"));
                 }
 
         }

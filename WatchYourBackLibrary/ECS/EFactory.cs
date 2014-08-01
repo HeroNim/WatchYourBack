@@ -119,7 +119,7 @@ namespace WatchYourBackLibrary
             }
             Entity e = new Entity(
             new GraphicsComponent(rect, texture, sourceRectangle, rotation, rotationOrigin, rotationOffset, layer, type.ToString()));
-            e.ClientID = ID;
+            e.ServerID = ID;
             e.Type = type;
             return e;
         }
@@ -293,30 +293,8 @@ namespace WatchYourBackLibrary
             e.Drawable = false;
             return e;
         }
-
-        /// <summary>
-        /// Creates an audio clip.
-        /// </summary>
-        /// <returns>A sound effect entity</returns>
-        public static Entity createAudio(int x, int y, string fileName, bool looping = false)
-        {
-            TransformComponent transform = new TransformComponent(x, y);
-            Entity e = new Entity(
-                transform,
-                new SoundEffectComponent(content.Load<SoundEffect>(fileName), 1f, 0f, 0f, looping));
-            return e;
-        }
-
-        /// <summary>
-        /// Creates a song clip.
-        /// </summary>
-        /// <returns>A song entity</returns>
-        public static Entity createSong(string fileName)
-        {           
-            Entity e = new Entity(new SongComponent(content.Load<Song>(fileName)));
-            return e;
-        }
-
+       
+       
         
     }
 }

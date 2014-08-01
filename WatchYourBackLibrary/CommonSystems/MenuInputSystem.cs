@@ -42,6 +42,8 @@ namespace WatchYourBack
                 {
                     onFire(button.Args);
                     button.Focused = false;
+                    //manager.addEntity(EFactory.createAudio(ms.X, ms.Y, "Sounds/SFX/ButtonClick"));
+                    onFire(new SoundArgs(ms.X, ms.Y, "Sounds/SFX/ButtonClick"));
                 }
                 else
                     button.Focused = false;
@@ -54,12 +56,6 @@ namespace WatchYourBack
             }
         }
 
-        public event EventHandler inputFired;
-
-        private void onFire(EventArgs e)
-        {
-            if (inputFired != null)
-                inputFired(this, e);
-        }
+        
     }
 }

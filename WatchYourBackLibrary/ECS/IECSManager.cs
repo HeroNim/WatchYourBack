@@ -85,6 +85,11 @@ namespace WatchYourBackLibrary
             get;
         }
 
+        List<ESystem> Systems
+        {
+            get;
+        }
+
         /// <summary>
         /// Add an entity to the changed entities list.
         /// </summary>

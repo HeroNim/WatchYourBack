@@ -15,23 +15,24 @@ namespace WatchYourBackLibrary
         public override int BitMask { get { return (int)Masks.Audio + (int)Masks.SoundEffect; } }
         public override Masks Mask { get { return Masks.SoundEffect; } }
 
-        private SoundEffectInstance sound;
+        private string sound;
         private float volume;        
         private float pitch;       
         private float pan;
         private bool played;
+        private bool looped;
        
-        public SoundEffectComponent(SoundEffect soundEffect, float volume = 1.0f, float pitch = 0.0f, float pan = 0.0f, bool loop = false)
+        public SoundEffectComponent(string soundEffectName, bool loop = false, float volume = 1.0f, float pitch = 0.0f, float pan = 0.0f)
         {
-            sound = soundEffect.CreateInstance();
+            sound = soundEffectName;
             this.volume = volume;
             this.pitch = pitch;
             this.pan = pan;
-            sound.IsLooped = loop;
+            this.looped = loop;
             played = false;
         }
 
-        public SoundEffectInstance Sound
+        public string Sound
         {
             get { return sound; }
             set { sound = value; }
@@ -57,8 +58,8 @@ namespace WatchYourBackLibrary
 
         public bool Loop
         {
-            get { return sound.IsLooped; }
-            set { sound.IsLooped = value; }
+            get { return looped; }
+            set { looped = value; }
         }
 
         public bool Played

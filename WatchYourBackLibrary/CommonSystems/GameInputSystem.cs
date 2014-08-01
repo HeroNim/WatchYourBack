@@ -80,20 +80,6 @@ namespace WatchYourBack
             if (Keyboard.GetState().IsKeyDown(mappings[KeyBindings.PAUSE]))
                 onFire(new InputArgs(Inputs.PAUSE));   
         }
-
-        public event EventHandler inputFired;
-
-        private void onFire(EventArgs e)
-        {
-            if (inputFired != null)
-                inputFired(this, e);
-        }
-
-        private void onFire(Entity sender, EventArgs e)
-        {
-            if (inputFired != null)
-                inputFired(sender, e);
-        }
         
 
     }

@@ -102,7 +102,8 @@ namespace WatchYourBack
             toSend = new NetworkInputArgs(client.UniqueIdentifier, xInput, yInput, mouseLocation, leftMouseClicked, rightMouseClicked, activeManager.DrawTime, dash);
             om = client.CreateMessage();
             om.Write(SerializationHelper.Serialize(toSend));
-            client.SendMessage(om, NetDeliveryMethod.ReliableOrdered); 
+            client.SendMessage(om, NetDeliveryMethod.ReliableOrdered);
+            Console.WriteLine("Sent");
             reset();
             
 
@@ -129,11 +130,11 @@ namespace WatchYourBack
 
 
 
-                foreach (EventArgs arg in receivedData)
+                foreach (EventArgs receivedArgs in receivedData)
                 {
-                    if (arg is NetworkEntityArgs)
+                    if (receivedArgs is NetworkEntityArgs)
                     {
-                        NetworkEntityArgs args = (NetworkEntityArgs)arg;
+                        NetworkEntityArgs args = (NetworkEntityArgs)receivedArgs;
                         Rectangle body = new Rectangle((int)args.XPos, (int)args.YPos, args.Width, args.Height);
                         Entity e;
                         switch (args.Command)
@@ -151,8 +152,13 @@ namespace WatchYourBack
                                     e = EFactory.createGraphics(body, args.Rotation, rotationOrigin, rotationOffset, args.ID, sourceRectangle, args.Type, layer);
                                     manager.addEntity(e);
                                 }
+                                if (entityIDMappings.Keys.Contains(args.ID))
+                                {
+                                    manager.Entities.Remove(entityIDMappings[args.ID]);
+                                    entityIDMappings.Remove(args.ID);
+                                }
                                 entityIDMappings.Add(args.ID, e.ClientID);
-                                
+
                                 break;
                             case COMMANDS.REMOVE:
                                 manager.Entities.Remove(entityIDMappings[args.ID]);
@@ -171,16 +177,26 @@ namespace WatchYourBack
 
                                     Console.WriteLine("Modify before Add caught");
                                 }
+                                catch(ArgumentException)
+                                {
+                                    Console.WriteLine("Weird stuff");
+                                }
                                 break;
                         }
                     }
-                    else if(arg is NetworkGameArgs)
+                    else if(receivedArgs is NetworkGameArgs)
                     {
-                        NetworkGameArgs args = (NetworkGameArgs)arg;
+                        NetworkGameArgs args = (NetworkGameArgs)receivedArgs;
                         activeManager.UI.updateUI(args.Scores[0], args.Scores[1], args.Time);
+                    }
+                    else if(receivedArgs is SoundArgs)
+                    {
+                        SoundArgs args = (SoundArgs)receivedArgs;
+                        onFire(args);
                     }
                 }
             }
+            Console.WriteLine(manager.Entities.Count);
             manager.ChangedEntities.Clear();
                 
             

@@ -34,6 +34,7 @@ namespace WatchYourBackServer
 
         private bool playing;
 
+
     
 
         public ServerECSManager(int playerCount)
@@ -105,6 +106,11 @@ namespace WatchYourBackServer
         public Dictionary<int, COMMANDS> ChangedEntities
         {
             get { return changedEntities; }
+        }
+
+        public List<ESystem> Systems
+        {
+            get { return systems; }
         }
 
         public void addChangedEntities(Entity e, COMMANDS c)

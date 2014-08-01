@@ -76,6 +76,7 @@ namespace WatchYourBackLibrary
                     if (wielderComponent.ThrowCooldown)
                     {
                         manager.addEntity(EFactory.createThrown(anchorAllegiance.MyAllegiance, anchorTransform.Center.X, anchorTransform.Center.Y, lookDir, lookAngle, manager.hasGraphics()));
+                        onFire(new SoundArgs((int)anchorTransform.Center.X, (int)anchorTransform.Center.Y, "Sounds/SFX/ThrowSound"));
                         wielderComponent.ThrowCooldown = false;
                         wielderComponent.ThrowSpeed.Start();
                     }

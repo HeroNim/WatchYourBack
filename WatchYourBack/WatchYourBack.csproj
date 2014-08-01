@@ -12,7 +12,7 @@
     <AssemblyName>WatchYourBack</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <IsWebBootstrapper>false</IsWebBootstrapper>
-    <PublishUrl>F:\Dropbox\Personal\Projects\WatchYourBack\exe\</PublishUrl>
+    <PublishUrl>F:\Dropbox\Alex - Nader\WatchYourBackExe\Client\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
@@ -22,7 +22,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>3</ApplicationRevision>
+    <ApplicationRevision>13</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -81,11 +81,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\LevelOne.png" />
+    <Content Include="Content\Sounds\Music\HeroRemix.wma" />
     <Content Include="Icon.ico" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Content\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\WatchYourBackContent\WatchYourBackContent\WatchYourBackContent.csproj">
       <Project>{d2588212-7c52-49ac-9da9-3b9892e586ad}</Project>
@@ -97,6 +97,22 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\LevelOne.xnb" />
+    <Content Include="Content\Buttons\BackText.xnb" />
+    <Content Include="Content\Buttons\ButtonFrame.xnb" />
+    <Content Include="Content\Buttons\ButtonFrameClicked.xnb" />
+    <Content Include="Content\Buttons\ConnectText.xnb" />
+    <Content Include="Content\Buttons\ContinueText.xnb" />
+    <Content Include="Content\Buttons\ExitText.xnb" />
+    <Content Include="Content\Buttons\ExitToMenuText.xnb" />
+    <Content Include="Content\Buttons\ResumeText.xnb" />
+    <Content Include="Content\Buttons\StartText.xnb" />
+    <Content Include="Content\PlayerTexture.xnb" />
+    <Content Include="Content\Sounds\Music\HeroRemix.xnb" />
+    <Content Include="Content\SwordTexture.xnb" />
+    <Content Include="Content\TestFont.xnb" />
+    <Content Include="Content\ThrownTexture.xnb" />
+    <Content Include="Content\TileTextures\WallTextureAtlas.xnb" />
     <None Include="WatchYourBack_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>

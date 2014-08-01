@@ -40,7 +40,7 @@ namespace WatchYourBackLibrary
         /// Initializes the system, pulling the entity list from the manager.
         /// </summary>
         /// <param name="manager">The ECS manager the system is attached to</param>
-        public void initialize(IECSManager manager)
+        public virtual void initialize(IECSManager manager)
         {
             this.manager = manager;
             entities = manager.Entities;
@@ -83,5 +83,21 @@ namespace WatchYourBackLibrary
         /// </summary>
         /// <param name="gameTime">The time since the last update</param>
         public abstract void update(TimeSpan gameTime);
+
+        public event EventHandler inputFired;
+
+        protected void onFire(EventArgs e)
+        {
+            if (inputFired != null)
+                inputFired(this, e);
+        }
+
+        protected void onFire(Entity sender, EventArgs e)
+        {
+            if (inputFired != null)
+                inputFired(sender, e);
+        }
+
+        public virtual void EventListener(object sender, EventArgs e) { }
     }
 }

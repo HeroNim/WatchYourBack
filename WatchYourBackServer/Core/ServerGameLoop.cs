@@ -15,7 +15,7 @@ namespace WatchYourBackServer
     public enum SERVER_PROPERTIES
     {
         TIME_STEP = 60,
-        MAX_CONNECTIONS = 1,
+        MAX_CONNECTIONS = 2,
         PORT = 14242
     }
 
@@ -119,13 +119,14 @@ namespace WatchYourBackServer
                                 foreach (LevelTemplate level in levels)
                                     Console.WriteLine(level.ToString());
                                 Console.WriteLine("Starting game");
-                                NetOutgoingMessage om = server.CreateMessage();
+                                
                                 int index = 0;
                                 foreach (NetConnection player in server.Connections)
                                 {
-                                    om.Write(index);
-                                    server.SendMessage(om, player, NetDeliveryMethod.ReliableUnordered);
-                                    index++;
+                                    NetOutgoingMessage om = server.CreateMessage();
+                                    om.Write((int)SERVER_COMMANDS.START);
+                                    server.SendMessage(om, player, NetDeliveryMethod.ReliableUnordered);      
+                                    Console.WriteLine(index);
                                 }
 
                                 playing = true;
@@ -152,6 +153,12 @@ namespace WatchYourBackServer
             inGame.Manager.addSystem(new MovementSystem());
             inGame.Manager.addSystem(new LevelSystem(levels));
             inGame.Manager.addSystem(new AttackSystem());
+
+            foreach(ESystem system in inGame.Manager.Systems)
+            {
+                if (system != input)
+                    system.inputFired += new EventHandler(input.EventListener);
+            }
 
 
 

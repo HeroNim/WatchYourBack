@@ -52,6 +52,7 @@ namespace WatchYourBackLibrary
         public bool RightClicked { get { return rightClicked; } }
         public double DrawTime { get { return drawTime; } }
         public bool Dash { get { return dash; } }
+        public long Sender { get { return sender; } }
         
     }
 }

@@ -72,6 +72,8 @@ namespace WatchYourBack
             systems.Remove(system);
         }
 
+       
+
         public void addEntity(Entity entity)
         {
             entity.ClientID = assignID();
@@ -119,6 +121,11 @@ namespace WatchYourBack
         public Dictionary<int, COMMANDS> ChangedEntities
         {
             get { return changedEntities; }
+        }
+
+        public List<ESystem> Systems
+        {
+            get { return systems; }
         }
 
         public void addChangedEntities(Entity e, COMMANDS c)

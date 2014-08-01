@@ -41,6 +41,7 @@ namespace WatchYourBackServer
             components += (int)Masks.PlayerInput;
             this.server = server;
             sendData = new List<EventArgs>();
+            accumulator = new double[server.ConnectionsCount];
             interpolation = new double[server.ConnectionsCount];
             updating = true;
             playerIndex = 0;
@@ -226,19 +227,7 @@ namespace WatchYourBackServer
         }
         
 
-        public event EventHandler inputFired;
-
-        private void onFire(EventArgs e)
-        {
-            if (inputFired != null)
-                inputFired(this, e);
-        }
-
-        private void onFire(Entity sender, EventArgs e)
-        {
-            if (inputFired != null)
-                inputFired(sender, e);
-        }
+        
 
         /// <summary>
         /// Interpolates a new position for each entity based on the interpolation factor, without actually changing the location of the entity. This allows
@@ -273,6 +262,20 @@ namespace WatchYourBackServer
         {
             get { return accumulator; }
             set { accumulator = value; }
+        }
+
+        public override void EventListener(object sender, EventArgs e)
+        {
+            if(e is SoundArgs)
+            {
+                SoundArgs s = (SoundArgs)e;
+                sendData.Add(s);
+
+                NetOutgoingMessage om = server.CreateMessage();
+                om.Write(SerializationHelper.Serialize(sendData));
+                server.SendToAll(om, NetDeliveryMethod.UnreliableSequenced);
+                sendData.Clear();
+            }
         }
         
     }
