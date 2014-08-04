@@ -25,7 +25,7 @@ namespace WatchYourBackServer
     {
         private int currentID;
         private List<ESystem> systems;
-        private LevelComponent levelInfo;
+        private LevelInfo levelInfo;
         private Dictionary<int, Entity> activeEntities;
         private Dictionary<int, COMMANDS> changedEntities;
         private List<Entity> removal;
@@ -92,7 +92,7 @@ namespace WatchYourBackServer
             this.input = input;
         }
 
-        public LevelComponent LevelInfo
+        public LevelInfo LevelInfo
         {
             get { return levelInfo; }
             set { levelInfo = value; }

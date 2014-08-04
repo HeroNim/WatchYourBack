@@ -32,6 +32,7 @@ namespace WatchYourBack
                 RectangleColliderComponent collider = (RectangleColliderComponent)entity.Components[Masks.RectangleCollider];
                 ButtonComponent button = (ButtonComponent)entity.Components[Masks.Button];
                 GraphicsComponent g = (GraphicsComponent)entity.Components[Masks.Graphics];
+                SoundEffectComponent s = entity.GetComponent<SoundEffectComponent>();
 
                 if (collider.Collider.Contains(ms.X, ms.Y) && ms.LeftButton == ButtonState.Pressed)
                 {
@@ -40,10 +41,11 @@ namespace WatchYourBack
 
                 else if (ms.LeftButton == ButtonState.Released && button.Focused && collider.Collider.Contains(ms.X, ms.Y))
                 {
+                    onFire(new SoundArgs(ms.X, ms.Y, s.Sounds[SoundTriggers.Action]));
                     onFire(button.Args);
                     button.Focused = false;
                     //manager.addEntity(EFactory.createAudio(ms.X, ms.Y, "Sounds/SFX/ButtonClick"));
-                    onFire(new SoundArgs(ms.X, ms.Y, "Sounds/SFX/ButtonClick"));
+                    
                 }
                 else
                     button.Focused = false;

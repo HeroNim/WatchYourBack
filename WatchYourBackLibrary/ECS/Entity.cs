@@ -64,35 +64,7 @@ namespace WatchYourBackLibrary
             this.destructable = destructable;
         }
 
-        public int ClientID
-        {
-            get { return this.clientID; }
-            set
-            {
-                    this.clientID = value;
-            }
-        }
-
-        public int ServerID
-        {
-            get { return this.serverID; }
-            set
-            {
-                    this.serverID = value;
-            }
-        }
-
-        public ENTITIES Type
-        {
-            get { return this.type; }
-            set { this.type = value; }
-        }
-
-        public bool Drawable
-        {
-            get { return drawable; }
-            set { drawable = value; }
-        }
+        
            
 
         /// <summary>
@@ -170,5 +142,43 @@ namespace WatchYourBackLibrary
         }
 
         public int Mask { get { return mask; } }
+
+        public int ClientID
+        {
+            get { return this.clientID; }
+            set { this.clientID = value; }
+        }
+
+        public int ServerID
+        {
+            get { return this.serverID; }
+            set
+            {
+                this.serverID = value;
+            }
+        }
+
+        public ENTITIES Type
+        {
+            get { return this.type; }
+            set { this.type = value; }
+        }
+
+        public bool Drawable
+        {
+            get { return drawable; }
+            set { drawable = value; }
+        }
+
+        public T GetComponent<T>() where T : EComponent
+        {
+            foreach(EComponent c in components.Values)
+                if (c is T)          
+                    return (T)(object)c;
+            throw new Exception("No such component");
+                
+        }
+
+        
     }
 }

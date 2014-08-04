@@ -12,7 +12,7 @@ namespace WatchYourBackLibrary
     /// </summary>
     public class UIUpdateSystem : ESystem
     {
-        LevelComponent level;
+        LevelInfo level;
         UIInfo ui;
 
         public UIUpdateSystem(UIInfo ui)

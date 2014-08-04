@@ -56,16 +56,19 @@ namespace WatchYourBackLibrary
         public void updateEntities(TimeSpan gameTime)
         {
             activeEntities.Clear();
-            if (exclusive)
+            if (components != 0)
             {
-                foreach (Entity entity in entities.Values)
-                    if ((entity.Mask ^ components) == 0)
-                        activeEntities.Add(entity);
+                if (exclusive)
+                {
+                    foreach (Entity entity in entities.Values)
+                        if ((entity.Mask ^ components) == 0)
+                            activeEntities.Add(entity);
+                }
+                else
+                    foreach (Entity entity in entities.Values)
+                        if ((entity.Mask & components) == components)
+                            activeEntities.Add(entity);
             }
-            else
-                foreach (Entity entity in entities.Values)
-                    if ((entity.Mask & components) == components)
-                        activeEntities.Add(entity);
             update(gameTime);
                             
             

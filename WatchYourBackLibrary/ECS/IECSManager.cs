@@ -63,7 +63,7 @@ namespace WatchYourBackLibrary
         /// <summary>
         /// The component containing all the information about the game's levels.
         /// </summary>
-        LevelComponent LevelInfo
+        LevelInfo LevelInfo
         {
             get;
             set;
@@ -100,14 +100,16 @@ namespace WatchYourBackLibrary
         /// <summary>
         /// Removes all entities that are either inactive or in the removal list from the game.
         /// </summary>
-        void RemoveAll();      
+        void RemoveAll();
 
-       
-        
+
+
         /// <summary>
-        /// Updates the entity lists of the manager, such as removing inactive entities, as well as updating any systems that run
-        /// during the update loop.
+        /// Updates the entity lists of the manager.
         /// </summary>
+        /// <remarks>
+        /// Moves active/inactive entities to their proper lists. Any systems that run during the update loop are then updated.
+        /// </remarks>
         /// <param name="gameTime">The time elapsed since the last update</param>
         void update(TimeSpan gameTime);
 

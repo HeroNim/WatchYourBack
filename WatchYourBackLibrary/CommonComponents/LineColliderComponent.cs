@@ -32,7 +32,7 @@ namespace WatchYourBackLibrary
         {
             this.rotation = rotation;
             p1 = point1;
-            p2 = Vector2.Transform(point2 - p1, Matrix.CreateRotationZ(rotation)) + p1;
+            p2 = point2;
         }
 
         public Vector2 P1

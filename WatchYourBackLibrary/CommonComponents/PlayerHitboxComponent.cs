@@ -20,22 +20,15 @@ namespace WatchYourBackLibrary
         private Vector2 p1;
         private Vector2 p2;
 
-        public PlayerHitboxComponent(Rectangle body, float width, Vector2 direction)
+        public PlayerHitboxComponent(Vector2 point1, Vector2 point2)
         {
-
-            this.width = width;
-            Vector2 reverse = new Vector2(-direction.X, -direction.Y);
-            Vector2 perpendicular = new Vector2(reverse.Y, -reverse.X);
-            reverse.Normalize();
-            perpendicular.Normalize();
-
-            reverse *= HelperFunctions.Diagonal(body); //A line of length radius pointing in the opposite direction of the player
-            perpendicular *= width; //A line pointing units perpendicular to the look direction of the player
-
-            Vector2 midPoint = new Vector2(body.Center.X + reverse.X, body.Center.Y + reverse.Y);
-            p1 = new Vector2(midPoint.X + perpendicular.X, midPoint.Y + perpendicular.Y); //A point on the tangent
-            p2 = new Vector2(midPoint.X - perpendicular.X, midPoint.Y - perpendicular.Y); //A point on the tangent
+            p1 = point1;
+            p2 = point2;
         }
+
+        public PlayerHitboxComponent(List<Vector2> points)
+            : this(points[0], points[1]) { }
+
 
         public Vector2 P1
         {
@@ -77,6 +70,23 @@ namespace WatchYourBackLibrary
         {
             get { return width; }
             set { width = value; }
+        }
+
+        public static List<Vector2> setAvatarHitbox(Rectangle body, float width, Vector2 direction)
+        {
+            List<Vector2> playerPoints = new List<Vector2>();
+            Vector2 reverse = new Vector2(-direction.X, -direction.Y);
+            Vector2 perpendicular = new Vector2(reverse.Y, -reverse.X);
+            reverse.Normalize();
+            perpendicular.Normalize();
+
+            reverse *= body.Height / 2; //A line of length radius pointing in the opposite direction of the player
+            perpendicular *= width; //A line pointing units perpendicular to the look direction of the player
+
+            Vector2 midPoint = new Vector2(body.Center.X + reverse.X, body.Center.Y + reverse.Y);
+            playerPoints.Add(new Vector2(midPoint.X + perpendicular.X, midPoint.Y + perpendicular.Y)); //A point on the tangent
+            playerPoints.Add(new Vector2(midPoint.X - perpendicular.X, midPoint.Y - perpendicular.Y)); //A point on the tangent
+            return playerPoints;
         }
 
         

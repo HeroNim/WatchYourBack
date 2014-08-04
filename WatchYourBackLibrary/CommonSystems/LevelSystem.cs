@@ -28,14 +28,14 @@ namespace WatchYourBackLibrary
     public class LevelSystem : ESystem
     {
 
-        private List<LevelTemplate> levels;
+        private Dictionary<LevelName, LevelTemplate> levels;
         private LevelName currentLevel;
-        private LevelComponent level;
+        private LevelInfo level;
         private bool built;
 
-        public LevelSystem(List<LevelTemplate> levels) : base(false, true, 7)
+        public LevelSystem(Dictionary<LevelName, LevelTemplate> levels)
+            : base(false, true, 7)
         {
-            components += (int)Masks.Level;
             this.levels = levels;
             built = false;
         }
@@ -43,33 +43,30 @@ namespace WatchYourBackLibrary
 
         public override void update(TimeSpan gameTime)
         {
-            if (level == null)
-                initialize();
-
-
-            if (currentLevel == level.CurrentLevel)
-            {
-                if (!built)
-                {
-                    buildLevel(currentLevel);
-                    level.Start();
-                }
-                else if (level.Reset == true)
-                    resetLevel();
-            }
-            else
+            if(currentLevel != level.CurrentLevel)
             {
                 clearLevel();
                 currentLevel = level.CurrentLevel;
                 update(gameTime);
             }
+            if (!built)
+            {
+                buildLevel(currentLevel);
+                level.Start();
+            }
+            if (level.Reset)
+                resetLevel();
+
+
+            if (level.GameTime <= 0)
+                Console.WriteLine("Game over");
                              
         }
 
 
         public void addLevel(LevelTemplate level)
         {
-            levels.Add(level);
+            levels.Add(level.Name, level);
         }
 
         /// <summary>
@@ -81,7 +78,7 @@ namespace WatchYourBackLibrary
         {
             int player = 1;
 
-            LevelTemplate levelTemplate = levels.Find(o => o.Name == levelName);
+            LevelTemplate levelTemplate = levels[levelName];
             int y, x;
             for (y = 0; y < (int)LevelDimensions.HEIGHT; y++)
                 for (x = 0; x < (int)LevelDimensions.WIDTH; x++)
@@ -109,19 +106,20 @@ namespace WatchYourBackLibrary
                     }
 
                 }
-            level.GameTime = 10;
+            level.GameTime = 60;
             built = true;
+
         }
 
         /// <summary>
         /// Initializes the system when the game starts, loading the first level and updating the manager accordingly.
         /// </summary>
-        private void initialize()
-        {         
-            Entity levelEntity = new Entity();
-            levelEntity.addComponent(new LevelComponent());
-            manager.addEntity(levelEntity);
-            level = (LevelComponent)levelEntity.Components[Masks.Level];
+        public override void initialize(IECSManager manager)
+        {
+            base.initialize(manager);
+            level = new LevelInfo();
+            level.Levels = this.levels;
+
             manager.LevelInfo = level;
             currentLevel = level.CurrentLevel;
            

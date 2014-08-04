@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace WatchYourBackLibrary
 {
@@ -83,6 +84,7 @@ namespace WatchYourBackLibrary
         /// <returns>A point</returns>
         public static Vector2 pointOnCircle(float radius, float angle, Vector2 origin)
         {
+
             float x = -((float)(radius * Math.Cos(angle))) + origin.X;
             float y = -((float)(radius * Math.Sin(angle))) + origin.Y;
             return new Vector2(x, y);
@@ -292,6 +294,55 @@ namespace WatchYourBackLibrary
             return (p2.Y - p1.Y) * point.X + (p1.X - p2.X) * point.Y + (p2.X * p1.Y - p1.X * p2.Y);
         }
 
+        /// <summary>
+        /// Draws a string scaled and wrapped inside a box
+        /// </summary>
+        /// <param name="spriteBatch">Draws the text</param>
+        /// <param name="font">The font</param>
+        /// <param name="text">The text</param>
+        /// <param name="textBox">The bounds of the text</param>
+        /// <param name="scale">Rescales the text if it's too big</param>
+        public static void DrawString(SpriteBatch spriteBatch, SpriteFont font, string text, Rectangle textBox, float scale = 1)
+        {
+            string currentLine = string.Empty;
+            string[] words = text.Split(' ');
+            List<string> lines = new List<string>();
+            int index = 0;
+
+
+            Vector2 stringSize = font.MeasureString(text) * scale;
+            int maxIndex = (int)(textBox.Height / (stringSize.Y));
+
+            foreach (string word in words)
+            {
+                if (font.MeasureString(currentLine + word).Length() * scale > textBox.Width)
+                {
+                    currentLine = currentLine.Trim();
+                    lines.Add(currentLine);
+                    currentLine = string.Empty;
+                }
+                currentLine += word + ' ';
+            }
+            currentLine = currentLine.Trim();
+            lines.Add(currentLine);
+
+
+            if (lines.Count > maxIndex)
+                DrawString(spriteBatch, font, text, textBox, scale * 0.98f);
+            else
+            {
+                float yPos = textBox.Height / (lines.Count);
+                float offset = stringSize.Y / 2;
+
+                foreach (string line in lines)
+                {
+                    float lineLength = font.MeasureString(line).Length() * scale; //The amount of space the line takes
+                    float xPos = textBox.X + ((textBox.Width - lineLength) / 2); //Take the remaining space, cut it in half, and add it to the xPos to center the text on that line
+                    spriteBatch.DrawString(font, line, new Vector2(xPos + 0.5f, textBox.Y + (yPos * (index)) + offset), Color.Black, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0);
+                    index++;
+                }
+            }
+        }
 
     }
 }

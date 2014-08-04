@@ -113,6 +113,11 @@
     <Content Include="Content\TestFont.xnb" />
     <Content Include="Content\ThrownTexture.xnb" />
     <Content Include="Content\TileTextures\WallTextureAtlas.xnb" />
+    <None Include="Content\Sounds\SFX\ButtonClick.xnb" />
+    <None Include="Content\Sounds\SFX\ImpactSound.xnb" />
+    <None Include="Content\Sounds\SFX\StunSound.xnb" />
+    <None Include="Content\Sounds\SFX\SwordSwing.xnb" />
+    <None Include="Content\Sounds\SFX\ThrowSound.xnb" />
     <None Include="WatchYourBack_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>

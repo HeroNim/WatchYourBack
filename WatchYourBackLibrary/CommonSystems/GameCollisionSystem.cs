@@ -82,11 +82,14 @@ namespace WatchYourBackLibrary
                 remove(e1);
                 if (e1.hasComponent(Masks.Weapon))
                 {
-                    WeaponComponent weapon = (WeaponComponent)e1.Components[Masks.Weapon];
-                    if(weapon.Wielder != null)
-                        ((WielderComponent)weapon.Wielder.Components[Masks.Wielder]).RemoveWeapon();
-                    onFire(new SoundArgs(0, 0, "Sounds/SFX/ImpactSound"));
-
+                    WeaponComponent weaponC = (WeaponComponent)e1.Components[Masks.Weapon];
+                    if(weaponC.Wielder != null)
+                        ((WielderComponent)weaponC.Wielder.Components[Masks.Wielder]).RemoveWeapon();
+                }
+                if(e1.hasComponent(Masks.SoundEffect))
+                {
+                    SoundEffectComponent soundC = (SoundEffectComponent)e1.Components[Masks.SoundEffect];
+                    onFire(new SoundArgs(0, 0, soundC.Sounds[SoundTriggers.Destroy]));
                 }
             }
             if (e2.IsDestructable)
@@ -97,6 +100,11 @@ namespace WatchYourBackLibrary
                     WeaponComponent wielder = (WeaponComponent)e2.Components[Masks.Weapon];
                     if (wielder.Wielder != null)
                         ((WielderComponent)wielder.Wielder.Components[Masks.Wielder]).RemoveWeapon();
+                }
+                if (e2.hasComponent(Masks.SoundEffect))
+                {
+                    SoundEffectComponent soundC = (SoundEffectComponent)e2.Components[Masks.SoundEffect];
+                    onFire(new SoundArgs(0, 0, soundC.Sounds[SoundTriggers.Destroy]));
                 }
             }
 

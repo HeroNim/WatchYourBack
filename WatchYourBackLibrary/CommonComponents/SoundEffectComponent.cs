@@ -7,6 +7,13 @@ using Microsoft.Xna.Framework.Audio;
 
 namespace WatchYourBackLibrary
 {
+    public enum SoundTriggers
+    {
+        Initialize,
+        Destroy,
+        Action
+    }
+
     /// <summary>
     /// The component responsible for audio data
     /// </summary>
@@ -15,57 +22,24 @@ namespace WatchYourBackLibrary
         public override int BitMask { get { return (int)Masks.Audio + (int)Masks.SoundEffect; } }
         public override Masks Mask { get { return Masks.SoundEffect; } }
 
-        private string sound;
-        private float volume;        
-        private float pitch;       
-        private float pan;
-        private bool played;
-        private bool looped;
+        private Dictionary<SoundTriggers, SoundInfo> sounds;      
        
-        public SoundEffectComponent(string soundEffectName, bool loop = false, float volume = 1.0f, float pitch = 0.0f, float pan = 0.0f)
+        public SoundEffectComponent()
         {
-            sound = soundEffectName;
-            this.volume = volume;
-            this.pitch = pitch;
-            this.pan = pan;
-            this.looped = loop;
-            played = false;
+            sounds = new Dictionary<SoundTriggers, SoundInfo>();
         }
 
-        public string Sound
+        public Dictionary<SoundTriggers, SoundInfo> Sounds
         {
-            get { return sound; }
-            set { sound = value; }
+            get { return sounds; }
         }
 
-        public float Volume
+        public void AddSound(SoundTriggers trigger, string fileName)
         {
-            get { return volume; }
-            set { volume = value; }
+            sounds.Add(trigger, new SoundInfo(fileName));
         }
 
-        public float Pitch
-        {
-            get { return pitch; }
-            set { pitch = value; }
-        }
 
-        public float Pan
-        {
-            get { return pan; }
-            set { pan = value; }
-        }
 
-        public bool Loop
-        {
-            get { return looped; }
-            set { looped = value; }
-        }
-
-        public bool Played
-        {
-            get { return played; }
-            set { played = value; }
-        }
     }
 }

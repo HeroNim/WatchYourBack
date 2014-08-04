@@ -61,9 +61,11 @@ namespace WatchYourBackLibrary
                         if (wielderComponent.WeaponType == Weapons.SWORD)
                             if (!wielderComponent.hasWeapon)
                             {
-                                wielderComponent.EquipWeapon(EFactory.createSword(entity, anchorAllegiance.MyAllegiance, anchorTransform, perpAngle, manager.hasGraphics()));
-                                manager.addEntity(wielderComponent.Weapon);
-                                wielderComponent.Weapon.hasComponent(Masks.Collider);
+                                Entity sword = EFactory.createSword(entity, anchorAllegiance.MyAllegiance, anchorTransform, perpAngle, (perpAngle + (float)Math.PI / 4), manager.hasGraphics());
+                                wielderComponent.EquipWeapon(sword);
+                                manager.addEntity(sword);
+                                SoundEffectComponent soundC = sword.GetComponent<SoundEffectComponent>();
+                                onFire(new SoundArgs(0, 0, soundC.Sounds[SoundTriggers.Initialize]));
                             }
                         wielderComponent.AttackCooldown = false;
                         wielderComponent.AttackSpeed.Start();
@@ -75,10 +77,12 @@ namespace WatchYourBackLibrary
                 {
                     if (wielderComponent.ThrowCooldown)
                     {
-                        manager.addEntity(EFactory.createThrown(anchorAllegiance.MyAllegiance, anchorTransform.Center.X, anchorTransform.Center.Y, lookDir, lookAngle, manager.hasGraphics()));
-                        onFire(new SoundArgs((int)anchorTransform.Center.X, (int)anchorTransform.Center.Y, "Sounds/SFX/ThrowSound"));
+                        Entity thrown = EFactory.createThrown(anchorAllegiance.MyAllegiance, anchorTransform.Center.X, anchorTransform.Center.Y, lookDir, lookAngle, manager.hasGraphics());
+                        manager.addEntity(thrown);                      
                         wielderComponent.ThrowCooldown = false;
                         wielderComponent.ThrowSpeed.Start();
+                        SoundEffectComponent soundC = (SoundEffectComponent)thrown.Components[Masks.SoundEffect];
+                        onFire(new SoundArgs(0, 0, soundC.Sounds[SoundTriggers.Initialize]));
                     }
                     input.ThrowWeapon = false;
                 }

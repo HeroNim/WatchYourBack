@@ -21,7 +21,7 @@ namespace WatchYourBack
     {
         private UIInfo ui;
         private List<ESystem> systems;
-        private LevelComponent levelInfo;
+        private LevelInfo levelInfo;
         private Dictionary<int, Entity> activeEntities;
         private Dictionary<int, COMMANDS> changedEntities;
         private List<Entity> removal;
@@ -29,9 +29,7 @@ namespace WatchYourBack
         private int id;
         private double drawTime;
 
-        private bool playing;
-
-        
+        private bool playing;        
 
         public ClientECSManager()
         {
@@ -70,9 +68,7 @@ namespace WatchYourBack
         public void removeSystem(ESystem system)
         {
             systems.Remove(system);
-        }
-
-       
+        }      
 
         public void addEntity(Entity entity)
         {
@@ -105,7 +101,7 @@ namespace WatchYourBack
             this.input = input;
         }
 
-        public LevelComponent LevelInfo
+        public LevelInfo LevelInfo
         {
             get { return levelInfo; }
             set { levelInfo = value; }
@@ -135,22 +131,13 @@ namespace WatchYourBack
             else if (changedEntities.Keys.Contains(e.ClientID) && changedEntities[e.ClientID] != COMMANDS.REMOVE && c == COMMANDS.REMOVE)
                 changedEntities[e.ClientID] = COMMANDS.REMOVE;
         }
-
-       
-
-        /*
-         * Updates the entity lists of the manager, moving active/inactive entities to their proper lists. Any systems that run
-         * during the update loop are then updated.
-         */
-        
-
+             
         public void update(TimeSpan gameTime)
         {
             //Update the systems
             foreach (ESystem system in systems)
                 if (system.Loop == true)
-                    system.updateEntities(gameTime);
-            
+                    system.updateEntities(gameTime);          
             RemoveAll();
         }
 
@@ -180,7 +167,6 @@ namespace WatchYourBack
             {
                 if (entity.hasComponent(Masks.Graphics))
                 {
-                    
                     GraphicsComponent graphics = (GraphicsComponent)entity.Components[Masks.Graphics];
                     foreach (GraphicsInfo sprite in graphics.Sprites.Values)
                     {
@@ -194,7 +180,7 @@ namespace WatchYourBack
                                         sprite.SpriteColor, sprite.RotationAngle, sprite.RotationOrigin, SpriteEffects.None, sprite.Layer);
                                 foreach (Vector2 point in sprite.DebugPoints)
                                 {
-                                    spriteBatch.Draw(sprite.Sprite, new Rectangle((int)point.X, (int)point.Y, 3, 3), Color.Black);
+                                    spriteBatch.Draw(sprite.Sprite, new Rectangle((int)point.X, (int)point.Y, 3, 3), Color.Blue);
                                 }
                                 sprite.DebugPoints.Clear();
                             }
@@ -202,7 +188,6 @@ namespace WatchYourBack
                     }
                 }
             }
-            
         }
     
         public bool hasGraphics()

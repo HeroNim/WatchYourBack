@@ -27,6 +27,17 @@ namespace WatchYourBackLibrary
             this.pan = pan;
         }
 
+        public SoundArgs(int xPos, int yPos, SoundInfo sound)
+        {
+            this.xPos = xPos;
+            this.yPos = yPos;
+            this.fileName = sound.Sound;
+            this.loop = sound.Loop;
+            this.volume = sound.Volume;
+            this.pitch = sound.Pitch;
+            this.pan = sound.Pan;
+        }
+
         public int XPos { get { return xPos; } }
         public int YPos { get { return yPos; } }
         public string FileName { get { return fileName; } }

@@ -15,7 +15,7 @@ namespace WatchYourBackServer
     public enum SERVER_PROPERTIES
     {
         TIME_STEP = 60,
-        MAX_CONNECTIONS = 2,
+        MAX_CONNECTIONS = 1,
         PORT = 14242
     }
 
@@ -37,7 +37,7 @@ namespace WatchYourBackServer
         
         World inGame;
 
-        List<LevelTemplate> levels;
+        Dictionary<LevelName, LevelTemplate> levels;
 
 
         public ServerGameLoop()
@@ -64,7 +64,7 @@ namespace WatchYourBackServer
             // TODO: Add your initialization logic here
 
             nextUpdate = (float)NetTime.Now;
-            levels = new List<LevelTemplate>();
+            levels = new Dictionary<LevelName, LevelTemplate>();
 
 
             NetIncomingMessage msg;
@@ -114,9 +114,9 @@ namespace WatchYourBackServer
                             //
                             if (initializing)
                             {
-                                levels = SerializationHelper.DeserializeObject<List<LevelTemplate>>(msg.ReadBytes(msg.LengthBytes));
+                                levels = SerializationHelper.DeserializeObject<Dictionary<LevelName, LevelTemplate>>(msg.ReadBytes(msg.LengthBytes));
                                 Console.WriteLine("Levels recieved");
-                                foreach (LevelTemplate level in levels)
+                                foreach (LevelTemplate level in levels.Values)
                                     Console.WriteLine(level.ToString());
                                 Console.WriteLine("Starting game");
                                 

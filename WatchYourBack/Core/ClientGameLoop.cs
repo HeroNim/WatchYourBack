@@ -40,7 +40,7 @@ namespace WatchYourBack
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        List<LevelTemplate> levels;
+        Dictionary<LevelName, LevelTemplate> levels;
 
         SongCollection gameSongs;
 
@@ -88,8 +88,8 @@ namespace WatchYourBack
             inputListener = new InputListener(this);
 
             Texture2D levelOne = Content.Load<Texture2D>("LevelOne");
-            levels = new List<LevelTemplate>();
-            levels.Add(new LevelTemplate(levelOne, LevelName.FIRST_LEVEL));
+            levels = new Dictionary<LevelName, LevelTemplate>();
+            levels.Add(LevelName.FIRST_LEVEL, new LevelTemplate(levelOne, LevelName.FIRST_LEVEL));
 
             gameSongs = new SongCollection();
 
@@ -377,7 +377,7 @@ namespace WatchYourBack
                         if (args.InputType == Inputs.START_MUTLI && !game.isConnected && !game.isPinging)
                         {
                             game.isPinging = true;
-                            game.client.DiscoverKnownPeer("70.79.76.32", 14242);
+                            game.client.DiscoverKnownPeer("24.87.148.96", 14242);
                             Console.WriteLine("Starting pings");
                         }
                         if (args.InputType == Inputs.EXIT)

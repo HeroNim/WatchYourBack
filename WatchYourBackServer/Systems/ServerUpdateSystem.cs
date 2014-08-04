@@ -30,7 +30,7 @@ namespace WatchYourBackServer
         double[] interpolation;
         double[] accumulator;
 
-        LevelComponent level;
+        LevelInfo level;
         Dictionary<long, int> playerMap;
         int[] scores;
 
@@ -75,12 +75,7 @@ namespace WatchYourBackServer
         public override void update(TimeSpan gameTime)
         {
             if (level == null)
-                foreach (Entity e in manager.Entities.Values)
-                    if (e.hasComponent(Masks.Level))
-                    {
-                        level = (LevelComponent)e.Components[Masks.Level];
-                        break;
-                    }
+                level = manager.LevelInfo;
 
             if (updating)
             {

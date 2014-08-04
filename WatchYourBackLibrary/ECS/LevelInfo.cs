@@ -19,10 +19,9 @@ namespace WatchYourBackLibrary
     /// <summary>
     /// The component which holds the level data, such as the current level and the time left in the level.
     /// </summary>
-    public class LevelComponent : EComponent
+    public class LevelInfo
     {
-        public override int BitMask { get { return (int)Masks.Level; } }
-        public override Masks Mask { get { return Masks.Level; } }
+        private Dictionary<LevelName, LevelTemplate> levels;
 
         private List<List<Entity>> allEntities;
         private List<Entity> spawns;
@@ -35,13 +34,15 @@ namespace WatchYourBackLibrary
 
         private LevelName currentLevel;
 
-        public LevelComponent()
+        public LevelInfo()
         {
             currentLevel = LevelName.FIRST_LEVEL;
             timeLeft = 300;
             timer = new Timer(1000);
             timer.AutoReset = true;
             timer.Elapsed += Tick;
+
+            levels = new Dictionary<LevelName, LevelTemplate>();
 
             spawns = new List<Entity>();
             avatars = new List<Entity>();
@@ -50,6 +51,12 @@ namespace WatchYourBackLibrary
             allEntities.Add(spawns);
             allEntities.Add(avatars);
             allEntities.Add(walls);
+        }
+
+        public Dictionary<LevelName, LevelTemplate> Levels
+        {
+            get { return levels; }
+            set { levels = value; }
         }
 
         public LevelName CurrentLevel

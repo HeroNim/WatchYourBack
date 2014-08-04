@@ -14,7 +14,6 @@ namespace WatchYourBackLibrary
         Collider = 1 << 3,
         PlayerInput = 1 << 4,
         Tile = 1 << 5,
-        Level = 1 << 6,
         Button = 1 << 7,
         Wielder = 1 << 8,
         Audio = 1 << 9,
