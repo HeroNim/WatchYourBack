@@ -11,10 +11,15 @@ namespace WatchYourBackLibrary
 {
 
     
-    public enum SERVER_COMMANDS
+    public enum ServerCommands
     {
-        SEND_LEVELS = 100,
-        START = 0
+        SendLevels = 100,
+        Start = 101,
+        Pause = 102,
+        Connect = 103,
+        Disconnect = 104,
+        Win = 105,
+        Lose = 106     
     }
 
 
@@ -80,7 +85,7 @@ namespace WatchYourBackLibrary
         /// <summary>
         /// A dictionary of the entities changed during the current update cycle, with their unique ID's as the keys.
         /// </summary>
-        Dictionary<int, COMMANDS> ChangedEntities
+        Dictionary<int, EntityCommands> ChangedEntities
         {
             get;
         }
@@ -95,7 +100,7 @@ namespace WatchYourBackLibrary
         /// </summary>
         /// <param name="e">The modified entity</param>
         /// <param name="c">How the entity changed (added, modified, or removed)</param>
-        void addChangedEntities(Entity e, COMMANDS c);
+        void addChangedEntities(Entity e, EntityCommands c);
 
         /// <summary>
         /// Removes all entities that are either inactive or in the removal list from the game.

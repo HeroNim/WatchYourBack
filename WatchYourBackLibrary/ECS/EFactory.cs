@@ -55,7 +55,7 @@ namespace WatchYourBackLibrary
                 Texture2D myTexture = content.Load<Texture2D>("PlayerTexture");
                 e.addComponent(new GraphicsComponent(rect, myTexture, myTexture.Bounds, 0, new Vector2(myTexture.Width / 2, myTexture.Height / 2), offset, 0.9f, "Avatar"));
             }
-            e.Type = ENTITIES.AVATAR;
+            e.Type = Entities.Avatar;
             return e;
         }
 
@@ -104,7 +104,7 @@ namespace WatchYourBackLibrary
                 Texture2D myTexture = content.Load<Texture2D>("SwordTexture");
                 e.addComponent(new GraphicsComponent(new Rectangle((int)point.X, (int)point.Y, (int)SWORD.WIDTH, (int)SWORD.RANGE), myTexture, rotationAngle, new Vector2(myTexture.Width / 2, myTexture.Height), 0.8f, "Sword"));
             }
-            e.Type = ENTITIES.SWORD;
+            e.Type = Entities.Sword;
             return e;
             
         }
@@ -138,7 +138,7 @@ namespace WatchYourBackLibrary
                 Texture2D myTexture = content.Load<Texture2D>("ThrownTexture");
                 e.addComponent(new GraphicsComponent(new Rectangle((int)xOrigin, (int)yOrigin, (int)THROWN.RADIUS, (int)THROWN.RADIUS), myTexture, rotationAngle, new Vector2(myTexture.Width / 2, myTexture.Height), 1, "Thrown"));
             }
-            e.Type = ENTITIES.THROWN;
+            e.Type = Entities.Thrown;
             return e;
 
         }
@@ -205,7 +205,7 @@ namespace WatchYourBackLibrary
                 g.Sprites.Add("BottomRight", new GraphicsInfo(new Rectangle(x + width / 2, y + height / 2, width / 2, height / 2), myTexture, new Rectangle((int)LevelDimensions.X_SCALE / 2 * atlasIndex[1, 1], 0, (int)LevelDimensions.X_SCALE / 2, (int)LevelDimensions.Y_SCALE / 2), 1));
                 e.addComponent(g);
             }
-            e.Type = ENTITIES.WALL;
+            e.Type = Entities.Wall;
             return e;
         }
 
@@ -252,25 +252,25 @@ namespace WatchYourBackLibrary
         /// <param name="type">The type of entity</param>
         /// <param name="layer">The layer to be drawn on</param>
         /// <returns>An entity containing only a graphics component</returns>
-        public static Entity createGraphics(Rectangle rect, float rotation, Vector2 rotationOrigin, Vector2 rotationOffset, int ID, Rectangle sourceRectangle, ENTITIES type, float layer)
+        public static Entity createGraphics(Rectangle rect, float rotation, Vector2 rotationOrigin, Vector2 rotationOffset, int ID, Rectangle sourceRectangle, Entities type, float layer)
         {
             Texture2D texture;
             switch (type)
             {
-                case ENTITIES.AVATAR:
+                case Entities.Avatar:
                     texture = content.Load<Texture2D>("PlayerTexture");
                     layer = 1;
                     rotationOrigin = new Vector2(texture.Width / 2, texture.Height / 2);
                     rotationOffset = new Vector2(rect.Width / 2, rect.Height / 2);
                     sourceRectangle = texture.Bounds;
                     break;
-                case ENTITIES.SWORD:
+                case Entities.Sword:
                     texture = content.Load<Texture2D>("SwordTexture");
                     rotationOrigin = new Vector2(texture.Width / 2, texture.Height);
                     rotationOffset = Vector2.Zero;
                     sourceRectangle = texture.Bounds;
                     break;
-                case ENTITIES.THROWN:
+                case Entities.Thrown:
                     texture = content.Load<Texture2D>("ThrownTexture");
                     layer = 0;
                     rotationOrigin = Vector2.Zero;
@@ -305,7 +305,7 @@ namespace WatchYourBackLibrary
         /// <param name="type">The type of entity</param>
         /// <param name="layer">The layer to be drawn on</param>
         /// <returns>A graphical entity of a wall</returns>
-        public static Entity createGraphics(Rectangle rect, float rotation, Vector2 rotationOrigin, Vector2 rotationOffset, int ID, int[,] textureIndex, ENTITIES type, float layer)
+        public static Entity createGraphics(Rectangle rect, float rotation, Vector2 rotationOrigin, Vector2 rotationOffset, int ID, int[,] textureIndex, Entities type, float layer)
         {
             Texture2D texture = content.Load<Texture2D>("TileTextures/WallTextureAtlas");
             Entity e = new Entity();

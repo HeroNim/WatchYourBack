@@ -23,15 +23,15 @@ namespace WatchYourBackServer
     /// </summary>
     public class ServerECSManager : IECSManager
     {
-        private int currentID;
-        private List<ESystem> systems;
-        private LevelInfo levelInfo;
         private Dictionary<int, Entity> activeEntities;
-        private Dictionary<int, COMMANDS> changedEntities;
+        private Dictionary<int, EntityCommands> changedEntities;
+        private List<ESystem> systems;
         private List<Entity> removal;
+        private LevelInfo levelInfo;
         private InputSystem input;
-        const double timeStep = 1.0 / (double)SERVER_PROPERTIES.TIME_STEP;
+        private int currentID;
 
+        const double timeStep = 1.0 / (double)ServerProperties.TimeStep;
         private bool playing;
 
 
@@ -41,7 +41,7 @@ namespace WatchYourBackServer
         {
             systems = new List<ESystem>();
             activeEntities = new Dictionary<int, Entity>();
-            changedEntities = new Dictionary<int, COMMANDS>();
+            changedEntities = new Dictionary<int, EntityCommands>();
             removal = new List<Entity>();
             currentID = 0;
 
@@ -66,7 +66,7 @@ namespace WatchYourBackServer
             entity.ServerID = assignID();
             entity.initialize();
             activeEntities.Add(entity.ServerID, entity);
-            addChangedEntities(entity, COMMANDS.ADD);
+            addChangedEntities(entity, EntityCommands.Add);
         }
 
         public int assignID()
@@ -83,7 +83,7 @@ namespace WatchYourBackServer
             if (activeEntities.Values.Contains(entity) && !removal.Contains(entity))
             {
                 removal.Add(entity);
-                addChangedEntities(entity, COMMANDS.REMOVE);
+                addChangedEntities(entity, EntityCommands.Remove);
             }
         }
         
@@ -103,7 +103,7 @@ namespace WatchYourBackServer
             get { return activeEntities; }
         }
 
-        public Dictionary<int, COMMANDS> ChangedEntities
+        public Dictionary<int, EntityCommands> ChangedEntities
         {
             get { return changedEntities; }
         }
@@ -113,12 +113,12 @@ namespace WatchYourBackServer
             get { return systems; }
         }
 
-        public void addChangedEntities(Entity e, COMMANDS c)
+        public void addChangedEntities(Entity e, EntityCommands c)
         {
             if (!changedEntities.Keys.Contains(e.ServerID))
                 changedEntities.Add(e.ServerID, c);
-            else if (changedEntities.Keys.Contains(e.ServerID) && changedEntities[e.ServerID] != COMMANDS.REMOVE && c == COMMANDS.REMOVE)
-                changedEntities[e.ServerID] = COMMANDS.REMOVE;
+            else if (changedEntities.Keys.Contains(e.ServerID) && changedEntities[e.ServerID] != EntityCommands.Remove && c == EntityCommands.Remove)
+                changedEntities[e.ServerID] = EntityCommands.Remove;
         }
 
        

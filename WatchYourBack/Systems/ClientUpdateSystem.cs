@@ -139,7 +139,7 @@ namespace WatchYourBack
                         Entity e;
                         switch (args.Command)
                         {
-                            case COMMANDS.ADD:
+                            case EntityCommands.Add:
                                 
                                 if (args.SubIndex != null)
                                 {
@@ -160,11 +160,11 @@ namespace WatchYourBack
                                 entityIDMappings.Add(args.ID, e.ClientID);
 
                                 break;
-                            case COMMANDS.REMOVE:
+                            case EntityCommands.Remove:
                                 manager.Entities.Remove(entityIDMappings[args.ID]);
                                 entityIDMappings.Remove(args.ID);
                                 break;
-                            case COMMANDS.MODIFY:
+                            case EntityCommands.Modify:
                                 try
                                 {
                                     e = manager.Entities[entityIDMappings[args.ID]];

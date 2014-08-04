@@ -26,7 +26,7 @@ namespace WatchYourBackServer
         List<EventArgs> sendData;
         bool updating;
         int playerIndex;
-        const double timeStep = 1.0 / (double)SERVER_PROPERTIES.TIME_STEP;
+        const double timeStep = 1.0 / (double)ServerProperties.TimeStep;
         double[] interpolation;
         double[] accumulator;
 
@@ -245,10 +245,10 @@ namespace WatchYourBackServer
                     if(e.hasComponent(Masks.Tile))
                     {
                         TileComponent tile = (TileComponent)e.Components[Masks.Tile];
-                        sendData.Add(new NetworkEntityArgs(e.Type, COMMANDS.MODIFY, e.ServerID, x, y, transform.Width, transform.Height, rotation, tile.AtlasIndex));
+                        sendData.Add(new NetworkEntityArgs(e.Type, EntityCommands.Modify, e.ServerID, x, y, transform.Width, transform.Height, rotation, tile.AtlasIndex));
                     }
                     else
-                        sendData.Add(new NetworkEntityArgs(e.Type, COMMANDS.MODIFY, e.ServerID, x, y, transform.Width, transform.Height, rotation, 0));
+                        sendData.Add(new NetworkEntityArgs(e.Type, EntityCommands.Modify, e.ServerID, x, y, transform.Width, transform.Height, rotation, 0));
                 }
             }
         }

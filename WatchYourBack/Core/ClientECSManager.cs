@@ -19,14 +19,14 @@ namespace WatchYourBack
     /// </summary>
     public class ClientECSManager : IECSManager
     {
-        private UIInfo ui;
-        private List<ESystem> systems;
-        private LevelInfo levelInfo;
         private Dictionary<int, Entity> activeEntities;
-        private Dictionary<int, COMMANDS> changedEntities;
+        private Dictionary<int, EntityCommands> changedEntities;
+        private List<ESystem> systems;
         private List<Entity> removal;
+        private LevelInfo levelInfo;
+        private UIInfo ui;
         private InputSystem input;
-        private int id;
+        private int currentID;
         private double drawTime;
 
         private bool playing;        
@@ -34,11 +34,11 @@ namespace WatchYourBack
         public ClientECSManager()
         {
             ui = null;
-            id = 0;
+            currentID = 0;
             drawTime = 0;
             systems = new List<ESystem>();
             activeEntities = new Dictionary<int, Entity>();
-            changedEntities = new Dictionary<int, COMMANDS>();
+            changedEntities = new Dictionary<int, EntityCommands>();
             removal = new List<Entity>();
         }
 
@@ -75,15 +75,15 @@ namespace WatchYourBack
             entity.ClientID = assignID();
             entity.initialize();
             activeEntities.Add(entity.ClientID, entity);
-            addChangedEntities(entity, COMMANDS.ADD);
+            addChangedEntities(entity, EntityCommands.Add);
         }
 
         public int assignID()
         {
-            id = 0;
-            while (activeEntities.Keys.Contains(id))
-                id++;
-            return id;
+            currentID = 0;
+            while (activeEntities.Keys.Contains(currentID))
+                currentID++;
+            return currentID;
 
         }
 
@@ -92,7 +92,7 @@ namespace WatchYourBack
             if (activeEntities.Values.Contains(entity) && !removal.Contains(entity))
             {
                 removal.Add(entity);
-                addChangedEntities(entity, COMMANDS.REMOVE);
+                addChangedEntities(entity, EntityCommands.Remove);
             }
         }
         
@@ -114,7 +114,7 @@ namespace WatchYourBack
             get { return activeEntities; }
         }
 
-        public Dictionary<int, COMMANDS> ChangedEntities
+        public Dictionary<int, EntityCommands> ChangedEntities
         {
             get { return changedEntities; }
         }
@@ -124,12 +124,12 @@ namespace WatchYourBack
             get { return systems; }
         }
 
-        public void addChangedEntities(Entity e, COMMANDS c)
+        public void addChangedEntities(Entity e, EntityCommands c)
         {
             if (!changedEntities.Keys.Contains(e.ClientID))
                 changedEntities.Add(e.ClientID, c);
-            else if (changedEntities.Keys.Contains(e.ClientID) && changedEntities[e.ClientID] != COMMANDS.REMOVE && c == COMMANDS.REMOVE)
-                changedEntities[e.ClientID] = COMMANDS.REMOVE;
+            else if (changedEntities.Keys.Contains(e.ClientID) && changedEntities[e.ClientID] != EntityCommands.Remove && c == EntityCommands.Remove)
+                changedEntities[e.ClientID] = EntityCommands.Remove;
         }
              
         public void update(TimeSpan gameTime)

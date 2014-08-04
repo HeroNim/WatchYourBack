@@ -6,11 +6,11 @@ using System.Text;
 namespace WatchYourBackLibrary
 {
     [Serializable()]
-    public enum COMMANDS
+    public enum EntityCommands
     {
-        ADD,
-        REMOVE,
-        MODIFY
+        Add,
+        Remove,
+        Modify
     }
 
     /// <summary>
@@ -19,8 +19,8 @@ namespace WatchYourBackLibrary
     [Serializable()]
     public class NetworkEntityArgs : EventArgs
     {
-        private COMMANDS command;
-        private ENTITIES type;
+        private EntityCommands command;
+        private Entities type;
         private int id;
         private float xPos;
         private float yPos;
@@ -30,7 +30,7 @@ namespace WatchYourBackLibrary
         private int textureIndex;
         private int[,] subIndex;
 
-        public NetworkEntityArgs(ENTITIES type, COMMANDS command, int id, float xPos, float yPos, int width, int height, float rotation)
+        public NetworkEntityArgs(Entities type, EntityCommands command, int id, float xPos, float yPos, int width, int height, float rotation)
         {
             this.command = command;
             this.type = type;
@@ -42,21 +42,21 @@ namespace WatchYourBackLibrary
             this.rotation = rotation;
         }
 
-        public NetworkEntityArgs(ENTITIES type, COMMANDS command, int id, float xPos, float yPos, int width, int height, float rotation, int textureIndex)
+        public NetworkEntityArgs(Entities type, EntityCommands command, int id, float xPos, float yPos, int width, int height, float rotation, int textureIndex)
             : this(type, command, id, xPos, yPos, width, height, rotation)
         {
             this.textureIndex = textureIndex;
             this.subIndex = null;
         }
 
-        public NetworkEntityArgs(ENTITIES type, COMMANDS command, int id, float xPos, float yPos, int width, int height, float rotation, int[,] textureIndex)
+        public NetworkEntityArgs(Entities type, EntityCommands command, int id, float xPos, float yPos, int width, int height, float rotation, int[,] textureIndex)
             : this(type, command, id, xPos, yPos, width, height, rotation)
         {
             this.subIndex = textureIndex;
         }
 
-        public COMMANDS Command { get { return command; } }
-        public ENTITIES Type { get { return type; } }
+        public EntityCommands Command { get { return command; } }
+        public Entities Type { get { return type; } }
         public int ID { get { return id; } }
         public float XPos { get { return xPos; } }
         public float YPos { get { return yPos; } }

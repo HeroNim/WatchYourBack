@@ -6,13 +6,13 @@ using System.Text;
 namespace WatchYourBackLibrary
 {
     [Serializable()]
-    public enum ENTITIES
+    public enum Entities
     {
-        PLAYER,
-        AVATAR,
-        WALL,
-        SWORD,
-        THROWN
+        Player,
+        Avatar,
+        Wall,
+        Sword,
+        Thrown
     }
     
     
@@ -27,7 +27,7 @@ namespace WatchYourBackLibrary
         private int serverID;
         private bool destructable;
         private bool drawable;
-        private ENTITIES type;
+        private Entities type;
         private int mask;
         private bool isActive;
         private Dictionary<Masks, EComponent> components;
@@ -158,7 +158,7 @@ namespace WatchYourBackLibrary
             }
         }
 
-        public ENTITIES Type
+        public Entities Type
         {
             get { return this.type; }
             set { this.type = value; }

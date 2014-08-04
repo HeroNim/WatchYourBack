@@ -8,6 +8,8 @@ using Microsoft.Xna.Framework;
 namespace WatchYourBackLibrary
 {
 
+    
+
     /// <summary>
     /// Arguments sent by the server telling the client information about the game, such as scores and time
     /// </summary>

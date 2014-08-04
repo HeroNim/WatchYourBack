@@ -140,7 +140,7 @@ namespace WatchYourBackLibrary
                 }
 
                 if (transform.HasMoved)
-                    manager.addChangedEntities(entity, COMMANDS.MODIFY);
+                    manager.addChangedEntities(entity, EntityCommands.Modify);
                 transform.HasMoved = false;
             }
         }

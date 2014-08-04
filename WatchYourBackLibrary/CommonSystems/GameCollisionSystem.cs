@@ -108,7 +108,7 @@ namespace WatchYourBackLibrary
                 }
             }
 
-            if(e1.Type == ENTITIES.SWORD)
+            if(e1.Type == Entities.Sword)
                 if(collider2 == Masks.PlayerHitbox)
                 {
                     WeaponComponent wielder = (WeaponComponent)e1.Components[Masks.Weapon];
@@ -118,8 +118,8 @@ namespace WatchYourBackLibrary
                     Console.WriteLine("Player Hit");
                 }
 
-            if (e1.Type == ENTITIES.THROWN)
-                if (e2.Type == ENTITIES.AVATAR)
+            if (e1.Type == Entities.Thrown)
+                if (e2.Type == Entities.Avatar)
                 {
                     StatusComponent avatarInfo = (StatusComponent)e2.Components[Masks.Status];
                     avatarInfo.ApplyStatus(Status.Paralyzed, 1000f, 0);

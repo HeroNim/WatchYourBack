@@ -198,13 +198,13 @@ namespace WatchYourBack
                     case NetIncomingMessageType.Data:
                         // server sent initialization command
                         int confirmation = msg.ReadInt32();
-                        if (confirmation == (int)SERVER_COMMANDS.SEND_LEVELS)
+                        if (confirmation == (int)ServerCommands.SendLevels)
                         {
                             NetOutgoingMessage om = client.CreateMessage();
                             om.Write(SerializationHelper.Serialize(levels));
                             client.SendMessage(om, NetDeliveryMethod.ReliableUnordered);
                         }
-                        else if(confirmation == (int)SERVER_COMMANDS.START)
+                        else if(confirmation == (int)ServerCommands.Start)
                         {    
                             worldStack.Push(inGameMulti);
                             activeWorld = worldStack.Peek();

@@ -12,11 +12,12 @@ using WatchYourBackLibrary;
 
 namespace WatchYourBackServer
 {
-    public enum SERVER_PROPERTIES
+    public enum ServerProperties
     {
-        TIME_STEP = 60,
-        MAX_CONNECTIONS = 1,
-        PORT = 14242
+        TimeStep = 60,
+        MaxConnections = 1,
+        Port = 14242,
+        TimeOut = 5
     }
 
     
@@ -45,8 +46,9 @@ namespace WatchYourBackServer
 
             config = new NetPeerConfiguration("WatchYourBack");
             config.EnableMessageType(NetIncomingMessageType.DiscoveryRequest);
-            config.Port = (int)SERVER_PROPERTIES.PORT;
+            config.Port = (int)ServerProperties.Port;
             config.EnableUPnP = true;
+            config.ConnectionTimeout = (int)ServerProperties.TimeOut;
 
             server = new NetServer(config);
             server.Start();
@@ -92,11 +94,11 @@ namespace WatchYourBackServer
                             if (status == NetConnectionStatus.Connected)
                             {
                                 Console.WriteLine(NetUtility.ToHexString(msg.SenderConnection.RemoteUniqueIdentifier) + " connected");
-                                if (server.ConnectionsCount == (int)SERVER_PROPERTIES.MAX_CONNECTIONS)
+                                if (server.ConnectionsCount == (int)ServerProperties.MaxConnections)
                                 {
                                     initializing = true;
                                     NetOutgoingMessage om = server.CreateMessage();
-                                    om.Write((int)SERVER_COMMANDS.SEND_LEVELS);
+                                    om.Write((int)ServerCommands.SendLevels);
                                     server.SendMessage(om, server.Connections[0], NetDeliveryMethod.ReliableUnordered);
                                     Console.WriteLine("Initializing");
                                     break;
@@ -105,7 +107,6 @@ namespace WatchYourBackServer
                             if (status == NetConnectionStatus.Disconnected)
                             {
                                 Console.WriteLine(NetUtility.ToHexString(msg.SenderConnection.RemoteUniqueIdentifier) + " disconnected");
-
                             }
                             break;
                         case NetIncomingMessageType.Data:
@@ -120,20 +121,14 @@ namespace WatchYourBackServer
                                     Console.WriteLine(level.ToString());
                                 Console.WriteLine("Starting game");
                                 
-                                int index = 0;
                                 foreach (NetConnection player in server.Connections)
                                 {
                                     NetOutgoingMessage om = server.CreateMessage();
-                                    om.Write((int)SERVER_COMMANDS.START);
-                                    server.SendMessage(om, player, NetDeliveryMethod.ReliableUnordered);      
-                                    Console.WriteLine(index);
+                                    om.Write((int)ServerCommands.Start);
+                                    server.SendMessage(om, player, NetDeliveryMethod.ReliableUnordered);
                                 }
-
                                 playing = true;
-
                             }
-
-
                             break;
                     }
                 }
@@ -159,13 +154,9 @@ namespace WatchYourBackServer
                 if (system != input)
                     system.inputFired += new EventHandler(input.EventListener);
             }
-
-
-
         }
 
 
-        //Pseudo-XNA style gametime. Would probably cause problems on a larger scale game (still might).
         private void Update()
         {
             while (true)
@@ -173,8 +164,7 @@ namespace WatchYourBackServer
                 while (inGame.Manager.Playing == true)
                     inGame.Manager.update(gameTime);
                 reset();
-            }
-            
+            }            
         }
 
         private void reset()
