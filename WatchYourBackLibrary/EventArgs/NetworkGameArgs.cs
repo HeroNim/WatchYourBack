@@ -23,10 +23,11 @@ namespace WatchYourBackLibrary
         {
             this.scores = scores;
             this.time = time;
-        }
+        }     
 
         public int[] Scores { get { return scores; } }
         public int Time { get { return time; } }
+
 
     }
 }

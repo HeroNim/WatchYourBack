@@ -29,7 +29,7 @@ namespace WatchYourBack
         private int currentID;
         private double drawTime;
 
-        private bool playing;        
+        private bool playing;
 
         public ClientECSManager()
         {
@@ -43,6 +43,23 @@ namespace WatchYourBack
         }
 
         public bool Playing { get { return playing; } set { playing = value; } }
+
+        public void Initialize()
+        {
+            foreach(ESystem system in systems)
+            {
+                foreach(ESystem other in systems)
+                {
+                    if(other != system)
+                    {
+                        other.inputFired += new EventHandler(system.EventListener);
+                    }
+                }
+                system.initialize(this);                
+            }
+        }
+
+        
 
         public void addUI(UIInfo info)
         {

@@ -33,8 +33,8 @@ namespace WatchYourBack
         Vector2 rotationOrigin;
         Vector2 rotationOffset;
         Rectangle sourceRectangle;
-        
-        int bufferCount;
+
+        private int bufferCount;
         
         List<List<EventArgs>> buffer; //Holds incoming messages
 
@@ -109,96 +109,125 @@ namespace WatchYourBack
 
             NetIncomingMessage msg;
 
-
-            while ((msg = client.ReadMessage()) != null)
-            {
-               
-            
-                switch (msg.MessageType)
+           
+                while ((msg = client.ReadMessage()) != null)
                 {
-                    case NetIncomingMessageType.Data:
-                        buffer.Add(SerializationHelper.DeserializeObject<List<EventArgs>>(msg.ReadBytes(msg.LengthBytes)));
-                        client.Recycle(msg);
-                        break;
-                }
-            }
-
-            while (buffer.Count != 0 && bufferCount >= 0)
-            {
-                List<EventArgs> receivedData = buffer[0];
-                buffer.RemoveAt(0);
 
 
-
-                foreach (EventArgs receivedArgs in receivedData)
-                {
-                    if (receivedArgs is NetworkEntityArgs)
+                    switch (msg.MessageType)
                     {
-                        NetworkEntityArgs args = (NetworkEntityArgs)receivedArgs;
-                        Rectangle body = new Rectangle((int)args.XPos, (int)args.YPos, args.Width, args.Height);
-                        Entity e;
-                        switch (args.Command)
-                        {
-                            case EntityCommands.Add:
-                                
-                                if (args.SubIndex != null)
-                                {
-                                    e = EFactory.createGraphics(body, args.Rotation, rotationOrigin, rotationOffset, args.ID, args.SubIndex, args.Type, layer);
-                                    manager.addEntity(e);
-                                }
+                        case NetIncomingMessageType.Data:
+                            buffer.Add(SerializationHelper.DeserializeObject<List<EventArgs>>(msg.ReadBytes(msg.LengthBytes)));
+                            client.Recycle(msg);
+                            break;
+                    }
+                }
 
-                                else
-                                {
-                                    e = EFactory.createGraphics(body, args.Rotation, rotationOrigin, rotationOffset, args.ID, sourceRectangle, args.Type, layer);
-                                    manager.addEntity(e);
-                                }
-                                if (entityIDMappings.Keys.Contains(args.ID))
-                                {
+                while (buffer.Count != 0 && bufferCount >= 0)
+                {
+
+                    List<EventArgs> receivedData = buffer[0];
+                    buffer.RemoveAt(0);
+
+
+
+                    foreach (EventArgs receivedArgs in receivedData)
+                    {
+                        if (receivedArgs is NetworkEntityArgs)
+                        {
+                            NetworkEntityArgs args = (NetworkEntityArgs)receivedArgs;
+                            Rectangle body = new Rectangle((int)args.XPos, (int)args.YPos, args.Width, args.Height);
+                            Entity e;
+                            switch (args.Command)
+                            {
+                                case EntityCommands.Add:
+
+                                    if (args.SubIndex != null)
+                                    {
+                                        e = EFactory.createGraphics(body, args.Rotation, rotationOrigin, rotationOffset, args.ID, args.SubIndex, args.Type, layer);
+                                        manager.addEntity(e);
+                                    }
+                                    else
+                                    {
+                                        e = EFactory.createGraphics(body, args.Rotation, rotationOrigin, rotationOffset, args.ID, sourceRectangle, args.Type, layer);
+                                        manager.addEntity(e);
+                                    }
+                                    if (entityIDMappings.Keys.Contains(args.ID))
+                                    {
+                                        manager.Entities.Remove(entityIDMappings[args.ID]);
+                                        entityIDMappings.Remove(args.ID);
+                                    }
+                                    entityIDMappings.Add(args.ID, e.ClientID);
+
+                                    break;
+                                case EntityCommands.Remove:
                                     manager.Entities.Remove(entityIDMappings[args.ID]);
                                     entityIDMappings.Remove(args.ID);
-                                }
-                                entityIDMappings.Add(args.ID, e.ClientID);
+                                    break;
+                                case EntityCommands.Modify:
+                                    try
+                                    {
+                                        e = manager.Entities[entityIDMappings[args.ID]];
+                                        GraphicsComponent graphics = (GraphicsComponent)e.Components[Masks.Graphics];
+                                        graphics.Body = body;
+                                        graphics.RotationAngle = args.Rotation;
+                                    }
+                                    catch (KeyNotFoundException)
+                                    {
 
-                                break;
-                            case EntityCommands.Remove:
-                                manager.Entities.Remove(entityIDMappings[args.ID]);
-                                entityIDMappings.Remove(args.ID);
-                                break;
-                            case EntityCommands.Modify:
-                                try
-                                {
-                                    e = manager.Entities[entityIDMappings[args.ID]];
-                                    GraphicsComponent graphics = (GraphicsComponent)e.Components[Masks.Graphics];
-                                    graphics.Body = body;
-                                    graphics.RotationAngle = args.Rotation;
-                                }
-                                catch (KeyNotFoundException)
-                                {
+                                        Console.WriteLine("Modify before Add caught");
+                                    }
+                                    catch (ArgumentException)
+                                    {
+                                        Console.WriteLine("Weird stuff");
+                                    }
+                                    break;
+                            }
+                        }
+                        else if (receivedArgs is NetworkGameArgs)
+                        {
+                            NetworkGameArgs args = (NetworkGameArgs)receivedArgs;
+                            activeManager.UI.updateUI(args.Scores[0], args.Scores[1], args.Time);
+                        }
+                        else if (receivedArgs is SoundArgs)
+                        {
+                            SoundArgs args = (SoundArgs)receivedArgs;
+                            onFire(args);
+                        }
+                        else if (receivedArgs is NetworkUpdateArgs)
+                        {
+                            NetworkUpdateArgs args = (NetworkUpdateArgs)receivedArgs;
+                            switch (args.Command)
+                            {
+                                case ServerCommands.Disconnect:
+                                    Console.WriteLine("Player Disconnected. Game Ending");
+                                    onFire(new InputArgs(Inputs.EXIT));
+                                    break;
+                                case ServerCommands.Lose:
+                                    Console.WriteLine("You lose. :(");
+                                    onFire(new InputArgs(Inputs.EXIT));
+                                    break;
+                                case ServerCommands.Win:
+                                    Console.WriteLine("You win!");
+                                    onFire(new InputArgs(Inputs.EXIT));
+                                    break;
+                                case ServerCommands.Tie:
+                                    Console.WriteLine("You tied. :/");
+                                    onFire(new InputArgs(Inputs.EXIT));
+                                    break;
 
-                                    Console.WriteLine("Modify before Add caught");
-                                }
-                                catch(ArgumentException)
-                                {
-                                    Console.WriteLine("Weird stuff");
-                                }
-                                break;
+                                    
+                            }
+                            
                         }
                     }
-                    else if(receivedArgs is NetworkGameArgs)
-                    {
-                        NetworkGameArgs args = (NetworkGameArgs)receivedArgs;
-                        activeManager.UI.updateUI(args.Scores[0], args.Scores[1], args.Time);
-                    }
-                    else if(receivedArgs is SoundArgs)
-                    {
-                        SoundArgs args = (SoundArgs)receivedArgs;
-                        onFire(args);
-                    }
+
+
                 }
-            }
-            Console.WriteLine(manager.Entities.Count);
-            manager.ChangedEntities.Clear();
-                
+
+                Console.WriteLine(manager.Entities.Count);
+                manager.ChangedEntities.Clear();
+             
             
         }
       
@@ -215,6 +244,8 @@ namespace WatchYourBack
 
 
         }
+
+        
 
         
 

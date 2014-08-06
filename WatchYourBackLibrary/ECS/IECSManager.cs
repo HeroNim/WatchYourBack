@@ -10,18 +10,6 @@ using Microsoft.Xna.Framework.Content;
 namespace WatchYourBackLibrary
 {
 
-    
-    public enum ServerCommands
-    {
-        SendLevels = 100,
-        Start = 101,
-        Pause = 102,
-        Connect = 103,
-        Disconnect = 104,
-        Win = 105,
-        Lose = 106     
-    }
-
 
     /// <summary>
     /// An interface for the class which manages the systems in the game. Is responsible for initializing, updating, and removing systems as needed. Also contains a list of
@@ -34,6 +22,8 @@ namespace WatchYourBackLibrary
         /// True if playing, false otherwise.
         /// </summary>
         bool Playing { get; set; }
+
+        void Initialize();
 
         /// <summary>
         /// Adds a system to the manager.

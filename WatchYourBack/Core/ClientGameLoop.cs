@@ -223,12 +223,15 @@ namespace WatchYourBack
             mainMenu = new World(Worlds.MAIN_MENU);
             mainMenu.addManager(new ClientECSManager());
 
+            MenuInputSystem menuInput = new MenuInputSystem();
             mainMenu.Manager.addEntity(EFactory.createButton(GraphicsDevice.Viewport.Width / 2, (int)((float)GraphicsDevice.Viewport.Height / 2f), 200, 50, Inputs.START_SINGLE, "Start"));
             mainMenu.Manager.addEntity(EFactory.createButton(GraphicsDevice.Viewport.Width / 2, (int)((float)GraphicsDevice.Viewport.Height / (10f/6f)), 200, 50, Inputs.START_MUTLI, "Start"));
-            mainMenu.Manager.addEntity(EFactory.createButton(GraphicsDevice.Viewport.Width / 2, (int)((float)GraphicsDevice.Viewport.Height / (10f/8f)), 200, 50, Inputs.EXIT, "Exit"));
-
-            inputListener.addWorld(mainMenu, true);
+            mainMenu.Manager.addEntity(EFactory.createButton(GraphicsDevice.Viewport.Width / 2, (int)((float)GraphicsDevice.Viewport.Height / (10f/8f)), 200, 50, Inputs.EXIT, "Exit"));           
             mainMenu.Manager.addSystem(new AudioSystem(Content));
+            mainMenu.Manager.addSystem(menuInput);
+            
+            inputListener.addInput(mainMenu, menuInput);
+            mainMenu.Manager.Initialize();
         }
 
         private void createConnectMenu()
@@ -236,51 +239,59 @@ namespace WatchYourBack
             connectMenu = new World(Worlds.CONNECT_MENU);
             connectMenu.addManager(new ClientECSManager());
 
+            MenuInputSystem menuInput = new MenuInputSystem();
             connectMenu.Manager.addEntity(EFactory.createButton(GraphicsDevice.Viewport.Width / 2, (int)((float)GraphicsDevice.Viewport.Height / 2f), 200, 50, Inputs.START_MUTLI, "Connect"));
-            connectMenu.Manager.addEntity(EFactory.createButton(GraphicsDevice.Viewport.Width / 2, (int)((float)GraphicsDevice.Viewport.Height / (10f / 8f)), 200, 50, Inputs.EXIT, "Back"));
-
-            inputListener.addWorld(connectMenu, true);
+            connectMenu.Manager.addEntity(EFactory.createButton(GraphicsDevice.Viewport.Width / 2, (int)((float)GraphicsDevice.Viewport.Height / (10f / 8f)), 200, 50, Inputs.EXIT, "Back"));          
             connectMenu.Manager.addSystem(new AudioSystem(Content));
+            connectMenu.Manager.addSystem(menuInput);
+            
+            inputListener.addInput(connectMenu, menuInput);
+            connectMenu.Manager.Initialize();
         }
 
         private void createGame()
         {            
             inGame = new World(Worlds.IN_GAME);
             ClientECSManager gameManager = new ClientECSManager();
-            inGame.addManager(gameManager);
             UIInfo gameUI = new UIInfo(GraphicsDevice);
             gameManager.addUI(gameUI);
+            inGame.addManager(gameManager);
             
+            AudioSystem audio = new AudioSystem(Content);
+            GameInputSystem gameInput = new GameInputSystem();
+            audio.Songs = gameSongs;
             inGame.Manager.addSystem(new AvatarInputSystem());
             inGame.Manager.addSystem(new GameCollisionSystem());
             inGame.Manager.addSystem(new MovementSystem());
             inGame.Manager.addSystem(new LevelSystem(levels));
             inGame.Manager.addSystem(new AttackSystem());
             inGame.Manager.addSystem(new UIUpdateSystem(gameUI));
-
-            inputListener.addWorld(inGame, false);
-
-            AudioSystem audio = new AudioSystem(Content);
-            audio.Songs = gameSongs;
             inGame.Manager.addSystem(audio);
+            inGame.Manager.addSystem(gameInput);
+
+            inputListener.addInput(inGame, gameInput);
+            inGame.Manager.Initialize();
         }
 
         private void createGameMulti()
         {
             inGameMulti = new World(Worlds.IN_GAME_MULTI);
             ClientECSManager gameManager = new ClientECSManager();
-            inGameMulti.addManager(gameManager);
             UIInfo gameUI = new UIInfo(GraphicsDevice);
             gameManager.addUI(gameUI);
+            inGameMulti.addManager(gameManager);
 
             ClientUpdateSystem networkInput = new ClientUpdateSystem(client);
-            inGameMulti.Manager.addSystem(networkInput);            
-
-            inputListener.addWorld(inGameMulti, false);
-
             AudioSystem audio = new AudioSystem(Content);
+            GameInputSystem gameInput = new GameInputSystem();
             audio.Songs = gameSongs;
+            inGameMulti.Manager.addSystem(networkInput);                       
             inGameMulti.Manager.addSystem(audio);
+            inGameMulti.Manager.addSystem(gameInput);
+
+            inputListener.addInput(inGameMulti, gameInput);
+            inputListener.addInput(inGameMulti, networkInput);
+            inGameMulti.Manager.Initialize();
         }
 
         private void createPauseMenu()
@@ -288,12 +299,14 @@ namespace WatchYourBack
             pauseMenu = new World(Worlds.PAUSE_MENU);
             pauseMenu.addManager(new ClientECSManager());
 
+            MenuInputSystem menuInput = new MenuInputSystem();
             pauseMenu.Manager.addEntity(EFactory.createButton(GraphicsDevice.Viewport.Width / 2, (int)((float)GraphicsDevice.Viewport.Height / 3.2f), 200, 50, Inputs.RESUME, "Resume"));
             pauseMenu.Manager.addEntity(EFactory.createButton(GraphicsDevice.Viewport.Width / 2, (int)((float)GraphicsDevice.Viewport.Height / (10f / 8f)), 200, 50, Inputs.EXIT, "ExitToMenu"));
-
-            inputListener.addWorld(pauseMenu, true);
-
             pauseMenu.Manager.addSystem(new AudioSystem(Content));
+            pauseMenu.Manager.addSystem(menuInput);
+
+            inputListener.addInput(pauseMenu, menuInput);
+            pauseMenu.Manager.Initialize();
         }
 
         private void reset(World world)
@@ -315,35 +328,30 @@ namespace WatchYourBack
                 createPauseMenu();
         }
 
-        /*
-         * Listens for the events from menu and game elements, and uses the information to manage what screens are active.
-         */
+        
+
+        /// <summary>
+        /// Listens for the events from menu and game elements, and uses the information to manage what screens are active.
+        /// </summary>
         private class InputListener
         {
-            private Dictionary<World, InputSystem> inputs;
+            private Dictionary<World, List<ESystem>> inputs;
             ClientGameLoop game;
 
             public InputListener(ClientGameLoop game)
             {
                 this.game = game;
-                inputs = new Dictionary<World, InputSystem>();
+                inputs = new Dictionary<World, List<ESystem>>();
             }
 
 
 
-            public void addWorld(World world, bool isMenu)
+            public void addInput(World world, ESystem input)
             {
-                InputSystem toAdd;
-                if (inputs.ContainsKey(world))
-                    return;
-                if (isMenu)
-                    toAdd = new MenuInputSystem();
-                else
-                    toAdd = new GameInputSystem();
-                world.Manager.addInput(toAdd);
-                world.Manager.addSystem((ESystem)toAdd);
-                inputs.Add(world, toAdd);
-                toAdd.inputFired += new EventHandler(inputFired);
+                if (!inputs.ContainsKey(world))
+                    inputs.Add(world, new List<ESystem>());
+                inputs[world].Add(input);
+                input.inputFired += new EventHandler(inputFired);
             }
 
             public void removeWorld(World world)
@@ -390,6 +398,11 @@ namespace WatchYourBack
                         {
                             game.worldStack.Push(game.pauseMenu);
                         }
+                        if (args.InputType == Inputs.EXIT)
+                        {                           
+                            game.reset(game.activeWorld);
+                            game.worldStack.Pop();
+                        }
                     }
 
                     else if (game.activeWorld.MenuType == Worlds.PAUSE_MENU)
@@ -400,15 +413,110 @@ namespace WatchYourBack
                         {
 
                             game.worldStack.Pop();
-                            World currentGame = game.worldStack.Peek();
+                            game.reset(game.worldStack.Peek());
                             game.worldStack.Pop();
-                            game.reset(currentGame);
                         }
                     }
                     game.activeWorld = game.worldStack.Peek();
                 }
             }
         }
+
+        //private class InputListener
+        //{
+        //    private Dictionary<World, InputSystem> inputs;
+        //    ClientGameLoop game;
+
+        //    public InputListener(ClientGameLoop game)
+        //    {
+        //        this.game = game;
+        //        inputs = new Dictionary<World, InputSystem>();
+        //    }
+
+
+
+        //    public void addWorld(World world, bool isMenu)
+        //    {
+        //        InputSystem toAdd;
+        //        if (inputs.ContainsKey(world))
+        //            return;
+        //        if (isMenu)
+        //            toAdd = new MenuInputSystem();
+        //        else
+        //            toAdd = new GameInputSystem();
+        //        world.Manager.addInput(toAdd);
+        //        world.Manager.addSystem((ESystem)toAdd);
+        //        inputs.Add(world, toAdd);
+        //        toAdd.inputFired += new EventHandler(inputFired);
+        //    }
+
+        //    public void removeWorld(World world)
+        //    {
+        //        if (inputs.ContainsKey(world))
+        //            inputs.Remove(world);
+        //    }
+
+        //    private void inputFired(object sender, EventArgs e)
+        //    {
+        //        if (e is InputArgs)
+        //        {
+        //            InputArgs args = (InputArgs)e;
+        //            Console.WriteLine(game.worldStack.Peek().MenuType + "=> " + args.InputType);
+
+        //            if (game.activeWorld.MenuType == Worlds.MAIN_MENU)
+        //            {
+
+        //                if (args.InputType == Inputs.START_SINGLE)
+        //                    game.worldStack.Push(game.inGame);
+        //                if (args.InputType == Inputs.START_MUTLI)
+        //                    game.worldStack.Push(game.connectMenu);
+        //                if (args.InputType == Inputs.EXIT)
+        //                    game.Exit();
+        //            }
+
+        //            else if (game.activeWorld.MenuType == Worlds.CONNECT_MENU)
+        //            {
+
+
+        //                if (args.InputType == Inputs.START_MUTLI && !game.isConnected && !game.isPinging)
+        //                {
+        //                    game.isPinging = true;
+        //                    game.client.DiscoverKnownPeer("24.87.148.96", 14242);
+        //                    Console.WriteLine("Starting pings");
+        //                }
+        //                if (args.InputType == Inputs.EXIT)
+        //                    game.worldStack.Pop();
+        //            }
+
+        //            else if (game.activeWorld.MenuType == Worlds.IN_GAME || game.activeWorld.MenuType == Worlds.IN_GAME_MULTI)
+        //            {
+        //                if (args.InputType == Inputs.PAUSE)
+        //                {
+        //                    game.worldStack.Push(game.pauseMenu);
+        //                }
+        //                if (args.InputType == Inputs.EXIT)
+        //                {
+        //                    game.reset(game.activeWorld);
+        //                    game.worldStack.Pop();
+        //                }
+        //            }
+
+        //            else if (game.activeWorld.MenuType == Worlds.PAUSE_MENU)
+        //            {
+        //                if (args.InputType == Inputs.RESUME)
+        //                    game.worldStack.Pop();
+        //                if (args.InputType == Inputs.EXIT)
+        //                {
+
+        //                    game.worldStack.Pop();
+        //                    game.reset(game.worldStack.Peek());
+        //                    game.worldStack.Pop();
+        //                }
+        //            }
+        //            game.activeWorld = game.worldStack.Peek();
+        //        }
+        //    }
+        //}
 
 
     }

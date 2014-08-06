@@ -58,8 +58,11 @@ namespace WatchYourBackLibrary
                 resetLevel();
 
 
-            if (level.GameTime <= 0)
+            if (!level.Playing)
+            {
                 Console.WriteLine("Game over");
+                
+            }
                              
         }
 
@@ -106,7 +109,7 @@ namespace WatchYourBackLibrary
                     }
 
                 }
-            level.GameTime = 60;
+
             built = true;
 
         }

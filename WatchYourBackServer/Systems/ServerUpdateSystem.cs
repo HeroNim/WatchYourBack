@@ -26,7 +26,7 @@ namespace WatchYourBackServer
         List<EventArgs> sendData;
         bool updating;
         int playerIndex;
-        const double timeStep = 1.0 / (double)ServerProperties.TimeStep;
+        const double timeStep = 1.0 / (double)ServerSettings.TimeStep;
         double[] interpolation;
         double[] accumulator;
 
@@ -77,151 +77,212 @@ namespace WatchYourBackServer
             if (level == null)
                 level = manager.LevelInfo;
 
-            if (updating)
+            if (checkGame())
             {
-                foreach (int id in manager.ChangedEntities.Keys)
+                if (updating)
                 {
-                    Entity e = manager.Entities[id];
-                    if (e.hasComponent(Masks.Transform) && e.Drawable == true)
+                    checkGame();
+                    packEntities();
+                    packScores();
+
+                    NetOutgoingMessage om = server.CreateMessage();
+                    om.Write(SerializationHelper.Serialize(sendData));
+                    server.SendToAll(om, NetDeliveryMethod.UnreliableSequenced);
+                    sendData.Clear();
+                    manager.ChangedEntities.Clear();
+                    manager.RemoveAll();
+                    updating = false;
+                    for (int i = 0; i < accumulator.Length; i++)
                     {
-                        TransformComponent transform = (TransformComponent)e.Components[Masks.Transform];
-                        if (e.hasComponent(Masks.Tile))
-                        {
-                            TileComponent tile = (TileComponent)e.Components[Masks.Tile];
-                            sendData.Add(new NetworkEntityArgs(e.Type, manager.ChangedEntities[id], e.ServerID, transform.X, transform.Y, transform.Width, transform.Height, transform.Rotation, tile.SubIndex));
-                        }
-                        else
-                            sendData.Add(new NetworkEntityArgs(e.Type, manager.ChangedEntities[id], e.ServerID, transform.X, transform.Y, transform.Width, transform.Height, transform.Rotation, 0));
+                        accumulator[i] -= timeStep;
                     }
                 }
 
+                while (!updating && manager.Playing == true)
+                {
+                    NetIncomingMessage msg;
+                    NetworkInputArgs args;
+                    AvatarInputComponent playerInputComponent;
+                    NetOutgoingMessage om;
+
+
+                    while ((msg = server.ReadMessage()) != null)
+                    {
+                        playerIndex = playerMap[msg.SenderConnection.RemoteUniqueIdentifier];
+                        om = server.CreateMessage();
+                        switch (msg.MessageType)
+                        {
+                            case NetIncomingMessageType.DiscoveryRequest:
+                            case NetIncomingMessageType.VerboseDebugMessage:
+                            case NetIncomingMessageType.DebugMessage:
+                            case NetIncomingMessageType.WarningMessage:
+                            case NetIncomingMessageType.ErrorMessage:
+                                //
+                                // Just print diagnostic messages to console
+                                //
+                                Console.WriteLine(msg.ReadString());
+                                break;
+                            case NetIncomingMessageType.StatusChanged:
+                                NetConnectionStatus status = (NetConnectionStatus)msg.ReadByte();
+                                if (status == NetConnectionStatus.Disconnected)
+                                {
+                                    Console.WriteLine(NetUtility.ToHexString(msg.SenderConnection.RemoteUniqueIdentifier) + " disconnected. Ending game.");
+                                    sendData.Clear();
+                                    sendData.Add(new NetworkUpdateArgs(ServerCommands.Disconnect));
+                                    om.Write(SerializationHelper.Serialize(sendData));
+                                    server.SendToAll(om, NetDeliveryMethod.ReliableOrdered);
+                                    sendData.Clear();
+                                    
+                                    manager.Playing = false;
+                                }
+                                break;
+                            case NetIncomingMessageType.Data:
+                                //
+                                // The client sent input to the server
+                                //
+                                args = SerializationHelper.DeserializeObject<NetworkInputArgs>(msg.ReadBytes(msg.LengthBytes));
+                                playerInputComponent = (AvatarInputComponent)level.Avatars[playerIndex].Components[Masks.PlayerInput];
+
+                                if (args.XInput == 1)
+                                    playerInputComponent.MoveX = 1;
+                                else if (args.XInput == -1)
+                                    playerInputComponent.MoveX = -1;
+                                else
+                                    playerInputComponent.MoveX = 0;
+
+                                if (args.YInput == 1)
+                                    playerInputComponent.MoveY = 1;
+                                else if (args.YInput == -1)
+                                    playerInputComponent.MoveY = -1;
+                                else
+                                    playerInputComponent.MoveY = 0;
+
+                                if (args.LeftClicked)
+                                    playerInputComponent.SwingWeapon = true;
+                                if (args.RightClicked)
+                                    playerInputComponent.ThrowWeapon = true;
+                                if (args.Dash)
+                                    playerInputComponent.Dash = true;
+
+                                playerInputComponent.LookX = args.MouseX;
+                                playerInputComponent.LookY = args.MouseY;
+
+
+
+                                accumulator[playerIndex] += args.DrawTime;
+                                if (accumulator[playerIndex] < timeStep)
+                                    interpolation[playerIndex] = accumulator[playerIndex] / timeStep;
+                                interpolate(interpolation[playerIndex]);
+
+                                om.Write(SerializationHelper.Serialize(sendData));
+                                server.SendMessage(om, server.Connections[playerIndex], NetDeliveryMethod.ReliableOrdered);
+                                sendData.Clear();
+
+                                break;
+
+                        }
+                        server.Recycle(msg);
+
+                        for (int i = 0; i < accumulator.Length; i++)
+                        {
+                            if (accumulator[i] < timeStep)
+                            {
+                                updating = false;
+                                break;
+                            }
+                            updating = true;
+                        }
+                        if (updating)
+                            break;
+                    }
+
+
+                }
+
+
+
+
+                //Output
+
+            }
+
+
+        }
+
+        public bool checkGame()
+        {
+            if (!level.Playing)
+            {
+                sendData.Clear();
+                int comparison = scores[0].CompareTo(scores[1]);
+                int winner = -1;
+                if (comparison == -1)
+                    winner = 1;
+                else if (comparison == 1)
+                    winner = 0;
+
+
+                if(winner != -1)
+                    for (int i = 0; i < server.ConnectionsCount; i++)
+                    {
+                        NetOutgoingMessage om = server.CreateMessage();
+                        if (i == winner)
+                            sendData.Add(new NetworkUpdateArgs(ServerCommands.Win));
+                        else
+                            sendData.Add(new NetworkUpdateArgs(ServerCommands.Lose));
+                        om.Write(SerializationHelper.Serialize(sendData));
+                        server.SendMessage(om, server.Connections[i], NetDeliveryMethod.ReliableOrdered);
+                        sendData.Clear();
+
+                    }
+                else
+                {
+                    NetOutgoingMessage om = server.CreateMessage();
+                    sendData.Add(new NetworkUpdateArgs(ServerCommands.Tie));
+                    om.Write(SerializationHelper.Serialize(sendData));
+                    server.SendToAll(om, NetDeliveryMethod.ReliableOrdered);
+                    sendData.Clear();
+
+                }
+               
+                
+
+                manager.Playing = false;
+                return false;
+            }
+            return true;
+        }
+
+        public void packEntities()
+        {
+            foreach (int id in manager.ChangedEntities.Keys)
+            {
+                Entity e = manager.Entities[id];
+                if (e.hasComponent(Masks.Transform) && e.Drawable == true)
+                {
+                    TransformComponent transform = (TransformComponent)e.Components[Masks.Transform];
+                    if (e.hasComponent(Masks.Tile))
+                    {
+                        TileComponent tile = (TileComponent)e.Components[Masks.Tile];
+                        sendData.Add(new NetworkEntityArgs(e.Type, manager.ChangedEntities[id], e.ServerID, transform.X, transform.Y, transform.Width, transform.Height, transform.Rotation, tile.SubIndex));
+                    }
+                    else
+                        sendData.Add(new NetworkEntityArgs(e.Type, manager.ChangedEntities[id], e.ServerID, transform.X, transform.Y, transform.Width, transform.Height, transform.Rotation, 0));
+                }
+            }
+        }
+
+        public void packScores()
+        {          
+            {
                 for (int i = 0; i < 2; i++)
                 {
-                    
                     PlayerInfoComponent p = (PlayerInfoComponent)level.Avatars[i].Components[Masks.PlayerInfo];
                     scores[i] = p.Score;
                 }
                 sendData.Add(new NetworkGameArgs(scores, level.GameTime));
-
-                NetOutgoingMessage om = server.CreateMessage();
-                om.Write(SerializationHelper.Serialize(sendData));
-                server.SendToAll(om, NetDeliveryMethod.UnreliableSequenced);
-                sendData.Clear();
-                manager.ChangedEntities.Clear();
-                manager.RemoveAll();
-                updating = false;
-                for (int i = 0; i < accumulator.Length; i++ )
-                {
-                    accumulator[i] -= timeStep;
-                }
-            }
-
-            while (!updating && manager.Playing == true)
-            {
-                NetIncomingMessage msg;
-                NetworkInputArgs args;
-                AvatarInputComponent playerInputComponent;
-
-
-
-                while ((msg = server.ReadMessage()) != null)
-                {
-                    playerIndex = playerMap[msg.SenderConnection.RemoteUniqueIdentifier];
-                    switch (msg.MessageType)
-                    {
-                        case NetIncomingMessageType.DiscoveryRequest:
-                        case NetIncomingMessageType.VerboseDebugMessage:
-                        case NetIncomingMessageType.DebugMessage:
-                        case NetIncomingMessageType.WarningMessage:
-                        case NetIncomingMessageType.ErrorMessage:
-                            //
-                            // Just print diagnostic messages to console
-                            //
-                            Console.WriteLine(msg.ReadString());
-                            break;
-                        case NetIncomingMessageType.StatusChanged:
-                            NetConnectionStatus status = (NetConnectionStatus)msg.ReadByte();
-                            if (status == NetConnectionStatus.Disconnected)
-                            {
-                                Console.WriteLine(NetUtility.ToHexString(msg.SenderConnection.RemoteUniqueIdentifier) + " disconnected. Ending game.");
-                                manager.Playing = false;
-                            }
-                            break;
-                        case NetIncomingMessageType.Data:
-                            //
-                            // The client sent input to the server
-                            //
-                            args = SerializationHelper.DeserializeObject<NetworkInputArgs>(msg.ReadBytes(msg.LengthBytes));
-                            playerInputComponent = (AvatarInputComponent)level.Avatars[playerIndex].Components[Masks.PlayerInput];
-
-                            if (args.XInput == 1)
-                                playerInputComponent.MoveX = 1;
-                            else if (args.XInput == -1)
-                                playerInputComponent.MoveX = -1;
-                            else
-                                playerInputComponent.MoveX = 0;
-
-                            if (args.YInput == 1)
-                                playerInputComponent.MoveY = 1;
-                            else if (args.YInput == -1)
-                                playerInputComponent.MoveY = -1;
-                            else
-                                playerInputComponent.MoveY = 0;
-
-                            if (args.LeftClicked)
-                                playerInputComponent.SwingWeapon = true;
-                            if (args.RightClicked)
-                                playerInputComponent.ThrowWeapon = true;
-                            if (args.Dash)
-                                playerInputComponent.Dash = true;
-
-                            playerInputComponent.LookX = args.MouseX;
-                            playerInputComponent.LookY = args.MouseY;
-
-
-
-                            accumulator[playerIndex] += args.DrawTime;
-                            if (accumulator[playerIndex] < timeStep)
-                                interpolation[playerIndex] = accumulator[playerIndex] / timeStep;
-                            interpolate(interpolation[playerIndex]);
-
-                            NetOutgoingMessage om = server.CreateMessage();
-                            om.Write(SerializationHelper.Serialize(sendData));
-                            server.SendMessage(om, server.Connections[playerIndex], NetDeliveryMethod.ReliableOrdered);
-                            sendData.Clear();
-
-                            break;
-                        
-                    }
-                    server.Recycle(msg);
-
-                    for (int i = 0; i < accumulator.Length; i++)
-                    {
-                        if (accumulator[i] < timeStep)
-                        {
-                            updating = false;
-                            break;
-                        }
-                        updating = true;
-                    }
-                    if (updating)
-                        break;
-                }
-
-                
-            }
-
-
-
-
-            //Output
-
-            
-
-
+            }     
         }
-        
-
         
 
         /// <summary>

@@ -80,7 +80,7 @@ namespace WatchYourBackLibrary
             reverse.Normalize();
             perpendicular.Normalize();
 
-            reverse *= body.Height / 2; //A line of length radius pointing in the opposite direction of the player
+            reverse *= body.Height / 2 + 4; //A line of length radius pointing in the opposite direction of the player
             perpendicular *= width; //A line pointing units perpendicular to the look direction of the player
 
             Vector2 midPoint = new Vector2(body.Center.X + reverse.X, body.Center.Y + reverse.Y);

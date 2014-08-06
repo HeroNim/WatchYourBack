@@ -12,14 +12,6 @@ using WatchYourBackLibrary;
 
 namespace WatchYourBackServer
 {
-    public enum ServerProperties
-    {
-        TimeStep = 60,
-        MaxConnections = 1,
-        Port = 14242,
-        TimeOut = 5
-    }
-
     
     /// <summary>
     /// The main game loop for the server. If no game is running, it waits for clients to connect. Once two clients connect, it begins the game. If a client disconnects, 
@@ -46,13 +38,12 @@ namespace WatchYourBackServer
 
             config = new NetPeerConfiguration("WatchYourBack");
             config.EnableMessageType(NetIncomingMessageType.DiscoveryRequest);
-            config.Port = (int)ServerProperties.Port;
+            config.Port = (int)ServerSettings.Port;
             config.EnableUPnP = true;
-            config.ConnectionTimeout = (int)ServerProperties.TimeOut;
+            config.ConnectionTimeout = (int)ServerSettings.TimeOut;
+
 
             server = new NetServer(config);
-            server.Start();
-
             gameTime = new TimeSpan();
             playing = false;
             initializing = false;
@@ -64,6 +55,8 @@ namespace WatchYourBackServer
         private void Initialize()
         {
             // TODO: Add your initialization logic here
+            server.Start();
+            
 
             nextUpdate = (float)NetTime.Now;
             levels = new Dictionary<LevelName, LevelTemplate>();
@@ -94,7 +87,7 @@ namespace WatchYourBackServer
                             if (status == NetConnectionStatus.Connected)
                             {
                                 Console.WriteLine(NetUtility.ToHexString(msg.SenderConnection.RemoteUniqueIdentifier) + " connected");
-                                if (server.ConnectionsCount == (int)ServerProperties.MaxConnections)
+                                if (server.ConnectionsCount == (int)ServerSettings.MaxConnections)
                                 {
                                     initializing = true;
                                     NetOutgoingMessage om = server.CreateMessage();
@@ -169,6 +162,10 @@ namespace WatchYourBackServer
 
         private void reset()
         {
+            
+            Thread.Sleep(100);
+            server.Shutdown("Restarting");
+            Thread.Sleep(100);
             Console.WriteLine(server.ConnectionsCount);
             playing = false;
                 Initialize();

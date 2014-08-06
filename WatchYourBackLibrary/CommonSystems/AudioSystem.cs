@@ -40,8 +40,8 @@ namespace WatchYourBackLibrary
                 if (audio.State == SoundState.Stopped)
                     audio.Dispose();
 
-            if (songList.Count != 0 && MediaPlayer.State == MediaState.Stopped)
-                MediaPlayer.Play(songList);
+            //if (songList.Count != 0 && MediaPlayer.State == MediaState.Stopped)
+            //    MediaPlayer.Play(songList);
         }
 
         public SongCollection Songs

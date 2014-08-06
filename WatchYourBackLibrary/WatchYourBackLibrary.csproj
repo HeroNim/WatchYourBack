@@ -41,6 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EventArgs\NetworkUpdateArgs.cs" />
+    <Compile Include="ServerInfo.cs" />
     <Compile Include="CommonSystems\AudioSystem.cs" />
     <Compile Include="CommonComponents\CircleColliderComponent.cs" />
     <Compile Include="CommonComponents\AllegianceComponent.cs" />

@@ -26,21 +26,24 @@ namespace WatchYourBackLibrary
         private List<List<Entity>> allEntities;
         private List<Entity> spawns;
         private List<Entity> avatars;
+
         private List<Entity> walls;
         private Timer timer;
         private int timeLeft;
 
         private bool reset;
+        private bool playing;
 
         private LevelName currentLevel;
 
         public LevelInfo()
         {
             currentLevel = LevelName.FIRST_LEVEL;
-            timeLeft = 300;
+            timeLeft = 5;
             timer = new Timer(1000);
             timer.AutoReset = true;
             timer.Elapsed += Tick;
+            playing = true;
 
             levels = new Dictionary<LevelName, LevelTemplate>();
 
@@ -81,6 +84,11 @@ namespace WatchYourBackLibrary
         {
             get { return reset; }
             set { reset = value; }
+        }
+
+        public bool Playing
+        {
+            get { return playing; }
         }
 
         public List<Entity> Walls
@@ -125,6 +133,7 @@ namespace WatchYourBackLibrary
             else
             {
                 timer.Stop();
+                playing = false;
             }
         }
 

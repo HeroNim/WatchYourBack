@@ -31,7 +31,7 @@ namespace WatchYourBackServer
         private InputSystem input;
         private int currentID;
 
-        const double timeStep = 1.0 / (double)ServerProperties.TimeStep;
+        const double timeStep = 1.0 / (double)ServerSettings.TimeStep;
         private bool playing;
 
 
@@ -48,6 +48,21 @@ namespace WatchYourBackServer
         }
 
         public bool Playing { get { return playing; } set { playing = value; } }
+
+        public void Initialize()
+        {
+            foreach (ESystem system in systems)
+            {
+                foreach (ESystem other in systems)
+                {
+                    if (other != system)
+                    {
+                        other.inputFired += new EventHandler(system.EventListener);
+                    }
+                }
+                system.initialize(this);
+            }
+        }
 
         public void addSystem(ESystem system)
         {
@@ -123,12 +138,7 @@ namespace WatchYourBackServer
 
        
 
-        /*
-         * Updates the entity lists of the manager, moving active/inactive entities to their proper lists. Any systems that run
-         * during the update loop are then updated.
-         * 
-         * 
-         */
+        
         public void update(TimeSpan gameTime)
         {            
             gameTime = TimeSpan.FromTicks((long)(TimeSpan.TicksPerSecond * timeStep));
