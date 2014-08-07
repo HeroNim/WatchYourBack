@@ -128,7 +128,7 @@ namespace WatchYourBackServer
             }
             Thread.Sleep(100);
 
-            inGame = new World(Worlds.IN_GAME);
+            inGame = new World(Worlds.InGame);
             inGame.addManager(new ServerECSManager(server.ConnectionsCount));
             inGame.Manager.Playing = true;
             ServerUpdateSystem input = new ServerUpdateSystem(server);

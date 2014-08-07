@@ -99,6 +99,9 @@ namespace WatchYourBack
             if (ms.RightButton == ButtonState.Pressed)
                 rightMouseClicked = true;
 
+            if (Keyboard.GetState().IsKeyDown(mappings[KeyBindings.PAUSE]))
+                onFire(new InputArgs(Inputs.PAUSE));
+
             toSend = new NetworkInputArgs(client.UniqueIdentifier, xInput, yInput, mouseLocation, leftMouseClicked, rightMouseClicked, activeManager.DrawTime, dash);
             om = client.CreateMessage();
             om.Write(SerializationHelper.Serialize(toSend));

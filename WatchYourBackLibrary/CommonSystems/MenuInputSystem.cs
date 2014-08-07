@@ -44,8 +44,6 @@ namespace WatchYourBack
                     onFire(new SoundArgs(ms.X, ms.Y, s.Sounds[SoundTriggers.Action]));
                     onFire(button.Args);
                     button.Focused = false;
-                    //manager.addEntity(EFactory.createAudio(ms.X, ms.Y, "Sounds/SFX/ButtonClick"));
-                    
                 }
                 else
                     button.Focused = false;

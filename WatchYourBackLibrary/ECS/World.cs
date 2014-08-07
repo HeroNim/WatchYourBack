@@ -12,11 +12,11 @@ namespace WatchYourBackLibrary
 {
     public enum Worlds
     {
-        MAIN_MENU,
-        CONNECT_MENU,
-        PAUSE_MENU,
-        IN_GAME,
-        IN_GAME_MULTI
+        MainMenu,
+        ConnectMenu,
+        PauseMenu,
+        InGame,
+        InGameMulti
     };
 
    
@@ -33,12 +33,12 @@ namespace WatchYourBackLibrary
     public class World
     {
         private IECSManager systemManager;
-        private Worlds menuType;
+        private Worlds worldType;
 
 
         public World(Worlds type)
         {
-            menuType = type;
+            worldType = type;
             systemManager = null;
         }
 
@@ -52,9 +52,9 @@ namespace WatchYourBackLibrary
             get { return systemManager; }
         }
 
-        public Worlds MenuType
+        public Worlds WorldType
         {
-            get { return menuType; }
+            get { return worldType; }
         }
 
         

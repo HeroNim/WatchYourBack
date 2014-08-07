@@ -83,7 +83,6 @@ namespace WatchYourBack
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
             worldStack = new Stack<World>();
             inputListener = new InputListener(this);
 
@@ -106,9 +105,7 @@ namespace WatchYourBack
         /// all of your content.
         /// </summary>
         protected override void LoadContent()
-        {
-            // Create a new SpriteBatch, which can be used to draw textures.
-
+        {            
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             createMainMenu();
@@ -116,16 +113,13 @@ namespace WatchYourBack
             createGame();
             createGameMulti();
             createPauseMenu();
-
-           
+          
             gameSongs.Add(Content.Load<Song>("Sounds/Music/HeroRemix"));
 
             worldStack.Push(mainMenu);
-            activeWorld = worldStack.Peek();
+            activeWorld = mainMenu;
+            inputListener.Subscribe(mainMenu);
             activeManager = (ClientECSManager)activeWorld.Manager;
-            
-
-            // TODO: use this.Content to load your game content here
         }
 
         /// <summary>
@@ -144,16 +138,12 @@ namespace WatchYourBack
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-
-
-            // TODO: Add your update logic here
             if(activeWorld == connectMenu)
                 if (!isPlayingOnline)
                     Connect();
             activeManager.update(gameTime.ElapsedGameTime);
-            activeWorld = worldStack.Peek();
             activeManager = (ClientECSManager)activeWorld.Manager;
-
+            
             base.Update(gameTime);
         }
 
@@ -167,19 +157,15 @@ namespace WatchYourBack
             spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
             activeManager.draw(spriteBatch);
             spriteBatch.End();
-
-            activeManager.DrawTime = gameTime.ElapsedGameTime.TotalSeconds;
-            
-            base.Draw(gameTime);
-            
+            activeManager.DrawTime = gameTime.ElapsedGameTime.TotalSeconds;            
+            base.Draw(gameTime);            
         }
-
-       
-
+      
+        /// <summary>
+        /// Tries to connect to the server and start a new game
+        /// </summary>
         private void Connect()
-        {
-            //----------------------------------------------------------------------------------------------------------
-            
+        {                
             NetIncomingMessage msg;
             while ((msg = client.ReadMessage()) != null)
             {
@@ -207,20 +193,39 @@ namespace WatchYourBack
                         else if(confirmation == (int)ServerCommands.Start)
                         {    
                             worldStack.Push(inGameMulti);
-                            activeWorld = worldStack.Peek();
+                            activeWorld = inGameMulti;
+                            inputListener.Unsubscribe(connectMenu);
+                            inputListener.Subscribe(inGameMulti);
                             isPlayingOnline = true;
-                            Console.WriteLine("Playing");
-                            
+                            Console.WriteLine("Playing");         
                         }
                         break;
                 }
+            }            
+        }
+
+        private void reset(World world)
+        {
+            inputListener.removeWorld(world);
+
+            if (world.WorldType == Worlds.InGame)
+                createGame();
+            else if (world.WorldType == Worlds.InGameMulti)
+            {
+                client.Disconnect("Disconnecting");
+                isConnected = false;
+                isPlayingOnline = false;
+                createGameMulti();
             }
-            
+            else if (world.WorldType == Worlds.MainMenu)
+                createMainMenu();
+            else if (world.WorldType == Worlds.PauseMenu)
+                createPauseMenu();
         }
 
         private void createMainMenu()
         {
-            mainMenu = new World(Worlds.MAIN_MENU);
+            mainMenu = new World(Worlds.MainMenu);
             mainMenu.addManager(new ClientECSManager());
 
             MenuInputSystem menuInput = new MenuInputSystem();
@@ -236,7 +241,7 @@ namespace WatchYourBack
 
         private void createConnectMenu()
         {
-            connectMenu = new World(Worlds.CONNECT_MENU);
+            connectMenu = new World(Worlds.ConnectMenu);
             connectMenu.addManager(new ClientECSManager());
 
             MenuInputSystem menuInput = new MenuInputSystem();
@@ -251,7 +256,7 @@ namespace WatchYourBack
 
         private void createGame()
         {            
-            inGame = new World(Worlds.IN_GAME);
+            inGame = new World(Worlds.InGame);
             ClientECSManager gameManager = new ClientECSManager();
             UIInfo gameUI = new UIInfo(GraphicsDevice);
             gameManager.addUI(gameUI);
@@ -275,7 +280,7 @@ namespace WatchYourBack
 
         private void createGameMulti()
         {
-            inGameMulti = new World(Worlds.IN_GAME_MULTI);
+            inGameMulti = new World(Worlds.InGameMulti);
             ClientECSManager gameManager = new ClientECSManager();
             UIInfo gameUI = new UIInfo(GraphicsDevice);
             gameManager.addUI(gameUI);
@@ -283,20 +288,17 @@ namespace WatchYourBack
 
             ClientUpdateSystem networkInput = new ClientUpdateSystem(client);
             AudioSystem audio = new AudioSystem(Content);
-            GameInputSystem gameInput = new GameInputSystem();
             audio.Songs = gameSongs;
             inGameMulti.Manager.addSystem(networkInput);                       
             inGameMulti.Manager.addSystem(audio);
-            inGameMulti.Manager.addSystem(gameInput);
 
-            inputListener.addInput(inGameMulti, gameInput);
             inputListener.addInput(inGameMulti, networkInput);
             inGameMulti.Manager.Initialize();
         }
 
         private void createPauseMenu()
         {
-            pauseMenu = new World(Worlds.PAUSE_MENU);
+            pauseMenu = new World(Worlds.PauseMenu);
             pauseMenu.addManager(new ClientECSManager());
 
             MenuInputSystem menuInput = new MenuInputSystem();
@@ -309,27 +311,7 @@ namespace WatchYourBack
             pauseMenu.Manager.Initialize();
         }
 
-        private void reset(World world)
-        {
-            inputListener.removeWorld(world);
-
-            if (world.MenuType == Worlds.IN_GAME)
-                createGame();
-            else if (world.MenuType == Worlds.IN_GAME_MULTI)
-            {
-                client.Disconnect("Disconnecting");
-                isConnected = false;
-                isPlayingOnline = false;
-                createGameMulti();
-            }
-            else if (world.MenuType == Worlds.MAIN_MENU)
-                createMainMenu();
-            else if (world.MenuType == Worlds.PAUSE_MENU)
-                createPauseMenu();
-        }
-
         
-
         /// <summary>
         /// Listens for the events from menu and game elements, and uses the information to manage what screens are active.
         /// </summary>
@@ -344,80 +326,92 @@ namespace WatchYourBack
                 inputs = new Dictionary<World, List<ESystem>>();
             }
 
-
+            
 
             public void addInput(World world, ESystem input)
             {
                 if (!inputs.ContainsKey(world))
                     inputs.Add(world, new List<ESystem>());
-                inputs[world].Add(input);
-                input.inputFired += new EventHandler(inputFired);
+                inputs[world].Add(input);                
             }
 
             public void removeWorld(World world)
             {
                 if (inputs.ContainsKey(world))
+                {
+                    Unsubscribe(world);
                     inputs.Remove(world);
+                }
+            }
+
+            public void Subscribe(World world)
+            {
+                foreach (ESystem system in inputs[world])
+                    system.inputFired += new EventHandler(inputFired);
+            }
+            public void Unsubscribe(World world)
+            {
+                if(inputs.ContainsKey(world))
+                    foreach (ESystem system in inputs[world])
+                        system.inputFired -= new EventHandler(inputFired);
             }
 
             private void inputFired(object sender, EventArgs e)
             {
                 if (e is InputArgs)
                 {
+                    
                     InputArgs args = (InputArgs)e;
-                    Console.WriteLine(game.worldStack.Peek().MenuType + "=> " + args.InputType);
-
-                    if (game.activeWorld.MenuType == Worlds.MAIN_MENU)
+                    Console.WriteLine("Input received " + args.InputType);
+                    
+                    Console.WriteLine(game.worldStack.Peek().WorldType + "=> " + args.InputType);
+                    switch (game.activeWorld.WorldType)
                     {
+                        case Worlds.MainMenu:
+                            if (args.InputType == Inputs.START_SINGLE)
+                                game.worldStack.Push(game.inGame);
+                            if (args.InputType == Inputs.START_MUTLI)
+                                game.worldStack.Push(game.connectMenu);
+                            if (args.InputType == Inputs.EXIT)
+                                game.Exit();
+                            break;
+                        case Worlds.ConnectMenu:
+                            if (args.InputType == Inputs.START_MUTLI && !game.isConnected && !game.isPinging)
+                            {
+                                game.isPinging = true;
+                                game.client.DiscoverKnownPeer("24.87.148.96", 14242);
+                                Console.WriteLine("Starting pings");
+                            }
+                            if (args.InputType == Inputs.EXIT)
+                            {
+                                game.worldStack.Pop();
+                            }
+                            break;
+                        case Worlds.InGame:
+                        case Worlds.InGameMulti:
+                            if (args.InputType == Inputs.PAUSE)
+                                game.worldStack.Push(game.pauseMenu);
+                            if (args.InputType == Inputs.EXIT)
+                            {
+                                game.reset(game.activeWorld);
+                                game.worldStack.Pop();
+                            }
+                            break;
+                        case Worlds.PauseMenu:
+                            if (args.InputType == Inputs.RESUME)
+                                game.worldStack.Pop();
+                            if (args.InputType == Inputs.EXIT)
+                            {
 
-                        if (args.InputType == Inputs.START_SINGLE)
-                            game.worldStack.Push(game.inGame);
-                        if (args.InputType == Inputs.START_MUTLI)
-                            game.worldStack.Push(game.connectMenu);
-                        if (args.InputType == Inputs.EXIT)
-                            game.Exit();
+                                game.worldStack.Pop();
+                                game.reset(game.worldStack.Peek());
+                                game.worldStack.Pop();
+                            }
+                            break;
                     }
-
-                    else if (game.activeWorld.MenuType == Worlds.CONNECT_MENU)
-                    {
-
-
-                        if (args.InputType == Inputs.START_MUTLI && !game.isConnected && !game.isPinging)
-                        {
-                            game.isPinging = true;
-                            game.client.DiscoverKnownPeer("24.87.148.96", 14242);
-                            Console.WriteLine("Starting pings");
-                        }
-                        if (args.InputType == Inputs.EXIT)
-                            game.worldStack.Pop();
-                    }
-
-                    else if (game.activeWorld.MenuType == Worlds.IN_GAME || game.activeWorld.MenuType == Worlds.IN_GAME_MULTI)
-                    {
-                        if (args.InputType == Inputs.PAUSE)
-                        {
-                            game.worldStack.Push(game.pauseMenu);
-                        }
-                        if (args.InputType == Inputs.EXIT)
-                        {                           
-                            game.reset(game.activeWorld);
-                            game.worldStack.Pop();
-                        }
-                    }
-
-                    else if (game.activeWorld.MenuType == Worlds.PAUSE_MENU)
-                    {
-                        if (args.InputType == Inputs.RESUME)
-                            game.worldStack.Pop();
-                        if (args.InputType == Inputs.EXIT)
-                        {
-
-                            game.worldStack.Pop();
-                            game.reset(game.worldStack.Peek());
-                            game.worldStack.Pop();
-                        }
-                    }
+                    Unsubscribe(game.activeWorld);
                     game.activeWorld = game.worldStack.Peek();
+                    Subscribe(game.activeWorld);
                 }
             }
         }
