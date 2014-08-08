@@ -49,15 +49,12 @@ namespace WatchYourBack
                     else
                         button.Focused = false;
 
-
                     if (button.Focused)
                         g.Sprites["Frame"].Visible = false;
                     else
                         g.Sprites["Frame"].Visible = true;
                 }
             }
-        }
-
-        
+        }     
     }
 }

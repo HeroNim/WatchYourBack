@@ -9,14 +9,12 @@ using Microsoft.Xna.Framework.Input;
 using WatchYourBackLibrary;
 
 namespace WatchYourBackLibrary
-{
-    
+{  
     /// <summary>
     /// The system responsible for waiting for attack commands, and creating the appropriate attacks, such as sword swings.
     /// </summary>
     public class AttackSystem : ESystem
     {
-
         public AttackSystem() : base(false, true, 6)
         {
             components += (int)Masks.Wielder;
@@ -51,9 +49,7 @@ namespace WatchYourBackLibrary
                         manager.removeEntity(weapon);
                         wielderComponent.RemoveWeapon();
                     }
-                }
-              
-                
+                }                           
                 if (input.SwingWeapon == true)
                 {                   
                     if (wielderComponent.AttackCooldown)
@@ -69,7 +65,6 @@ namespace WatchYourBackLibrary
                             }
                         wielderComponent.AttackCooldown = false;
                         wielderComponent.AttackSpeed.Start();
-
                     }
                     input.SwingWeapon = false;
                 }

@@ -12,7 +12,6 @@ namespace WatchYourBackLibrary
         Dashing
     }
 
-
     /// <summary>
     /// The component which holds all the data on the status effects on an avatar, including negative affects such as paralysis,
     /// and positive effects such as buffs.
@@ -24,7 +23,6 @@ namespace WatchYourBackLibrary
 
         private Dictionary<Status, float[]> currentStatus;
         private List<Status> keys;
-
 
         public StatusComponent()
         {
@@ -43,9 +41,7 @@ namespace WatchYourBackLibrary
                 currentStatus[status][1] = cooldown;
             }
         }
-
       
-
         public Dictionary<Status, float[]> CurrentStatus
         {
             get { return currentStatus; }
@@ -69,10 +65,6 @@ namespace WatchYourBackLibrary
         public float getCooldown(Status status)
         {
             return currentStatus[status][1];
-        }
-
-
-
-        
+        }       
     }
 }

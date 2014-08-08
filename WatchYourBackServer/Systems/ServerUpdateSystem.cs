@@ -21,7 +21,6 @@ namespace WatchYourBackServer
     /// </summary>
     class ServerUpdateSystem : ESystem
     {
-
         NetServer server;
         List<EventArgs> sendData;
         bool updating;
@@ -33,7 +32,6 @@ namespace WatchYourBackServer
         LevelInfo level;
         Dictionary<long, int> playerMap;
         int[] scores;
-
         
         public ServerUpdateSystem(NetServer server)
             : base(false, true, 10)
@@ -44,8 +42,7 @@ namespace WatchYourBackServer
             accumulator = new double[server.ConnectionsCount];
             interpolation = new double[server.ConnectionsCount];
             updating = true;
-            playerIndex = 0;
-            
+            playerIndex = 0;           
 
             scores = new int[2];
             playerMap = new Dictionary<long, int>();
@@ -56,10 +53,6 @@ namespace WatchYourBackServer
                 playerIndex++;
             }
         }
-
-
- 
-         
 
         /// <summary>
         /// The update loop updates the status of all the entities the player is responsible for drawing, and sends the resulting data to the players. It also is responsible
@@ -104,7 +97,6 @@ namespace WatchYourBackServer
                     NetworkInputArgs args;
                     AvatarInputComponent playerInputComponent;
                     NetOutgoingMessage om;
-
 
                     while ((msg = server.ReadMessage()) != null)
                     {
@@ -167,8 +159,6 @@ namespace WatchYourBackServer
                                 playerInputComponent.LookX = args.MouseX;
                                 playerInputComponent.LookY = args.MouseY;
 
-
-
                                 accumulator[playerIndex] += args.DrawTime;
                                 if (accumulator[playerIndex] < timeStep)
                                     interpolation[playerIndex] = accumulator[playerIndex] / timeStep;
@@ -180,7 +170,6 @@ namespace WatchYourBackServer
                                 sendData.Clear();
 
                                 break;
-
                         }
                         server.Recycle(msg);
 
@@ -196,18 +185,8 @@ namespace WatchYourBackServer
                         if (updating)
                             break;
                     }
-
-
                 }
-
-
-
-
-                //Output
-
             }
-
-
         }
 
         public bool checkGame()
@@ -222,7 +201,6 @@ namespace WatchYourBackServer
                 else if (comparison == 1)
                     winner = 0;
 
-
                 if(winner != -1)
                     for (int i = 0; i < server.ConnectionsCount; i++)
                     {
@@ -234,7 +212,6 @@ namespace WatchYourBackServer
                         om.Write(SerializationHelper.Serialize(sendData));
                         server.SendMessage(om, server.Connections[i], NetDeliveryMethod.ReliableOrdered);
                         sendData.Clear();
-
                     }
                 else
                 {
@@ -243,11 +220,8 @@ namespace WatchYourBackServer
                     om.Write(SerializationHelper.Serialize(sendData));
                     server.SendToAll(om, NetDeliveryMethod.ReliableOrdered);
                     sendData.Clear();
-
                 }
-               
-                
-
+                             
                 manager.Playing = false;
                 return false;
             }
@@ -285,7 +259,6 @@ namespace WatchYourBackServer
             }     
         }
         
-
         /// <summary>
         /// Interpolates a new position for each entity based on the interpolation factor, without actually changing the location of the entity. This allows
         /// each player to draw entities as they should see them, depending on their update rates.
@@ -333,7 +306,6 @@ namespace WatchYourBackServer
                 server.SendToAll(om, NetDeliveryMethod.UnreliableSequenced);
                 sendData.Clear();
             }
-        }
-        
+        }      
     }
 }

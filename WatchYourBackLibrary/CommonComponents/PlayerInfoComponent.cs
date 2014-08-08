@@ -5,7 +5,6 @@ using System.Text;
 
 namespace WatchYourBackLibrary
 {
-
     /// <summary>
     /// The component which holds all the information about the player, such as their avatar, allegiance, and score.
     /// </summary>
@@ -39,7 +38,5 @@ namespace WatchYourBackLibrary
             get { return score; }
             set { score = value; }
         }
-
-
     }
 }

@@ -24,14 +24,12 @@ namespace WatchYourBack
     /// </summary>
     public class ClientGameLoop : Game
     {
-
         Stack<World> worldStack;
         Stack<World> updateStack;
         Stack<World> drawStack;
         World activeWorld;
         ClientECSManager activeManager;
-        
-        
+                
         World mainMenu;
         World connectMenu;
         World inGame;
@@ -53,7 +51,6 @@ namespace WatchYourBack
         //----------------------------------------------------------------------------------------------------------
         private Stopwatch debug;
 
-
         public ClientGameLoop()
             : base()
         {
@@ -65,7 +62,6 @@ namespace WatchYourBack
             Content.RootDirectory = "Content";
             this.TargetElapsedTime = TimeSpan.FromSeconds(1.0f / 120.0f);
             
-
             //----------------------------------------------------------------------------------------------------------
             NetPeerConfiguration config = new NetPeerConfiguration("WatchYourBack");
             config.EnableMessageType(NetIncomingMessageType.DiscoveryResponse);
@@ -343,7 +339,6 @@ namespace WatchYourBack
 
             pauseMenu.Manager.Initialize();
         }
-
         
         /// <summary>
         /// Listens for the events from menu and game elements, and uses the information to manage what screens are active.
@@ -358,9 +353,7 @@ namespace WatchYourBack
                 this.game = game;
                 inputs = new Dictionary<World, List<ESystem>>();
             }
-
-            
-
+           
             public void addInput(World world, ESystem input)
             {
                 if (!inputs.ContainsKey(world))
@@ -382,6 +375,7 @@ namespace WatchYourBack
                 foreach (ESystem system in inputs[world])
                     system.inputFired += new EventHandler(inputFired);
             }
+
             public void Unsubscribe(World world)
             {
                 if(inputs.ContainsKey(world))
@@ -392,8 +386,7 @@ namespace WatchYourBack
             private void inputFired(object sender, EventArgs e)
             {
                 if (e is InputArgs)
-                {
-                    
+                {                   
                     InputArgs args = (InputArgs)e;
                     Console.WriteLine("Input received " + args.InputType);
                     
@@ -452,9 +445,6 @@ namespace WatchYourBack
                     Subscribe(game.activeWorld);
                 }
             }
-        }
-
-       
-
+        }     
     }
 }

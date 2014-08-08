@@ -10,9 +10,7 @@ using Microsoft.Xna.Framework.Graphics;
 using WatchYourBackLibrary;
 
 namespace WatchYourBackLibrary
-{
-    
-
+{    
     public enum LevelDimensions
     {
         WIDTH = 64,
@@ -21,13 +19,11 @@ namespace WatchYourBackLibrary
         Y_SCALE = 20
     };
 
-
     /// <summary>
     /// The system which manages the levels of the game. Contains a level component which holds the information, and methods to build, update, and reset levels.
     /// </summary>
     public class LevelSystem : ESystem
     {
-
         private Dictionary<LevelName, LevelTemplate> levels;
         private LevelName currentLevel;
         private LevelInfo level;
@@ -39,7 +35,6 @@ namespace WatchYourBackLibrary
             this.levels = levels;
             built = false;
         }
-
 
         public override void update(TimeSpan gameTime)
         {
@@ -57,15 +52,11 @@ namespace WatchYourBackLibrary
             if (level.Reset)
                 resetLevel();
 
-
             if (!level.Playing)
             {
-                Console.WriteLine("Game over");
-                
-            }
-                             
+                Console.WriteLine("Game over");                
+            }                            
         }
-
 
         public void addLevel(LevelTemplate level)
         {
@@ -92,7 +83,6 @@ namespace WatchYourBackLibrary
                             levelTemplate.SubIndex(y, x), manager.hasGraphics());
                         manager.addEntity(wall);
                         level.Walls.Add(wall);
-
                     }
                     if (levelTemplate.LevelData[y, x] == (int)TileType.SPAWN)
                     {
@@ -107,11 +97,8 @@ namespace WatchYourBackLibrary
                         level.Avatars.Add(avatar);
                         player++;
                     }
-
                 }
-
             built = true;
-
         }
 
         /// <summary>
@@ -124,10 +111,8 @@ namespace WatchYourBackLibrary
             level.Levels = this.levels;
 
             manager.LevelInfo = level;
-            currentLevel = level.CurrentLevel;
-           
+            currentLevel = level.CurrentLevel;         
         }
-
         
         /// <summary>
         /// Removes all entities from the level, apart from information and ui entities
@@ -157,8 +142,7 @@ namespace WatchYourBackLibrary
                 Entity avatar = EFactory.createAvatar(info, new Rectangle((int)transform.X, (int)transform.Y, 40, 40),
                              (Allegiance)i, Weapons.SWORD, manager.hasGraphics());
                 manager.addEntity(avatar);
-                level.Avatars[i] = avatar;
-                
+                level.Avatars[i] = avatar;                
             }
             level.Reset = false;
         }

@@ -7,9 +7,6 @@ using Microsoft.Xna.Framework;
 
 namespace WatchYourBackLibrary
 {
-
-    
-
     /// <summary>
     /// Arguments sent by the server telling the client information about the game, such as scores and time
     /// </summary>
@@ -27,7 +24,5 @@ namespace WatchYourBackLibrary
 
         public int[] Scores { get { return scores; } }
         public int Time { get { return time; } }
-
-
     }
 }

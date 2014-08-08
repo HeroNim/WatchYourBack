@@ -65,6 +65,5 @@ namespace WatchYourBackLibrary
         public float Rotation { get { return rotation; } }
         public int TextureIndex { get { return textureIndex; } }
         public int[,] SubIndex { get { return subIndex; } }
-
     }
 }

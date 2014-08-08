@@ -10,13 +10,10 @@ using Lidgren.Network;
 namespace WatchYourBackServer
 {
     class Program
-    {
-        
+    {        
         static void Main(string[] args)
         {
             new ServerGameLoop();
-        }
-
-       
+        }       
     }
 }

@@ -13,8 +13,7 @@ using Microsoft.Xna.Framework.Media;
 
 
 namespace WatchYourBackLibrary
-{
-      
+{    
     /// <summary>
     /// A factory to create all the entities of the game. Each method in the factory is a template for an entity in the game; the entities can be
     /// created using these methods by specifying their parameters. Also contains a method for creating a graphical representation of an entity,
@@ -23,8 +22,6 @@ namespace WatchYourBackLibrary
     public static class EFactory
     {
         public static ContentManager content;
-
-        
 
         /// <summary>
         /// Creates an avatar for the player, which also contains the player's info, such as their score.
@@ -58,10 +55,7 @@ namespace WatchYourBackLibrary
             e.Type = Entities.Avatar;
             return e;
         }
-
-        
-
-        
+     
         /// <summary>
         /// Creates a sword. Takes various parameters of the wielder that allows it to accurately move with the wielder.
         /// </summary>
@@ -97,16 +91,13 @@ namespace WatchYourBackLibrary
             new LineColliderComponent(collider1, collider2),
             soundC);
 
-            
-
             if (hasGraphics)
             {
                 Texture2D myTexture = content.Load<Texture2D>("SwordTexture");
                 e.addComponent(new GraphicsComponent(new Rectangle((int)point.X, (int)point.Y, (int)SWORD.WIDTH, (int)SWORD.RANGE), myTexture, rotationAngle, new Vector2(myTexture.Width / 2, myTexture.Height), 0.8f, "Sword"));
             }
             e.Type = Entities.Sword;
-            return e;
-            
+            return e;           
         }
 
         /// <summary>
@@ -140,7 +131,6 @@ namespace WatchYourBackLibrary
             }
             e.Type = Entities.Thrown;
             return e;
-
         }
 
         /// <summary>
@@ -155,7 +145,6 @@ namespace WatchYourBackLibrary
         /// <returns>A button entity</returns>
         public static Entity createButton(int x, int y, int width, int height, Inputs type, string text)
         {
-
             SoundEffectComponent soundC = new SoundEffectComponent();
             soundC.AddSound(SoundTriggers.Action, "Sounds/SFX/ButtonClick");
 
@@ -175,7 +164,6 @@ namespace WatchYourBackLibrary
             new RectangleColliderComponent(transform.Body, transform),
             g,
             soundC);
-
         }
 
         /// <summary>
@@ -318,9 +306,6 @@ namespace WatchYourBackLibrary
             e.ServerID = ID;
             e.Type = type;
             return e;
-        }
-       
-       
-        
+        }        
     }
 }

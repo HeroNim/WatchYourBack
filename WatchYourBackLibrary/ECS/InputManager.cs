@@ -42,8 +42,5 @@ namespace WatchYourBackLibrary
                 return true;
             return false;
         }
-
-
-
     }
 }

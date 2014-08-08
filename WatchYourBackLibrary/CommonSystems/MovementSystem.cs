@@ -10,8 +10,6 @@ using WatchYourBackLibrary;
 
 namespace WatchYourBackLibrary
 {
-
-
     /// <summary>
     /// The system used to move all entities. Finds all entities that have a transform and velocity component, then uses
     /// the relevant data to adjust their position. Also adjusts any variables in extra components that rely on movement.
@@ -39,7 +37,6 @@ namespace WatchYourBackLibrary
         {
             foreach (Entity entity in activeEntities)
             {
-
                 transform = (TransformComponent)entity.Components[Masks.Transform];
                 velocity = (VelocityComponent)entity.Components[Masks.Velocity];
                 anchorTransform = null;

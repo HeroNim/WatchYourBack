@@ -9,8 +9,6 @@ using Microsoft.Xna.Framework.Content;
 
 namespace WatchYourBackLibrary
 {
-
-
     /// <summary>
     /// An interface for the class which manages the systems in the game. Is responsible for initializing, updating, and removing systems as needed. Also contains a list of
     /// all the entities which has changed during the last update cycle; this allows for the server to send data to the client on what needs to be removed, added, or modified,
@@ -91,8 +89,6 @@ namespace WatchYourBackLibrary
         /// </summary>
         void RemoveAll();
 
-
-
         /// <summary>
         /// Updates the entity lists of the manager.
         /// </summary>
@@ -106,9 +102,6 @@ namespace WatchYourBackLibrary
         /// Checks if the manager has graphics or not (ie. client or server).
         /// </summary>
         /// <returns>True if the manager has graphics</returns>
-        bool hasGraphics();
-       
-        
-        
+        bool hasGraphics();            
     }
 }

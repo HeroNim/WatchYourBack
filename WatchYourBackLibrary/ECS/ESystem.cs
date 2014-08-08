@@ -7,8 +7,6 @@ using Microsoft.Xna.Framework;
 
 namespace WatchYourBackLibrary
 {
-
-
     /// <summary>
     /// All Systems must inherit from this class. All logic for the game must be done in the systems. All systems are either exclusive or not: exclusive systems only act on entities that contain the
     /// exact components that the system acts on, whereas nonexclusive systems will act on all entities that contain the necessary components, even if they have extra components. Each system
@@ -34,8 +32,7 @@ namespace WatchYourBackLibrary
             activeEntities = new List<Entity>();
             components = 0;
         }
-        
-        
+               
         /// <summary>
         /// Initializes the system, pulling the entity list from the manager.
         /// </summary>
@@ -44,10 +41,8 @@ namespace WatchYourBackLibrary
         {
             this.manager = manager;
             entities = manager.Entities;
-
         }
-
-        
+       
         /// <summary>
         /// Checks each entity on the entity list for matching components. If it is not exclusive, the entity must simply have the components; if it is,
         /// the entity must have only those components. The applicable entities are then updated.
@@ -69,9 +64,7 @@ namespace WatchYourBackLibrary
                         if ((entity.Mask & components) == components)
                             activeEntities.Add(entity);
             }
-            update(gameTime);
-                            
-            
+            update(gameTime);                                        
         }
 
         public int Priority

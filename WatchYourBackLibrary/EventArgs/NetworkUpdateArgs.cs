@@ -10,7 +10,6 @@ namespace WatchYourBackLibrary
     {
         private ServerCommands command;
         
-
         public NetworkUpdateArgs(ServerCommands command)
         {
             this.command = command;

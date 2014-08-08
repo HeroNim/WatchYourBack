@@ -28,9 +28,6 @@ namespace WatchYourBackLibrary
             PlayerInfoComponent p1 = (PlayerInfoComponent)level.Avatars[0].Components[Masks.PlayerInfo];
             PlayerInfoComponent p2 = (PlayerInfoComponent)level.Avatars[1].Components[Masks.PlayerInfo];
             ui.updateUI(p1.Score, p2.Score, level.GameTime);                                 
-        }
-
-       
-
+        }      
     }
 }

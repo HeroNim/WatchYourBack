@@ -26,8 +26,7 @@ namespace WatchYourBackLibrary
         SPEED = 11,
         ATTACK_SPEED = 500
     }
-
-    
+   
     /// <summary>
     /// The component which contains info regarding the various properties of weapons, such as their arc,
     /// and if they are anchored to their wielder (such as a sword) or not (thrown weapon)
@@ -79,7 +78,5 @@ namespace WatchYourBackLibrary
         {
             get { return anchored; }
         }
-
-
     }
 }

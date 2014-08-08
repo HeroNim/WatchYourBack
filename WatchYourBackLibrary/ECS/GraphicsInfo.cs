@@ -81,7 +81,6 @@ namespace WatchYourBackLibrary
             hasText = true;
             visible = true;
         }
-
         
         public int X { get { return Body.X; } set { body.X = value; } }
         public int Y { get { return Body.Y; } set { body.Y = value; } }

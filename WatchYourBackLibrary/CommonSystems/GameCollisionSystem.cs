@@ -9,10 +9,6 @@ using WatchYourBackLibrary;
 
 namespace WatchYourBackLibrary
 {
-    /*
-     * Checks for collisions between game objects, and resolves them appropriately; destroys destructible objects, stops moving objects etc.
-     */
-
     /// <summary>
     /// The system responsible for checking for collisions between game objects, and resolving them appropriately; destroy destructible objects, stop moving objects etc.
     /// </summary>
@@ -72,14 +68,10 @@ namespace WatchYourBackLibrary
         {
             bool collided = false;
             int displacement;
-            //Assign local variables
 
             VelocityComponent v1 = (VelocityComponent)e1.Components[Masks.Velocity];
             RectangleColliderComponent c1 = (RectangleColliderComponent)e1.Components[Masks.RectangleCollider];
             RectangleColliderComponent c2 = (RectangleColliderComponent)e2.Components[Masks.RectangleCollider];
-
-
-            //Check collisions
 
             displacement = (int)v1.X;
             c1.X += displacement;
@@ -142,7 +134,6 @@ namespace WatchYourBackLibrary
                     onFire(new SoundArgs(0, 0, soundC.Sounds[SoundTriggers.Destroy]));
                 }
             }
-
             if(e1.Type == Entities.Sword)
                 if(collider2 == Masks.PlayerHitbox)
                 {
@@ -152,7 +143,6 @@ namespace WatchYourBackLibrary
                     manager.LevelInfo.Reset = true;
                     Console.WriteLine("Player Hit");
                 }
-
             if (e1.Type == Entities.Thrown)
                 if (e2.Type == Entities.Avatar)
                 {
@@ -161,12 +151,7 @@ namespace WatchYourBackLibrary
                     Console.WriteLine("Paralyzed");
                     onFire(new SoundArgs(0, 0, "Sounds/SFX/StunSound"));
                 }
-
         }
-
-        
-
-        
 
         private bool haveSameAllegiance(Entity e1, Entity e2)
         {

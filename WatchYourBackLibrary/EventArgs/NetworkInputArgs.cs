@@ -6,8 +6,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 
 namespace WatchYourBackLibrary
-{
-    
+{  
     /// <summary>
     /// Arguments sent by the client to the server, informing it of player input
     /// </summary>
@@ -35,7 +34,6 @@ namespace WatchYourBackLibrary
             this.rightClicked = rightClicked;
             this.dash = dash;
             this.drawTime = drawTime;
-
         }
 
         public override string ToString()
@@ -51,7 +49,6 @@ namespace WatchYourBackLibrary
         public bool LeftClicked { get { return leftClicked; } }
         public bool RightClicked { get { return rightClicked; } }
         public bool Dash { get { return dash; } }
-        public double DrawTime { get { return drawTime; } }
-        
+        public double DrawTime { get { return drawTime; } }       
     }
 }

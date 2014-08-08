@@ -13,9 +13,7 @@ namespace WatchYourBackLibrary
     /// XNA or C# codebase, or collision detection functions.
     /// </summary>
     public static class HelperFunctions
-    {
-        
-        
+    {             
         /// <summary>
         /// Returns the diagonal length of a rectangle
         /// </summary>
@@ -90,13 +88,6 @@ namespace WatchYourBackLibrary
             return new Vector2(x, y);
         }
 
-
-        
-        
-        
-
-        
-
         /// <summary>
         /// Draws a string scaled and wrapped inside a box
         /// </summary>
@@ -111,7 +102,6 @@ namespace WatchYourBackLibrary
             string[] words = text.Split(' ');
             List<string> lines = new List<string>();
             int index = 0;
-
 
             Vector2 stringSize = font.MeasureString(text) * scale;
             int maxIndex = (int)(textBox.Height / (stringSize.Y));
@@ -129,7 +119,6 @@ namespace WatchYourBackLibrary
             currentLine = currentLine.Trim();
             lines.Add(currentLine);
 
-
             if (lines.Count > maxIndex)
                 DrawString(spriteBatch, font, text, textBox, scale * 0.98f);
             else
@@ -146,6 +135,5 @@ namespace WatchYourBackLibrary
                 }
             }
         }
-
     }
 }

@@ -12,11 +12,7 @@ using WatchYourBackLibrary;
 using System.Diagnostics;
 
 namespace WatchYourBackServer
-{
-    
-
-
-    
+{   
     /// <summary>
     /// The server side version of the ECSManager. Manages the entities and systems in the game; it is responsible for initializing, updating, and removing them as needed.
     /// Unlike the client version of the ECSManager, it is not responsible for drawing any graphical elements that entities might have.
@@ -33,9 +29,6 @@ namespace WatchYourBackServer
         const double timeStep = 1.0 / (double)ServerSettings.TimeStep;
         private bool playing;
 
-
-    
-
         public ServerECSManager(int playerCount)
         {
             systems = new List<ESystem>();
@@ -43,7 +36,6 @@ namespace WatchYourBackServer
             changedEntities = new Dictionary<int, EntityCommands>();
             removal = new List<Entity>();
             currentID = 0;
-
         }
 
         public bool Playing { get { return playing; } set { playing = value; } }
@@ -89,7 +81,6 @@ namespace WatchYourBackServer
             while (activeEntities.Keys.Contains(currentID))
                 currentID++;
             return currentID;
-
         }
 
         public void removeEntity(Entity entity)
@@ -101,8 +92,6 @@ namespace WatchYourBackServer
             }
         }
         
-       
-
         public LevelInfo LevelInfo
         {
             get { return levelInfo; }
@@ -131,10 +120,7 @@ namespace WatchYourBackServer
             else if (changedEntities.Keys.Contains(e.ServerID) && changedEntities[e.ServerID] != EntityCommands.Remove && c == EntityCommands.Remove)
                 changedEntities[e.ServerID] = EntityCommands.Remove;
         }
-
        
-
-        
         public void update(TimeSpan gameTime)
         {            
             gameTime = TimeSpan.FromTicks((long)(TimeSpan.TicksPerSecond * timeStep));
@@ -160,9 +146,6 @@ namespace WatchYourBackServer
         public bool hasGraphics()
         {
             return false;
-        }
-
-        
-        
+        }       
     }
 }

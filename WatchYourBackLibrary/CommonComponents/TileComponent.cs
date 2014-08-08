@@ -9,8 +9,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace WatchYourBackLibrary
-{
-    
+{  
     /// <summary>
     /// The component used to store what type of terrain a tile is, such as a wall or a spawn point.
     /// </summary>
@@ -58,8 +57,6 @@ namespace WatchYourBackLibrary
         {
             get { return subIndex; }
             set { subIndex = value; }
-        }
-      
-        
+        }      
     }
 }

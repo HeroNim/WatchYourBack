@@ -91,8 +91,6 @@ namespace WatchYourBackLibrary
             playerPoints.Add(new Vector2(midPoint.X + perpendicular.X, midPoint.Y + perpendicular.Y)); //A point on the tangent
             playerPoints.Add(new Vector2(midPoint.X - perpendicular.X, midPoint.Y - perpendicular.Y)); //A point on the tangent
             return playerPoints;
-        }
-
-        
+        }       
     }
 }

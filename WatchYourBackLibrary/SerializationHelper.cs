@@ -23,7 +23,6 @@ namespace WatchYourBackLibrary
             stream.Read(result, 0, (int)stream.Length);
             stream.Close();
             return result;
-
         }
 
         public static T DeserializeObject<T>(byte[] data)

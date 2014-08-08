@@ -14,7 +14,6 @@ namespace WatchYourBackLibrary
         P2 = 1,
         Score = 2
     }
-
     
     /// <summary>
     /// The component which holds the level data, such as the current level and the time left in the level.
@@ -135,10 +134,6 @@ namespace WatchYourBackLibrary
                 timer.Stop();
                 playing = false;
             }
-        }
-
-
-
-        
+        }       
     }
 }

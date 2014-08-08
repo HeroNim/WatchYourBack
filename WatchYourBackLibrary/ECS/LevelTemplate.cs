@@ -52,8 +52,6 @@ namespace WatchYourBackLibrary
             for (int y = 0; y < cornerTextureIndex.GetLength(1); y++)
                 for (int x = 0; x < cornerTextureIndex.GetLength(0); x++)
                     cornerTextureIndex[x, y] = -1;
-
-
                 for (int y = 0; y < levelImage.Height; y++)
                 {
                     for (int x = 0; x < levelImage.Width; x++)
@@ -81,10 +79,8 @@ namespace WatchYourBackLibrary
                             {
                                 if (j % 2 == 0) //Left side
                                 {
-
                                     if (x - 1 >= 0 && levelData[y, x - 1] == (int)TileType.WALL)
                                         wallAtlasIndex += 1; //Left
-
                                     if (i % 2 == 0) //Top
                                     {
                                         if (y - 1 >= 0 && x - 1 >= 0 && levelData[y - 1, x - 1] == (int)TileType.WALL)
@@ -104,7 +100,6 @@ namespace WatchYourBackLibrary
                                 {
                                     if (x + 1 < levelImage.Width && levelData[y, x + 1] == (int)TileType.WALL)
                                         wallAtlasIndex += 1; //Right
-
                                     if (i % 2 == 0) //Top
                                     {
                                         if (y - 1 >= 0 && x + 1 < levelImage.Width && levelData[y - 1, x + 1] == (int)TileType.WALL)
@@ -120,8 +115,6 @@ namespace WatchYourBackLibrary
                                             wallAtlasIndex += 4; //Bottom
                                     }
                                 }
-
-
                                 //Reorder some of the atlas indices to produce rotations
                                 if (i % 2 == 0)
                                 {
@@ -137,7 +130,6 @@ namespace WatchYourBackLibrary
                                 {
                                     if (wallAtlasIndex == 1)
                                         wallAtlasIndex = 3;
-
                                     if (j % 2 == 0 && (wallAtlasIndex == 2 || wallAtlasIndex == 5))
                                         wallAtlasIndex += 7;
                                     if (j % 2 != 0 && (wallAtlasIndex == 2 || wallAtlasIndex == 5))
@@ -147,7 +139,6 @@ namespace WatchYourBackLibrary
                                     if (j % 2 != 0 && wallAtlasIndex == 0)
                                         wallAtlasIndex = 16;
                                 }
-
                                 if(j % 2 == 0)
                                     if (wallAtlasIndex == 4)
                                         wallAtlasIndex = 6;
@@ -180,12 +171,8 @@ namespace WatchYourBackLibrary
                                 tileTextureIndex[y, x] = wallAtlasIndex;
                                 wallAtlasIndex = 0;
                             }
-
                         }
-                    }
-        
-
-   
+                    } 
         }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
@@ -228,7 +215,5 @@ namespace WatchYourBackLibrary
         {
             get { return name; }
         }
-
-
     }
 }

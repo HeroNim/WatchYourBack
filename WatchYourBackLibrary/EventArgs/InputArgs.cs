@@ -40,7 +40,6 @@ namespace WatchYourBackLibrary
             mouseY = y;
         }
 
-
         public Inputs InputType { get { return type; } }
         public int MouseX { get { return mouseX; } }
         public int MouseY { get { return mouseY; } }

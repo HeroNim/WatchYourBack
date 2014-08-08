@@ -14,8 +14,7 @@ namespace WatchYourBackLibrary
         Sword,
         Thrown
     }
-    
-    
+      
     /// <summary>
     /// Container for all the components that make up game objects. Contains a list of all the components contained, and methods to modify said components. Each entity
     /// can have only one of each component. Each component has a component-specific bit; combining these into a bitmask for the entity allows for quick lookup and comparison
@@ -31,8 +30,6 @@ namespace WatchYourBackLibrary
         private int mask;
         private bool isActive;
         private Dictionary<Masks, EComponent> components;
-
-       
 
         public Entity()
         {
@@ -64,9 +61,6 @@ namespace WatchYourBackLibrary
             this.destructable = destructable;
         }
 
-        
-           
-
         /// <summary>
         /// Checks if the entity has a component of this type already
         /// </summary>
@@ -76,9 +70,7 @@ namespace WatchYourBackLibrary
         {
             if ((this.mask & (int)bitMask) != 0)
                 return true;
-            return false;
-            
-            
+            return false;         
         }
 
         /// <summary>
@@ -94,7 +86,6 @@ namespace WatchYourBackLibrary
                 mask |= component.BitMask;
             }
         }
-
 
         /// <summary>
         /// Remove a component from the entity
@@ -177,8 +168,6 @@ namespace WatchYourBackLibrary
                     return (T)(object)c;
             throw new Exception("No such component");
                 
-        }
-
-        
+        }       
     }
 }

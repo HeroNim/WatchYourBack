@@ -18,7 +18,6 @@ namespace WatchYourBackLibrary
         private Entity timeDisplay;
         private List<Entity> uiElements;
 
-
         public UIInfo(GraphicsDevice graphicsDevice) 
         {
             p1Display = EFactory.createDisplay(new Rectangle(graphicsDevice.Viewport.Width/10, 10, 200, 50));
@@ -28,7 +27,6 @@ namespace WatchYourBackLibrary
             uiElements.Add(p1Display);
             uiElements.Add(p2Display);
             uiElements.Add(timeDisplay);
-
         }
 
         public void updateUI(int score1, int score2, int time)

@@ -3,14 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using WatchYourBackLibrary;
-
 using Microsoft.Xna.Framework;
 
 
 namespace WatchYourBackLibrary
 {
-
     /// <summary>
     /// The component which holds the data on the physical properties of an entity, such as it's position and size, as well as some
     /// methods for determining various aspects of those properties.
@@ -36,7 +33,6 @@ namespace WatchYourBackLibrary
         public TransformComponent(float x, float y)
             : this(x, y, 0, 0) {}           
         
-
         public TransformComponent(float x, float y, int width, int height)
         {
             position = new Vector2(x, y);
@@ -200,9 +196,5 @@ namespace WatchYourBackLibrary
 
             return (float)Math.Sqrt((x * x) + (y * y));
         }
-
-        
-
-
     }
 }

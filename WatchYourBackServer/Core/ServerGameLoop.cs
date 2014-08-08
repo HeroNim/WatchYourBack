@@ -11,8 +11,7 @@ using Lidgren.Network;
 using WatchYourBackLibrary;
 
 namespace WatchYourBackServer
-{
-    
+{    
     /// <summary>
     /// The main game loop for the server. If no game is running, it waits for clients to connect. Once two clients connect, it begins the game. If a client disconnects, 
     /// it goes back to waiting for clients to connect.
@@ -25,23 +24,17 @@ namespace WatchYourBackServer
         TimeSpan gameTime;
         NetPeerConfiguration config;
         
-
-        float nextUpdate;
-        
+        float nextUpdate;       
         World inGame;
-
         Dictionary<LevelName, LevelTemplate> levels;
-
 
         public ServerGameLoop()
         {
-
             config = new NetPeerConfiguration("WatchYourBack");
             config.EnableMessageType(NetIncomingMessageType.DiscoveryRequest);
             config.Port = (int)ServerSettings.Port;
             config.EnableUPnP = true;
             config.ConnectionTimeout = (int)ServerSettings.TimeOut;
-
 
             server = new NetServer(config);
             gameTime = new TimeSpan();
@@ -57,10 +50,8 @@ namespace WatchYourBackServer
             // TODO: Add your initialization logic here
             server.Start();
             
-
             nextUpdate = (float)NetTime.Now;
             levels = new Dictionary<LevelName, LevelTemplate>();
-
 
             NetIncomingMessage msg;
             while (!playing)
@@ -133,8 +124,7 @@ namespace WatchYourBackServer
             inGame.Manager.Playing = true;
             ServerUpdateSystem input = new ServerUpdateSystem(server);
             input.Accumulator = new double[server.ConnectionsCount];
-            inGame.Manager.addSystem(input);
-            
+            inGame.Manager.addSystem(input);           
 
             inGame.Manager.addSystem(new AvatarInputSystem());
             inGame.Manager.addSystem(new GameCollisionSystem());
@@ -149,7 +139,6 @@ namespace WatchYourBackServer
             }
         }
 
-
         private void Update()
         {
             while (true)
@@ -161,19 +150,13 @@ namespace WatchYourBackServer
         }
 
         private void reset()
-        {
-            
+        {         
             Thread.Sleep(100);
             server.Shutdown("Restarting");
             Thread.Sleep(100);
             Console.WriteLine(server.ConnectionsCount);
             playing = false;
                 Initialize();
-        }
-
-        
-
-        
-        
+        }        
     }
 }

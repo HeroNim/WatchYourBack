@@ -21,7 +21,6 @@ namespace WatchYourBackLibrary
         public override int BitMask { get { return (int)Masks.Allegiance; } }
         public override Masks Mask { get { return Masks.Allegiance; } }
 
-
         private Allegiance myAllegiance;
 
         public AllegianceComponent(Allegiance owner)
@@ -33,8 +32,6 @@ namespace WatchYourBackLibrary
         {
             get { return myAllegiance; }
             set { myAllegiance = value; }
-        }
-
-       
+        }      
     }
 }

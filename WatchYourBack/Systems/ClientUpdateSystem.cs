@@ -38,16 +38,12 @@ namespace WatchYourBack
         
         List<List<EventArgs>> buffer; //Holds incoming messages
 
-
-
         private NetworkInputArgs toSend;
         private NetClient client;
         private ClientECSManager activeManager;
 
-
         public ClientUpdateSystem(NetClient client) : base(false, true, 10)
-        {
-            
+        {           
             this.client = client;
             bufferCount = 1;
             layer = 0;
@@ -64,9 +60,7 @@ namespace WatchYourBack
             mappings.Add(KeyBindings.UP, Keys.W);
             mappings.Add(KeyBindings.DOWN, Keys.S);
             mappings.Add(KeyBindings.PAUSE, Keys.Escape);
-            mappings.Add(KeyBindings.DASH, Keys.Space);
-
-            
+            mappings.Add(KeyBindings.DASH, Keys.Space);         
         }
 
         /// <summary>
@@ -77,8 +71,6 @@ namespace WatchYourBack
         {
             activeManager = (ClientECSManager)manager;
             NetOutgoingMessage om;
-
-
 
             if (InputManager.checkIfActive(this))
             {
@@ -111,14 +103,10 @@ namespace WatchYourBack
             Console.WriteLine("Sent");
             reset();
             
-
             NetIncomingMessage msg;
-
-           
+          
                 while ((msg = client.ReadMessage()) != null)
                 {
-
-
                     switch (msg.MessageType)
                     {
                         case NetIncomingMessageType.Data:
@@ -130,11 +118,8 @@ namespace WatchYourBack
 
                 while (buffer.Count != 0 && bufferCount >= 0)
                 {
-
                     List<EventArgs> receivedData = buffer[0];
                     buffer.RemoveAt(0);
-
-
 
                     foreach (EventArgs receivedArgs in receivedData)
                     {
@@ -146,7 +131,6 @@ namespace WatchYourBack
                             switch (args.Command)
                             {
                                 case EntityCommands.Add:
-
                                     if (args.SubIndex != null)
                                     {
                                         e = EFactory.createGraphics(body, args.Rotation, rotationOrigin, rotationOffset, args.ID, args.SubIndex, args.Type, layer);
@@ -220,20 +204,12 @@ namespace WatchYourBack
                                     Console.WriteLine("You tied. :/");
                                     onFire(new InputArgs(Inputs.EXIT));
                                     break;
-
-                                    
                             }
-                            
                         }
                     }
-
-
                 }
-
                 Console.WriteLine(manager.Entities.Count);
                 manager.ChangedEntities.Clear();
-             
-            
         }
       
         /// <summary>
@@ -246,13 +222,6 @@ namespace WatchYourBack
             leftMouseClicked = false;
             rightMouseClicked = false;
             dash = false;
-
-
         }
-
-        
-
-        
-
     }
 }

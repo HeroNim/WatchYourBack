@@ -9,9 +9,6 @@ using WatchYourBackLibrary;
 
 namespace WatchYourBackLibrary
 {
-
-  
-
     /// <summary>
     /// The system responsible for adjusting properties of the avatars given various inputs by the players
     /// </summary>
@@ -92,18 +89,6 @@ namespace WatchYourBackLibrary
                             velocity.RotationSpeed = 0;
                     }
                 }
-
-
-                //if(entity.hasComponent(Masks.WIELDER))
-                //{
-                //    if (((WielderComponent)entity.Components[Masks.WIELDER]).hasWeapon)
-                //    {
-                //        Entity weapon = ((WielderComponent)entity.Components[Masks.WIELDER]).Weapon;
-                //        VelocityComponent weaponVelocityComponent = (VelocityComponent)weapon.Components[Masks.VELOCITY];
-                //        weaponVelocityComponent.Y = velocity.Y;
-                //        weaponVelocityComponent.X = velocity.X;
-                //    }
-                //}
             }
         }
     }

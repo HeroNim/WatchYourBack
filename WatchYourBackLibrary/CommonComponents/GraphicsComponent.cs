@@ -7,15 +7,12 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace WatchYourBackLibrary
-{
-
-   
+{   
     /// <summary>
     /// The component which holds all the graphical information of an entity, as well as get/setters for the information of the primary sprite of the entity.
     /// </summary>
     public class GraphicsComponent : EComponent
     {
-
         public override int BitMask { get { return (int)Masks.Graphics; } }
         public override Masks Mask { get { return Masks.Graphics; } }
         
@@ -61,7 +58,6 @@ namespace WatchYourBackLibrary
             main = new GraphicsInfo(body, text, font, fontColor, layer);
             graphics.Add(key, main);         
         }
-
  
         public int X { get { return main.X; } set { main.X = value; } }
         public int Y { get { return main.Y; } set { main.Y = value; } }
@@ -80,8 +76,6 @@ namespace WatchYourBackLibrary
         public List<Vector2> DebugPoints { get { return main.DebugPoints; } set { main.DebugPoints = value; } }
         public float Layer { get { return main.Layer; } set { main.Layer = value; } }
 
-        public Dictionary<string, GraphicsInfo> Sprites { get { return graphics; } set { graphics = value; } }
-
-        
+        public Dictionary<string, GraphicsInfo> Sprites { get { return graphics; } set { graphics = value; } }       
     }
 }

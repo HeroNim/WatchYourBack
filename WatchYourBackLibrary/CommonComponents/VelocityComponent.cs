@@ -9,13 +9,11 @@ using Microsoft.Xna.Framework;
 
 namespace WatchYourBackLibrary
 {
-
     /// <summary>
     /// The component which holds the velocity data of an entity.
     /// </summary>
     public class VelocityComponent : EComponent
     {
-
         public override int BitMask { get { return (int)Masks.Velocity; } }
         public override Masks Mask { get { return Masks.Velocity; } }
 

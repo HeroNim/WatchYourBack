@@ -14,16 +14,12 @@ namespace WatchYourBackLibrary
     {
         SWORD
     }
-
-   
-
     
     /// <summary>
     /// The component which holds the info for the wielder of a weapon, such as the cooldown on their attacks and the type of weapons they use.
     /// </summary>
     public class WielderComponent : EComponent
     {
-
         public override int BitMask { get { return (int)Masks.Wielder; } }
         public override Masks Mask { get { return Masks.Wielder; } }
 
@@ -34,8 +30,7 @@ namespace WatchYourBackLibrary
         private bool attackCooldown;
         private bool throwCooldown;
         private double lastUpdate;
-        
-        
+               
         public WielderComponent(Weapons weapon)
         {
             lastUpdate = 0;
@@ -124,8 +119,6 @@ namespace WatchYourBackLibrary
         {
             throwCooldown = true;
             throwTimer.Stop();
-        }
-
-        
+        }       
     }
 }

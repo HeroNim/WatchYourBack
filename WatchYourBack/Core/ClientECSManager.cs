@@ -10,9 +10,7 @@ using Microsoft.Xna.Framework.Content;
 using WatchYourBackLibrary;
 
 namespace WatchYourBack
-{
-    
-    
+{      
     /// <summary>
     /// The client side version of the ECS Manager. Manages the entities and systems in the game; it is responsible for initializing, updating, and removing them as needed.
     /// It is also responsible for drawing any graphical elements that entities might have via XNA's built-in draw functions.
@@ -57,9 +55,7 @@ namespace WatchYourBack
                 system.initialize(this);                
             }
         }
-
-        
-
+      
         public void addUI(UIInfo info)
         {
             ui = info;
@@ -111,17 +107,13 @@ namespace WatchYourBack
                 addChangedEntities(entity, EntityCommands.Remove);
             }
         }
-        
-        
-
+               
         public LevelInfo LevelInfo
         {
             get { return levelInfo; }
             set { levelInfo = value; }
         }
-
-       
-
+      
         public Dictionary<int, Entity> Entities
         {
             get { return activeEntities; }
@@ -172,8 +164,7 @@ namespace WatchYourBack
                 activeEntities.Remove(entity.ClientID);
             removal.Clear();
         }      
-
-        
+       
         public void draw(SpriteBatch spriteBatch)
         {
             foreach (Entity entity in activeEntities.Values)
@@ -206,10 +197,6 @@ namespace WatchYourBack
         public bool hasGraphics()
         {
             return true;
-        }
-      
-       
-
-        
+        }           
     }
 }

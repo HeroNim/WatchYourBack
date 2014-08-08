@@ -7,7 +7,6 @@ using WatchYourBackLibrary;
 
 namespace WatchYourBackLibrary
 {
-  
     /// <summary>
     /// The component that holds information relevant to a button, such as the function of the button and whether
     /// it has been focused.
@@ -38,9 +37,6 @@ namespace WatchYourBackLibrary
         {
             get { return focused; }
             set { focused = value; }
-        }
-
-        
-
+        }       
     }
 }

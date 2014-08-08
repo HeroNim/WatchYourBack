@@ -19,8 +19,7 @@ namespace WatchYourBackLibrary
 
         private Rectangle collider;
         private TransformComponent anchor;
-
-        
+      
         public RectangleColliderComponent(Rectangle r, TransformComponent anchor)
         {
             collider = r;
@@ -61,7 +60,6 @@ namespace WatchYourBackLibrary
         {
             get { return anchor; }
             set { anchor = value; }
-        }
-        
+        }      
     }
 }

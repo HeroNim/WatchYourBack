@@ -28,8 +28,6 @@ namespace WatchYourBackLibrary
         Status = 1 << 18,
     };
 
-   
-
     /// <summary>
     /// Components that make up each entity. Ideally contains only data and the methods needed to access them.
     /// Also contains the value of the component-specific bitmask used to quickly lookup and compare components and entities.
@@ -46,7 +44,6 @@ namespace WatchYourBackLibrary
 
         private Entity entity;
 
-
         //Set the component to an entity
         public void setEntity(Entity entity)
         {
@@ -58,7 +55,5 @@ namespace WatchYourBackLibrary
         {
             return this.entity;
         }
-
-
     }
 }

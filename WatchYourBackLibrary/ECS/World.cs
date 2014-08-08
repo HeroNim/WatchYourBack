@@ -19,8 +19,6 @@ namespace WatchYourBackLibrary
         InGameMulti
     };
 
-   
-
     /// <summary>
     /// A base container class for each game state.
     /// </summary>
@@ -37,7 +35,6 @@ namespace WatchYourBackLibrary
 
         private bool updateExclusive;
         private bool drawExclusive;
-
 
         public World(Worlds type, bool updateExclusive = true, bool drawExclusive = true)
         {
@@ -63,16 +60,6 @@ namespace WatchYourBackLibrary
         }
 
         public bool UpdateExclusive { get { return updateExclusive; } }
-        public bool DrawExclusive { get { return drawExclusive; } }
-
-        
-
-        
-
-
-
-
-
-       
+        public bool DrawExclusive { get { return drawExclusive; } }      
     }
 }

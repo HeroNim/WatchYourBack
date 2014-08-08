@@ -10,7 +10,6 @@ using WatchYourBackLibrary;
 
 namespace WatchYourBack
 {
-
     public enum KeyBindings
     {
         LEFT,
@@ -20,8 +19,7 @@ namespace WatchYourBack
         PAUSE,
         ATTACK,
         DASH
-    }
-   
+    }  
 
     /// <summary>
     /// The system which takes the state of the game, and appropriately informs object which require input. 
@@ -39,8 +37,7 @@ namespace WatchYourBack
             mappings.Add(KeyBindings.UP, Keys.W);
             mappings.Add(KeyBindings.DOWN, Keys.S);
             mappings.Add(KeyBindings.PAUSE, Keys.Escape);
-            mappings.Add(KeyBindings.DASH, Keys.Space);
-            
+            mappings.Add(KeyBindings.DASH, Keys.Space);       
         }
 
         public override void update(TimeSpan gameTime)
@@ -81,9 +78,7 @@ namespace WatchYourBack
 
                 if (Keyboard.GetState().IsKeyDown(mappings[KeyBindings.PAUSE]))
                     onFire(new InputArgs(Inputs.PAUSE));
-            }
+            } 
         }
-        
-
     }
 }

@@ -38,8 +38,5 @@ namespace WatchYourBackLibrary
         {
             sounds.Add(trigger, new SoundInfo(fileName));
         }
-
-
-
     }
 }

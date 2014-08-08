@@ -44,7 +44,6 @@ namespace WatchYourBackLibrary
         public bool Loop { get { return loop; } }
         public float Volume { get { return volume; } }
         public float Pitch { get { return pitch; } }
-        public float Pan { get { return pan; } }
-       
+        public float Pan { get { return pan; } }      
     }
 }

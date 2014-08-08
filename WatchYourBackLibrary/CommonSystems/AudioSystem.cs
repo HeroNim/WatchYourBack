@@ -22,8 +22,7 @@ namespace WatchYourBackLibrary
             components += (int)Masks.Audio;
             songList = new SongCollection();
             sounds = new List<SoundEffectInstance>();
-            MediaPlayer.IsRepeating = true;
-            
+            MediaPlayer.IsRepeating = true;           
         }
 
         public override void initialize(IECSManager manager)
@@ -34,8 +33,7 @@ namespace WatchYourBackLibrary
         }
 
         public override void update(TimeSpan gameTime)
-        {
-            
+        {  
             foreach (SoundEffectInstance audio in sounds)
                 if (audio.State == SoundState.Stopped)
                     audio.Dispose();
