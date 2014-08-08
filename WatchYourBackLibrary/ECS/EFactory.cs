@@ -80,7 +80,7 @@ namespace WatchYourBackLibrary
             
             Vector2 point = HelperFunctions.pointOnCircle(anchorTransform.Radius, positionAngle, anchorTransform.Center);
 
-            Vector2 collider1 = new Vector2(point.X, point.Y);
+            Vector2 collider1 = new Vector2(point.X, point.Y + 10);
             Vector2 collider2 = new Vector2(point.X, point.Y - (float)SWORD.RANGE);
             collider1 = Vector2.Transform(collider1 - point, Matrix.CreateRotationZ(rotationAngle)) + point;
             collider2 = Vector2.Transform(collider2 - point, Matrix.CreateRotationZ(rotationAngle)) + point;

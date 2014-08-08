@@ -26,7 +26,7 @@ namespace WatchYourBack
     /// <summary>
     /// The system which takes the state of the game, and appropriately informs object which require input. 
     /// </summary>
-    public class GameInputSystem : ESystem, InputSystem
+    public class GameInputSystem : ESystem
     {
         private Dictionary<KeyBindings, Keys> mappings;
         public GameInputSystem()
@@ -47,38 +47,41 @@ namespace WatchYourBack
         {
             AvatarInputComponent p1;
 
-            foreach(Entity entity in activeEntities)
+            if (InputManager.checkIfActive(this))
             {
-                p1 = (AvatarInputComponent)entity.Components[Masks.PlayerInput];
-                MouseState ms = Mouse.GetState();
-                
-                if (Keyboard.GetState().IsKeyDown(mappings[KeyBindings.RIGHT]))
-                    p1.MoveX = 1;
-                else if (Keyboard.GetState().IsKeyDown(mappings[KeyBindings.LEFT]))
-                    p1.MoveX = -1;
-                else
-                    p1.MoveX = 0;
+                foreach (Entity entity in activeEntities)
+                {
+                    p1 = (AvatarInputComponent)entity.Components[Masks.PlayerInput];
+                    MouseState ms = Mouse.GetState();
 
-                if (Keyboard.GetState().IsKeyDown(mappings[KeyBindings.UP]))
-                    p1.MoveY = -1;
-                else if (Keyboard.GetState().IsKeyDown(mappings[KeyBindings.DOWN]))
-                    p1.MoveY = 1;
-                else
-                    p1.MoveY = 0;
-                if (Keyboard.GetState().IsKeyDown(mappings[KeyBindings.DASH]))
-                    p1.Dash = true;
-                else
-                    p1.Dash = false;
-                if(ms.LeftButton == ButtonState.Pressed)
-                    p1.SwingWeapon = true;
-                if (ms.RightButton == ButtonState.Pressed)
-                    p1.ThrowWeapon = true;
-                p1.LookX = ms.X;
-                p1.LookY = ms.Y;
+                    if (Keyboard.GetState().IsKeyDown(mappings[KeyBindings.RIGHT]))
+                        p1.MoveX = 1;
+                    else if (Keyboard.GetState().IsKeyDown(mappings[KeyBindings.LEFT]))
+                        p1.MoveX = -1;
+                    else
+                        p1.MoveX = 0;
+
+                    if (Keyboard.GetState().IsKeyDown(mappings[KeyBindings.UP]))
+                        p1.MoveY = -1;
+                    else if (Keyboard.GetState().IsKeyDown(mappings[KeyBindings.DOWN]))
+                        p1.MoveY = 1;
+                    else
+                        p1.MoveY = 0;
+                    if (Keyboard.GetState().IsKeyDown(mappings[KeyBindings.DASH]))
+                        p1.Dash = true;
+                    else
+                        p1.Dash = false;
+                    if (ms.LeftButton == ButtonState.Pressed)
+                        p1.SwingWeapon = true;
+                    if (ms.RightButton == ButtonState.Pressed)
+                        p1.ThrowWeapon = true;
+                    p1.LookX = ms.X;
+                    p1.LookY = ms.Y;
+                }
+
+                if (Keyboard.GetState().IsKeyDown(mappings[KeyBindings.PAUSE]))
+                    onFire(new InputArgs(Inputs.PAUSE));
             }
-
-            if (Keyboard.GetState().IsKeyDown(mappings[KeyBindings.PAUSE]))
-                onFire(new InputArgs(Inputs.PAUSE));   
         }
         
 

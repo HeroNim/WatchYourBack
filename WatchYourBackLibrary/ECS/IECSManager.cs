@@ -50,12 +50,6 @@ namespace WatchYourBackLibrary
         void removeEntity(Entity entity);
 
         /// <summary>
-        /// Sets the input system of the manager
-        /// </summary>
-        /// <param name="input">The input system to be set</param>
-        void addInput(InputSystem input);
-
-        /// <summary>
         /// The component containing all the information about the game's levels.
         /// </summary>
         LevelInfo LevelInfo
@@ -114,10 +108,7 @@ namespace WatchYourBackLibrary
         /// <returns>True if the manager has graphics</returns>
         bool hasGraphics();
        
-        InputSystem Input
-        {
-            get;
-        }
+        
         
     }
 }

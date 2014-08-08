@@ -25,7 +25,6 @@ namespace WatchYourBack
         private List<Entity> removal;
         private LevelInfo levelInfo;
         private UIInfo ui;
-        private InputSystem input;
         private int currentID;
         private double drawTime;
 
@@ -113,10 +112,7 @@ namespace WatchYourBack
             }
         }
         
-        public void addInput(InputSystem input)
-        {
-            this.input = input;
-        }
+        
 
         public LevelInfo LevelInfo
         {
@@ -212,10 +208,7 @@ namespace WatchYourBack
             return true;
         }
       
-        public InputSystem Input
-        {
-            get { return input; }
-        }
+       
 
         
     }

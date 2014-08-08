@@ -22,7 +22,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>13</ApplicationRevision>
+    <ApplicationRevision>16</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -113,11 +113,11 @@
     <Content Include="Content\TestFont.xnb" />
     <Content Include="Content\ThrownTexture.xnb" />
     <Content Include="Content\TileTextures\WallTextureAtlas.xnb" />
-    <None Include="Content\Sounds\SFX\ButtonClick.xnb" />
-    <None Include="Content\Sounds\SFX\ImpactSound.xnb" />
-    <None Include="Content\Sounds\SFX\StunSound.xnb" />
-    <None Include="Content\Sounds\SFX\SwordSwing.xnb" />
-    <None Include="Content\Sounds\SFX\ThrowSound.xnb" />
+    <Content Include="Content\Sounds\SFX\ButtonClick.xnb" />
+    <Content Include="Content\Sounds\SFX\ImpactSound.xnb" />
+    <Content Include="Content\Sounds\SFX\StunSound.xnb" />
+    <Content Include="Content\Sounds\SFX\SwordSwing.xnb" />
+    <Content Include="Content\Sounds\SFX\ThrowSound.xnb" />
     <None Include="WatchYourBack_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>

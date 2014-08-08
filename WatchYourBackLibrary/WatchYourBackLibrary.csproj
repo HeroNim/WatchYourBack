@@ -41,7 +41,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Primitives\Circle.cs" />
+    <Compile Include="CollisionHelper.cs" />
     <Compile Include="EventArgs\NetworkUpdateArgs.cs" />
+    <Compile Include="Primitives\Line.cs" />
     <Compile Include="ServerInfo.cs" />
     <Compile Include="CommonSystems\AudioSystem.cs" />
     <Compile Include="CommonComponents\CircleColliderComponent.cs" />
@@ -69,7 +72,7 @@
     <Compile Include="ECS\ESystem.cs" />
     <Compile Include="CommonComponents\GraphicsComponent.cs" />
     <Compile Include="ECS\IECSManager.cs" />
-    <Compile Include="CommonSystems\InputSystem.cs" />
+    <Compile Include="ECS\InputManager.cs" />
     <Compile Include="ECS\World.cs" />
     <Compile Include="ECS\GraphicsInfo.cs" />
     <Compile Include="HelperFunctions.cs" />

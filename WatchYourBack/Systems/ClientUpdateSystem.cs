@@ -78,29 +78,31 @@ namespace WatchYourBack
             activeManager = (ClientECSManager)manager;
             NetOutgoingMessage om;
 
-           
-    
 
-            MouseState ms = Mouse.GetState();
-            mouseLocation = new Vector2(ms.X, ms.Y);
 
-            if (Keyboard.GetState().IsKeyDown(mappings[KeyBindings.RIGHT]))
-                xInput = 1;
-            if (Keyboard.GetState().IsKeyDown(mappings[KeyBindings.LEFT]))
-                xInput = -1;
-            if (Keyboard.GetState().IsKeyDown(mappings[KeyBindings.UP]))
-                yInput = -1;
-            if (Keyboard.GetState().IsKeyDown(mappings[KeyBindings.DOWN]))
-                yInput = 1;
-            if (Keyboard.GetState().IsKeyDown(mappings[KeyBindings.DASH]))
-                dash = true;
-            if (ms.LeftButton == ButtonState.Pressed)
-                leftMouseClicked = true;
-            if (ms.RightButton == ButtonState.Pressed)
-                rightMouseClicked = true;
+            if (InputManager.checkIfActive(this))
+            {
+                MouseState ms = Mouse.GetState();
+                mouseLocation = new Vector2(ms.X, ms.Y);
 
-            if (Keyboard.GetState().IsKeyDown(mappings[KeyBindings.PAUSE]))
-                onFire(new InputArgs(Inputs.PAUSE));
+                if (Keyboard.GetState().IsKeyDown(mappings[KeyBindings.RIGHT]))
+                    xInput = 1;
+                if (Keyboard.GetState().IsKeyDown(mappings[KeyBindings.LEFT]))
+                    xInput = -1;
+                if (Keyboard.GetState().IsKeyDown(mappings[KeyBindings.UP]))
+                    yInput = -1;
+                if (Keyboard.GetState().IsKeyDown(mappings[KeyBindings.DOWN]))
+                    yInput = 1;
+                if (Keyboard.GetState().IsKeyDown(mappings[KeyBindings.DASH]))
+                    dash = true;
+                if (ms.LeftButton == ButtonState.Pressed)
+                    leftMouseClicked = true;
+                if (ms.RightButton == ButtonState.Pressed)
+                    rightMouseClicked = true;
+
+                if (Keyboard.GetState().IsKeyDown(mappings[KeyBindings.PAUSE]))
+                    onFire(new InputArgs(Inputs.PAUSE));
+            }
 
             toSend = new NetworkInputArgs(client.UniqueIdentifier, xInput, yInput, mouseLocation, leftMouseClicked, rightMouseClicked, activeManager.DrawTime, dash);
             om = client.CreateMessage();

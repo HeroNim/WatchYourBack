@@ -39,7 +39,7 @@ namespace WatchYourBackLibrary
         public LevelInfo()
         {
             currentLevel = LevelName.FIRST_LEVEL;
-            timeLeft = 5;
+            timeLeft = 60;
             timer = new Timer(1000);
             timer.AutoReset = true;
             timer.Elapsed += Tick;

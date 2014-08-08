@@ -17,13 +17,17 @@ namespace WatchYourBackLibrary
         public override Masks Mask { get { return Masks.PlayerHitbox; } }
 
         private float width;
-        private Vector2 p1;
-        private Vector2 p2;
+        private Line collider;
 
         public PlayerHitboxComponent(Vector2 point1, Vector2 point2)
         {
-            p1 = point1;
-            p2 = point2;
+            collider = new Line(point1, point2);           
+        }
+
+        public Line Collider
+        {
+            get { return collider; }
+            set { collider = value; }
         }
 
         public PlayerHitboxComponent(List<Vector2> points)
@@ -32,38 +36,38 @@ namespace WatchYourBackLibrary
 
         public Vector2 P1
         {
-            get { return p1; }
-            set { p1 = value; }
+            get { return collider.P1; }
+            set { collider.P1 = value; }
         }
 
         public Vector2 P2
         {
-            get { return p2; }
-            set { p2 = value; }
+            get { return collider.P2; }
+            set { collider.P2 = value; }
         }
 
         public float X1
         {
-            get { return p1.X; }
-            set { p1.X = value; }
+            get { return collider.X1; }
+            set { collider.X1 = value; }
         }
 
         public float X2
         {
-            get { return p2.X; }
-            set { p2.X = value; }
+            get { return collider.X2; }
+            set { collider.X2 = value; }
         }
 
         public float Y1
         {
-            get { return p1.Y; }
-            set { p1.Y = value; }
+            get { return collider.Y1; }
+            set { collider.Y1 = value; }
         }
 
         public float Y2
         {
-            get { return p2.Y; }
-            set { p2.Y = value; }
+            get { return collider.Y2; }
+            set { collider.Y2 = value; }
         }
 
         public float Width
@@ -80,7 +84,7 @@ namespace WatchYourBackLibrary
             reverse.Normalize();
             perpendicular.Normalize();
 
-            reverse *= body.Height / 2 + 4; //A line of length radius pointing in the opposite direction of the player
+            reverse *= body.Height / 2 + 6; //A line pointing in the opposite direction of the player
             perpendicular *= width; //A line pointing units perpendicular to the look direction of the player
 
             Vector2 midPoint = new Vector2(body.Center.X + reverse.X, body.Center.Y + reverse.Y);

@@ -35,11 +35,16 @@ namespace WatchYourBackLibrary
         private IECSManager systemManager;
         private Worlds worldType;
 
+        private bool updateExclusive;
+        private bool drawExclusive;
 
-        public World(Worlds type)
+
+        public World(Worlds type, bool updateExclusive = true, bool drawExclusive = true)
         {
-            worldType = type;
             systemManager = null;
+            worldType = type;
+            this.updateExclusive = updateExclusive;
+            this.drawExclusive = drawExclusive;
         }
 
         public void addManager(IECSManager manager)
@@ -56,6 +61,11 @@ namespace WatchYourBackLibrary
         {
             get { return worldType; }
         }
+
+        public bool UpdateExclusive { get { return updateExclusive; } }
+        public bool DrawExclusive { get { return drawExclusive; } }
+
+        
 
         
 

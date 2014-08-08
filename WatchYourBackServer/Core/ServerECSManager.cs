@@ -28,7 +28,6 @@ namespace WatchYourBackServer
         private List<ESystem> systems;
         private List<Entity> removal;
         private LevelInfo levelInfo;
-        private InputSystem input;
         private int currentID;
 
         const double timeStep = 1.0 / (double)ServerSettings.TimeStep;
@@ -102,10 +101,7 @@ namespace WatchYourBackServer
             }
         }
         
-        public void addInput(InputSystem input)
-        {
-            this.input = input;
-        }
+       
 
         public LevelInfo LevelInfo
         {
@@ -166,11 +162,7 @@ namespace WatchYourBackServer
             return false;
         }
 
-        public InputSystem Input
-        {
-            get { return input; }
-        }
-
+        
         
     }
 }

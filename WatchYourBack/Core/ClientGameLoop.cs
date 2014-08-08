@@ -26,6 +26,8 @@ namespace WatchYourBack
     {
 
         Stack<World> worldStack;
+        Stack<World> updateStack;
+        Stack<World> drawStack;
         World activeWorld;
         ClientECSManager activeManager;
         
@@ -46,7 +48,6 @@ namespace WatchYourBack
 
         //----------------------------------------------------------------------------------------------------------
         NetClient client;
-        bool isPinging;
         private bool isConnected;
         private bool isPlayingOnline;
         //----------------------------------------------------------------------------------------------------------
@@ -84,6 +85,8 @@ namespace WatchYourBack
         protected override void Initialize()
         {
             worldStack = new Stack<World>();
+            updateStack = new Stack<World>();
+            drawStack = new Stack<World>();
             inputListener = new InputListener(this);
 
             Texture2D levelOne = Content.Load<Texture2D>("LevelOne");
@@ -92,7 +95,6 @@ namespace WatchYourBack
 
             gameSongs = new SongCollection();
 
-            isPinging = false;
             isConnected = false;
             isPlayingOnline = false;
             EFactory.content = Content;
@@ -138,11 +140,22 @@ namespace WatchYourBack
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if(activeWorld == connectMenu)
-                if (!isPlayingOnline)
-                    Connect();
-            activeManager.update(gameTime.ElapsedGameTime);
-            activeManager = (ClientECSManager)activeWorld.Manager;
+            InputManager.setActiveWorld(activeWorld);
+            foreach (World world in worldStack)
+            {             
+                updateStack.Push(world);
+                if (world.UpdateExclusive)
+                    break;
+            }
+
+            while(updateStack.Count != 0)
+            {
+                if (updateStack.Peek() == connectMenu)
+                    if (!isPlayingOnline)
+                        Connect();
+                activeManager = (ClientECSManager)updateStack.Pop().Manager;
+                activeManager.update(gameTime.ElapsedGameTime);                       
+            }
             
             base.Update(gameTime);
         }
@@ -153,11 +166,21 @@ namespace WatchYourBack
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
+            foreach (World world in worldStack)
+            {
+                drawStack.Push(world);
+                if (world.DrawExclusive)
+                    break;
+            }
             GraphicsDevice.Clear(Color.DarkGray);
-            spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
-            activeManager.draw(spriteBatch);
-            spriteBatch.End();
-            activeManager.DrawTime = gameTime.ElapsedGameTime.TotalSeconds;            
+            while(drawStack.Count != 0)
+            {
+                activeManager = (ClientECSManager)drawStack.Pop().Manager;
+                spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
+                activeManager.draw(spriteBatch);
+                spriteBatch.End();
+                activeManager.DrawTime = gameTime.ElapsedGameTime.TotalSeconds;
+            }
             base.Draw(gameTime);            
         }
       
@@ -173,10 +196,9 @@ namespace WatchYourBack
                 {
                     case NetIncomingMessageType.DiscoveryResponse:
                         // just connect to first server discovered
-                        if (isPinging)
+                        if (!isConnected)
                         {
                             client.Connect(msg.SenderEndpoint);
-                            isPinging = false;
                             isConnected = true;                           
                             Console.WriteLine("Connected");
                         }
@@ -207,6 +229,7 @@ namespace WatchYourBack
         private void reset(World world)
         {
             inputListener.removeWorld(world);
+            InputManager.removeWorld(world);
 
             if (world.WorldType == Worlds.InGame)
                 createGame();
@@ -236,6 +259,8 @@ namespace WatchYourBack
             mainMenu.Manager.addSystem(menuInput);
             
             inputListener.addInput(mainMenu, menuInput);
+            InputManager.addInput(mainMenu, menuInput);
+
             mainMenu.Manager.Initialize();
         }
 
@@ -251,6 +276,8 @@ namespace WatchYourBack
             connectMenu.Manager.addSystem(menuInput);
             
             inputListener.addInput(connectMenu, menuInput);
+            InputManager.addInput(connectMenu, menuInput);
+
             connectMenu.Manager.Initialize();
         }
 
@@ -275,6 +302,8 @@ namespace WatchYourBack
             inGame.Manager.addSystem(gameInput);
 
             inputListener.addInput(inGame, gameInput);
+            InputManager.addInput(inGame, gameInput);
+
             inGame.Manager.Initialize();
         }
 
@@ -293,12 +322,14 @@ namespace WatchYourBack
             inGameMulti.Manager.addSystem(audio);
 
             inputListener.addInput(inGameMulti, networkInput);
+            InputManager.addInput(inGameMulti, networkInput);
+
             inGameMulti.Manager.Initialize();
         }
 
         private void createPauseMenu()
         {
-            pauseMenu = new World(Worlds.PauseMenu);
+            pauseMenu = new World(Worlds.PauseMenu, false, false);
             pauseMenu.addManager(new ClientECSManager());
 
             MenuInputSystem menuInput = new MenuInputSystem();
@@ -308,6 +339,8 @@ namespace WatchYourBack
             pauseMenu.Manager.addSystem(menuInput);
 
             inputListener.addInput(pauseMenu, menuInput);
+            InputManager.addInput(pauseMenu, menuInput);
+
             pauseMenu.Manager.Initialize();
         }
 
@@ -376,14 +409,19 @@ namespace WatchYourBack
                                 game.Exit();
                             break;
                         case Worlds.ConnectMenu:
-                            if (args.InputType == Inputs.START_MUTLI && !game.isConnected && !game.isPinging)
+                            if (args.InputType == Inputs.START_MUTLI && !game.isConnected)
                             {
-                                game.isPinging = true;
                                 game.client.DiscoverKnownPeer("24.87.148.96", 14242);
-                                Console.WriteLine("Starting pings");
+                                Console.WriteLine("Ping");
                             }
                             if (args.InputType == Inputs.EXIT)
                             {
+                                if(game.isConnected)
+                                {
+                                    game.client.Disconnect("Quit while waiting");
+                                    game.isConnected = false;
+                                    game.isPlayingOnline = false;
+                                }
                                 game.worldStack.Pop();
                             }
                             break;
@@ -416,102 +454,7 @@ namespace WatchYourBack
             }
         }
 
-        //private class InputListener
-        //{
-        //    private Dictionary<World, InputSystem> inputs;
-        //    ClientGameLoop game;
-
-        //    public InputListener(ClientGameLoop game)
-        //    {
-        //        this.game = game;
-        //        inputs = new Dictionary<World, InputSystem>();
-        //    }
-
-
-
-        //    public void addWorld(World world, bool isMenu)
-        //    {
-        //        InputSystem toAdd;
-        //        if (inputs.ContainsKey(world))
-        //            return;
-        //        if (isMenu)
-        //            toAdd = new MenuInputSystem();
-        //        else
-        //            toAdd = new GameInputSystem();
-        //        world.Manager.addInput(toAdd);
-        //        world.Manager.addSystem((ESystem)toAdd);
-        //        inputs.Add(world, toAdd);
-        //        toAdd.inputFired += new EventHandler(inputFired);
-        //    }
-
-        //    public void removeWorld(World world)
-        //    {
-        //        if (inputs.ContainsKey(world))
-        //            inputs.Remove(world);
-        //    }
-
-        //    private void inputFired(object sender, EventArgs e)
-        //    {
-        //        if (e is InputArgs)
-        //        {
-        //            InputArgs args = (InputArgs)e;
-        //            Console.WriteLine(game.worldStack.Peek().MenuType + "=> " + args.InputType);
-
-        //            if (game.activeWorld.MenuType == Worlds.MAIN_MENU)
-        //            {
-
-        //                if (args.InputType == Inputs.START_SINGLE)
-        //                    game.worldStack.Push(game.inGame);
-        //                if (args.InputType == Inputs.START_MUTLI)
-        //                    game.worldStack.Push(game.connectMenu);
-        //                if (args.InputType == Inputs.EXIT)
-        //                    game.Exit();
-        //            }
-
-        //            else if (game.activeWorld.MenuType == Worlds.CONNECT_MENU)
-        //            {
-
-
-        //                if (args.InputType == Inputs.START_MUTLI && !game.isConnected && !game.isPinging)
-        //                {
-        //                    game.isPinging = true;
-        //                    game.client.DiscoverKnownPeer("24.87.148.96", 14242);
-        //                    Console.WriteLine("Starting pings");
-        //                }
-        //                if (args.InputType == Inputs.EXIT)
-        //                    game.worldStack.Pop();
-        //            }
-
-        //            else if (game.activeWorld.MenuType == Worlds.IN_GAME || game.activeWorld.MenuType == Worlds.IN_GAME_MULTI)
-        //            {
-        //                if (args.InputType == Inputs.PAUSE)
-        //                {
-        //                    game.worldStack.Push(game.pauseMenu);
-        //                }
-        //                if (args.InputType == Inputs.EXIT)
-        //                {
-        //                    game.reset(game.activeWorld);
-        //                    game.worldStack.Pop();
-        //                }
-        //            }
-
-        //            else if (game.activeWorld.MenuType == Worlds.PAUSE_MENU)
-        //            {
-        //                if (args.InputType == Inputs.RESUME)
-        //                    game.worldStack.Pop();
-        //                if (args.InputType == Inputs.EXIT)
-        //                {
-
-        //                    game.worldStack.Pop();
-        //                    game.reset(game.worldStack.Peek());
-        //                    game.worldStack.Pop();
-        //                }
-        //            }
-        //            game.activeWorld = game.worldStack.Peek();
-        //        }
-        //    }
-        //}
-
+       
 
     }
 }

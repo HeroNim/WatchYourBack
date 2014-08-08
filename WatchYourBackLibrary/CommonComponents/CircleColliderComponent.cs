@@ -16,40 +16,43 @@ namespace WatchYourBackLibrary
         public override int BitMask { get { return (int)Masks.Collider + (int)Masks.CircleCollider; } }
         public override Masks Mask { get { return Masks.CircleCollider; } }
 
-        private float radius;
-        private Vector2 center;
-
+        private Circle collider;
         private TransformComponent anchor;
        
         public CircleColliderComponent(Vector2 center, float radius, TransformComponent anchor)
         {
-            this.center = center;
-            this.radius = radius;
+            collider = new Circle(center, radius);           
             this.anchor = anchor;
+        }
+
+        public Circle Collider
+        {
+            get { return collider; }
+            set { collider = value; }
         }
 
         public float X
         {
-            get { return center.X; }
-            set { center.X = value; }
+            get { return collider.X; }
+            set { collider.X = value; }
         }
 
         public float Y
         {
-            get { return center.Y; }
-            set { center.Y = value; }
+            get { return collider.Y; }
+            set { collider.Y = value; }
         }
 
         public Vector2 Center
         {
-            get { return center; }
-            set { center = value; }
+            get { return collider.Center; }
+            set { collider.Center = value; }
         }
 
         public float Radius
         {
-            get { return radius; }
-            set { radius = value; }
+            get { return collider.Radius; }
+            set { collider.Radius = value; }
         }
 
         public TransformComponent Anchor
@@ -61,12 +64,12 @@ namespace WatchYourBackLibrary
         public Vector2 PointOnCircle (Vector2 vector)
         {
             float angle = HelperFunctions.VectorToAngle(vector);
-            return HelperFunctions.pointOnCircle(this.radius, angle, this.center);
+            return HelperFunctions.pointOnCircle(this.Radius, angle, this.Center);
         }
 
         public Vector2 PointOnCircle (float angle)
         {
-            return HelperFunctions.pointOnCircle(this.radius, angle, this.center);
+            return HelperFunctions.pointOnCircle(this.Radius, angle, this.Center);
         }   
     }
 }

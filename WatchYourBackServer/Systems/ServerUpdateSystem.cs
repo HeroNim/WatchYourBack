@@ -19,7 +19,7 @@ namespace WatchYourBackServer
     /// <summary>
     /// The system responsible for updating and sending updates to the client when playing online.
     /// </summary>
-    class ServerUpdateSystem : ESystem, InputSystem
+    class ServerUpdateSystem : ESystem
     {
 
         NetServer server;
@@ -173,6 +173,7 @@ namespace WatchYourBackServer
                                 if (accumulator[playerIndex] < timeStep)
                                     interpolation[playerIndex] = accumulator[playerIndex] / timeStep;
                                 interpolate(interpolation[playerIndex]);
+                                Console.WriteLine(playerIndex);
 
                                 om.Write(SerializationHelper.Serialize(sendData));
                                 server.SendMessage(om, server.Connections[playerIndex], NetDeliveryMethod.ReliableOrdered);

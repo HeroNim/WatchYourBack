@@ -46,18 +46,19 @@ namespace WatchYourBackLibrary
                         {
                             if (entity.hasComponent(Masks.LineCollider))
                             {
+                                Line c1 = entity.GetComponent<LineColliderComponent>().Collider;
                                 if (other.hasComponent(Masks.PlayerHitbox)) // Line - Hitbox
-                                    if (HelperFunctions.checkLine_HitboxCollision(entity, other))
+                                    if (CollisionHelper.checkLine_LineCollision(c1, other.GetComponent<PlayerHitboxComponent>().Collider))
                                         ResolveCollisions(entity, other, Masks.LineCollider, Masks.PlayerHitbox);
                                 if (other.hasComponent(Masks.CircleCollider)) // Line - Circle
-                                    if (HelperFunctions.checkLine_CircleCollision(entity, other))
+                                    if (CollisionHelper.checkLine_CircleCollision(c1, other.GetComponent<CircleColliderComponent>().Collider))
                                         ResolveCollisions(entity, other, Masks.LineCollider, Masks.CircleCollider);
                             }
                             if (entity.hasComponent(Masks.RectangleCollider))
                             {
                                 if (other.hasComponent(Masks.RectangleCollider)) // Rectangle - Rectangle
-                                    if (HelperFunctions.checkRectangle_RectangleCollisions(entity, other))
-                                        ResolveCollisions(entity, other, Masks.RectangleCollider, Masks.RectangleCollider);                           
+                                    if (checkRectangleCollisions(entity, other))
+                                        ResolveCollisions(entity, other, Masks.RectangleCollider, Masks.RectangleCollider);
                             }                                                       
                         }
                     }
@@ -67,7 +68,39 @@ namespace WatchYourBackLibrary
             removeList.Clear();
         }
 
-       
+        private bool checkRectangleCollisions(Entity e1, Entity e2)
+        {
+            bool collided = false;
+            int displacement;
+            //Assign local variables
+
+            VelocityComponent v1 = (VelocityComponent)e1.Components[Masks.Velocity];
+            RectangleColliderComponent c1 = (RectangleColliderComponent)e1.Components[Masks.RectangleCollider];
+            RectangleColliderComponent c2 = (RectangleColliderComponent)e2.Components[Masks.RectangleCollider];
+
+
+            //Check collisions
+
+            displacement = (int)v1.X;
+            c1.X += displacement;
+            if (CollisionHelper.checkRectangle_RectangleCollisions(c1.Collider, c2.Collider))
+            {
+                collided = true;
+                v1.X = 0;
+            }
+            c1.X -= displacement;
+
+            displacement = (int)v1.Y;
+            c1.Y += displacement;
+            if (CollisionHelper.checkRectangle_RectangleCollisions(c1.Collider, c2.Collider))
+            {
+                collided = true;
+                v1.Y = 0;
+            }
+            c1.Y -= displacement;
+
+            return collided;
+        }
         /// <summary>
         /// Resolves collisions, with different results depending on the types of colliders that interacted
         /// </summary>
@@ -76,7 +109,9 @@ namespace WatchYourBackLibrary
         /// <param name="collider1">The type of the first entity's collider</param>
         /// <param name="collider2">The type of the second entity's collider</param>
         private void ResolveCollisions(Entity e1, Entity e2, Masks collider1, Masks collider2)
-        {           
+        {
+            VelocityComponent velocityC = e1.GetComponent<VelocityComponent>();
+
             if (e1.IsDestructable)
             {
                 remove(e1);
@@ -128,6 +163,8 @@ namespace WatchYourBackLibrary
                 }
 
         }
+
+        
 
         
 

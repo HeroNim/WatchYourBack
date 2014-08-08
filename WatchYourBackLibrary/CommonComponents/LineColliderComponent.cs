@@ -16,59 +16,53 @@ namespace WatchYourBackLibrary
         public override int BitMask { get { return (int)Masks.LineCollider + (int)Masks.Collider; } }
         public override Masks Mask { get { return Masks.LineCollider; } }
 
-        private Vector2 p1;
-        private Vector2 p2;
-        private float rotation;
-
-
-        public LineColliderComponent(Vector2 p1, Vector2 p2) 
+        private Line collider;
+      
+        public LineColliderComponent(Vector2 point1, Vector2 point2, float rotation = 0)
         {
-            this.p1 = p1;
-            this.p2 = p2;
-            rotation = 0;
+            collider = new Line(point1, point2, rotation);
         }
 
-        public LineColliderComponent(Vector2 point1, Vector2 point2, float rotation)
+        public Line Collider
         {
-            this.rotation = rotation;
-            p1 = point1;
-            p2 = point2;
+            get { return collider; }
+            set { collider = value; }
         }
 
         public Vector2 P1
         {
-            get { return p1; }
-            set { p1 = value; }
+            get { return collider.P1; }
+            set { collider.P1 = value; }
         }
 
         public Vector2 P2
         {
-            get { return p2; }
-            set { p2 = value; }
+            get { return collider.P2; }
+            set { collider.P2 = value; }
         }
 
         public float X1
         {
-            get { return p1.X; }
-            set { p1.X = value; }
+            get { return collider.X1; }
+            set { collider.X1 = value; }
         }
 
         public float X2
         {
-            get { return p2.X; }
-            set { p2.X = value; }
+            get { return collider.X2; }
+            set { collider.X2 = value; }
         }
 
         public float Y1
         {
-            get { return p1.Y; }
-            set { p1.Y = value; }
+            get { return collider.Y1; }
+            set { collider.Y1 = value; }
         }
 
         public float Y2
         {
-            get { return p2.Y; }
-            set { p2.Y = value; }
+            get { return collider.Y2; }
+            set { collider.Y2 = value; }
         }
     }
 }
