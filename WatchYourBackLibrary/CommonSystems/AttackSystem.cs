@@ -15,7 +15,7 @@ namespace WatchYourBackLibrary
     /// </summary>
     public class AttackSystem : ESystem
     {
-        public AttackSystem() : base(false, true, 6)
+        public AttackSystem() : base(false, true, 5)
         {
             components += (int)Masks.Wielder;
             components += (int)Masks.Velocity;

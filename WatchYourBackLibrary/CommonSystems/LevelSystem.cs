@@ -83,6 +83,36 @@ namespace WatchYourBackLibrary
                             levelTemplate.SubIndex(y, x), manager.hasGraphics());
                         manager.addEntity(wall);
                         level.Walls.Add(wall);
+
+                        GraphicsComponent g = (GraphicsComponent)wall.Components[Masks.Graphics];
+                        g.DebugPoints.Clear();
+                        Vector2 vertex;
+
+                        if (levelTemplate.CornerVertices[y, x][0] == true)
+                        {
+                            vertex = new Vector2(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE);
+                            level.addVertex(vertex);
+                            //g.DebugPoints.Add(new Vector2(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE));
+                        }
+                        if (levelTemplate.CornerVertices[y, x][1] == true){
+                            vertex = new Vector2((x + 1) * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE);
+                            level.addVertex(vertex);
+                            //g.DebugPoints.Add(new Vector2((x + 1) * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE));
+                        }
+                        if (levelTemplate.CornerVertices[y, x][2] == true){
+                            vertex = new Vector2(x * (int)LevelDimensions.X_SCALE, (y + 1) * (int)LevelDimensions.Y_SCALE);
+                            level.addVertex(vertex);
+                           // g.DebugPoints.Add(new Vector2(x * (int)LevelDimensions.X_SCALE, (y + 1) * (int)LevelDimensions.Y_SCALE));
+                        }
+                        if (levelTemplate.CornerVertices[y, x][3] == true){
+                            vertex = new Vector2((x + 1) * (int)LevelDimensions.X_SCALE, (y + 1) * (int)LevelDimensions.Y_SCALE);
+                            level.addVertex(vertex);
+                            //g.DebugPoints.Add(new Vector2((x + 1) * (int)LevelDimensions.X_SCALE, (y + 1) * (int)LevelDimensions.Y_SCALE));
+                        }
+
+                        
+
+   
                     }
                     if (levelTemplate.LevelData[y, x] == (int)TileType.SPAWN)
                     {

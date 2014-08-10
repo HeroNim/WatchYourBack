@@ -46,11 +46,12 @@ namespace WatchYourBackLibrary
             new PlayerHitboxComponent(PlayerHitboxComponent.setAvatarHitbox(rect, 10, -Vector2.UnitY)),
             new WielderComponent(weaponType),
             new StatusComponent(),
+            new VisionComponent(30),
             new AvatarInputComponent());
             if (hasGraphics)
             {
                 Texture2D myTexture = content.Load<Texture2D>("PlayerTexture");
-                e.addComponent(new GraphicsComponent(rect, myTexture, myTexture.Bounds, 0, new Vector2(myTexture.Width / 2, myTexture.Height / 2), offset, 0.9f, "Avatar"));
+                e.addComponent(new GraphicsComponent(rect, myTexture, myTexture.Bounds, 0, new Vector2(myTexture.Width / 2, myTexture.Height / 2), offset, 0.5f, "Avatar"));
             }
             e.Type = Entities.Avatar;
             return e;
@@ -94,7 +95,7 @@ namespace WatchYourBackLibrary
             if (hasGraphics)
             {
                 Texture2D myTexture = content.Load<Texture2D>("SwordTexture");
-                e.addComponent(new GraphicsComponent(new Rectangle((int)point.X, (int)point.Y, (int)SWORD.WIDTH, (int)SWORD.RANGE), myTexture, rotationAngle, new Vector2(myTexture.Width / 2, myTexture.Height), 0.8f, "Sword"));
+                e.addComponent(new GraphicsComponent(new Rectangle((int)point.X, (int)point.Y, (int)SWORD.WIDTH, (int)SWORD.RANGE), myTexture, rotationAngle, new Vector2(myTexture.Width / 2, myTexture.Height), 0.4f, "Sword"));
             }
             e.Type = Entities.Sword;
             return e;           
@@ -127,7 +128,7 @@ namespace WatchYourBackLibrary
             if (hasGraphics)
             {
                 Texture2D myTexture = content.Load<Texture2D>("ThrownTexture");
-                e.addComponent(new GraphicsComponent(new Rectangle((int)xOrigin, (int)yOrigin, (int)THROWN.RADIUS, (int)THROWN.RADIUS), myTexture, rotationAngle, new Vector2(myTexture.Width / 2, myTexture.Height), 1, "Thrown"));
+                e.addComponent(new GraphicsComponent(new Rectangle((int)xOrigin, (int)yOrigin, (int)THROWN.RADIUS, (int)THROWN.RADIUS), myTexture, rotationAngle, new Vector2(myTexture.Width / 2, myTexture.Height), 0.7f, "Thrown"));
             }
             e.Type = Entities.Thrown;
             return e;
@@ -156,7 +157,7 @@ namespace WatchYourBackLibrary
             TransformComponent transform = new TransformComponent(x, y, width, height);
             GraphicsComponent g = new GraphicsComponent(new Rectangle(x, y, width, height), frame, 0.99f, "Frame");
             g.Sprites.Add("ClickedFrame", new GraphicsInfo(g.Body, clickedFrame, 1f));
-            g.Sprites.Add("Text", new GraphicsInfo(g.Body, content.Load<Texture2D>("Buttons/" + text + "Text"), 0.98f));
+            g.Sprites.Add("Text", new GraphicsInfo(g.Body, content.Load<Texture2D>("Buttons/" + text + "Text"), 0.6f));
 
             return new Entity(false,
             new ButtonComponent(type),
@@ -182,15 +183,16 @@ namespace WatchYourBackLibrary
             Entity e = new Entity(false,
                 transform,
                 new TileComponent(TileType.WALL, atlasIndex),
-                new RectangleColliderComponent(transform.Body, transform));
+                new RectangleColliderComponent(transform.Body, transform),
+                new VisionBlockComponent(transform.Body));
             if (hasGraphics)
             {
                 Texture2D myTexture = content.Load<Texture2D>("TileTextures/WallTextureAtlas");
                 GraphicsComponent g = new GraphicsComponent();
-                g.Sprites.Add("TopLeft", new GraphicsInfo(new Rectangle(x, y, width / 2, height / 2), myTexture, new Rectangle((int)LevelDimensions.X_SCALE / 2 * atlasIndex[0, 0], 0, (int)LevelDimensions.X_SCALE / 2, (int)LevelDimensions.Y_SCALE / 2), 1));
-                g.Sprites.Add("TopRight", new GraphicsInfo(new Rectangle(x + width / 2, y, width / 2, height / 2), myTexture, new Rectangle((int)LevelDimensions.X_SCALE / 2 * atlasIndex[0, 1], 0, (int)LevelDimensions.X_SCALE / 2, (int)LevelDimensions.Y_SCALE / 2), 1));
-                g.Sprites.Add("BottomLeft", new GraphicsInfo(new Rectangle(x, y + height / 2, width / 2, height / 2), myTexture, new Rectangle((int)LevelDimensions.X_SCALE / 2 * atlasIndex[1, 0], 0, (int)LevelDimensions.X_SCALE / 2, (int)LevelDimensions.Y_SCALE / 2), 1));
-                g.Sprites.Add("BottomRight", new GraphicsInfo(new Rectangle(x + width / 2, y + height / 2, width / 2, height / 2), myTexture, new Rectangle((int)LevelDimensions.X_SCALE / 2 * atlasIndex[1, 1], 0, (int)LevelDimensions.X_SCALE / 2, (int)LevelDimensions.Y_SCALE / 2), 1));
+                g.addSprite("TopLeft", new GraphicsInfo(new Rectangle(x, y, width / 2, height / 2), myTexture, new Rectangle((int)LevelDimensions.X_SCALE / 2 * atlasIndex[0, 0], 0, (int)LevelDimensions.X_SCALE / 2, (int)LevelDimensions.Y_SCALE / 2), 1));
+                g.addSprite("TopRight", new GraphicsInfo(new Rectangle(x + width / 2, y, width / 2, height / 2), myTexture, new Rectangle((int)LevelDimensions.X_SCALE / 2 * atlasIndex[0, 1], 0, (int)LevelDimensions.X_SCALE / 2, (int)LevelDimensions.Y_SCALE / 2), 1));
+                g.addSprite("BottomLeft", new GraphicsInfo(new Rectangle(x, y + height / 2, width / 2, height / 2), myTexture, new Rectangle((int)LevelDimensions.X_SCALE / 2 * atlasIndex[1, 0], 0, (int)LevelDimensions.X_SCALE / 2, (int)LevelDimensions.Y_SCALE / 2), 1));
+                g.addSprite("BottomRight", new GraphicsInfo(new Rectangle(x + width / 2, y + height / 2, width / 2, height / 2), myTexture, new Rectangle((int)LevelDimensions.X_SCALE / 2 * atlasIndex[1, 1], 0, (int)LevelDimensions.X_SCALE / 2, (int)LevelDimensions.Y_SCALE / 2), 1));
                 e.addComponent(g);
             }
             e.Type = Entities.Wall;
@@ -247,20 +249,21 @@ namespace WatchYourBackLibrary
             {
                 case Entities.Avatar:
                     texture = content.Load<Texture2D>("PlayerTexture");
-                    layer = 1;
+                    layer = 0.5f;
                     rotationOrigin = new Vector2(texture.Width / 2, texture.Height / 2);
                     rotationOffset = new Vector2(rect.Width / 2, rect.Height / 2);
                     sourceRectangle = texture.Bounds;
                     break;
                 case Entities.Sword:
                     texture = content.Load<Texture2D>("SwordTexture");
+                    layer = 0.4f;
                     rotationOrigin = new Vector2(texture.Width / 2, texture.Height);
                     rotationOffset = Vector2.Zero;
                     sourceRectangle = texture.Bounds;
                     break;
                 case Entities.Thrown:
                     texture = content.Load<Texture2D>("ThrownTexture");
-                    layer = 0;
+                    layer = 0.2f;
                     rotationOrigin = Vector2.Zero;
                     rotationOffset = Vector2.Zero;
                     sourceRectangle = texture.Bounds;

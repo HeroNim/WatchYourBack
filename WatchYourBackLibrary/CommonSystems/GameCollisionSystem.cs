@@ -17,7 +17,7 @@ namespace WatchYourBackLibrary
         Dictionary<int, Entity> removeList;
 
         public GameCollisionSystem()
-            : base(false, true, 4)
+            : base(false, true, 3)
         {
             components += (int)Masks.Transform;
             components += (int)Masks.Collider;
@@ -44,10 +44,10 @@ namespace WatchYourBackLibrary
                             {
                                 Line c1 = entity.GetComponent<LineColliderComponent>().Collider;
                                 if (other.hasComponent(Masks.PlayerHitbox)) // Line - Hitbox
-                                    if (CollisionHelper.checkLine_LineCollision(c1, other.GetComponent<PlayerHitboxComponent>().Collider))
+                                    if (CollisionHelper.CheckCollision(c1, other.GetComponent<PlayerHitboxComponent>().Collider))
                                         ResolveCollisions(entity, other, Masks.LineCollider, Masks.PlayerHitbox);
                                 if (other.hasComponent(Masks.CircleCollider)) // Line - Circle
-                                    if (CollisionHelper.checkLine_CircleCollision(c1, other.GetComponent<CircleColliderComponent>().Collider))
+                                    if (CollisionHelper.GetIntersection(c1, other.GetComponent<CircleColliderComponent>().Collider) != null)
                                         ResolveCollisions(entity, other, Masks.LineCollider, Masks.CircleCollider);
                             }
                             if (entity.hasComponent(Masks.RectangleCollider))
@@ -75,7 +75,7 @@ namespace WatchYourBackLibrary
 
             displacement = (int)v1.X;
             c1.X += displacement;
-            if (CollisionHelper.checkRectangle_RectangleCollisions(c1.Collider, c2.Collider))
+            if (CollisionHelper.CheckCollision(c1.Collider, c2.Collider))
             {
                 collided = true;
                 v1.X = 0;
@@ -84,7 +84,7 @@ namespace WatchYourBackLibrary
 
             displacement = (int)v1.Y;
             c1.Y += displacement;
-            if (CollisionHelper.checkRectangle_RectangleCollisions(c1.Collider, c2.Collider))
+            if (CollisionHelper.CheckCollision(c1.Collider, c2.Collider))
             {
                 collided = true;
                 v1.Y = 0;

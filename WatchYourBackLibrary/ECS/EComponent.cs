@@ -26,6 +26,8 @@ namespace WatchYourBackLibrary
         PlayerInfo = 1 << 16,
         CircleCollider = 1 << 17,
         Status = 1 << 18,
+        Vision = 1 << 19,
+        VisionBlock = 1 << 20
     };
 
     /// <summary>

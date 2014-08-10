@@ -17,6 +17,8 @@ namespace WatchYourBack
     /// </summary>
     public class ClientECSManager : IECSManager
     {
+
+        private QuadTree<Entity> quadtree;
         private Dictionary<int, Entity> activeEntities;
         private Dictionary<int, EntityCommands> changedEntities;
         private List<ESystem> systems;
@@ -34,6 +36,7 @@ namespace WatchYourBack
             currentID = 0;
             drawTime = 0;
             systems = new List<ESystem>();
+            quadtree = new QuadTree<Entity>(0, 0, GameData.gameWidth, GameData.gameHeight, 4);
             activeEntities = new Dictionary<int, Entity>();
             changedEntities = new Dictionary<int, EntityCommands>();
             removal = new List<Entity>();
@@ -70,6 +73,26 @@ namespace WatchYourBack
             get { return ui; }
         }
 
+        public void addEntity(Entity entity)
+        {
+            entity.ClientID = assignID();
+            entity.initialize();
+            activeEntities.Add(entity.ClientID, entity);
+            if (entity.hasComponent(Masks.Transform))
+                quadtree.Add(entity, entity.GetComponent<TransformComponent>().Body);
+            addChangedEntities(entity, EntityCommands.Add);
+        }
+
+        public void removeEntity(Entity entity)
+        {
+            if (activeEntities.Values.Contains(entity) && !removal.Contains(entity))
+            {
+                removal.Add(entity);
+                addChangedEntities(entity, EntityCommands.Remove);
+            }
+            quadtree.Remove(entity);
+        }
+
         public void addSystem(ESystem system)
         {
             systems.Add(system);
@@ -82,14 +105,6 @@ namespace WatchYourBack
             systems.Remove(system);
         }      
 
-        public void addEntity(Entity entity)
-        {
-            entity.ClientID = assignID();
-            entity.initialize();
-            activeEntities.Add(entity.ClientID, entity);
-            addChangedEntities(entity, EntityCommands.Add);
-        }
-
         public int assignID()
         {
             currentID = 0;
@@ -98,21 +113,7 @@ namespace WatchYourBack
             return currentID;
 
         }
-
-        public void removeEntity(Entity entity)
-        {
-            if (activeEntities.Values.Contains(entity) && !removal.Contains(entity))
-            {
-                removal.Add(entity);
-                addChangedEntities(entity, EntityCommands.Remove);
-            }
-        }
-               
-        public LevelInfo LevelInfo
-        {
-            get { return levelInfo; }
-            set { levelInfo = value; }
-        }
+      
       
         public Dictionary<int, Entity> Entities
         {
@@ -127,6 +128,11 @@ namespace WatchYourBack
         public List<ESystem> Systems
         {
             get { return systems; }
+        }
+
+        public QuadTree<Entity> QuadTree
+        {
+            get { return quadtree; }
         }
 
         public void addChangedEntities(Entity e, EntityCommands c)
@@ -172,6 +178,7 @@ namespace WatchYourBack
                 if (entity.hasComponent(Masks.Graphics))
                 {
                     GraphicsComponent graphics = (GraphicsComponent)entity.Components[Masks.Graphics];
+                    Texture2D test = EFactory.content.Load<Texture2D>("PlayerTexture");
                     foreach (GraphicsInfo sprite in graphics.Sprites.Values)
                     {
                         if (sprite.Visible == true)
@@ -182,18 +189,24 @@ namespace WatchYourBack
                             {
                                 spriteBatch.Draw(sprite.Sprite, sprite.Body, sprite.SourceRectangle,
                                         sprite.SpriteColor, sprite.RotationAngle, sprite.RotationOrigin, SpriteEffects.None, sprite.Layer);
-                                foreach (Vector2 point in sprite.DebugPoints)
+                                foreach (Vector2 point in graphics.DebugPoints)
                                 {
-                                    spriteBatch.Draw(sprite.Sprite, new Rectangle((int)point.X, (int)point.Y, 3, 3), Color.Blue);
+                                    spriteBatch.Draw(test, new Rectangle((int)point.X, (int)point.Y, 10, 10), Color.Blue);
                                 }
-                                sprite.DebugPoints.Clear();
+                                //graphics.DebugPoints.Clear();
                             }
                         }
                     }
                 }
             }
         }
-    
+
+        public LevelInfo LevelInfo
+        {
+            get { return levelInfo; }
+            set { levelInfo = value; }
+        }
+
         public bool hasGraphics()
         {
             return true;

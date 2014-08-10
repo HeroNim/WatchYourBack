@@ -10,24 +10,63 @@ namespace WatchYourBackLibrary
     public static class CollisionHelper
     {
         /// <summary>
-        /// Checks two entities for collisions, given that both have rectangle colliders.
+        /// Checks if two rectangles intersect.
         /// </summary>
-        /// <param name="e1">The first entity</param>
-        /// <param name="e2">The second entity</param>
+        /// <param name="c1">A rectangle</param>
+        /// <param name="c2">A rectangle</param>
         /// <returns>True if colliding</returns>
-        public static bool checkRectangle_RectangleCollisions(Rectangle c1, Rectangle c2)
+        public static bool CheckCollision(Rectangle c1, Rectangle c2)
         {
             return c1.Intersects(c2);
         }
 
         /// <summary>
-        /// Checks two entities for collisions, given that both have line colliders. 
+        /// Check if a line and a rectangle intersect.
         /// </summary>
-        /// <param name="e1">The first entity</param>
-        /// <param name="e2">The second entity</param>
+        /// <param name="c1">A line</param>
+        /// <param name="c2">A rectangle</param>
         /// <returns>True if colliding</returns>
-        public static bool checkLine_LineCollision(Line c1, Line c2)
-        {           
+        public static bool CheckCollision(Line c1, Rectangle c2)
+        {
+            bool possible = false;
+
+            bool[] pos = new bool[4];
+            pos[0] = (lineEquation(c1.P1, c1.P2, new Vector2(c2.Right, c2.Top)) > 0);
+            pos[1] = (lineEquation(c1.P1, c1.P2, new Vector2(c2.Left, c2.Bottom)) > 0);
+            pos[2] = (lineEquation(c1.P1, c1.P2, new Vector2(c2.Right, c2.Bottom)) > 0);
+            pos[3] = (lineEquation(c1.P1, c1.P2, new Vector2(c2.Left, c2.Top)) > 0);
+
+            for(int i = 0; i < pos.Length - 1; i++)
+            {
+                if (pos[i] != pos[i + 1])
+                {
+                    possible = true;
+                    break;
+                }
+            }
+
+            if (!possible)
+                return false;
+
+            if (c1.X1 > c2.Right && c1.X2 > c2.Right)
+                return false;
+            if (c1.X1 < c2.Left && c1.X2 < c2.Left)
+                return false;
+            if (c1.Y1 < c2.Top && c1.Y2 < c2.Top)
+                return false;
+            if (c1.Y1 > c2.Bottom && c1.Y2 > c2.Bottom)
+                return false;
+            return true;
+        }
+
+        /// <summary>
+        /// Checks if two lines intersect.
+        /// </summary>
+        /// <param name="c1">A line</param>
+        /// <param name="c2">A line</param>
+        /// <returns>True if colliding</returns>
+        public static bool CheckCollision(Line c1, Line c2)
+        {
             float result1 = lineEquation(c1.P1, c1.P2, c2.P1);
             float result2 = lineEquation(c1.P1, c1.P2, c2.P2);
             float result3 = lineEquation(c2.P1, c2.P2, c1.P1);
@@ -40,97 +79,146 @@ namespace WatchYourBackLibrary
         }
 
         /// <summary>
-        /// Checks two entities for collisions, given the first has a line collider and the second a circle collider.
+        /// Checks if a line and a circle intersect.
         /// </summary>
-        /// <param name="e1">The first entity</param>
-        /// <param name="e2">The second entity</param>
+        /// <param name="c1">A line</param>
+        /// <param name="c2">A circle</param>
         /// <returns>True if colliding</returns>
-        public static bool checkLine_CircleCollision(Line c1, Circle c2)
-        {          
-            Vector2 toCircle = new Vector2(c2.Center.X - c1.P2.X, c2.Center.Y - c1.P2.Y);
-            if (toCircle.Length() <= c2.Radius)
-                return true;
+        public static bool CheckCollision(Line c1, Circle c2)
+        {
+            //d = direction vector of line
+            //f = vector from line to circle
+            // t^2 * (d DOT d) + 2t * ( f DOT d ) + ( f DOT f - r^2 ) = 0, so solve quadratic equation
 
-            Vector2 weaponCollider = new Vector2(c1.P1.X - c1.P2.X, c1.P1.Y - c1.P2.Y);
-            float weaponColliderLength = weaponCollider.Length();
+            Vector2 d = c1.P2 - c1.P1;
+            Vector2 f = c1.P1 - c2.Center;
 
-            Vector2 direction = weaponCollider;
-            direction.Normalize();
+            float a = Vector2.Dot(d, d);
+            float b = 2 * Vector2.Dot(f, d);
+            float c = Vector2.Dot(f, f) - (c2.Radius * c2.Radius);
 
-            float sProjection = Vector2.Dot(toCircle, direction);
-            Vector2 projectionPoint = direction * sProjection;
+            float discriminant = (b * b) - (4 * a * c);
+            if (discriminant < 0)
+                return false; //Missed
+            else
+            {
+                discriminant = (float)Math.Sqrt(discriminant);
+                float t1 = (-b - discriminant) / (2 * a);
+                float t2 = (-b + discriminant) / (2 * a);
 
-            toCircle = c1.P2 + projectionPoint;
-
-            float test = Vector2.Dot(projectionPoint, weaponCollider);
-            if (test <= 0 || test >= Math.Pow(weaponColliderLength, 2))
+                if (t1 >= 0 && t1 <= 1)
+                    return true;
+                if (t2 >= 0 && t2 <= 1)
+                    return true;
                 return false;
+            }
+        }
 
-            Vector2 perpVector = new Vector2(c2.Center.X - toCircle.X, c2.Center.Y - toCircle.Y);
-            float length = perpVector.Length();
+        
 
-            if (length <= c2.Radius)
-                return true;
+        /// <summary>
+        /// Returns the intersection point(s) of a line-rectangle intersection.
+        /// </summary>
+        /// <param name="c1">A line</param>
+        /// <param name="c2">A rectangle</param>
+        /// <returns>The intersection point(s)</returns>
+        public static List<Vector2> GetIntersection(Line c1, Rectangle c2)
+        {
+            List<Vector2> intersectionPoints = new List<Vector2>();
 
-            return false;
+            Line top = new Line(new Vector2(c2.Left, c2.Top), new Vector2(c2.Right, c2.Top));
+            Line left = new Line(new Vector2(c2.Left, c2.Top), new Vector2(c2.Left, c2.Bottom));
+            Line bottom = new Line(new Vector2(c2.Left, c2.Bottom), new Vector2(c2.Right, c2.Bottom));
+            Line right = new Line(new Vector2(c2.Right, c2.Top), new Vector2(c2.Right, c2.Bottom));
+
+            Vector2 topInt = GetIntersection(c1, top);
+            Vector2 leftInt = GetIntersection(c1, left);
+            Vector2 bottomInt = GetIntersection(c1, bottom);
+            Vector2 rightInt = GetIntersection(c1, right);
+
+            if (topInt != Vector2.Zero)
+                intersectionPoints.Add(topInt);
+            if (leftInt != Vector2.Zero)
+                intersectionPoints.Add(leftInt);
+            if (bottomInt != Vector2.Zero)
+                intersectionPoints.Add(bottomInt);
+            if (rightInt != Vector2.Zero)
+                intersectionPoints.Add(rightInt);
+
+            if (intersectionPoints.Count == 0)
+                return null;
+            
+            return intersectionPoints;
         }
 
         /// <summary>
-        /// Checks two entities for collisions, given the first has a line collider and the second a rectangle collider.
+        /// Returns the intersection point of two lines.
         /// </summary>
-        /// <param name="e1">The first entity</param>
-        /// <param name="e2">The second entity</param>
-        /// <returns>True if colliding</returns>
-        public static bool checkLine_RectangleCollision(Line c1, Rectangle c2)
-        {                   
-            bool above = false;
-            bool possibleIntersection = false;
-            bool intersection = false;
+        /// <param name="c1">A line</param>
+        /// <param name="c2">A line</param>
+        /// <returns>The intersection point</returns>
+        public static Vector2 GetIntersection(Line c1, Line c2)
+        {
+            Vector2 p = c1.P1;
+            Vector2 q = c2.P1;
+            Vector2 r = c1.P2 - c1.P1;
+            Vector2 s = c2.P2 - c2.P1;
 
-            //Check if corners are all above or below the line
+            float v = HelperFunctions.Cross(r, s);
+            float w = HelperFunctions.Cross(q - p, r);
 
-            Vector2 topLeft = new Vector2(c2.Left, c2.Top);
-            Vector2 bottomLeft = new Vector2(c2.Left, c2.Bottom);
-            Vector2 topRight = new Vector2(c2.Right, c2.Top);
-            Vector2 bottomRight = new Vector2(c2.Right, c2.Bottom);
+            float t = HelperFunctions.Cross((q - p), s) / v;
+            float u = HelperFunctions.Cross((q - p), r) / v;
 
-            float[] results = new float[4];
-
-            results[0] = lineEquation(c1.P1, c1.P2, topLeft);
-            results[1] = lineEquation(c1.P1, c1.P2, bottomLeft);
-            results[2] = lineEquation(c1.P1, c1.P2, topRight);
-            results[3] = lineEquation(c1.P1, c1.P2, bottomRight);
-
-            if (results[0] > 0)
-                above = true;
-
-            for (int i = 1; i < results.Length; i++)
+            if(v != 0)
             {
-                if (above)
+                if (t >= 0 && t <= 1 && u >= 0 && u <= 1)
                 {
-                    if (results[i] <= 0)
-                        possibleIntersection = true;
+                    p += (t * r);
+                    return p;
                 }
-                else if (above == false)
-                    if (results[i] >= 0)
-                        possibleIntersection = true;
             }
-            if (possibleIntersection == false)
-                intersection = false;
-            else //Check that at least one coordinate of the line on both axis' is contained within the rectangle
+            return Vector2.Zero;
+
+
+           
+        }
+
+        /// <summary>
+        /// Returns the intersection point(s) of a line-circle intersection.
+        /// </summary>
+        /// <param name="c1">A line</param>
+        /// <param name="c2">A circle</param>
+        /// <returns>The intersection point(s)</returns>
+        public static List<Vector2> GetIntersection(Line c1, Circle c2)
+        {
+            List<Vector2> intersectionPoints = new List<Vector2>();
+            // t^2 * (d DOT d) + 2t*( f DOT d ) + ( f DOT f - r^2 ) = 0
+
+            Vector2 d = c1.P2 - c1.P1;
+            Vector2 f = c1.P1 - c2.Center;
+
+            float a = Vector2.Dot(d, d);
+            float b = 2 * Vector2.Dot(f, d);
+            float c = Vector2.Dot(f, f) - (c2.Radius * c2.Radius);
+
+            float discriminant = (b * b) - (4 * a * c);
+            if (discriminant < 0)
+                return null;
+            else
             {
-                if (c1.X1 > bottomRight.X && c1.X2 > bottomRight.X)
-                    intersection = false;
-                else if (c1.X1 < topLeft.X && c1.X2 < topLeft.X)
-                    intersection = false;
-                else if (c1.Y1 > bottomRight.Y && c1.Y2 > bottomRight.Y)
-                    intersection = false;
-                else if (c1.Y1 < topLeft.Y && c1.Y2 < topLeft.Y)
-                    intersection = false;
-                else
-                    intersection = true;
-            }           
-            return intersection;
+                discriminant = (float)Math.Sqrt(discriminant);
+                float t1 = (-b - discriminant) / (2 * a);
+                float t2 = (-b + discriminant) / (2 * a);
+
+                if (t1 >= 0 && t1 <= 1)
+                    intersectionPoints.Add(c1.P1 + t1 * d);
+                if (t2 >= 0 && t2 <= 1)
+                    intersectionPoints.Add(c1.P1 + t2 * d);
+                if (intersectionPoints.Count == 0)
+                    return null;               
+                return intersectionPoints;
+            }
         }
 
         /// <summary>
@@ -144,5 +232,7 @@ namespace WatchYourBackLibrary
         {
             return (p2.Y - p1.Y) * point.X + (p1.X - p2.X) * point.Y + (p2.X * p1.Y - p1.X * p2.Y);
         }
+
+        
     }
 }

@@ -27,7 +27,7 @@ namespace WatchYourBackLibrary
         float rotationSpeed;
 
         public MovementSystem()
-            : base(false, true, 5)
+            : base(false, true, 4)
         {
             components += (int)Masks.Transform;
             components += (int)Masks.Velocity;
@@ -98,8 +98,8 @@ namespace WatchYourBackLibrary
 
                     if (entity.hasComponent(Masks.LineCollider))
                     {
-                        GraphicsComponent g = (GraphicsComponent)entity.Components[Masks.Graphics];
-                        g.DebugPoints.Clear();
+                        //GraphicsComponent g = (GraphicsComponent)entity.Components[Masks.Graphics];
+                        //g.DebugPoints.Clear();
 
                         LineColliderComponent collider = (LineColliderComponent)entity.Components[Masks.LineCollider];
                        
@@ -111,8 +111,8 @@ namespace WatchYourBackLibrary
                         collider.P1 = rotation1;
                         collider.P2 = rotation2;                       
 
-                        g.DebugPoints.Add(collider.P1);
-                        g.DebugPoints.Add(collider.P2);
+                        //g.DebugPoints.Add(collider.P1);
+                        //g.DebugPoints.Add(collider.P2);
                         
                     }
 

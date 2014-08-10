@@ -17,11 +17,13 @@ namespace WatchYourBackLibrary
         public override Masks Mask { get { return Masks.Graphics; } }
         
         private Dictionary<string, GraphicsInfo> graphics;
+        List<Vector2> debugPoints;
         private GraphicsInfo main;
 
         public GraphicsComponent()
         {
             graphics = new Dictionary<string, GraphicsInfo>();
+            debugPoints = new List<Vector2>();
         }
 
         public GraphicsComponent(Rectangle body, Texture2D texture, float layer, string key)
@@ -73,9 +75,19 @@ namespace WatchYourBackLibrary
         public float RotationAngle { get { return main.RotationAngle; } set { main.RotationAngle = value; } }
         public Vector2 RotationOrigin { get { return main.RotationOrigin; } }
         public Vector2 RotationOffset { get { return main.RotationOffset; } set { main.RotationOffset = value; } }
-        public List<Vector2> DebugPoints { get { return main.DebugPoints; } set { main.DebugPoints = value; } }
+        public List<Vector2> DebugPoints { get { return debugPoints; } set { debugPoints = value; } }
         public float Layer { get { return main.Layer; } set { main.Layer = value; } }
 
-        public Dictionary<string, GraphicsInfo> Sprites { get { return graphics; } set { graphics = value; } }       
+        public Dictionary<string, GraphicsInfo> Sprites { get { return graphics; } }
+
+        public void addSprite(string name, GraphicsInfo graphicstoAdd)
+        {
+            graphics.Add(name, graphicstoAdd);
+            if (main == null)
+                main = graphicstoAdd;
+                
+        }
+       
+        
     }
 }

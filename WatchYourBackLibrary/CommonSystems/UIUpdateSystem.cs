@@ -16,7 +16,7 @@ namespace WatchYourBackLibrary
         UIInfo ui;
 
         public UIUpdateSystem(UIInfo ui)
-            : base(false, true, 9)
+            : base(false, true, 20)
         {
             components += (int)Masks.PlayerInfo;
             this.ui = ui;

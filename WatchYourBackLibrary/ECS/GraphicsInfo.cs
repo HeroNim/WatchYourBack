@@ -29,8 +29,6 @@ namespace WatchYourBackLibrary
         private Vector2 rotationOffset;
 
         private bool visible;
-        private List<Vector2> debugPoints;
-
 
         public GraphicsInfo(Rectangle body, Texture2D texture, float layer)
         {
@@ -42,8 +40,7 @@ namespace WatchYourBackLibrary
             this.rotationOrigin = Vector2.Zero;
             this.rotationOffset = Vector2.Zero;
 
-            hasText = false;
-            debugPoints = new List<Vector2>();            
+            hasText = false;            
             this.layer = layer;
             visible = true;
         }
@@ -97,7 +94,6 @@ namespace WatchYourBackLibrary
         public Vector2 RotationOrigin { get { return rotationOrigin; } }
         public Vector2 RotationOffset { get { return rotationOffset; } set { rotationOffset = value; } }
         public bool Rotatable { get { return (rotationAngle != 0); } }
-        public List<Vector2> DebugPoints { get { return debugPoints; } set { debugPoints = value; } }
         public float Layer { get { return layer; } set { layer = value; } }
         public bool Visible { get { return visible; } set { visible = value; } }
     }

@@ -15,7 +15,7 @@ namespace WatchYourBackLibrary
     public class AvatarInputSystem : ESystem
     {
         public AvatarInputSystem()
-            : base(false, true, 3)
+            : base(false, true, 2)
         {
             components += (int)Masks.PlayerInput;
             components += (int)Masks.Velocity;

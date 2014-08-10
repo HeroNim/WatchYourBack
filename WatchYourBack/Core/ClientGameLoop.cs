@@ -24,6 +24,8 @@ namespace WatchYourBack
     /// </summary>
     public class ClientGameLoop : Game
     {
+        public static ClientGameLoop Instance;
+
         Stack<World> worldStack;
         Stack<World> updateStack;
         Stack<World> drawStack;
@@ -54,6 +56,7 @@ namespace WatchYourBack
         public ClientGameLoop()
             : base()
         {
+            Instance = this;
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferWidth = 1280;
             graphics.PreferredBackBufferHeight = 720;
@@ -96,6 +99,7 @@ namespace WatchYourBack
             EFactory.content = Content;
 
             base.Initialize();
+            
         }
 
         /// <summary>
@@ -293,6 +297,7 @@ namespace WatchYourBack
             inGame.Manager.addSystem(new MovementSystem());
             inGame.Manager.addSystem(new LevelSystem(levels));
             inGame.Manager.addSystem(new AttackSystem());
+            inGame.Manager.addSystem(new FieldOfViewSystem());
             inGame.Manager.addSystem(new UIUpdateSystem(gameUI));
             inGame.Manager.addSystem(audio);
             inGame.Manager.addSystem(gameInput);

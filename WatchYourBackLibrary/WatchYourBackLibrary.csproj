@@ -41,10 +41,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommonComponents\VisionComponent.cs" />
+    <Compile Include="CommonSystems\FieldOfViewSystem.cs" />
+    <Compile Include="GameData.cs" />
+    <Compile Include="Primitives\Polygon.cs" />
     <Compile Include="Primitives\Circle.cs" />
     <Compile Include="CollisionHelper.cs" />
     <Compile Include="EventArgs\NetworkUpdateArgs.cs" />
     <Compile Include="Primitives\Line.cs" />
+    <Compile Include="QuadTree.cs" />
     <Compile Include="ServerInfo.cs" />
     <Compile Include="CommonSystems\AudioSystem.cs" />
     <Compile Include="CommonComponents\CircleColliderComponent.cs" />
@@ -91,6 +96,7 @@
     <Compile Include="CommonComponents\SoundEffectComponent.cs" />
     <Compile Include="ECS\UI.cs" />
     <Compile Include="ECS\SoundInfo.cs" />
+    <Compile Include="CommonComponents\VisionBlockComponent.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Timers;
 
-using WatchYourBackLibrary;
+using Microsoft.Xna.Framework;
 
 namespace WatchYourBackLibrary
 {
@@ -25,6 +25,7 @@ namespace WatchYourBackLibrary
         private List<List<Entity>> allEntities;
         private List<Entity> spawns;
         private List<Entity> avatars;
+        private List<Vector2> vertices;
 
         private List<Entity> walls;
         private Timer timer;
@@ -45,10 +46,12 @@ namespace WatchYourBackLibrary
             playing = true;
 
             levels = new Dictionary<LevelName, LevelTemplate>();
+            vertices = new List<Vector2>();
 
             spawns = new List<Entity>();
             avatars = new List<Entity>();
             walls = new List<Entity>();
+            
             allEntities = new List<List<Entity>>();
             allEntities.Add(spawns);
             allEntities.Add(avatars);
@@ -77,6 +80,20 @@ namespace WatchYourBackLibrary
         {
             get { return avatars; }
             set { avatars = value; }
+        }
+
+        public List<Vector2> Vertices
+        {
+            get { return vertices; }
+            set { vertices = value; }
+        }
+
+        public void addVertex(Vector2 toAdd)
+        {
+            foreach (Vector2 vertex in vertices)
+                if (vertex.Equals(toAdd))
+                    return;
+            vertices.Add(toAdd);
         }
 
         public bool Reset

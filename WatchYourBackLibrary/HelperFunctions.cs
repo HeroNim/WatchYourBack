@@ -41,7 +41,7 @@ namespace WatchYourBackLibrary
         /// <returns>An angle clockwise from the vetical</returns>
         public static float VectorToAngle(Vector2 vector)
         {
-            return (float)Math.Atan2(vector.X, vector.Y);
+            return Normalize((float)Math.Atan2(vector.X, -vector.Y));
         }
 
         /// <summary>
@@ -134,6 +134,34 @@ namespace WatchYourBackLibrary
                     index++;
                 }
             }
+        }
+
+        public static List<Vector2> SortVertices(List<Vector2> vertices, Vector2 center)
+        {
+            vertices = vertices.OrderBy(o => Math.Atan2(o.Y - center.Y, o.X - center.X)).ToList();           
+            return vertices;
+        }
+
+        public static float Cross(Vector2 v, Vector2 w)
+        {
+            return (v.X * w.Y) - (v.Y * w.X);
+        }
+
+        public static Vector2 GetClosestPoint(Vector2 point, List<Vector2> points)
+        {
+            
+            if (points == null || points.Count == 0)
+                return Vector2.Zero;
+            else
+            {
+                Vector2 closest = points[0];
+                for(int i = 0; i < points.Count; i++)
+                    if (Vector2.Distance(point, points[i]) < Vector2.Distance(point, closest))
+                        closest = points[i];
+                return closest;
+            }
+                
+          
         }
     }
 }

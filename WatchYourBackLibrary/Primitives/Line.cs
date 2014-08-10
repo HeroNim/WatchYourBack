@@ -62,5 +62,10 @@ namespace WatchYourBackLibrary
             get { return p2.Y; }
             set { p2.Y = value; }
         }
+
+        public override string ToString()
+        {
+            return "P1: " + X1 + ", " + Y1 + "; P2: " + X2 + ", " + Y2;
+        }
     }
 }

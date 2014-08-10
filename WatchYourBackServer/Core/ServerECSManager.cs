@@ -21,6 +21,7 @@ namespace WatchYourBackServer
     {
         private Dictionary<int, Entity> activeEntities;
         private Dictionary<int, EntityCommands> changedEntities;
+        private QuadTree<Entity> quadTree;
         private List<ESystem> systems;
         private List<Entity> removal;
         private LevelInfo levelInfo;
@@ -31,6 +32,7 @@ namespace WatchYourBackServer
 
         public ServerECSManager(int playerCount)
         {
+            quadTree = new QuadTree<Entity>(0, 0, GameData.gameWidth, GameData.gameHeight, 4);
             systems = new List<ESystem>();
             activeEntities = new Dictionary<int, Entity>();
             changedEntities = new Dictionary<int, EntityCommands>();
@@ -111,6 +113,11 @@ namespace WatchYourBackServer
         public List<ESystem> Systems
         {
             get { return systems; }
+        }
+
+        public QuadTree<Entity> QuadTree
+        {
+            get { return quadTree; }
         }
 
         public void addChangedEntities(Entity e, EntityCommands c)

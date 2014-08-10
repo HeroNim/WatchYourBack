@@ -28,7 +28,7 @@ namespace WatchYourBack
     {
         private Dictionary<KeyBindings, Keys> mappings;
         public GameInputSystem()
-            : base(false, true, 2)
+            : base(false, true, 1)
         {
             components += (int)Masks.PlayerInput;
             mappings = new Dictionary<KeyBindings, Keys>();

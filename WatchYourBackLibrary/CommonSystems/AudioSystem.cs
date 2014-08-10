@@ -16,7 +16,7 @@ namespace WatchYourBackLibrary
         private ContentManager content;
 
         public AudioSystem(ContentManager content)
-            : base(false, true, 11)
+            : base(false, true, 21)
         {
             this.content = content;
             components += (int)Masks.Audio;

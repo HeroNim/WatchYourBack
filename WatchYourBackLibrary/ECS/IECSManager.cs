@@ -24,18 +24,6 @@ namespace WatchYourBackLibrary
         void Initialize();
 
         /// <summary>
-        /// Adds a system to the manager.
-        /// </summary>
-        /// <param name="system">The system to add</param>
-        void addSystem(ESystem system);
-
-        /// <summary>
-        /// Removes a system from the manager.
-        /// </summary>
-        /// <param name="system">The system to remove</param>
-        void removeSystem(ESystem system);   
-     
-        /// <summary>
         /// Adds an entity to the manager.
         /// </summary>
         /// <param name="entity">The entity to add</param>
@@ -48,13 +36,16 @@ namespace WatchYourBackLibrary
         void removeEntity(Entity entity);
 
         /// <summary>
-        /// The component containing all the information about the game's levels.
+        /// Adds a system to the manager.
         /// </summary>
-        LevelInfo LevelInfo
-        {
-            get;
-            set;
-        }
+        /// <param name="system">The system to add</param>
+        void addSystem(ESystem system);
+
+        /// <summary>
+        /// Removes a system from the manager.
+        /// </summary>
+        /// <param name="system">The system to remove</param>
+        void removeSystem(ESystem system);   
       
         /// <summary>
         /// A dictionary of the active entities, with their unique ID's as the keys.
@@ -77,17 +68,17 @@ namespace WatchYourBackLibrary
             get;
         }
 
+        QuadTree<Entity> QuadTree
+        {
+            get;
+        }   
+
         /// <summary>
         /// Add an entity to the changed entities list.
         /// </summary>
         /// <param name="e">The modified entity</param>
         /// <param name="c">How the entity changed (added, modified, or removed)</param>
         void addChangedEntities(Entity e, EntityCommands c);
-
-        /// <summary>
-        /// Removes all entities that are either inactive or in the removal list from the game.
-        /// </summary>
-        void RemoveAll();
 
         /// <summary>
         /// Updates the entity lists of the manager.
@@ -97,6 +88,20 @@ namespace WatchYourBackLibrary
         /// </remarks>
         /// <param name="gameTime">The time elapsed since the last update</param>
         void update(TimeSpan gameTime);
+
+        /// <summary>
+        /// Removes all entities that are either inactive or in the removal list from the game.
+        /// </summary>
+        void RemoveAll();
+
+        /// <summary>
+        /// The component containing all the information about the game's levels.
+        /// </summary>
+        LevelInfo LevelInfo
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// Checks if the manager has graphics or not (ie. client or server).
