@@ -44,6 +44,7 @@
     <Compile Include="CommonComponents\VisionComponent.cs" />
     <Compile Include="CommonSystems\FieldOfViewSystem.cs" />
     <Compile Include="GameData.cs" />
+    <Compile Include="Graphics\Vertex2D.cs" />
     <Compile Include="Primitives\Polygon.cs" />
     <Compile Include="Primitives\Circle.cs" />
     <Compile Include="CollisionHelper.cs" />

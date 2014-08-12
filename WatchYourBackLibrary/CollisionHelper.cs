@@ -28,15 +28,17 @@ namespace WatchYourBackLibrary
         /// <returns>True if colliding</returns>
         public static bool CheckCollision(Line c1, Rectangle c2)
         {
+
+
             bool possible = false;
 
             bool[] pos = new bool[4];
-            pos[0] = (lineEquation(c1.P1, c1.P2, new Vector2(c2.Right, c2.Top)) > 0);
-            pos[1] = (lineEquation(c1.P1, c1.P2, new Vector2(c2.Left, c2.Bottom)) > 0);
-            pos[2] = (lineEquation(c1.P1, c1.P2, new Vector2(c2.Right, c2.Bottom)) > 0);
-            pos[3] = (lineEquation(c1.P1, c1.P2, new Vector2(c2.Left, c2.Top)) > 0);
+            pos[0] = (lineEquation(c1.P1, c1.P2, c2.Right, c2.Top) > 0);
+            pos[1] = (lineEquation(c1.P1, c1.P2, c2.Left, c2.Bottom) > 0);
+            pos[2] = (lineEquation(c1.P1, c1.P2, c2.Right, c2.Bottom) > 0);
+            pos[3] = (lineEquation(c1.P1, c1.P2, c2.Left, c2.Top) > 0);
 
-            for(int i = 0; i < pos.Length - 1; i++)
+            for (int i = 0; i < pos.Length - 1; i++)
             {
                 if (pos[i] != pos[i + 1])
                 {
@@ -228,6 +230,11 @@ namespace WatchYourBackLibrary
         /// <param name="p2">A point on the line</param>
         /// <param name="point">The point to check</param>
         /// <returns>Zero if on the line, positive or negative if not</returns>
+        public static float lineEquation(Vector2 p1, Vector2 p2, float x, float y)
+        {
+            return (p2.Y - p1.Y) * x + (p1.X - p2.X) * y + (p2.X * p1.Y - p1.X * p2.Y);
+        }
+
         public static float lineEquation(Vector2 p1, Vector2 p2, Vector2 point)
         {
             return (p2.Y - p1.Y) * point.X + (p1.X - p2.X) * point.Y + (p2.X * p1.Y - p1.X * p2.Y);

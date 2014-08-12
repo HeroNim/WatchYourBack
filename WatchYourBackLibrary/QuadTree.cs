@@ -17,7 +17,7 @@ namespace WatchYourBackLibrary
         {
             quadWidth = width;
             quadHeight = height;
-            root = new Node(x, y, width, height);
+            root = new Node(x, y, width, height, null);
             Subdivide(depth);
         }
 
@@ -63,10 +63,10 @@ namespace WatchYourBackLibrary
             else
             {
                 node.IsLeaf = false;
-                node.Children.Add(new Node(node.X, node.Y, node.Width / 2, node.Height / 2));
-                node.Children.Add(new Node(node.X + node.Width / 2, node.Y, node.Width / 2, node.Height / 2));
-                node.Children.Add(new Node(node.X, node.Y + node.Height / 2, node.Width / 2, node.Height / 2));
-                node.Children.Add(new Node(node.X + node.Width / 2, node.Y + node.Height / 2, node.Width / 2, node.Height / 2));
+                node.Children.Add(new Node(node.X, node.Y, node.Width / 2, node.Height / 2, node));
+                node.Children.Add(new Node(node.X + node.Width / 2, node.Y, node.Width / 2, node.Height / 2, node));
+                node.Children.Add(new Node(node.X, node.Y + node.Height / 2, node.Width / 2, node.Height / 2, node));
+                node.Children.Add(new Node(node.X + node.Width / 2, node.Y + node.Height / 2, node.Width / 2, node.Height / 2, node));
             }
         }
 
@@ -74,9 +74,12 @@ namespace WatchYourBackLibrary
         {
             if (CollisionHelper.CheckCollision(position, node.Quad) == false)
                 return;
+            node.hasContent = true;
             if (!node.IsLeaf)
+            
                 foreach (Node child in node.Children)
                     Add(item, position, child);
+            
             else
                 if (!node.Contents.Contains(item))
                     node.Contents.Add(item);
@@ -93,14 +96,15 @@ namespace WatchYourBackLibrary
         }
 
         private void Intersects(Line line, Node node, List<T> list)
-        {
+        {           
             if (CollisionHelper.CheckCollision(line, node.Quad) == false)
                 return;
             if (!node.IsLeaf)
             {
                 foreach (Node child in node.Children)
                 {
-                    Intersects(line, child, list);
+                    if(child.hasContent)
+                        Intersects(line, child, list);
                 }
             }
             else
@@ -116,16 +120,21 @@ namespace WatchYourBackLibrary
         private class Node
         {
             Rectangle quad;
-            List<Node> children;
+            Node parent;
+            List<Node> children;           
             bool isLeaf;
             List<T> contents;
+           
+            bool hasContents;
 
-            public Node(int x, int y, int width, int height)
+            public Node(int x, int y, int width, int height, Node parent)
             {
                 quad = new Rectangle(x, y, width, height);
+                this.parent = parent;
                 children = new List<Node>();
                 isLeaf = true;
                 contents = new List<T>();
+                hasContents = false;
             }
 
             public Rectangle Quad
@@ -156,6 +165,7 @@ namespace WatchYourBackLibrary
             public int Y { get { return quad.Y; } }
             public int Width { get { return quad.Width; } }
             public int Height { get { return quad.Height; } }
+            public bool hasContent { get { return hasContents; } set { hasContents = value; } }
 
             public override string ToString()
             {

@@ -36,7 +36,7 @@ namespace WatchYourBack
             currentID = 0;
             drawTime = 0;
             systems = new List<ESystem>();
-            quadtree = new QuadTree<Entity>(0, 0, GameData.gameWidth, GameData.gameHeight, 4);
+            quadtree = new QuadTree<Entity>(0, 0, GameData.gameWidth, GameData.gameHeight, 5);
             activeEntities = new Dictionary<int, Entity>();
             changedEntities = new Dictionary<int, EntityCommands>();
             removal = new List<Entity>();
@@ -191,14 +191,62 @@ namespace WatchYourBack
                                         sprite.SpriteColor, sprite.RotationAngle, sprite.RotationOrigin, SpriteEffects.None, sprite.Layer);
                                 foreach (Vector2 point in graphics.DebugPoints)
                                 {
-                                    spriteBatch.Draw(test, new Rectangle((int)point.X, (int)point.Y, 10, 10), Color.Blue);
+                                    spriteBatch.Draw(test, new Rectangle((int)point.X, (int)point.Y, 3, 3), Color.Blue);
                                 }
                                 //graphics.DebugPoints.Clear();
                             }
                         }
                     }
                 }
+                
             }
+
+            foreach (Entity entity in activeEntities.Values)
+            {
+                if (entity.hasComponent(Masks.Vision))
+                {
+                    VisionComponent vision = entity.GetComponent<VisionComponent>();
+                    if (vision.VisionField != null)
+                        DrawPolygon(vision.VisionField);
+                }
+            }
+            
+        }
+
+        private void DrawPolygon(Polygon e)
+        {
+            GraphicsDevice device = ClientGameLoop.Instance.GraphicsDevice;
+            device.BlendState = BlendState.Opaque;
+            device.DepthStencilState = DepthStencilState.Default;
+           
+            BasicEffect effect = new BasicEffect(device);
+
+            Matrix projection = Matrix.CreateOrthographicOffCenter(0, device.Viewport.Width, device.Viewport.Height, 0, 0, 1);
+            Matrix halfPixelOffset = Matrix.CreateTranslation(-0.5f, -0.5f, 0);
+
+            effect.World = Matrix.Identity;
+            effect.View = Matrix.Identity;
+            effect.Projection = halfPixelOffset * projection;            
+
+            VertexBuffer vertexBuffer = new VertexBuffer(device, typeof(VertexPositionColor), e.VertexList.Length, BufferUsage.WriteOnly);
+            vertexBuffer.SetData<VertexPositionColor>(e.VertexList);
+            IndexBuffer indexBuffer = new IndexBuffer(device, typeof(short), e.IndexList.Length, BufferUsage.WriteOnly);
+            indexBuffer.SetData(e.IndexList);
+
+            device.SetVertexBuffer(vertexBuffer);
+            device.Indices = indexBuffer;
+
+            RasterizerState rasterizerState = new RasterizerState();
+            rasterizerState.CullMode = CullMode.None;
+            device.RasterizerState = rasterizerState;
+
+            foreach(EffectPass pass in effect.CurrentTechnique.Passes)
+            {
+                pass.Apply();
+                device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, e.VertexList.Length, 0, e.VertexList.Length - 2);
+            }
+
+
         }
 
         public LevelInfo LevelInfo

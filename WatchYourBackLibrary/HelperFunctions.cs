@@ -159,9 +159,57 @@ namespace WatchYourBackLibrary
                     if (Vector2.Distance(point, points[i]) < Vector2.Distance(point, closest))
                         closest = points[i];
                 return closest;
-            }
-                
-          
+            }                   
         }
+
+        public static List<Vector2> BresenhamLine(int x1, int y1, int x2, int y2)
+        {
+            // Optimization: it would be preferable to calculate in  
+            // advance the size of "result" and to use a fixed-size array  
+            // instead of a list.  
+            List<Vector2> result = new List<Vector2>();
+            result.Clear();
+
+            bool steep = Math.Abs(y2 - y1) > Math.Abs(x2 - x1);
+            if (steep)
+            {
+                Swap(ref x1, ref y1);
+                Swap(ref x2, ref y2);
+            }
+            if (x1 > x2)
+            {
+                Swap(ref x1, ref x2);
+                Swap(ref y1, ref y2);
+            }
+
+            int deltax = x2 - x1;
+            int deltay = Math.Abs(y2 - y1);
+            int error = 0;
+            int ystep;
+            int y = y1;
+            if (y1 < y2) ystep = 1; else ystep = -1;
+            for (int x = x1; x <= x2; x++)
+            {
+                if (steep) result.Add(new Vector2(y, x));
+                else result.Add(new Vector2(x, y));
+                error += deltay;
+                if (2 * error >= deltax)
+                {
+                    y += ystep;
+                    error -= deltax;
+                }
+            }
+
+            return result;
+        }
+
+        public static void Swap<T>(ref T a, ref T b)
+        {
+            T c = a;
+            a = b;
+            b = c;
+        }
+
+        
     }
 }

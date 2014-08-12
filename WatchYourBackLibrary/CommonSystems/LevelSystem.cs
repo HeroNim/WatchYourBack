@@ -54,7 +54,7 @@ namespace WatchYourBackLibrary
 
             if (!level.Playing)
             {
-                Console.WriteLine("Game over");                
+                //Console.WriteLine("Game over");                
             }                            
         }
 
