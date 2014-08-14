@@ -138,7 +138,8 @@ namespace WatchYourBackLibrary
 
         public static List<Vector2> SortVertices(List<Vector2> vertices, Vector2 center)
         {
-            vertices = vertices.OrderBy(o => Math.Atan2(o.Y - center.Y, o.X - center.X)).ToList();           
+            Vector2 reference = vertices[vertices.Count - 1];
+            vertices = vertices.OrderBy(o => HelperFunctions.Angle(o - center, reference - center)).ToList();           
             return vertices;
         }
 

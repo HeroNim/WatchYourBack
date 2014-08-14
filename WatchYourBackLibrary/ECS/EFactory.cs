@@ -189,10 +189,10 @@ namespace WatchYourBackLibrary
             {
                 Texture2D myTexture = content.Load<Texture2D>("TileTextures/WallTextureAtlas");
                 GraphicsComponent g = new GraphicsComponent();
-                g.addSprite("TopLeft", new GraphicsInfo(new Rectangle(x, y, width / 2, height / 2), myTexture, new Rectangle((int)LevelDimensions.X_SCALE / 2 * atlasIndex[0, 0], 0, (int)LevelDimensions.X_SCALE / 2, (int)LevelDimensions.Y_SCALE / 2), 1));
-                g.addSprite("TopRight", new GraphicsInfo(new Rectangle(x + width / 2, y, width / 2, height / 2), myTexture, new Rectangle((int)LevelDimensions.X_SCALE / 2 * atlasIndex[0, 1], 0, (int)LevelDimensions.X_SCALE / 2, (int)LevelDimensions.Y_SCALE / 2), 1));
-                g.addSprite("BottomLeft", new GraphicsInfo(new Rectangle(x, y + height / 2, width / 2, height / 2), myTexture, new Rectangle((int)LevelDimensions.X_SCALE / 2 * atlasIndex[1, 0], 0, (int)LevelDimensions.X_SCALE / 2, (int)LevelDimensions.Y_SCALE / 2), 1));
-                g.addSprite("BottomRight", new GraphicsInfo(new Rectangle(x + width / 2, y + height / 2, width / 2, height / 2), myTexture, new Rectangle((int)LevelDimensions.X_SCALE / 2 * atlasIndex[1, 1], 0, (int)LevelDimensions.X_SCALE / 2, (int)LevelDimensions.Y_SCALE / 2), 1));
+                g.addSprite("TopLeft", new GraphicsInfo(new Rectangle(x, y, width / 2, height / 2), myTexture, new Rectangle((int)LevelDimensions.X_SCALE / 2 * atlasIndex[0, 0], 0, (int)LevelDimensions.X_SCALE / 2, (int)LevelDimensions.Y_SCALE / 2), 0.9f));
+                g.addSprite("TopRight", new GraphicsInfo(new Rectangle(x + width / 2, y, width / 2, height / 2), myTexture, new Rectangle((int)LevelDimensions.X_SCALE / 2 * atlasIndex[0, 1], 0, (int)LevelDimensions.X_SCALE / 2, (int)LevelDimensions.Y_SCALE / 2), 0.9f));
+                g.addSprite("BottomLeft", new GraphicsInfo(new Rectangle(x, y + height / 2, width / 2, height / 2), myTexture, new Rectangle((int)LevelDimensions.X_SCALE / 2 * atlasIndex[1, 0], 0, (int)LevelDimensions.X_SCALE / 2, (int)LevelDimensions.Y_SCALE / 2), 0.9f));
+                g.addSprite("BottomRight", new GraphicsInfo(new Rectangle(x + width / 2, y + height / 2, width / 2, height / 2), myTexture, new Rectangle((int)LevelDimensions.X_SCALE / 2 * atlasIndex[1, 1], 0, (int)LevelDimensions.X_SCALE / 2, (int)LevelDimensions.Y_SCALE / 2), 0.9f));
                 e.addComponent(g);
             }
             e.Type = Entities.Wall;

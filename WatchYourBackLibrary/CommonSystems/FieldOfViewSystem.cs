@@ -43,7 +43,6 @@ namespace WatchYourBackLibrary
                 Vector2 a = HelperFunctions.AngleToVector(upperBound);
                 Vector2 b = HelperFunctions.AngleToVector(lowerBound);
 
-                Console.WriteLine();
                 vertices = HelperFunctions.SortVertices(vertices, center);
 
                 //Remove vertices not in line of sight

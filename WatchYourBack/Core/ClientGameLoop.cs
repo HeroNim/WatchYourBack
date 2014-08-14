@@ -39,8 +39,6 @@ namespace WatchYourBack
         World pauseMenu;
 
         InputListener inputListener;
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
 
         Dictionary<LevelName, LevelTemplate> levels;
 
@@ -51,7 +49,27 @@ namespace WatchYourBack
         private bool isConnected;
         private bool isPlayingOnline;
         //----------------------------------------------------------------------------------------------------------
-        private Stopwatch debug;
+        Matrix projection;
+        Matrix halfPixelOffset;
+
+        GraphicsDeviceManager graphics;
+        SpriteBatch spriteBatch;
+        RenderTarget2D mainSceneTarget;
+        RenderTarget2D lightMap;
+        GraphicsComponent currentGraphics;
+        RasterizerState rasterizerState;
+        BasicEffect effect;
+        VertexBuffer vertexBuffer;
+        IndexBuffer indexBuffer;
+        
+        Texture2D lightMask;
+        Texture2D mainScene;
+        Texture2D debugTexture;
+        Texture2D levelOne;
+        Texture2D background;
+        Texture2D lightMaskBackground;
+
+        Effect makeShadows;
 
         public ClientGameLoop()
             : base()
@@ -72,7 +90,6 @@ namespace WatchYourBack
             client = new NetClient(config);
             client.Start();
             //----------------------------------------------------------------------------------------------------------
-            debug = new Stopwatch();
         }
 
         /// <summary>
@@ -86,17 +103,26 @@ namespace WatchYourBack
             worldStack = new Stack<World>();
             updateStack = new Stack<World>();
             drawStack = new Stack<World>();
-            inputListener = new InputListener(this);
-
-            Texture2D levelOne = Content.Load<Texture2D>("LevelOne");
+            inputListener = new InputListener(this);          
             levels = new Dictionary<LevelName, LevelTemplate>();
-            levels.Add(LevelName.FIRST_LEVEL, new LevelTemplate(levelOne, LevelName.FIRST_LEVEL));
-
             gameSongs = new SongCollection();
 
             isConnected = false;
             isPlayingOnline = false;
             EFactory.content = Content;
+
+
+            mainSceneTarget = new RenderTarget2D(GraphicsDevice, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height, true, GraphicsDevice.DisplayMode.Format, DepthFormat.Depth24);
+            lightMap = new RenderTarget2D(GraphicsDevice, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height, true, GraphicsDevice.DisplayMode.Format, DepthFormat.Depth24);
+            effect = new BasicEffect(GraphicsDevice);
+            projection = Matrix.CreateOrthographicOffCenter(0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height, 0, 0, 1);
+            halfPixelOffset = Matrix.CreateTranslation(-0.5f, -0.5f, 0);
+            effect.World = Matrix.Identity;
+            effect.View = Matrix.Identity;
+            effect.Projection = halfPixelOffset * projection;
+            rasterizerState = new RasterizerState();
+            
+            
 
             base.Initialize();
             
@@ -109,6 +135,17 @@ namespace WatchYourBack
         protected override void LoadContent()
         {            
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            debugTexture = EFactory.content.Load<Texture2D>("PlayerTexture");
+            levelOne = Content.Load<Texture2D>("LevelOne");
+            levels.Add(LevelName.FIRST_LEVEL, new LevelTemplate(levelOne, LevelName.FIRST_LEVEL));
+            makeShadows = Content.Load<Effect>("Shaders/Effect1");
+            
+            background = new Texture2D(GraphicsDevice, 1, 1);
+            background.SetData(new[] { Color.DarkGray });
+
+            lightMaskBackground = new Texture2D(GraphicsDevice, 1, 1);
+            lightMaskBackground.SetData(new[] { Color.Black });
+            
 
             createMainMenu();
             createConnectMenu();
@@ -172,16 +209,111 @@ namespace WatchYourBack
                 if (world.DrawExclusive)
                     break;
             }
-            GraphicsDevice.Clear(Color.DarkGray);
+
             while(drawStack.Count != 0)
             {
-                activeManager = (ClientECSManager)drawStack.Pop().Manager;
-                spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
-                activeManager.draw(spriteBatch);
-                spriteBatch.End();
+                activeManager = (ClientECSManager)drawStack.Pop().Manager;                
+                draw();                
                 activeManager.DrawTime = gameTime.ElapsedGameTime.TotalSeconds;
             }
             base.Draw(gameTime);            
+        }
+
+        private void draw()
+        {
+            GraphicsDevice.SetRenderTarget(lightMap);
+            GraphicsDevice.Clear(Color.DarkGray);
+            if (activeWorld.WorldType == Worlds.InGame)
+            {
+               
+                
+
+                GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+
+                foreach (Entity entity in activeManager.Entities.Values)
+                {
+                    if (entity.hasComponent(Masks.Vision))
+                    {
+                        VisionComponent vision = entity.GetComponent<VisionComponent>();
+                        if (vision.VisionField != null)
+                            DrawPolygon(vision.VisionField);
+                    }
+                }
+                lightMask = (Texture2D)lightMap;
+            }
+
+            GraphicsDevice.SetRenderTarget(mainSceneTarget);
+            GraphicsDevice.Clear(Color.DarkGray);
+            spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
+            spriteBatch.Draw(background, GraphicsDevice.Viewport.Bounds, null, Color.White, 0, Vector2.Zero, SpriteEffects.None, 1);
+            foreach (Entity entity in activeManager.Entities.Values)
+            {
+                if (entity.hasComponent(Masks.Graphics))
+                {
+                    currentGraphics = (GraphicsComponent)entity.Components[Masks.Graphics];
+                    foreach (GraphicsInfo sprite in currentGraphics.Sprites.Values)
+                    {
+                        if (sprite.Visible == true)
+                        {
+                            if (sprite.HasText)
+                                spriteBatch.DrawString(sprite.Font, sprite.Text, new Vector2(sprite.X, sprite.Y), sprite.FontColor, 0, sprite.RotationOrigin, 1, SpriteEffects.None, 0);
+                            else
+                            {
+                                spriteBatch.Draw(sprite.Sprite, sprite.Body, sprite.SourceRectangle,
+                                        sprite.SpriteColor, sprite.RotationAngle, sprite.RotationOrigin, SpriteEffects.None, sprite.Layer);
+                                foreach (Vector2 point in currentGraphics.DebugPoints)
+                                {
+                                    spriteBatch.Draw(debugTexture, new Rectangle((int)point.X, (int)point.Y, 3, 3), Color.Blue);
+                                }
+                                //graphics.DebugPoints.Clear();
+                            }
+                        }
+                    }
+                }
+
+            }
+            mainScene = (Texture2D)mainSceneTarget;
+           
+
+                spriteBatch.End();        
+
+            GraphicsDevice.SetRenderTarget(null);
+            GraphicsDevice.Clear(Color.DarkGray);
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+            if (lightMask != null)
+            {
+                makeShadows.Parameters["lightMask"].SetValue(lightMask);
+                makeShadows.CurrentTechnique.Passes[0].Apply();
+                //spriteBatch.Draw(lightMask, Vector2.Zero, Color.White);    
+            }
+            spriteBatch.Draw(mainSceneTarget, Vector2.Zero, Color.White);
+            spriteBatch.End();
+
+            //lightMask = null;
+            
+
+        }
+
+        private void DrawPolygon(Polygon e)
+        {                                               
+            rasterizerState.CullMode = CullMode.None;
+            GraphicsDevice.BlendState = BlendState.Additive;
+            GraphicsDevice.RasterizerState = rasterizerState;
+                       
+            vertexBuffer = new VertexBuffer(GraphicsDevice, typeof(VertexPositionColor), e.VertexList.Length, BufferUsage.WriteOnly);
+            indexBuffer = new IndexBuffer(GraphicsDevice, typeof(short), e.IndexList.Length, BufferUsage.WriteOnly);
+            vertexBuffer.SetData<VertexPositionColor>(e.VertexList);
+            indexBuffer.SetData(e.IndexList);
+            GraphicsDevice.SetVertexBuffer(vertexBuffer);
+            GraphicsDevice.Indices = indexBuffer;
+
+            foreach (EffectPass pass in effect.CurrentTechnique.Passes)
+            {
+                pass.Apply();
+                GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, e.VertexList.Length, 0, e.VertexList.Length - 2);
+            }
+            
+            
         }
       
         /// <summary>

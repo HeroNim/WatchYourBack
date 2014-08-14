@@ -35,6 +35,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'PSM' ">
     <MonoGamePlatform>PSM</MonoGamePlatform>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Xna.Framework.Content.Pipeline.EffectImporter" />
@@ -189,7 +190,7 @@
     <Compile Include="Shaders\Effect1.fx">
       <Name>Effect1</Name>
       <Importer>EffectImporter</Importer>
-      <Processor>EffectProcessor</Processor>
+      <Processor>MGEffectProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
