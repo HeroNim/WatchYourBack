@@ -11,7 +11,7 @@ namespace WatchYourBackLibrary
         Add,
         Remove,
         Modify
-    }
+    }   
 
     /// <summary>
     /// Arguments sent by the server to the client, containing information about entities to draw and how to draw them.
@@ -27,9 +27,11 @@ namespace WatchYourBackLibrary
         private int width;
         private int height;
         private float rotation;
-        private int textureIndex;
         private int[,] subIndex;
 
+        Polygon poly;
+
+       
         public NetworkEntityArgs(Entities type, EntityCommands command, int id, float xPos, float yPos, int width, int height, float rotation)
         {
             this.command = command;
@@ -40,12 +42,13 @@ namespace WatchYourBackLibrary
             this.width = width;
             this.height = height;
             this.rotation = rotation;
+            poly = null;
         }
 
-        public NetworkEntityArgs(Entities type, EntityCommands command, int id, float xPos, float yPos, int width, int height, float rotation, int textureIndex)
+        public NetworkEntityArgs(Entities type, EntityCommands command, int id, float xPos, float yPos, int width, int height, float rotation, Polygon vision = null)
             : this(type, command, id, xPos, yPos, width, height, rotation)
         {
-            this.textureIndex = textureIndex;
+            this.poly = vision;
             this.subIndex = null;
         }
 
@@ -63,7 +66,7 @@ namespace WatchYourBackLibrary
         public int Width { get { return width; } }
         public int Height { get { return height; } }
         public float Rotation { get { return rotation; } }
-        public int TextureIndex { get { return textureIndex; } }
-        public int[,] SubIndex { get { return subIndex; } }
+        public int[,] TileIndex { get { return subIndex; } }
+        public Polygon Polygon { get { return poly; } }
     }
 }

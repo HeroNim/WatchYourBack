@@ -12,11 +12,13 @@ namespace WatchYourBackLibrary
         public override Masks Mask { get { return Masks.Vision; } }
 
         float fieldOfView;
+        Circle closeRangeVision;
         Polygon visionPolygon;
 
-        public VisionComponent(float fieldOfView)
+        public VisionComponent(float fieldOfView, Vector2 center, float radius)
         {
             this.fieldOfView = MathHelper.ToRadians(fieldOfView);
+            closeRangeVision = new Circle(center, radius);
         }
 
         public float FOV
@@ -29,6 +31,11 @@ namespace WatchYourBackLibrary
         {
             get { return visionPolygon; }
             set { visionPolygon = value; }
+        }
+
+        public Circle CloseRangeVision
+        {
+            get { return closeRangeVision; }
         }
     }
 }

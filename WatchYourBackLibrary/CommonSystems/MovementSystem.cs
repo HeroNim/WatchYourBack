@@ -118,8 +118,8 @@ namespace WatchYourBackLibrary
 
                     if (entity.hasComponent(Masks.PlayerHitbox))
                     {
-                       GraphicsComponent g = (GraphicsComponent)entity.Components[Masks.Graphics];
-                       g.DebugPoints.Clear();
+                       //GraphicsComponent g = (GraphicsComponent)entity.Components[Masks.Graphics];
+                       //g.DebugPoints.Clear();
 
                         PlayerHitboxComponent collider = (PlayerHitboxComponent)entity.Components[Masks.PlayerHitbox];
 
@@ -131,8 +131,8 @@ namespace WatchYourBackLibrary
                         collider.P1 = rotation1;
                         collider.P2 = rotation2;
 
-                        g.DebugPoints.Add(collider.P1);
-                        g.DebugPoints.Add(collider.P2);
+                        //g.DebugPoints.Add(collider.P1);
+                        //g.DebugPoints.Add(collider.P2);
                     }
                 }
 

@@ -45,12 +45,44 @@ namespace WatchYourBackLibrary
         public Vector2 PointOnCircle (Vector2 vector)
         {
             float angle = HelperFunctions.VectorToAngle(vector);
-            return HelperFunctions.pointOnCircle(this.radius, angle, this.center);
+            return PointOnCircle(this.radius, angle, this.center);
         }
 
         public Vector2 PointOnCircle (float angle)
         {
-            return HelperFunctions.pointOnCircle(this.radius, angle, this.center);
+            return PointOnCircle(this.radius, angle, this.center);
         }   
+
+        
+        public static Vector2 PointOnCircle(float radius, float angle, Vector2 origin)
+        {
+            float x = -((float)(radius * Math.Cos(angle))) + origin.X;
+            float y = -((float)(radius * Math.Sin(angle))) + origin.Y;
+            return new Vector2(x, y);
+        }
+
+        public static Vector2 PointOnCircle(Circle circle, float angle)
+        {
+            return PointOnCircle(circle.Radius, angle, circle.Center);
+        }
+
+        public static List<Vector2> TangentPoints(Circle circle, Vector2 externalPoint)
+        {
+            Vector2 hypotenuse = externalPoint - circle.Center;
+            double hypAngle = HelperFunctions.VectorToAngle(hypotenuse);
+
+            float hypotenuseLength = hypotenuse.Length();
+            float oppositeLength = circle.Radius;
+
+            double centerAngle = Math.Asin(oppositeLength / hypotenuseLength);
+
+            List<Vector2> values = new List<Vector2>();
+            values.Add(PointOnCircle(circle, (float)(hypAngle + centerAngle)));
+            values.Add(PointOnCircle(circle, (float)(hypAngle - centerAngle)));
+            return values;
+
+
+
+        }
     }
 }

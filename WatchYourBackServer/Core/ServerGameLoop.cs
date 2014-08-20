@@ -119,7 +119,7 @@ namespace WatchYourBackServer
             }
             Thread.Sleep(100);
 
-            inGame = new World(Worlds.InGame, true, true);
+            inGame = new World(Worlds.Debug, true, true);
             inGame.addManager(new ServerECSManager(server.ConnectionsCount));
             inGame.Manager.Playing = true;
             ServerUpdateSystem input = new ServerUpdateSystem(server);
@@ -131,6 +131,7 @@ namespace WatchYourBackServer
             inGame.Manager.addSystem(new MovementSystem());
             inGame.Manager.addSystem(new LevelSystem(levels));
             inGame.Manager.addSystem(new AttackSystem());
+            inGame.Manager.addSystem(new FieldOfViewSystem());
 
             foreach(ESystem system in inGame.Manager.Systems)
             {

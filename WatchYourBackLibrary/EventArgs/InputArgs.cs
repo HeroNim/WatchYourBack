@@ -9,12 +9,12 @@ namespace WatchYourBackLibrary
 {
     public enum Inputs
     {
-        EXIT,
-        START_SINGLE,
-        START_MUTLI,
-        RESUME,
-        PAUSE,
-        ATTACK
+        Exit,
+        StartDebug,
+        Start,
+        Resume,
+        Pause,
+        Attack
     };
 
     /// <summary>

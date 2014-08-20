@@ -61,15 +61,6 @@ namespace WatchYourBackLibrary
             set { anchor = value;  }
         }
       
-        public Vector2 PointOnCircle (Vector2 vector)
-        {
-            float angle = HelperFunctions.VectorToAngle(vector);
-            return HelperFunctions.pointOnCircle(this.Radius, angle, this.Center);
-        }
-
-        public Vector2 PointOnCircle (float angle)
-        {
-            return HelperFunctions.pointOnCircle(this.Radius, angle, this.Center);
-        }   
+        
     }
 }

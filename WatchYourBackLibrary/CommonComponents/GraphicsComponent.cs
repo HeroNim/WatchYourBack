@@ -16,76 +16,96 @@ namespace WatchYourBackLibrary
         public override int BitMask { get { return (int)Masks.Graphics; } }
         public override Masks Mask { get { return Masks.Graphics; } }
         
-        private Dictionary<string, GraphicsInfo> graphics;
+        private Dictionary<string, SpriteGraphicsInfo> sprites;
+        private Dictionary<string, Polygon> polygons;
+
         List<Vector2> debugPoints;
-        private GraphicsInfo main;
+        private SpriteGraphicsInfo mainSprite;
+        private Polygon mainPolygon;
 
         public GraphicsComponent()
         {
-            graphics = new Dictionary<string, GraphicsInfo>();
+            sprites = new Dictionary<string, SpriteGraphicsInfo>();
+            polygons = new Dictionary<string, Polygon>();
             debugPoints = new List<Vector2>();
         }
 
         public GraphicsComponent(Rectangle body, Texture2D texture, float layer, string key)
             : this()
         {
-            main = new GraphicsInfo(body, texture, layer);
-            graphics.Add(key, main);         
+            mainSprite = new SpriteGraphicsInfo(body, texture, layer);
+            sprites.Add(key, mainSprite);         
         }
 
         public GraphicsComponent(Rectangle body, Texture2D texture, Rectangle sourceRectangle, float layer, string key)
             : this()
         {
-            main = new GraphicsInfo(body, texture, sourceRectangle, layer);
-            graphics.Add(key, main);            
+            mainSprite = new SpriteGraphicsInfo(body, texture, sourceRectangle, layer);
+            sprites.Add(key, mainSprite);            
         }
 
         public GraphicsComponent(Rectangle body, Texture2D texture, float rotationAngle, Vector2 rotationOrigin, float layer, string key)
             : this()
         {
-            main = new GraphicsInfo(body, texture, rotationAngle, rotationOrigin, layer);
-            graphics.Add(key, main);        
+            mainSprite = new SpriteGraphicsInfo(body, texture, rotationAngle, rotationOrigin, layer);
+            sprites.Add(key, mainSprite);        
         }
 
         public GraphicsComponent(Rectangle body, Texture2D texture, Rectangle sourceRectangle, float rotationAngle, Vector2 rotationOrigin, Vector2 rotationOffset, float layer, string key)
             : this()
         {
-            main = new GraphicsInfo(body, texture, sourceRectangle, rotationAngle, rotationOrigin, rotationOffset, layer);
-            graphics.Add(key, main);          
+            mainSprite = new SpriteGraphicsInfo(body, texture, sourceRectangle, rotationAngle, rotationOrigin, rotationOffset, layer);
+            sprites.Add(key, mainSprite);          
         }
 
         public GraphicsComponent(Rectangle body, string text, SpriteFont font, Color fontColor, float layer, string key)
             : this()
         {
-            main = new GraphicsInfo(body, text, font, fontColor, layer);
-            graphics.Add(key, main);         
+            mainSprite = new SpriteGraphicsInfo(body, text, font, fontColor, layer);
+            sprites.Add(key, mainSprite);         
+        }
+
+        public GraphicsComponent(Polygon p, string key)
+            :this()
+        {
+            polygons.Add(key, p);
         }
  
-        public int X { get { return main.X; } set { main.X = value; } }
-        public int Y { get { return main.Y; } set { main.Y = value; } }
+        public int X { get { return mainSprite.X; } set { mainSprite.X = value; } }
+        public int Y { get { return mainSprite.Y; } set { mainSprite.Y = value; } }
 
-        public Texture2D Sprite { get { return main.Sprite; } }
-        public Rectangle SourceRectangle { get { return main.SourceRectangle; } set { main.SourceRectangle = value; } }
-        public Rectangle Body { get { return main.Body; } set { main.Body = value; } }
-        public Color SpriteColor { get { return main.SpriteColor; } set { main.SpriteColor = value; } }
-        public Color FontColor { get { return main.FontColor; } set { main.FontColor = value; } }
-        public SpriteFont Font { get { return main.Font; } set { main.Font = value; } }
-        public bool HasText { get { return main.HasText; } set { main.HasText = value; } }
-        public string Text { get { return main.Text; } set { main.Text = value; } }
-        public float RotationAngle { get { return main.RotationAngle; } set { main.RotationAngle = value; } }
-        public Vector2 RotationOrigin { get { return main.RotationOrigin; } }
-        public Vector2 RotationOffset { get { return main.RotationOffset; } set { main.RotationOffset = value; } }
+        public Texture2D Sprite { get { return mainSprite.Sprite; } }
+        public Rectangle SourceRectangle { get { return mainSprite.SourceRectangle; } set { mainSprite.SourceRectangle = value; } }
+        public Rectangle Body { get { return mainSprite.Body; } set { mainSprite.Body = value; } }
+        public Color SpriteColor { get { return mainSprite.SpriteColor; } set { mainSprite.SpriteColor = value; } }
+        public Color FontColor { get { return mainSprite.FontColor; } set { mainSprite.FontColor = value; } }
+        public SpriteFont Font { get { return mainSprite.Font; } set { mainSprite.Font = value; } }
+        public bool HasText { get { return mainSprite.HasText; } set { mainSprite.HasText = value; } }
+        public string Text { get { return mainSprite.Text; } set { mainSprite.Text = value; } }
+        public float RotationAngle { get { return mainSprite.RotationAngle; } set { mainSprite.RotationAngle = value; } }
+        public Vector2 RotationOrigin { get { return mainSprite.RotationOrigin; } }
+        public Vector2 RotationOffset { get { return mainSprite.RotationOffset; } set { mainSprite.RotationOffset = value; } }
         public List<Vector2> DebugPoints { get { return debugPoints; } set { debugPoints = value; } }
-        public float Layer { get { return main.Layer; } set { main.Layer = value; } }
+        public float Layer { get { return mainSprite.Layer; } set { mainSprite.Layer = value; } }
 
-        public Dictionary<string, GraphicsInfo> Sprites { get { return graphics; } }
+        public Dictionary<string, SpriteGraphicsInfo> Sprites { get { return sprites; } }
+        public Dictionary<string, Polygon> Polygons { get { return polygons; } }
 
-        public void addSprite(string name, GraphicsInfo graphicstoAdd)
+        public void addSprite(string name, SpriteGraphicsInfo graphicstoAdd)
         {
-            graphics.Add(name, graphicstoAdd);
-            if (main == null)
-                main = graphicstoAdd;
+            sprites.Add(name, graphicstoAdd);
+            if (mainSprite == null)
+                mainSprite = graphicstoAdd;
                 
+        }
+
+        public void addPolygon(string name, Polygon poly)
+        {
+            if (polygons.ContainsKey(name))
+                polygons.Remove(name);
+            polygons.Add(name, poly);
+            if (mainPolygon == null)
+                mainPolygon = poly;
         }
        
         

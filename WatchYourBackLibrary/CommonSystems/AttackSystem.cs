@@ -57,7 +57,7 @@ namespace WatchYourBackLibrary
                         if (wielderComponent.WeaponType == Weapons.SWORD)
                             if (!wielderComponent.hasWeapon)
                             {
-                                Entity sword = EFactory.createSword(entity, anchorAllegiance.MyAllegiance, anchorTransform, perpAngle, (perpAngle + (float)Math.PI / 4), manager.hasGraphics());
+                                Entity sword = EFactory.createSword(entity, anchorAllegiance.Allegiance, anchorTransform, perpAngle, (perpAngle + (float)Math.PI / 4), manager.hasGraphics());
                                 wielderComponent.EquipWeapon(sword);
                                 manager.addEntity(sword);
                                 SoundEffectComponent soundC = sword.GetComponent<SoundEffectComponent>();
@@ -72,7 +72,7 @@ namespace WatchYourBackLibrary
                 {
                     if (wielderComponent.ThrowCooldown)
                     {
-                        Entity thrown = EFactory.createThrown(anchorAllegiance.MyAllegiance, anchorTransform.Center.X, anchorTransform.Center.Y, lookDir, lookAngle, manager.hasGraphics());
+                        Entity thrown = EFactory.createThrown(anchorAllegiance.Allegiance, anchorTransform.Center.X, anchorTransform.Center.Y, lookDir, lookAngle, manager.hasGraphics());
                         manager.addEntity(thrown);                      
                         wielderComponent.ThrowCooldown = false;
                         wielderComponent.ThrowSpeed.Start();

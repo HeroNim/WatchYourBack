@@ -59,6 +59,11 @@ namespace WatchYourBackLibrary
             return (float)Math.Acos(cosAngle);
         }
 
+        public static float Angle(float angle1, float angle2)
+        {
+            return (float)Math.Atan2(Math.Sin(angle2 - angle1), -Math.Cos(angle2 - angle1));
+        }
+
         /// <summary>
         /// Takes an angle, and converts it to an angle between 0 and 2pi.
         /// </summary>
@@ -73,20 +78,7 @@ namespace WatchYourBackLibrary
             return angle;
         }
 
-        /// <summary>
-        /// Finds a point on the circumference of a circle
-        /// </summary>
-        /// <param name="radius">The radius of the circle</param>
-        /// <param name="angle">The angle clockwise from the vertical of the point to be found</param>
-        /// <param name="origin">The center of the circle</param>
-        /// <returns>A point</returns>
-        public static Vector2 pointOnCircle(float radius, float angle, Vector2 origin)
-        {
-
-            float x = -((float)(radius * Math.Cos(angle))) + origin.X;
-            float y = -((float)(radius * Math.Sin(angle))) + origin.Y;
-            return new Vector2(x, y);
-        }
+        
 
         /// <summary>
         /// Draws a string scaled and wrapped inside a box
@@ -96,8 +88,11 @@ namespace WatchYourBackLibrary
         /// <param name="text">The text</param>
         /// <param name="textBox">The bounds of the text</param>
         /// <param name="scale">Rescales the text if it's too big</param>
-        public static void DrawString(SpriteBatch spriteBatch, SpriteFont font, string text, Rectangle textBox, float scale = 1)
+        public static void DrawString(SpriteBatch spriteBatch, SpriteFont font, Color fontColor, string text, Rectangle textBox, float scale = 1)
         {
+            if (text == "")
+                return;
+
             string currentLine = string.Empty;
             string[] words = text.Split(' ');
             List<string> lines = new List<string>();
@@ -120,7 +115,7 @@ namespace WatchYourBackLibrary
             lines.Add(currentLine);
 
             if (lines.Count > maxIndex)
-                DrawString(spriteBatch, font, text, textBox, scale * 0.98f);
+                DrawString(spriteBatch, font, fontColor, text, textBox, scale * 0.98f);
             else
             {
                 float yPos = textBox.Height / (lines.Count);
@@ -130,16 +125,15 @@ namespace WatchYourBackLibrary
                 {
                     float lineLength = font.MeasureString(line).Length() * scale; //The amount of space the line takes
                     float xPos = textBox.X + ((textBox.Width - lineLength) / 2); //Take the remaining space, cut it in half, and add it to the xPos to center the text on that line
-                    spriteBatch.DrawString(font, line, new Vector2(xPos + 0.5f, textBox.Y + (yPos * (index)) + offset), Color.Black, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0);
+                    spriteBatch.DrawString(font, line, new Vector2(xPos + 0.5f, textBox.Y + (yPos * (index)) + offset), fontColor, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0);
                     index++;
                 }
             }
         }
 
-        public static List<Vector2> SortVertices(List<Vector2> vertices, Vector2 center)
-        {
-            Vector2 reference = vertices[vertices.Count - 1];
-            vertices = vertices.OrderBy(o => HelperFunctions.Angle(o - center, reference - center)).ToList();           
+        public static List<Vector2> SortVertices(List<Vector2> vertices, Vector2 center, Vector2 referencePoint)
+        {           
+            vertices = vertices.OrderBy(o => HelperFunctions.Angle(o - center, referencePoint - center)).ToList();           
             return vertices;
         }
 
@@ -161,6 +155,21 @@ namespace WatchYourBackLibrary
                         closest = points[i];
                 return closest;
             }                   
+        }
+
+        public static Vector2 GetFurthestPoint(Vector2 point, List<Vector2> points)
+        {
+
+            if (points == null || points.Count == 0)
+                return Vector2.Zero;
+            else
+            {
+                Vector2 closest = points[0];
+                for (int i = 0; i < points.Count; i++)
+                    if (Vector2.Distance(point, points[i]) > Vector2.Distance(point, closest))
+                        closest = points[i];
+                return closest;
+            }
         }
 
         public static List<Vector2> BresenhamLine(int x1, int y1, int x2, int y2)

@@ -93,7 +93,7 @@ namespace WatchYourBack
                     rightMouseClicked = true;
 
                 if (Keyboard.GetState().IsKeyDown(mappings[KeyBindings.PAUSE]))
-                    onFire(new InputArgs(Inputs.PAUSE));
+                    onFire(new InputArgs(Inputs.Pause));
             }
 
             toSend = new NetworkInputArgs(client.UniqueIdentifier, xInput, yInput, mouseLocation, leftMouseClicked, rightMouseClicked, activeManager.DrawTime, dash);
@@ -131,16 +131,10 @@ namespace WatchYourBack
                             switch (args.Command)
                             {
                                 case EntityCommands.Add:
-                                    if (args.SubIndex != null)
-                                    {
-                                        e = EFactory.createGraphics(body, args.Rotation, rotationOrigin, rotationOffset, args.ID, args.SubIndex, args.Type, layer);
+                                    
+                                        e = EFactory.createGraphics(body, args.Rotation, rotationOrigin, rotationOffset, args.ID, args.Type, layer, args.TileIndex, args.Polygon);
                                         manager.addEntity(e);
-                                    }
-                                    else
-                                    {
-                                        e = EFactory.createGraphics(body, args.Rotation, rotationOrigin, rotationOffset, args.ID, sourceRectangle, args.Type, layer);
-                                        manager.addEntity(e);
-                                    }
+                                    
                                     if (entityIDMappings.Keys.Contains(args.ID))
                                     {
                                         manager.Entities.Remove(entityIDMappings[args.ID]);
@@ -160,6 +154,8 @@ namespace WatchYourBack
                                         GraphicsComponent graphics = (GraphicsComponent)e.Components[Masks.Graphics];
                                         graphics.Body = body;
                                         graphics.RotationAngle = args.Rotation;
+                                        if (args.Polygon != null)
+                                            graphics.addPolygon("Vision", args.Polygon);
                                     }
                                     catch (KeyNotFoundException)
                                     {
@@ -190,20 +186,21 @@ namespace WatchYourBack
                             {
                                 case ServerCommands.Disconnect:
                                     Console.WriteLine("Player Disconnected. Game Ending");
-                                    onFire(new InputArgs(Inputs.EXIT));
+                                    onFire(new InputArgs(Inputs.Exit));
                                     break;
                                 case ServerCommands.Lose:
                                     Console.WriteLine("You lose. :(");
-                                    onFire(new InputArgs(Inputs.EXIT));
+                                    onFire(new InputArgs(Inputs.Exit));
                                     break;
                                 case ServerCommands.Win:
                                     Console.WriteLine("You win!");
-                                    onFire(new InputArgs(Inputs.EXIT));
+                                    onFire(new InputArgs(Inputs.Exit));
                                     break;
                                 case ServerCommands.Tie:
                                     Console.WriteLine("You tied. :/");
-                                    onFire(new InputArgs(Inputs.EXIT));
+                                    onFire(new InputArgs(Inputs.Exit));
                                     break;
+                                    
                             }
                         }
                     }

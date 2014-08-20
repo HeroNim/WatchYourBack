@@ -74,6 +74,8 @@ namespace WatchYourBackServer
             entity.ServerID = assignID();
             entity.initialize();
             activeEntities.Add(entity.ServerID, entity);
+            if (entity.hasComponent(Masks.Transform))
+                quadTree.Add(entity, entity.GetComponent<TransformComponent>().Body);
             addChangedEntities(entity, EntityCommands.Add);
         }
 

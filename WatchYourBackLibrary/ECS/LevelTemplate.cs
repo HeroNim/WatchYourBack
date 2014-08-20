@@ -34,7 +34,6 @@ namespace WatchYourBackLibrary
         private Texture2D levelImage;
         private Color[] data;
         private int[,] levelData;
-        private int[,] tileTextureIndex;
         private int[,] cornerTextureIndex;
 
         private List<bool>[,] cornerVertices;
@@ -50,7 +49,6 @@ namespace WatchYourBackLibrary
             levelImage.GetData<Color>(data);
 
             levelData = new int[levelImage.Height, levelImage.Width];
-            tileTextureIndex = new int[levelImage.Height, levelImage.Width];
             cornerTextureIndex = new int[levelImage.Height * 2, levelImage.Width * 2];
             for (int y = 0; y < cornerTextureIndex.GetLength(1); y++)
                 for (int x = 0; x < cornerTextureIndex.GetLength(0); x++)
@@ -260,17 +258,14 @@ namespace WatchYourBackLibrary
             get { return levelData; }
         }
 
-        public int[,] TileIndex
-        {
-            get { return tileTextureIndex; }
-        }
+        
 
         public int[,] CornerIndex
         {
             get { return cornerTextureIndex; }
         }
 
-        public int[,] SubIndex(int y, int x)
+        public int[,] TileIndex(int y, int x)
         {
             return new int[2, 2] { { cornerTextureIndex[y * 2, x * 2], cornerTextureIndex[y * 2, x * 2 + 1] }, { cornerTextureIndex[y * 2 + 1, x * 2], cornerTextureIndex[y * 2 + 1, x * 2 + 1] } };
         }
@@ -283,6 +278,26 @@ namespace WatchYourBackLibrary
         public List<bool>[,] CornerVertices
         {
             get { return cornerVertices; }
+        }
+
+        public override string ToString()
+        {
+            string debug = "";
+
+            for (int y = 0; y < cornerTextureIndex.GetLength(0); y++)
+            {
+                for (int x = 0; x < cornerTextureIndex.GetLength(1); x++)
+                {
+
+
+                    if (cornerTextureIndex[y, x] >= 0 && cornerTextureIndex[y, x] <= 9)
+                        debug += " ";
+                    debug += cornerTextureIndex[y, x];
+                    
+                }
+                debug += "\n";
+            }
+            return debug;
         }
     }
 }

@@ -27,28 +27,15 @@ namespace WatchYourBackLibrary
         /// <param name="c2">A rectangle</param>
         /// <returns>True if colliding</returns>
         public static bool CheckCollision(Line c1, Rectangle c2)
-        {
+        {                  
+            bool pos1 = (lineEquation(c1.P1, c1.P2, c2.Right, c2.Top) > 0);
+            bool pos2 = (lineEquation(c1.P1, c1.P2, c2.Left, c2.Bottom) > 0);
+            bool pos3 = (lineEquation(c1.P1, c1.P2, c2.Right, c2.Bottom) > 0);
+            bool pos4 = (lineEquation(c1.P1, c1.P2, c2.Left, c2.Top) > 0);
 
-
-            bool possible = false;
-
-            bool[] pos = new bool[4];
-            pos[0] = (lineEquation(c1.P1, c1.P2, c2.Right, c2.Top) > 0);
-            pos[1] = (lineEquation(c1.P1, c1.P2, c2.Left, c2.Bottom) > 0);
-            pos[2] = (lineEquation(c1.P1, c1.P2, c2.Right, c2.Bottom) > 0);
-            pos[3] = (lineEquation(c1.P1, c1.P2, c2.Left, c2.Top) > 0);
-
-            for (int i = 0; i < pos.Length - 1; i++)
-            {
-                if (pos[i] != pos[i + 1])
-                {
-                    possible = true;
-                    break;
-                }
-            }
-
-            if (!possible)
+            if (!(pos1 != pos2 || pos2 != pos3 || pos3 != pos4))
                 return false;
+
 
             if (c1.X1 > c2.Right && c1.X2 > c2.Right)
                 return false;

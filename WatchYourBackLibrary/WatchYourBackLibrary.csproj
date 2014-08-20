@@ -45,6 +45,7 @@
     <Compile Include="CommonComponents\VisionComponent.cs" />
     <Compile Include="CommonSystems\FieldOfViewSystem.cs" />
     <Compile Include="GameData.cs" />
+    <Compile Include="GameServices.cs" />
     <Compile Include="Graphics\Vertex2D.cs" />
     <Compile Include="Primitives\Polygon.cs" />
     <Compile Include="Primitives\Circle.cs" />
@@ -81,7 +82,7 @@
     <Compile Include="ECS\IECSManager.cs" />
     <Compile Include="ECS\InputManager.cs" />
     <Compile Include="ECS\World.cs" />
-    <Compile Include="ECS\GraphicsInfo.cs" />
+    <Compile Include="ECS\SpriteGraphicsInfo.cs" />
     <Compile Include="HelperFunctions.cs" />
     <Compile Include="EventArgs\InputArgs.cs" />
     <Compile Include="ECS\LevelTemplate.cs" />

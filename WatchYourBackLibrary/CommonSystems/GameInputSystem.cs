@@ -77,7 +77,7 @@ namespace WatchYourBack
                 }
 
                 if (Keyboard.GetState().IsKeyDown(mappings[KeyBindings.PAUSE]))
-                    onFire(new InputArgs(Inputs.PAUSE));
+                    onFire(new InputArgs(Inputs.Pause));
             } 
         }
     }

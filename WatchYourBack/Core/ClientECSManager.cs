@@ -24,7 +24,7 @@ namespace WatchYourBack
         private List<ESystem> systems;
         private List<Entity> removal;
         private LevelInfo levelInfo;
-        private UIInfo ui;
+        private UI ui;
         private int currentID;
         private double drawTime;
 
@@ -36,7 +36,7 @@ namespace WatchYourBack
             currentID = 0;
             drawTime = 0;
             systems = new List<ESystem>();
-            quadtree = new QuadTree<Entity>(0, 0, GameData.gameWidth, GameData.gameHeight, 5);
+            quadtree = new QuadTree<Entity>(0, 0, GameData.gameWidth, GameData.gameHeight, 4);
             activeEntities = new Dictionary<int, Entity>();
             changedEntities = new Dictionary<int, EntityCommands>();
             removal = new List<Entity>();
@@ -59,7 +59,7 @@ namespace WatchYourBack
             }
         }
       
-        public void addUI(UIInfo info)
+        public void addUI(UI info)
         {
             ui = info;
             foreach (Entity e in ui.UIElements)
@@ -68,7 +68,7 @@ namespace WatchYourBack
             }
         }
 
-        public UIInfo UI
+        public UI UI
         {
             get { return ui; }
         }

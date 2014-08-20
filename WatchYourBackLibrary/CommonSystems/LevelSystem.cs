@@ -30,7 +30,7 @@ namespace WatchYourBackLibrary
         private bool built;
 
         public LevelSystem(Dictionary<LevelName, LevelTemplate> levels)
-            : base(false, true, 7)
+            : base(false, true, 1)
         {
             this.levels = levels;
             built = false;
@@ -80,12 +80,12 @@ namespace WatchYourBackLibrary
                     if (levelTemplate.LevelData[y, x] == (int)TileType.WALL)
                     {
                         Entity wall = EFactory.createWall(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE, (int)LevelDimensions.X_SCALE, (int)LevelDimensions.Y_SCALE,
-                            levelTemplate.SubIndex(y, x), manager.hasGraphics());
+                            levelTemplate.TileIndex(y, x), manager.hasGraphics());
                         manager.addEntity(wall);
                         level.Walls.Add(wall);
 
-                        GraphicsComponent g = (GraphicsComponent)wall.Components[Masks.Graphics];
-                        g.DebugPoints.Clear();
+                        //GraphicsComponent g = (GraphicsComponent)wall.Components[Masks.Graphics];
+                        //g.DebugPoints.Clear();
                         Vector2 vertex;
 
                         if (levelTemplate.CornerVertices[y, x][0] == true)

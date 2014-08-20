@@ -88,31 +88,36 @@ namespace WatchYourBackLibrary
         private void Remove(T item, Node node)
         {
             if (!node.IsLeaf)
-                foreach (Node child in node.Children)
-                    Remove(item, child);
+                
+                    foreach (Node child in node.Children)
+                        Remove(item, child);
             else
                 if (node.Contents.Contains(item))
                     node.Contents.Remove(item);
         }
 
         private void Intersects(Line line, Node node, List<T> list)
-        {           
-            if (CollisionHelper.CheckCollision(line, node.Quad) == false)
-                return;
+        {
+            //Console.WriteLine(node.Level);
             if (!node.IsLeaf)
             {
-                foreach (Node child in node.Children)
+                for (int i = 0; i < 4; i++)
                 {
-                    if(child.hasContent)
-                        Intersects(line, child, list);
+                    if (node.Children[i].hasContent && CollisionHelper.CheckCollision(line, node.Children[i].Quad) == true)
+                        Intersects(line, node.Children[i], list);
                 }
+                //foreach (Node child in node.Children)
+                //{
+                //    if (child.hasContent && CollisionHelper.CheckCollision(line, child.Quad) == true)
+                //        Intersects(line, child, list);
+                //}
             }
             else
             {
                 list.AddRange(node.Contents);               
                 return;
             }
-        }
+        }       
 
         public int Width { get { return quadWidth; } }
         public int Height { get { return quadHeight; } }
@@ -124,6 +129,7 @@ namespace WatchYourBackLibrary
             List<Node> children;           
             bool isLeaf;
             List<T> contents;
+            int level;
            
             bool hasContents;
 
@@ -135,6 +141,10 @@ namespace WatchYourBackLibrary
                 isLeaf = true;
                 contents = new List<T>();
                 hasContents = false;
+                if (parent == null)
+                    level = 0;
+                else
+                    this.level = parent.Level + 1;
             }
 
             public Rectangle Quad
@@ -159,6 +169,11 @@ namespace WatchYourBackLibrary
             {
                 get { return contents; }
                 set { contents = value; }
+            }
+
+            public int Level
+            {
+                get { return level; }
             }
 
             public int X { get { return quad.X; } }

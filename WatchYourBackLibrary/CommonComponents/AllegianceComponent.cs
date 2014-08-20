@@ -28,7 +28,7 @@ namespace WatchYourBackLibrary
             myAllegiance = owner;
         }
 
-        public Allegiance MyAllegiance
+        public Allegiance Allegiance
         {
             get { return myAllegiance; }
             set { myAllegiance = value; }

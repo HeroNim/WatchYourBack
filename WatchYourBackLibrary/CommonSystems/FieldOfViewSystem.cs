@@ -24,35 +24,30 @@ namespace WatchYourBackLibrary
         }
         public override void update(TimeSpan gameTime)
         {
-            Vector2 center;
-            endpoints.Clear();            
+            Vector2 center;          
 
             foreach (Entity e in activeEntities)
             {
                 vertices = new List<Vector2>(manager.LevelInfo.Vertices);
                 
-
-                VisionComponent v = e.GetComponent<VisionComponent>();
+                VisionComponent v = e.GetComponent<VisionComponent>();              
                 TransformComponent t = e.GetComponent<TransformComponent>();
-                GraphicsComponent g = e.GetComponent<GraphicsComponent>();
-                g.DebugPoints.Clear();
+
                 center = t.Center;
+                v.CloseRangeVision.Center = t.Center;
                 float upperBound = HelperFunctions.Normalize(t.Rotation + (v.FOV / 2));
                 float lowerBound = HelperFunctions.Normalize(t.Rotation - (v.FOV / 2));
 
                 Vector2 a = HelperFunctions.AngleToVector(upperBound);
                 Vector2 b = HelperFunctions.AngleToVector(lowerBound);
 
-                vertices = HelperFunctions.SortVertices(vertices, center);
+                vertices = HelperFunctions.SortVertices(vertices, center, center);
 
                 //Remove vertices not in line of sight
                 for (int i = 0; i < vertices.Count; i++)
                 {
-                    float vertexAngle = HelperFunctions.VectorToAngle(vertices[i] - center);
-
                     if (HelperFunctions.Angle(vertices[i] - center, a) > v.FOV || HelperFunctions.Angle(vertices[i] - center, b) > v.FOV)
                     {
-
                         vertices.Remove(vertices[i]);
                         i--;
                     }                    
@@ -65,26 +60,24 @@ namespace WatchYourBackLibrary
                     vertices.Add(center + (HelperFunctions.AngleToVector(vertexAngle + 0.01f) * 2000));
                     vertices.Add(center + (HelperFunctions.AngleToVector(vertexAngle - 0.01f) * 2000));
                 }
-
+               
                 vertices.Add((HelperFunctions.AngleToVector(upperBound) * 2000) + center);
                 vertices.Add((HelperFunctions.AngleToVector(lowerBound) * 2000) + center);
 
-                
+                //Find the closest collision point for each vertex
                 for (int i = 0; i < vertices.Count(); i++)
                 {
-                    //g.DebugPoints.Add(vertices[i]);
-                    possiblePoints.Add(vertices[i]);
                     Line ray = new Line(center, vertices[i]);
-                    List<Entity> valid = manager.QuadTree.Intersects(ray);
-                    if (valid.Count == 0)
+                    List<Entity> collidingEntities = manager.QuadTree.Intersects(ray);
+                    if (collidingEntities.Count == 0)
                         continue;
-                    foreach (Entity possible in valid)
+                    possiblePoints.Add(vertices[i]);
+                    foreach (Entity possibleEntity in collidingEntities)
      
-                        if (possible.hasComponent(Masks.VisionBlock))
+                        if (possibleEntity.hasComponent(Masks.VisionBlock))
                         {
-                            Rectangle collider = possible.GetComponent<VisionBlockComponent>().Collider;
-                            //g.DebugPoints.Add(new Vector2(collider.Center.X, collider.Center.Y));
-                            Vector2 point = HelperFunctions.GetClosestPoint(ray.P1, CollisionHelper.GetIntersection(ray, possible.GetComponent<VisionBlockComponent>().Collider));
+                            Rectangle collider = possibleEntity.GetComponent<VisionBlockComponent>().Collider;
+                            Vector2 point = HelperFunctions.GetClosestPoint(ray.P1, CollisionHelper.GetIntersection(ray, possibleEntity.GetComponent<VisionBlockComponent>().Collider));
                             if (point != Vector2.Zero)
                                 possiblePoints.Add(point);
                         }
@@ -92,14 +85,26 @@ namespace WatchYourBackLibrary
                     endpoints.Add(HelperFunctions.GetClosestPoint(ray.P1, possiblePoints));
                     possiblePoints.Clear();
                 }
-
-                endpoints = HelperFunctions.SortVertices(endpoints, center);
+               
+                endpoints = HelperFunctions.SortVertices(endpoints, center, endpoints[endpoints.Count - 1]);
+                endpoints.Add(center);
                 endpoints.Insert(0, center);
-                foreach (Vector2 point in endpoints)
-                    g.DebugPoints.Add(point);
+
+                //Close range vision
+                for (float angle = -MathHelper.PiOver4 / 4; angle <= MathHelper.TwoPi; angle += MathHelper.PiOver4/4)
+                {                   
+                        endpoints.Add(Circle.PointOnCircle(v.CloseRangeVision, angle + MathHelper.PiOver4 / 4));
+                }
+
                 v.VisionField = new Polygon(endpoints, PolyType.TriangleFan);
+              
+                if (manager.hasGraphics())
+                {                 
+                    GraphicsComponent g = e.GetComponent<GraphicsComponent>();
+                    g.addPolygon("Vision", v.VisionField);                   
+                }
                 endpoints.Clear();
-                break;
+                
             }
         }
     }

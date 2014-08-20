@@ -12,7 +12,7 @@ namespace WatchYourBackLibrary
     /// <summary>
     /// Contains all the information the game system needs to render an entity.
     /// </summary>
-    public class GraphicsInfo
+    public class SpriteGraphicsInfo
     {
         private Texture2D spriteTexture;
         private Rectangle sourceRectangle;
@@ -30,7 +30,7 @@ namespace WatchYourBackLibrary
 
         private bool visible;
 
-        public GraphicsInfo(Rectangle body, Texture2D texture, float layer)
+        public SpriteGraphicsInfo(Rectangle body, Texture2D texture, float layer)
         {
             spriteTexture = texture;
             sourceRectangle = spriteTexture.Bounds;
@@ -45,27 +45,27 @@ namespace WatchYourBackLibrary
             visible = true;
         }
 
-         public GraphicsInfo(Rectangle body, Texture2D texture, Rectangle sourceRectangle, float layer)
+         public SpriteGraphicsInfo(Rectangle body, Texture2D texture, Rectangle sourceRectangle, float layer)
             : this(body, texture, layer)
         {            
             this.sourceRectangle = sourceRectangle;            
         }
 
-        public GraphicsInfo(Rectangle body, Texture2D texture, float rotationAngle, Vector2 rotationOrigin, float layer)
+        public SpriteGraphicsInfo(Rectangle body, Texture2D texture, float rotationAngle, Vector2 rotationOrigin, float layer)
             : this(body, texture, layer)
         {            
             this.rotationAngle = rotationAngle;
             this.rotationOrigin = rotationOrigin;            
         }
 
-        public GraphicsInfo(Rectangle body, Texture2D texture, Rectangle sourceRectangle, float rotationAngle, Vector2 rotationOrigin, Vector2 rotationOffset, float layer)
+        public SpriteGraphicsInfo(Rectangle body, Texture2D texture, Rectangle sourceRectangle, float rotationAngle, Vector2 rotationOrigin, Vector2 rotationOffset, float layer)
             : this(body, texture, rotationAngle, rotationOrigin, layer)
         {
             this.sourceRectangle = sourceRectangle;            
             this.rotationOffset = rotationOffset;          
         }
 
-        public GraphicsInfo(Rectangle body, string text, SpriteFont font, Color fontColor, float layer)        
+        public SpriteGraphicsInfo(Rectangle body, string text, SpriteFont font, Color fontColor, float layer)        
         {
             this.body = body;
             color = Color.White;

@@ -28,6 +28,7 @@ namespace WatchYourBackServer
         const double timeStep = 1.0 / (double)ServerSettings.TimeStep;
         double[] interpolation;
         double[] accumulator;
+        Entity currentAvatar;
 
         LevelInfo level;
         Dictionary<long, int> playerMap;
@@ -74,14 +75,18 @@ namespace WatchYourBackServer
             {
                 if (updating)
                 {
-                    checkGame();
-                    packEntities();
-                    packScores();
+                    for (int i = 0; i < playerMap.Count; i++)
+                    {
+                        currentAvatar = level.Avatars[i];
+                        packEntities();
+                        packScores();
+                        NetOutgoingMessage om = server.CreateMessage();
+                        om.Write(SerializationHelper.Serialize(sendData));
+                        server.SendMessage(om, server.Connections[i], NetDeliveryMethod.UnreliableSequenced);
+                        sendData.Clear();
+                    }
 
-                    NetOutgoingMessage om = server.CreateMessage();
-                    om.Write(SerializationHelper.Serialize(sendData));
-                    server.SendToAll(om, NetDeliveryMethod.UnreliableSequenced);
-                    sendData.Clear();
+                    
                     manager.ChangedEntities.Clear();
                     manager.RemoveAll();
                     updating = false;
@@ -101,6 +106,7 @@ namespace WatchYourBackServer
                     while ((msg = server.ReadMessage()) != null)
                     {
                         playerIndex = playerMap[msg.SenderConnection.RemoteUniqueIdentifier];
+                        currentAvatar = level.Avatars[playerIndex];
                         om = server.CreateMessage();
                         switch (msg.MessageType)
                         {
@@ -133,7 +139,7 @@ namespace WatchYourBackServer
                                 // The client sent input to the server
                                 //
                                 args = SerializationHelper.DeserializeObject<NetworkInputArgs>(msg.ReadBytes(msg.LengthBytes));
-                                playerInputComponent = (AvatarInputComponent)level.Avatars[playerIndex].Components[Masks.PlayerInput];
+                                playerInputComponent = currentAvatar.GetComponent<AvatarInputComponent>();
 
                                 if (args.XInput == 1)
                                     playerInputComponent.MoveX = 1;
@@ -163,7 +169,6 @@ namespace WatchYourBackServer
                                 if (accumulator[playerIndex] < timeStep)
                                     interpolation[playerIndex] = accumulator[playerIndex] / timeStep;
                                 interpolate(interpolation[playerIndex]);
-                                Console.WriteLine(playerIndex);
 
                                 om.Write(SerializationHelper.Serialize(sendData));
                                 server.SendMessage(om, server.Connections[playerIndex], NetDeliveryMethod.ReliableOrdered);
@@ -230,8 +235,10 @@ namespace WatchYourBackServer
 
         public void packEntities()
         {
+            
             foreach (int id in manager.ChangedEntities.Keys)
             {
+                Polygon p = null;
                 Entity e = manager.Entities[id];
                 if (e.hasComponent(Masks.Transform) && e.Drawable == true)
                 {
@@ -239,10 +246,18 @@ namespace WatchYourBackServer
                     if (e.hasComponent(Masks.Tile))
                     {
                         TileComponent tile = (TileComponent)e.Components[Masks.Tile];
-                        sendData.Add(new NetworkEntityArgs(e.Type, manager.ChangedEntities[id], e.ServerID, transform.X, transform.Y, transform.Width, transform.Height, transform.Rotation, tile.SubIndex));
+                        sendData.Add(new NetworkEntityArgs(e.Type, manager.ChangedEntities[id], e.ServerID, transform.X, transform.Y, transform.Width, transform.Height, transform.Rotation, tile.AtlasIndex));
                     }
                     else
-                        sendData.Add(new NetworkEntityArgs(e.Type, manager.ChangedEntities[id], e.ServerID, transform.X, transform.Y, transform.Width, transform.Height, transform.Rotation, 0));
+                    {
+                        if (e == currentAvatar)
+                        {
+                            VisionComponent v = e.GetComponent<VisionComponent>();
+                            if(v.VisionField != null)
+                              p = v.VisionField;
+                        }
+                        sendData.Add(new NetworkEntityArgs(e.Type, manager.ChangedEntities[id], e.ServerID, transform.X, transform.Y, transform.Width, transform.Height, transform.Rotation, p));                       
+                    }
                 }
             }
         }
@@ -266,8 +281,11 @@ namespace WatchYourBackServer
         /// <param name="interpolationFactor">The ratio between the player's elapsed time and the update rate of the server</param>
         private void interpolate(double interpolationFactor)
         {
+            
+
             foreach(int id in manager.ChangedEntities.Values)
             {
+                Polygon p = null;
                 Entity e = manager.Entities[id];
                 if(e.hasComponent(Masks.Transform) && e.hasComponent(Masks.Velocity))
                 {
@@ -276,14 +294,23 @@ namespace WatchYourBackServer
                     float x = transform.X + (float)(velocity.X * interpolationFactor);
                     float y = transform.Y + (float)(velocity.Y * interpolationFactor);
                     float rotation = transform.Rotation + (float)(velocity.RotationSpeed * interpolationFactor);
-                    
-                    if(e.hasComponent(Masks.Tile))
+
+                    if (e.hasComponent(Masks.Tile))
                     {
                         TileComponent tile = (TileComponent)e.Components[Masks.Tile];
                         sendData.Add(new NetworkEntityArgs(e.Type, EntityCommands.Modify, e.ServerID, x, y, transform.Width, transform.Height, rotation, tile.AtlasIndex));
                     }
                     else
-                        sendData.Add(new NetworkEntityArgs(e.Type, EntityCommands.Modify, e.ServerID, x, y, transform.Width, transform.Height, rotation, 0));
+                    {
+                        if (e == currentAvatar)
+                        {
+                            VisionComponent v = e.GetComponent<VisionComponent>();
+                            if (v.VisionField != null)
+                                p = v.VisionField;
+                        }
+                        sendData.Add(new NetworkEntityArgs(e.Type, EntityCommands.Modify, e.ServerID, x, y, transform.Width, transform.Height, rotation, p));
+                        
+                    }
                 }
             }
         }

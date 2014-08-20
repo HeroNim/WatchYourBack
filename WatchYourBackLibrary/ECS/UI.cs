@@ -5,24 +5,26 @@ using System.Text;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Content;
 
 namespace WatchYourBackLibrary
 {
     /// <summary>
     /// Contains all the data for the UI of the game, such as time and score displays.
     /// </summary>
-    public class UIInfo
+    public class UI
     {
         private Entity p1Display;
         private Entity p2Display;
         private Entity timeDisplay;
         private List<Entity> uiElements;
 
-        public UIInfo(GraphicsDevice graphicsDevice) 
+        public UI(GraphicsDevice graphicsDevice) 
         {
-            p1Display = EFactory.createDisplay(new Rectangle(graphicsDevice.Viewport.Width/10, 10, 200, 50));
-            p2Display = EFactory.createDisplay(new Rectangle((int)((float)graphicsDevice.Viewport.Width / (10f/9f)), 10, 200, 50));
-            timeDisplay = EFactory.createDisplay(new Rectangle(graphicsDevice.Viewport.Width / 2 - 15, 10, 200, 50));
+            ContentManager content = GameServices.GetService<ContentManager>();
+            p1Display = EFactory.createDisplay(new Rectangle(graphicsDevice.Viewport.Width/10, 10, 200, 50), content.Load<SpriteFont>("Fonts/TestFont"));
+            p2Display = EFactory.createDisplay(new Rectangle((int)((float)graphicsDevice.Viewport.Width / (10f/9f)), 10, 200, 50), content.Load<SpriteFont>("Fonts/TestFont"));
+            timeDisplay = EFactory.createDisplay(new Rectangle(graphicsDevice.Viewport.Width / 2 - 15, 10, 200, 50), content.Load<SpriteFont>("Fonts/TestFont"));
             uiElements = new List<Entity>();
             uiElements.Add(p1Display);
             uiElements.Add(p2Display);

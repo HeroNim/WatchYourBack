@@ -15,8 +15,8 @@ namespace WatchYourBackLibrary
         MainMenu,
         ConnectMenu,
         PauseMenu,
-        InGame,
-        InGameMulti
+        Debug,
+        InGame
     };
 
     /// <summary>

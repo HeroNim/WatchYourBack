@@ -12,7 +12,7 @@
     <AssemblyName>WatchYourBack</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <IsWebBootstrapper>false</IsWebBootstrapper>
-    <PublishUrl>F:\Dropbox\Alex - Nader\WatchYourBackExe\Client\</PublishUrl>
+    <PublishUrl>F:\Downloads\Test\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
@@ -22,7 +22,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>16</ApplicationRevision>
+    <ApplicationRevision>18</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -99,15 +99,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\LevelOne.xnb" />
-    <Content Include="Content\Buttons\BackText.xnb" />
     <Content Include="Content\Buttons\ButtonFrame.xnb" />
     <Content Include="Content\Buttons\ButtonFrameClicked.xnb" />
-    <Content Include="Content\Buttons\ConnectText.xnb" />
-    <Content Include="Content\Buttons\ContinueText.xnb" />
-    <Content Include="Content\Buttons\ExitText.xnb" />
-    <Content Include="Content\Buttons\ExitToMenuText.xnb" />
-    <Content Include="Content\Buttons\ResumeText.xnb" />
-    <Content Include="Content\Buttons\StartText.xnb" />
     <Content Include="Content\PlayerTexture.xnb" />
     <Content Include="Content\Sounds\Music\HeroRemix.xnb" />
     <Content Include="Content\SwordTexture.xnb" />
@@ -119,6 +112,7 @@
     <Content Include="Content\Sounds\SFX\StunSound.xnb" />
     <Content Include="Content\Sounds\SFX\SwordSwing.xnb" />
     <Content Include="Content\Sounds\SFX\ThrowSound.xnb" />
+    <Content Include="Content\Shaders\Effect1.xnb" />
     <None Include="WatchYourBack_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>

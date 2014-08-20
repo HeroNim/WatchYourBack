@@ -13,9 +13,9 @@ namespace WatchYourBackLibrary
     public class UIUpdateSystem : ESystem
     {
         LevelInfo level;
-        UIInfo ui;
+        UI ui;
 
-        public UIUpdateSystem(UIInfo ui)
+        public UIUpdateSystem(UI ui)
             : base(false, true, 20)
         {
             components += (int)Masks.PlayerInfo;

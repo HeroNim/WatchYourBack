@@ -160,7 +160,7 @@ namespace WatchYourBackLibrary
             AllegianceComponent a1 = (AllegianceComponent)e1.Components[Masks.Allegiance];
             AllegianceComponent a2 = (AllegianceComponent)e2.Components[Masks.Allegiance];
 
-            if (a1.MyAllegiance == a2.MyAllegiance)
+            if (a1.Allegiance == a2.Allegiance)
                 return true;
             return false;
         }
