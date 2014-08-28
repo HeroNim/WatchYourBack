@@ -16,18 +16,18 @@ namespace WatchYourBackLibrary
     {
         private Texture2D spriteTexture;
         private Rectangle sourceRectangle;
-        private Rectangle body;
         private Color color;
-        private Color fontColor;
-        private SpriteFont font;
-        private string text;
-        private float layer;
-        private bool hasText;
 
-        private float rotationAngle;
-        private Vector2 rotationOrigin;
+        private Rectangle body;
+        private GraphicsComponent anchor;
         private Vector2 rotationOffset;
 
+        private string text;
+        private SpriteFont font;
+        private Color fontColor;
+        private bool hasText;
+
+        private float layer;
         private bool visible;
 
         public SpriteGraphicsInfo(Rectangle body, Texture2D texture, float layer)
@@ -36,8 +36,6 @@ namespace WatchYourBackLibrary
             sourceRectangle = spriteTexture.Bounds;
             this.body = body;
             color = Color.White;
-            this.rotationAngle = 0;
-            this.rotationOrigin = Vector2.Zero;
             this.rotationOffset = Vector2.Zero;
 
             hasText = false;            
@@ -50,16 +48,10 @@ namespace WatchYourBackLibrary
         {            
             this.sourceRectangle = sourceRectangle;            
         }
+        
 
-        public SpriteGraphicsInfo(Rectangle body, Texture2D texture, float rotationAngle, Vector2 rotationOrigin, float layer)
+        public SpriteGraphicsInfo(Rectangle body, Texture2D texture, Rectangle sourceRectangle, Vector2 rotationOffset, float layer)
             : this(body, texture, layer)
-        {            
-            this.rotationAngle = rotationAngle;
-            this.rotationOrigin = rotationOrigin;            
-        }
-
-        public SpriteGraphicsInfo(Rectangle body, Texture2D texture, Rectangle sourceRectangle, float rotationAngle, Vector2 rotationOrigin, Vector2 rotationOffset, float layer)
-            : this(body, texture, rotationAngle, rotationOrigin, layer)
         {
             this.sourceRectangle = sourceRectangle;            
             this.rotationOffset = rotationOffset;          
@@ -69,8 +61,6 @@ namespace WatchYourBackLibrary
         {
             this.body = body;
             color = Color.White;
-            this.rotationAngle = 0;
-            this.rotationOrigin = Vector2.Zero;
             this.rotationOffset = Vector2.Zero;
             this.fontColor = fontColor;            
             this.font = font;
@@ -83,17 +73,20 @@ namespace WatchYourBackLibrary
         public int Y { get { return Body.Y; } set { body.Y = value; } }
 
         public Texture2D Sprite { get { return spriteTexture; } }
-        public Rectangle SourceRectangle { get { return sourceRectangle; } set { sourceRectangle = value; } }
-        public Rectangle Body { get { return new Rectangle(body.X + (int)rotationOffset.X, body.Y + (int)rotationOffset.Y, body.Width, body.Height);} set { body = value; } }
         public Color SpriteColor { get { return color; } set { color = value; } }
-        public Color FontColor { get { return fontColor; } set { fontColor = value; } }
-        public SpriteFont Font { get { return font; } set { font = value; } }
-        public bool HasText { get { return hasText; } set { hasText = value; } }
-        public string Text { get { return text; } set { text = value; } }
-        public float RotationAngle { get { return rotationAngle; } set { rotationAngle = value; } }
-        public Vector2 RotationOrigin { get { return rotationOrigin; } }
+        public Rectangle SourceRectangle { get { return sourceRectangle; } set { sourceRectangle = value; } }
+
+        public Rectangle Body { get { return new Rectangle(body.X + (int)rotationOffset.X, body.Y + (int)rotationOffset.Y, body.Width, body.Height);} set { body = value; } }
+        public GraphicsComponent Anchor { get { return anchor; } set { anchor = value; } }
+        public float RotationAngle { get { return anchor.RotationAngle; } }
+        public Vector2 RotationOrigin { get { return anchor.RotationOrigin; } }
         public Vector2 RotationOffset { get { return rotationOffset; } set { rotationOffset = value; } }
-        public bool Rotatable { get { return (rotationAngle != 0); } }
+               
+        public string Text { get { return text; } set { text = value; } }
+        public SpriteFont Font { get { return font; } set { font = value; } }
+        public Color FontColor { get { return fontColor; } set { fontColor = value; } }
+        public bool HasText { get { return hasText; } set { hasText = value; } }
+                     
         public float Layer { get { return layer; } set { layer = value; } }
         public bool Visible { get { return visible; } set { visible = value; } }
     }

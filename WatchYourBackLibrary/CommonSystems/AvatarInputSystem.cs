@@ -21,6 +21,7 @@ namespace WatchYourBackLibrary
             components += (int)Masks.Velocity;
             components += (int)Masks.Transform;
             components += (int)Masks.Wielder;
+            components += (int)Masks.Status;
         }
 
         public override void update(TimeSpan gameTime)

@@ -42,12 +42,14 @@ namespace WatchYourBackLibrary
             worldType = type;
             this.updateExclusive = updateExclusive;
             this.drawExclusive = drawExclusive;
+            
         }
 
         public void addManager(IECSManager manager)
         {
             systemManager = manager;
         }
+
 
         public IECSManager Manager
         {

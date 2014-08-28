@@ -13,8 +13,7 @@ namespace WatchYourBackLibrary
         StartDebug,
         Start,
         Resume,
-        Pause,
-        Attack
+        Pause
     };
 
     /// <summary>

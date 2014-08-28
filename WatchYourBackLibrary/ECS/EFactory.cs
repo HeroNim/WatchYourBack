@@ -51,7 +51,9 @@ namespace WatchYourBackLibrary
             if (hasGraphics)
             {
                 Texture2D myTexture = content.Load<Texture2D>("PlayerTexture");
-                e.addComponent(new GraphicsComponent(rect, myTexture, myTexture.Bounds, 0, new Vector2(myTexture.Width / 2, myTexture.Height / 2), offset, 0.5f, "Avatar"));
+                GraphicsComponent graphics = new GraphicsComponent(GraphicsLayer.Foreground, new Vector2(myTexture.Width / 2, myTexture.Height / 2));
+                graphics.AddSprite("Avatar", new SpriteGraphicsInfo(rect, myTexture, myTexture.Bounds, offset, 0.5f));               
+                e.addComponent(graphics);
             }
             e.Type = Entities.Avatar;
             return e;
@@ -95,7 +97,9 @@ namespace WatchYourBackLibrary
             if (hasGraphics)
             {
                 Texture2D myTexture = content.Load<Texture2D>("SwordTexture");
-                e.addComponent(new GraphicsComponent(new Rectangle((int)point.X, (int)point.Y, (int)SWORD.WIDTH, (int)SWORD.RANGE), myTexture, rotationAngle, new Vector2(myTexture.Width / 2, myTexture.Height), 0.4f, "Sword"));
+                GraphicsComponent graphics = new GraphicsComponent(GraphicsLayer.Foreground, new Vector2(myTexture.Width / 2, myTexture.Height), rotationAngle);
+                graphics.AddSprite("Sword", new SpriteGraphicsInfo(new Rectangle((int)point.X, (int)point.Y, (int)SWORD.WIDTH, (int)SWORD.RANGE), myTexture, 0.4f));
+                e.addComponent(graphics);
             }
             e.Type = Entities.Sword;
             return e;           
@@ -128,7 +132,9 @@ namespace WatchYourBackLibrary
             if (hasGraphics)
             {
                 Texture2D myTexture = content.Load<Texture2D>("ThrownTexture");
-                e.addComponent(new GraphicsComponent(new Rectangle((int)xOrigin, (int)yOrigin, (int)THROWN.RADIUS, (int)THROWN.RADIUS), myTexture, rotationAngle, new Vector2(myTexture.Width / 2, myTexture.Height), 0.7f, "Thrown"));
+                GraphicsComponent graphics = new GraphicsComponent(GraphicsLayer.Foreground, new Vector2(myTexture.Width / 2, myTexture.Height), rotationAngle);
+                graphics.AddSprite("Thrown", new SpriteGraphicsInfo(new Rectangle((int)xOrigin, (int)yOrigin, (int)THROWN.RADIUS, (int)THROWN.RADIUS), myTexture, 0.7f));
+                e.addComponent(graphics);
             }
             e.Type = Entities.Thrown;
             return e;
@@ -146,24 +152,25 @@ namespace WatchYourBackLibrary
         /// <returns>A button entity</returns>
         public static Entity createButton(int x, int y, int width, int height, Inputs type, string text, SpriteFont font)
         {
-            SoundEffectComponent soundC = new SoundEffectComponent();
+            SoundEffectComponent soundC = new SoundEffectComponent();            
             soundC.AddSound(SoundTriggers.Action, "Sounds/SFX/ButtonClick");
 
             Texture2D frame = content.Load<Texture2D>("Buttons/ButtonFrame");
             Texture2D clickedFrame = content.Load<Texture2D>("Buttons/ButtonFrameClicked");         
             x -= frame.Width / 2;
             y -= frame.Height / 2;
+            Rectangle bounds = new Rectangle(x, y, width, height);
 
             TransformComponent transform = new TransformComponent(x, y, width, height);
-            GraphicsComponent g = new GraphicsComponent(new Rectangle(x, y, width, height), frame, 0.95f, "Frame");
-            g.Sprites.Add("ClickedFrame", new SpriteGraphicsInfo(g.Body, clickedFrame, 0.96f));
-            //g.Sprites.Add("Text", new SpriteGraphicsInfo(g.Body, content.Load<Texture2D>("Buttons/" + text + "Text"), 0.6f));
-            g.Sprites.Add("Text", new SpriteGraphicsInfo(g.Body, text, font, Color.White, 0.5f));
-
-
+            GraphicsComponent g = new GraphicsComponent(GraphicsLayer.Foreground, new Vector2(frame.Bounds.X, frame.Bounds.Y));
+            g.AddSprite("Frame", new SpriteGraphicsInfo(bounds, frame, 0.95f));
+            g.AddSprite("ClickedFrame", new SpriteGraphicsInfo(bounds, clickedFrame, 0.96f));
+            g.AddSprite("Text", new SpriteGraphicsInfo(bounds, text, font, Color.White, 0.5f));
+           
             return new Entity(false,
-            new ButtonComponent(type),
             transform,
+            new AllegianceComponent(Allegiance.Neutral),
+            new ButtonComponent(type),
             new RectangleColliderComponent(transform.Body, transform),
             g,
             soundC);
@@ -185,17 +192,18 @@ namespace WatchYourBackLibrary
             Entity e = new Entity(false,
                 transform,
                 new TileComponent(TileType.WALL, atlasIndex),
+                new AllegianceComponent(Allegiance.Neutral),
                 new RectangleColliderComponent(transform.Body, transform),
                 new VisionBlockComponent(transform.Body));
             if (hasGraphics)
             {
                 Texture2D myTexture = content.Load<Texture2D>("TileTextures/WallTextureAtlas");
-                GraphicsComponent g = new GraphicsComponent();
-                g.addSprite("TopLeft", new SpriteGraphicsInfo(new Rectangle(x, y, width / 2, height / 2), myTexture, new Rectangle((int)LevelDimensions.X_SCALE / 2 * atlasIndex[0, 0], 0, (int)LevelDimensions.X_SCALE / 2, (int)LevelDimensions.Y_SCALE / 2), 0.9f));
-                g.addSprite("TopRight", new SpriteGraphicsInfo(new Rectangle(x + width / 2, y, width / 2, height / 2), myTexture, new Rectangle((int)LevelDimensions.X_SCALE / 2 * atlasIndex[0, 1], 0, (int)LevelDimensions.X_SCALE / 2, (int)LevelDimensions.Y_SCALE / 2), 0.9f));
-                g.addSprite("BottomLeft", new SpriteGraphicsInfo(new Rectangle(x, y + height / 2, width / 2, height / 2), myTexture, new Rectangle((int)LevelDimensions.X_SCALE / 2 * atlasIndex[1, 0], 0, (int)LevelDimensions.X_SCALE / 2, (int)LevelDimensions.Y_SCALE / 2), 0.9f));
-                g.addSprite("BottomRight", new SpriteGraphicsInfo(new Rectangle(x + width / 2, y + height / 2, width / 2, height / 2), myTexture, new Rectangle((int)LevelDimensions.X_SCALE / 2 * atlasIndex[1, 1], 0, (int)LevelDimensions.X_SCALE / 2, (int)LevelDimensions.Y_SCALE / 2), 0.9f));
-                e.addComponent(g);
+                GraphicsComponent graphics = new GraphicsComponent(GraphicsLayer.Background, new Vector2(myTexture.Bounds.X, myTexture.Bounds.Y));
+                graphics.AddSprite("TopLeft", new SpriteGraphicsInfo(new Rectangle(x, y, width / 2, height / 2), myTexture, new Rectangle((int)LevelDimensions.X_SCALE / 2 * atlasIndex[0, 0], 0, (int)LevelDimensions.X_SCALE / 2, (int)LevelDimensions.Y_SCALE / 2), 0.9f));
+                graphics.AddSprite("TopRight", new SpriteGraphicsInfo(new Rectangle(x + width / 2, y, width / 2, height / 2), myTexture, new Rectangle((int)LevelDimensions.X_SCALE / 2 * atlasIndex[0, 1], 0, (int)LevelDimensions.X_SCALE / 2, (int)LevelDimensions.Y_SCALE / 2), 0.9f));
+                graphics.AddSprite("BottomLeft", new SpriteGraphicsInfo(new Rectangle(x, y + height / 2, width / 2, height / 2), myTexture, new Rectangle((int)LevelDimensions.X_SCALE / 2 * atlasIndex[1, 0], 0, (int)LevelDimensions.X_SCALE / 2, (int)LevelDimensions.Y_SCALE / 2), 0.9f));
+                graphics.AddSprite("BottomRight", new SpriteGraphicsInfo(new Rectangle(x + width / 2, y + height / 2, width / 2, height / 2), myTexture, new Rectangle((int)LevelDimensions.X_SCALE / 2 * atlasIndex[1, 1], 0, (int)LevelDimensions.X_SCALE / 2, (int)LevelDimensions.Y_SCALE / 2), 0.9f));
+                e.addComponent(graphics);
             }
             e.Type = Entities.Wall;
             return e;
@@ -213,6 +221,7 @@ namespace WatchYourBackLibrary
         {
             Entity e = new Entity(
                 new TransformComponent(x, y, width, height),
+                new AllegianceComponent(Allegiance.Neutral),
                 new TileComponent(TileType.SPAWN));
             e.Drawable = false;
             return e;
@@ -225,9 +234,12 @@ namespace WatchYourBackLibrary
         /// <returns>A display entity</returns>
         public static Entity createDisplay(Rectangle rect, SpriteFont font)
         {
+            GraphicsComponent graphics = new GraphicsComponent(GraphicsLayer.Foreground, rect.Center);
+            graphics.AddSprite("Display", new SpriteGraphicsInfo(rect, "", font, Color.Red, 0));
             Entity e = new Entity(false,
                 new TransformComponent(rect),
-                new GraphicsComponent(rect, "", font, Color.Red, 0, "Display"));
+                new AllegianceComponent(Allegiance.Neutral),
+                graphics);
             return e;
         }
 
@@ -243,12 +255,15 @@ namespace WatchYourBackLibrary
         /// <param name="type">The type of entity</param>
         /// <param name="layer">The layer to be drawn on</param>
         /// <returns>An entity containing only a graphics component</returns>
-        public static Entity createGraphics(Rectangle rect, float rotation, Vector2 rotationOrigin, Vector2 rotationOffset, int ID, Entities type, float layer, int[,] textureIndex = null, Polygon poly = null)
+        public static Entity createGraphics(Rectangle rect, float rotation, int ID, Entities type, GraphicsLayer graphicsLayer, int[,] textureIndex = null, Polygon poly = null)
         {
+            float layer = 0;
+            Vector2 rotationOrigin = Vector2.Zero;
+            Vector2 rotationOffset = Vector2.Zero;
             Texture2D texture = null;
             Rectangle sourceRectangle = Rectangle.Empty;
             Entity e;
-            GraphicsComponent g;
+            GraphicsComponent graphics;
 
             switch (type)
             {
@@ -269,27 +284,29 @@ namespace WatchYourBackLibrary
                 case Entities.Thrown:
                     texture = content.Load<Texture2D>("ThrownTexture");
                     layer = 0.2f;
-                    rotationOrigin = Vector2.Zero;
+                    rotationOrigin = new Vector2(texture.Width / 2, texture.Height / 2);
                     rotationOffset = Vector2.Zero;
+                    
                     sourceRectangle = texture.Bounds;
                     break;
                 case Entities.Wall:
                     texture = content.Load<Texture2D>("TileTextures/WallTextureAtlas");
                     e = new Entity();
-                    g = new GraphicsComponent();
-                    g.Sprites.Add("TopLeft", new SpriteGraphicsInfo(new Rectangle(rect.X, rect.Y, rect.Width / 2, rect.Height / 2), texture, new Rectangle((int)LevelDimensions.X_SCALE / 2 * textureIndex[0, 0], 0, (int)LevelDimensions.X_SCALE / 2, (int)LevelDimensions.Y_SCALE / 2), 0.9f));
-                    g.Sprites.Add("TopRight", new SpriteGraphicsInfo(new Rectangle(rect.X + rect.Width / 2, rect.Y, rect.Width / 2, rect.Height / 2), texture, new Rectangle((int)LevelDimensions.X_SCALE / 2 * textureIndex[0, 1], 0, (int)LevelDimensions.X_SCALE / 2, (int)LevelDimensions.Y_SCALE / 2), 0.9f));
-                    g.Sprites.Add("BottomLeft", new SpriteGraphicsInfo(new Rectangle(rect.X, rect.Y + rect.Height / 2, rect.Width / 2, rect.Height / 2), texture, new Rectangle((int)LevelDimensions.X_SCALE / 2 * textureIndex[1, 0], 0, (int)LevelDimensions.X_SCALE / 2, (int)LevelDimensions.Y_SCALE / 2), 0.9f));
-                    g.Sprites.Add("BottomRight", new SpriteGraphicsInfo(new Rectangle(rect.X + rect.Width / 2, rect.Y + rect.Height / 2, rect.Width / 2, rect.Height / 2), texture, new Rectangle((int)LevelDimensions.X_SCALE / 2 * textureIndex[1, 1], 0, (int)LevelDimensions.X_SCALE / 2, (int)LevelDimensions.Y_SCALE / 2), 0.9f));
-                    e.addComponent(g);
+                    graphics = new GraphicsComponent(graphicsLayer, rotationOrigin, rotation);
+                    graphics.AddSprite("TopLeft", new SpriteGraphicsInfo(new Rectangle(rect.X, rect.Y, rect.Width / 2, rect.Height / 2), texture, new Rectangle((int)LevelDimensions.X_SCALE / 2 * textureIndex[0, 0], 0, (int)LevelDimensions.X_SCALE / 2, (int)LevelDimensions.Y_SCALE / 2), 0.9f));
+                    graphics.AddSprite("TopRight", new SpriteGraphicsInfo(new Rectangle(rect.X + rect.Width / 2, rect.Y, rect.Width / 2, rect.Height / 2), texture, new Rectangle((int)LevelDimensions.X_SCALE / 2 * textureIndex[0, 1], 0, (int)LevelDimensions.X_SCALE / 2, (int)LevelDimensions.Y_SCALE / 2), 0.9f));
+                    graphics.AddSprite("BottomLeft", new SpriteGraphicsInfo(new Rectangle(rect.X, rect.Y + rect.Height / 2, rect.Width / 2, rect.Height / 2), texture, new Rectangle((int)LevelDimensions.X_SCALE / 2 * textureIndex[1, 0], 0, (int)LevelDimensions.X_SCALE / 2, (int)LevelDimensions.Y_SCALE / 2), 0.9f));
+                    graphics.AddSprite("BottomRight", new SpriteGraphicsInfo(new Rectangle(rect.X + rect.Width / 2, rect.Y + rect.Height / 2, rect.Width / 2, rect.Height / 2), texture, new Rectangle((int)LevelDimensions.X_SCALE / 2 * textureIndex[1, 1], 0, (int)LevelDimensions.X_SCALE / 2, (int)LevelDimensions.Y_SCALE / 2), 0.9f));
+                    e.addComponent(graphics);
                     e.ServerID = ID;
                     e.Type = type;
                     return e;                
             }
-            g = new GraphicsComponent(rect, texture, sourceRectangle, rotation, rotationOrigin, rotationOffset, layer, type.ToString());
-            e = new Entity(g);
+            graphics = new GraphicsComponent(graphicsLayer, rotationOrigin, rotation);
+            graphics.AddSprite(type.ToString(), new SpriteGraphicsInfo(rect, texture, sourceRectangle, rotationOffset, layer));
+            e = new Entity(graphics);
             if (poly != null)
-                g.addPolygon("Vision", poly);
+                graphics.AddPolygon("Vision", poly);
             e.ServerID = ID;
             e.Type = type;
             return e;

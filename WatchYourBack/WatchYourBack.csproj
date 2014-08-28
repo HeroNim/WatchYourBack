@@ -82,7 +82,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\LevelOne.png" />
     <Content Include="Content\Sounds\Music\HeroRemix.wma" />
     <Content Include="Icon.ico" />
   </ItemGroup>
@@ -104,7 +103,7 @@
     <Content Include="Content\PlayerTexture.xnb" />
     <Content Include="Content\Sounds\Music\HeroRemix.xnb" />
     <Content Include="Content\SwordTexture.xnb" />
-    <Content Include="Content\TestFont.xnb" />
+    <Content Include="Content\Font\TestFont.xnb" />
     <Content Include="Content\ThrownTexture.xnb" />
     <Content Include="Content\TileTextures\WallTextureAtlas.xnb" />
     <Content Include="Content\Sounds\SFX\ButtonClick.xnb" />

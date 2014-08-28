@@ -60,10 +60,10 @@ namespace WatchYourBack
         VertexBuffer vertexBuffer;
         IndexBuffer indexBuffer;
 
-        RenderTarget2D mainSceneTarget;
+        RenderTarget2D sceneTarget;
+        RenderTarget2D objectTarget;
         RenderTarget2D lightMap;
         Texture2D lightMask;
-        Texture2D mainScene;
         Texture2D debugTexture;
         Texture2D levelOne;
         Texture2D background;
@@ -113,7 +113,8 @@ namespace WatchYourBack
             EFactory.content = Content;
 
 
-            mainSceneTarget = new RenderTarget2D(GraphicsDevice, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height, true, GraphicsDevice.DisplayMode.Format, DepthFormat.Depth24);
+            sceneTarget = new RenderTarget2D(GraphicsDevice, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height, true, GraphicsDevice.DisplayMode.Format, DepthFormat.Depth24);
+            objectTarget = new RenderTarget2D(GraphicsDevice, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height, true, GraphicsDevice.DisplayMode.Format, DepthFormat.Depth24);
             lightMap = new RenderTarget2D(GraphicsDevice, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height, true, GraphicsDevice.DisplayMode.Format, DepthFormat.Depth24);
             effect = new BasicEffect(GraphicsDevice);
             projection = Matrix.CreateOrthographicOffCenter(0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height, 0, 0, 1);
@@ -202,6 +203,48 @@ namespace WatchYourBack
         }
 
         /// <summary>
+        /// Tries to connect to the server and start a new game
+        /// </summary>
+        private void Connect()
+        {
+            NetIncomingMessage msg;
+            while ((msg = client.ReadMessage()) != null)
+            {
+                switch (msg.MessageType)
+                {
+                    case NetIncomingMessageType.DiscoveryResponse:
+                        // just connect to first server discovered
+                        if (!isConnected)
+                        {
+                            client.Connect(msg.SenderEndpoint);
+                            isConnected = true;
+                            Console.WriteLine("Connected");
+                        }
+                        break;
+                    case NetIncomingMessageType.Data:
+                        // server sent initialization command
+                        int confirmation = msg.ReadInt32();
+                        if (confirmation == (int)ServerCommands.SendLevels)
+                        {
+                            NetOutgoingMessage om = client.CreateMessage();
+                            om.Write(SerializationHelper.Serialize(levels));
+                            client.SendMessage(om, NetDeliveryMethod.ReliableUnordered);
+                        }
+                        else if (confirmation == (int)ServerCommands.Start)
+                        {
+                            worldStack.Push(inGame);
+                            activeWorld = inGame;
+                            inputListener.Unsubscribe(connectMenu);
+                            inputListener.Subscribe(inGame);
+                            isPlayingOnline = true;
+                            Console.WriteLine("Playing");
+                        }
+                        break;
+                }
+            }
+        }
+
+        /// <summary>
         /// This is called when the game should draw itself.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
@@ -225,6 +268,8 @@ namespace WatchYourBack
 
         private void draw()
         {
+
+            //Draw Lightmap
             GraphicsDevice.SetRenderTarget(lightMap);
             GraphicsDevice.Clear(Color.Black);
             if (activeWorld.WorldType == Worlds.InGame || activeWorld.WorldType == Worlds.Debug)
@@ -242,7 +287,10 @@ namespace WatchYourBack
                 lightMask = (Texture2D)lightMap;
             }
 
-            GraphicsDevice.SetRenderTarget(mainSceneTarget);
+           
+
+            //Draw Scene
+            GraphicsDevice.SetRenderTarget(sceneTarget);
             GraphicsDevice.Clear(Color.DarkGray);
             spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
             spriteBatch.Draw(background, GraphicsDevice.Viewport.Bounds, null, Color.White, 0, Vector2.Zero, SpriteEffects.None, 1);
@@ -250,31 +298,64 @@ namespace WatchYourBack
             {
                 if (entity.hasComponent(Masks.Graphics))
                 {
-                    currentGraphics = (GraphicsComponent)entity.Components[Masks.Graphics];
-                    foreach (SpriteGraphicsInfo sprite in currentGraphics.Sprites.Values)
-                    {
-                        if (sprite.Visible == true)
+                    currentGraphics = entity.GetComponent<GraphicsComponent>();
+                    if (currentGraphics.GraphicsLayer == GraphicsLayer.Background)
+                        foreach (SpriteGraphicsInfo sprite in currentGraphics.Sprites.Values)
                         {
-                            if (sprite.HasText)
-                                HelperFunctions.DrawString(spriteBatch, sprite.Font, sprite.FontColor, sprite.Text, sprite.Body);
-                            else
+                            if (sprite.Visible == true)
                             {
-                                spriteBatch.Draw(sprite.Sprite, sprite.Body, sprite.SourceRectangle,
-                                        sprite.SpriteColor, sprite.RotationAngle, sprite.RotationOrigin, SpriteEffects.None, sprite.Layer);
-                                foreach (Vector2 point in currentGraphics.DebugPoints)
+                                if (sprite.HasText)
+                                    HelperFunctions.DrawString(spriteBatch, sprite.Font, sprite.FontColor, sprite.Text, sprite.Body);
+                                else
                                 {
-                                    spriteBatch.Draw(debugTexture, new Rectangle((int)point.X, (int)point.Y, 3, 3), Color.Blue);
+                                    spriteBatch.Draw(sprite.Sprite, sprite.Body, sprite.SourceRectangle,
+                                            sprite.SpriteColor, sprite.RotationAngle, sprite.RotationOrigin, SpriteEffects.None, sprite.Layer);
+                                    foreach (Vector2 point in currentGraphics.DebugPoints)
+                                    {
+                                        spriteBatch.Draw(debugTexture, new Rectangle((int)point.X, (int)point.Y, 3, 3), Color.Blue);
+                                    }
+                                    //graphics.DebugPoints.Clear();
                                 }
-                                //graphics.DebugPoints.Clear();
                             }
                         }
-                    }
                 }
-
             }
-            mainScene = (Texture2D)mainSceneTarget;
             spriteBatch.End();
 
+            //Draw Objects
+            GraphicsDevice.SetRenderTarget(objectTarget);
+            GraphicsDevice.Clear(Color.DarkGray);
+            spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
+            spriteBatch.Draw(background, GraphicsDevice.Viewport.Bounds, null, Color.White, 0, Vector2.Zero, SpriteEffects.None, 1);
+            foreach (Entity entity in activeManager.Entities.Values)
+            {
+                if (entity.hasComponent(Masks.Graphics))
+                {
+                    currentGraphics = entity.GetComponent<GraphicsComponent>();
+                    //if (currentGraphics.GraphicsLayer == GraphicsLayer.Foreground)
+                        foreach (SpriteGraphicsInfo sprite in currentGraphics.Sprites.Values)
+                        {
+                            if (sprite.Visible == true)
+                            {
+                                if (sprite.HasText)
+                                    HelperFunctions.DrawString(spriteBatch, sprite.Font, sprite.FontColor, sprite.Text, sprite.Body);
+                                else
+                                {
+                                    spriteBatch.Draw(sprite.Sprite, sprite.Body, sprite.SourceRectangle,
+                                            sprite.SpriteColor, sprite.RotationAngle, sprite.RotationOrigin, SpriteEffects.None, sprite.Layer);
+                                    foreach (Vector2 point in currentGraphics.DebugPoints)
+                                    {
+                                        spriteBatch.Draw(debugTexture, new Rectangle((int)point.X, (int)point.Y, 3, 3), Color.Blue);
+                                    }
+                                    //graphics.DebugPoints.Clear();
+                                }
+                            }
+                        }
+                }
+            }
+            spriteBatch.End();
+
+            //Apply Lightmask
             GraphicsDevice.SetRenderTarget(null);
             GraphicsDevice.Clear(Color.DarkGray);
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
@@ -282,12 +363,32 @@ namespace WatchYourBack
             {
                 makeShadows.Parameters["lightMask"].SetValue(lightMask);
                 makeShadows.CurrentTechnique.Passes[0].Apply();
-                //spriteBatch.Draw(lightMask, Vector2.Zero, Color.White);    
+                spriteBatch.Draw(sceneTarget, Vector2.Zero, Color.White);
+                makeShadows.CurrentTechnique.Passes[1].Apply();
+                spriteBatch.Draw(objectTarget, Vector2.Zero, Color.White);
             }
-            spriteBatch.Draw(mainSceneTarget, Vector2.Zero, Color.White);
+            else
+            {
+                spriteBatch.Draw(sceneTarget, Vector2.Zero, Color.White);
+                spriteBatch.Draw(objectTarget, Vector2.Zero, Color.White);
+            }
             spriteBatch.End();
+            lightMask = null;                   
 
-            lightMask = null;
+            //Draw UI
+            if (activeManager.UI != null)
+            {
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+                foreach (Entity e in activeManager.UI.UIElements)
+                {
+                    GraphicsComponent g = e.GetComponent<GraphicsComponent>();
+                    foreach (SpriteGraphicsInfo sprite in g.Sprites.Values)
+                    {
+                        HelperFunctions.DrawString(spriteBatch, sprite.Font, sprite.FontColor, sprite.Text, sprite.Body);
+                    }
+                }
+                spriteBatch.End();
+            }
             
 
         }
@@ -314,47 +415,7 @@ namespace WatchYourBack
             
         }
       
-        /// <summary>
-        /// Tries to connect to the server and start a new game
-        /// </summary>
-        private void Connect()
-        {                
-            NetIncomingMessage msg;
-            while ((msg = client.ReadMessage()) != null)
-            {
-                switch (msg.MessageType)
-                {
-                    case NetIncomingMessageType.DiscoveryResponse:
-                        // just connect to first server discovered
-                        if (!isConnected)
-                        {
-                            client.Connect(msg.SenderEndpoint);
-                            isConnected = true;                           
-                            Console.WriteLine("Connected");
-                        }
-                        break;
-                    case NetIncomingMessageType.Data:
-                        // server sent initialization command
-                        int confirmation = msg.ReadInt32();
-                        if (confirmation == (int)ServerCommands.SendLevels)
-                        {
-                            NetOutgoingMessage om = client.CreateMessage();
-                            om.Write(SerializationHelper.Serialize(levels));
-                            client.SendMessage(om, NetDeliveryMethod.ReliableUnordered);
-                        }
-                        else if(confirmation == (int)ServerCommands.Start)
-                        {    
-                            worldStack.Push(inGame);
-                            activeWorld = inGame;
-                            inputListener.Unsubscribe(connectMenu);
-                            inputListener.Subscribe(inGame);
-                            isPlayingOnline = true;
-                            Console.WriteLine("Playing");         
-                        }
-                        break;
-                }
-            }            
-        }
+        
 
         private void reset(World world)
         {
@@ -539,7 +600,7 @@ namespace WatchYourBack
                         case Worlds.ConnectMenu:
                             if (args.InputType == Inputs.Start && !game.isConnected)
                             {
-                                game.client.DiscoverKnownPeer("24.87.148.96", 14242);
+                                game.client.DiscoverKnownPeer("70.79.66.246", 14242);
                                 Console.WriteLine("Ping");
                             }
                             if (args.InputType == Inputs.Exit)

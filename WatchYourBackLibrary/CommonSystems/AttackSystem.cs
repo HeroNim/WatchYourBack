@@ -49,10 +49,11 @@ namespace WatchYourBackLibrary
                         manager.removeEntity(weapon);
                         wielderComponent.RemoveWeapon();
                     }
-                }                           
+                }
+
                 if (input.SwingWeapon == true)
                 {                   
-                    if (wielderComponent.AttackCooldown)
+                    if (wielderComponent.AttackOffCooldown)
                     {
                         if (wielderComponent.WeaponType == Weapons.SWORD)
                             if (!wielderComponent.hasWeapon)
@@ -63,23 +64,26 @@ namespace WatchYourBackLibrary
                                 SoundEffectComponent soundC = sword.GetComponent<SoundEffectComponent>();
                                 onFire(new SoundArgs(0, 0, soundC.Sounds[SoundTriggers.Initialize]));
                             }
-                        wielderComponent.AttackCooldown = false;
-                        wielderComponent.AttackSpeed.Start();
+                        wielderComponent.AttackOffCooldown = false;
+                        wielderComponent.AttackCooldown.Start();
                     }
                     input.SwingWeapon = false;
                 }
                 if(input.ThrowWeapon == true)
                 {
-                    if (wielderComponent.ThrowCooldown)
+                    if (wielderComponent.ThrowOffCooldown)
                     {
                         Entity thrown = EFactory.createThrown(anchorAllegiance.Allegiance, anchorTransform.Center.X, anchorTransform.Center.Y, lookDir, lookAngle, manager.hasGraphics());
                         manager.addEntity(thrown);                      
-                        wielderComponent.ThrowCooldown = false;
-                        wielderComponent.ThrowSpeed.Start();
+                        wielderComponent.ThrowOffCooldown = false;
+                        wielderComponent.ThrowCooldown.Start();
                         SoundEffectComponent soundC = (SoundEffectComponent)thrown.Components[Masks.SoundEffect];
                         onFire(new SoundArgs(0, 0, soundC.Sounds[SoundTriggers.Initialize]));
+                        wielderComponent.ThrowCooldown.Start();
                     }
+                    
                     input.ThrowWeapon = false;
+                    
                 }
             }           
         }       

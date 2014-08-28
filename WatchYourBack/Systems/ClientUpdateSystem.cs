@@ -29,10 +29,6 @@ namespace WatchYourBack
         private bool rightMouseClicked;
         private bool dash;
         List<EventArgs> receivedData;
-        float layer;
-        Vector2 rotationOrigin;
-        Vector2 rotationOffset;
-        Rectangle sourceRectangle;
 
         private int bufferCount;
         
@@ -46,10 +42,6 @@ namespace WatchYourBack
         {           
             this.client = client;
             bufferCount = 1;
-            layer = 0;
-            rotationOrigin = Vector2.Zero;
-            rotationOffset = Vector2.Zero;
-            sourceRectangle = Rectangle.Empty;
 
             entityIDMappings = new Dictionary<int, int>();
             receivedData = new List<EventArgs>();
@@ -132,7 +124,7 @@ namespace WatchYourBack
                             {
                                 case EntityCommands.Add:
                                     
-                                        e = EFactory.createGraphics(body, args.Rotation, rotationOrigin, rotationOffset, args.ID, args.Type, layer, args.TileIndex, args.Polygon);
+                                        e = EFactory.createGraphics(body, args.Rotation, args.ID, args.Type, args.GraphicsLayer, args.TileIndex, args.Polygon);
                                         manager.addEntity(e);
                                     
                                     if (entityIDMappings.Keys.Contains(args.ID))
@@ -152,10 +144,11 @@ namespace WatchYourBack
                                     {
                                         e = manager.Entities[entityIDMappings[args.ID]];
                                         GraphicsComponent graphics = (GraphicsComponent)e.Components[Masks.Graphics];
-                                        graphics.Body = body;
+                                        SpriteGraphicsInfo sprite = graphics.Sprites[e.Type.ToString()];
+                                        sprite.Body = body;
                                         graphics.RotationAngle = args.Rotation;
                                         if (args.Polygon != null)
-                                            graphics.addPolygon("Vision", args.Polygon);
+                                            graphics.AddPolygon("Vision", args.Polygon);
                                     }
                                     catch (KeyNotFoundException)
                                     {

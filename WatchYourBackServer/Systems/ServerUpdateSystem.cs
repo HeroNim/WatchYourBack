@@ -235,18 +235,26 @@ namespace WatchYourBackServer
 
         public void packEntities()
         {
-            
+            AllegianceComponent avatarAllegiance = currentAvatar.GetComponent<AllegianceComponent>();
+            GraphicsLayer layer;
+
             foreach (int id in manager.ChangedEntities.Keys)
             {
                 Polygon p = null;
                 Entity e = manager.Entities[id];
+                AllegianceComponent entityAllegiance = e.GetComponent<AllegianceComponent>();
+                if (entityAllegiance.Allegiance == avatarAllegiance.Allegiance || entityAllegiance.Allegiance == Allegiance.Neutral)
+                    layer = GraphicsLayer.Background;
+                else
+                    layer = GraphicsLayer.Foreground;
+
                 if (e.hasComponent(Masks.Transform) && e.Drawable == true)
                 {
                     TransformComponent transform = (TransformComponent)e.Components[Masks.Transform];
                     if (e.hasComponent(Masks.Tile))
                     {
                         TileComponent tile = (TileComponent)e.Components[Masks.Tile];
-                        sendData.Add(new NetworkEntityArgs(e.Type, manager.ChangedEntities[id], e.ServerID, transform.X, transform.Y, transform.Width, transform.Height, transform.Rotation, tile.AtlasIndex));
+                        sendData.Add(new NetworkEntityArgs(e.Type, manager.ChangedEntities[id], e.ServerID, transform.X, transform.Y, transform.Width, transform.Height, transform.Rotation, layer, tile.AtlasIndex));
                     }
                     else
                     {
@@ -256,7 +264,7 @@ namespace WatchYourBackServer
                             if(v.VisionField != null)
                               p = v.VisionField;
                         }
-                        sendData.Add(new NetworkEntityArgs(e.Type, manager.ChangedEntities[id], e.ServerID, transform.X, transform.Y, transform.Width, transform.Height, transform.Rotation, p));                       
+                        sendData.Add(new NetworkEntityArgs(e.Type, manager.ChangedEntities[id], e.ServerID, transform.X, transform.Y, transform.Width, transform.Height, transform.Rotation, layer, p));                       
                     }
                 }
             }
@@ -281,12 +289,19 @@ namespace WatchYourBackServer
         /// <param name="interpolationFactor">The ratio between the player's elapsed time and the update rate of the server</param>
         private void interpolate(double interpolationFactor)
         {
-            
+            AllegianceComponent avatarAllegiance = currentAvatar.GetComponent<AllegianceComponent>();
+            GraphicsLayer layer;
 
             foreach(int id in manager.ChangedEntities.Values)
             {
                 Polygon p = null;
                 Entity e = manager.Entities[id];
+                AllegianceComponent entityAllegiance = e.GetComponent<AllegianceComponent>();
+                if (entityAllegiance.Allegiance == avatarAllegiance.Allegiance || entityAllegiance.Allegiance == Allegiance.Neutral)
+                    layer = GraphicsLayer.Background;
+                else
+                    layer = GraphicsLayer.Foreground;
+
                 if(e.hasComponent(Masks.Transform) && e.hasComponent(Masks.Velocity))
                 {
                     TransformComponent transform = (TransformComponent)e.Components[Masks.Transform];
@@ -298,7 +313,7 @@ namespace WatchYourBackServer
                     if (e.hasComponent(Masks.Tile))
                     {
                         TileComponent tile = (TileComponent)e.Components[Masks.Tile];
-                        sendData.Add(new NetworkEntityArgs(e.Type, EntityCommands.Modify, e.ServerID, x, y, transform.Width, transform.Height, rotation, tile.AtlasIndex));
+                        sendData.Add(new NetworkEntityArgs(e.Type, EntityCommands.Modify, e.ServerID, x, y, transform.Width, transform.Height, rotation, layer, tile.AtlasIndex));
                     }
                     else
                     {
@@ -308,7 +323,7 @@ namespace WatchYourBackServer
                             if (v.VisionField != null)
                                 p = v.VisionField;
                         }
-                        sendData.Add(new NetworkEntityArgs(e.Type, EntityCommands.Modify, e.ServerID, x, y, transform.Width, transform.Height, rotation, p));
+                        sendData.Add(new NetworkEntityArgs(e.Type, EntityCommands.Modify, e.ServerID, x, y, transform.Width, transform.Height, rotation, layer, p));
                         
                     }
                 }

@@ -15,7 +15,7 @@
     public enum ServerSettings
     {
         TimeStep = 60,
-        MaxConnections = 2,
+        MaxConnections = 1,
         Port = 14242,
         TimeOut = 5
     }

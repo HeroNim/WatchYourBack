@@ -89,6 +89,7 @@ namespace WatchYourBackLibrary
                 endpoints = HelperFunctions.SortVertices(endpoints, center, endpoints[endpoints.Count - 1]);
                 endpoints.Add(center);
                 endpoints.Insert(0, center);
+                Console.WriteLine(endpoints[0]);
 
                 //Close range vision
                 for (float angle = -MathHelper.PiOver4 / 4; angle <= MathHelper.TwoPi; angle += MathHelper.PiOver4/4)
@@ -101,7 +102,7 @@ namespace WatchYourBackLibrary
                 if (manager.hasGraphics())
                 {                 
                     GraphicsComponent g = e.GetComponent<GraphicsComponent>();
-                    g.addPolygon("Vision", v.VisionField);                   
+                    g.AddPolygon("Vision", v.VisionField);                   
                 }
                 endpoints.Clear();
                 

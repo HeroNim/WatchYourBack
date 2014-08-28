@@ -72,6 +72,8 @@ namespace WatchYourBack
                         p1.SwingWeapon = true;
                     if (ms.RightButton == ButtonState.Pressed)
                         p1.ThrowWeapon = true;
+
+                    
                     p1.LookX = ms.X;
                     p1.LookY = ms.Y;
                 }

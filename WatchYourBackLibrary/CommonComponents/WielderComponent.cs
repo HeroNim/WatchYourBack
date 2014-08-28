@@ -79,25 +79,25 @@ namespace WatchYourBackLibrary
                 this.weapon = weapon;
         }
 
-        public Timer AttackSpeed
+        public Timer AttackCooldown
         {
             get { return attackTimer; }
             set { attackTimer = value; }
         }
 
-        public bool AttackCooldown
+        public bool AttackOffCooldown
         {
             get { return attackCooldown; }
             set { attackCooldown = value; }
         }
 
-        public Timer ThrowSpeed
+        public Timer ThrowCooldown
         {
             get { return throwTimer; }
             set { throwTimer = value; }
         }
 
-        public bool ThrowCooldown
+        public bool ThrowOffCooldown
         {
             get { return throwCooldown; }
             set { throwCooldown = value; }

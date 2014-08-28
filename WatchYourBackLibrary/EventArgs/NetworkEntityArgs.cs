@@ -28,11 +28,12 @@ namespace WatchYourBackLibrary
         private int height;
         private float rotation;
         private int[,] subIndex;
+        private GraphicsLayer layer;
 
         Polygon poly;
 
        
-        public NetworkEntityArgs(Entities type, EntityCommands command, int id, float xPos, float yPos, int width, int height, float rotation)
+        public NetworkEntityArgs(Entities type, EntityCommands command, int id, float xPos, float yPos, int width, int height, float rotation, GraphicsLayer layer)
         {
             this.command = command;
             this.type = type;
@@ -42,18 +43,19 @@ namespace WatchYourBackLibrary
             this.width = width;
             this.height = height;
             this.rotation = rotation;
+            this.layer = layer;
             poly = null;
         }
 
-        public NetworkEntityArgs(Entities type, EntityCommands command, int id, float xPos, float yPos, int width, int height, float rotation, Polygon vision = null)
-            : this(type, command, id, xPos, yPos, width, height, rotation)
+        public NetworkEntityArgs(Entities type, EntityCommands command, int id, float xPos, float yPos, int width, int height, float rotation, GraphicsLayer layer, Polygon vision = null)
+            : this(type, command, id, xPos, yPos, width, height, rotation, layer)
         {
             this.poly = vision;
             this.subIndex = null;
         }
 
-        public NetworkEntityArgs(Entities type, EntityCommands command, int id, float xPos, float yPos, int width, int height, float rotation, int[,] textureIndex)
-            : this(type, command, id, xPos, yPos, width, height, rotation)
+        public NetworkEntityArgs(Entities type, EntityCommands command, int id, float xPos, float yPos, int width, int height, float rotation, GraphicsLayer layer, int[,] textureIndex)
+            : this(type, command, id, xPos, yPos, width, height, rotation, layer)
         {
             this.subIndex = textureIndex;
         }
@@ -68,5 +70,6 @@ namespace WatchYourBackLibrary
         public float Rotation { get { return rotation; } }
         public int[,] TileIndex { get { return subIndex; } }
         public Polygon Polygon { get { return poly; } }
+        public GraphicsLayer GraphicsLayer { get { return layer; } }
     }
 }

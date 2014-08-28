@@ -8,8 +8,10 @@ namespace WatchYourBackLibrary
 {
     public enum Allegiance
     {
-        PLAYER_1 = 1,
-        PLAYER_2 = 2
+        Player1 = 1,
+        Player2 = 2,
+        Neutral = 3
+
     }
 
     /// <summary>
