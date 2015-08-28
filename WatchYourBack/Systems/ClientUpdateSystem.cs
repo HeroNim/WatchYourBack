@@ -59,12 +59,12 @@ namespace WatchYourBack
         /// The update loop updates the status of all the entities the player is responsible for drawing, as well as updating any UI elements as needed. It also sends player input to the server.
         /// </summary>
         /// <param name="gameTime">The update time of the game</param>
-        public override void update(TimeSpan gameTime)
+        public override void Update(TimeSpan gameTime)
         {
             activeManager = (ClientECSManager)manager;
             NetOutgoingMessage om;
 
-            if (InputManager.checkIfActive(this))
+            if (InputManager.CheckIfActive(this))
             {
                 MouseState ms = Mouse.GetState();
                 mouseLocation = new Vector2(ms.X, ms.Y);
@@ -85,7 +85,7 @@ namespace WatchYourBack
                     rightMouseClicked = true;
 
                 if (Keyboard.GetState().IsKeyDown(mappings[KeyBindings.PAUSE]))
-                    onFire(new InputArgs(Inputs.Pause));
+                    OnFire(new InputArgs(Inputs.Pause));
             }
 
             toSend = new NetworkInputArgs(client.UniqueIdentifier, xInput, yInput, mouseLocation, leftMouseClicked, rightMouseClicked, activeManager.DrawTime, dash);
@@ -124,8 +124,8 @@ namespace WatchYourBack
                             {
                                 case EntityCommands.Add:
                                     
-                                        e = EFactory.createGraphics(body, args.Rotation, args.ID, args.Type, args.GraphicsLayer, args.TileIndex, args.Polygon);
-                                        manager.addEntity(e);
+                                        e = EFactory.CreateGraphics(body, args.Rotation, args.ID, args.Type, args.GraphicsLayer, args.TileIndex, args.Polygon);
+                                        manager.AddEntity(e);
                                     
                                     if (entityIDMappings.Keys.Contains(args.ID))
                                     {
@@ -165,12 +165,12 @@ namespace WatchYourBack
                         else if (receivedArgs is NetworkGameArgs)
                         {
                             NetworkGameArgs args = (NetworkGameArgs)receivedArgs;
-                            activeManager.UI.updateUI(args.Scores[0], args.Scores[1], args.Time);
+                            activeManager.UI.UpdateUI(args.Scores[0], args.Scores[1], args.Time);
                         }
                         else if (receivedArgs is SoundArgs)
                         {
                             SoundArgs args = (SoundArgs)receivedArgs;
-                            onFire(args);
+                            OnFire(args);
                         }
                         else if (receivedArgs is NetworkUpdateArgs)
                         {
@@ -179,19 +179,19 @@ namespace WatchYourBack
                             {
                                 case ServerCommands.Disconnect:
                                     Console.WriteLine("Player Disconnected. Game Ending");
-                                    onFire(new InputArgs(Inputs.Exit));
+                                    OnFire(new InputArgs(Inputs.Exit));
                                     break;
                                 case ServerCommands.Lose:
                                     Console.WriteLine("You lose. :(");
-                                    onFire(new InputArgs(Inputs.Exit));
+                                    OnFire(new InputArgs(Inputs.Exit));
                                     break;
                                 case ServerCommands.Win:
                                     Console.WriteLine("You win!");
-                                    onFire(new InputArgs(Inputs.Exit));
+                                    OnFire(new InputArgs(Inputs.Exit));
                                     break;
                                 case ServerCommands.Tie:
                                     Console.WriteLine("You tied. :/");
-                                    onFire(new InputArgs(Inputs.Exit));
+                                    OnFire(new InputArgs(Inputs.Exit));
                                     break;
                                     
                             }

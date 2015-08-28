@@ -76,7 +76,7 @@ namespace WatchYourBackLibrary
             set { width = value; }
         }
 
-        public static List<Vector2> setAvatarHitbox(Rectangle body, float width, Vector2 direction)
+        public static List<Vector2> SetAvatarHitbox(Rectangle body, float width, Vector2 direction)
         {
             List<Vector2> playerPoints = new List<Vector2>();
             Vector2 reverse = new Vector2(-direction.X, -direction.Y);

@@ -16,14 +16,14 @@ namespace WatchYourBackLibrary
         private static Dictionary<World, List<ESystem>> inputs = new Dictionary<World, List<ESystem>>();
         private static World activeWorld;
 
-        public static void addInput(World world, ESystem input)
+        public static void AddInput(World world, ESystem input)
         {
             if (!inputs.ContainsKey(world))
                 inputs.Add(world, new List<ESystem>());
             inputs[world].Add(input);
         }
 
-        public static void removeWorld(World world)
+        public static void RemoveWorld(World world)
         {
             if (inputs.ContainsKey(world))
             {
@@ -31,12 +31,12 @@ namespace WatchYourBackLibrary
             }
         }
 
-        public static void setActiveWorld(World world)
+        public static void SetActiveWorld(World world)
         {
             activeWorld = world;
         }
 
-        public static bool checkIfActive(ESystem system)
+        public static bool CheckIfActive(ESystem system)
         {
             if (inputs[activeWorld].Contains(system))
                 return true;

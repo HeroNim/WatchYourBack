@@ -25,14 +25,14 @@ namespace WatchYourBackLibrary
             MediaPlayer.IsRepeating = true;           
         }
 
-        public override void initialize(IECSManager manager)
+        public override void Initialize(IECSManager manager)
         {
-            base.initialize(manager);
+            base.Initialize(manager);
             foreach (ESystem system in manager.Systems)
                 system.inputFired += new EventHandler(EventListener);
         }
 
-        public override void update(TimeSpan gameTime)
+        public override void Update(TimeSpan gameTime)
         {  
             foreach (SoundEffectInstance audio in sounds)
                 if (audio.State == SoundState.Stopped)

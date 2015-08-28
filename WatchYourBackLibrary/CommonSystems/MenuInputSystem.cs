@@ -23,10 +23,10 @@ namespace WatchYourBack
             components += (int)Masks.Button;
         }
 
-        public override void update(TimeSpan gameTime)
+        public override void Update(TimeSpan gameTime)
         {
             MouseState ms = Mouse.GetState();
-            if (InputManager.checkIfActive(this))
+            if (InputManager.CheckIfActive(this))
             {
                 foreach (Entity entity in activeEntities)
                 {
@@ -42,8 +42,8 @@ namespace WatchYourBack
 
                     else if (ms.LeftButton == ButtonState.Released && button.Focused && collider.Collider.Contains(ms.X, ms.Y))
                     {
-                        onFire(new SoundArgs(ms.X, ms.Y, s.Sounds[SoundTriggers.Action]));
-                        onFire(button.Args);
+                        OnFire(new SoundArgs(ms.X, ms.Y, s.Sounds[SoundTriggers.Action]));
+                        OnFire(button.Args);
                         button.Focused = false;
                     }
                     else

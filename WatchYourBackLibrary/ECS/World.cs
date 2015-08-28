@@ -45,7 +45,7 @@ namespace WatchYourBackLibrary
             
         }
 
-        public void addManager(IECSManager manager)
+        public void AddManager(IECSManager manager)
         {
             systemManager = manager;
         }

@@ -37,10 +37,10 @@ namespace WatchYourBackLibrary
             if (weapon == Weapons.SWORD)
             {
                 attackTimer = new Timer((double)SWORD.ATTACK_SPEED);
-                attackTimer.Elapsed += weaponReady;
+                attackTimer.Elapsed += WeaponReady;
             }
             throwTimer = new Timer((double)THROWN.ATTACK_SPEED);
-            throwTimer.Elapsed += thrownReady;
+            throwTimer.Elapsed += ThrownReady;
             weaponType = weapon;
             attackTimer.Start();
             throwTimer.Start();
@@ -58,7 +58,7 @@ namespace WatchYourBackLibrary
             set { weaponType = value; }
         }
 
-        public bool hasWeapon
+        public bool HasWeapon
         {
             get { return (weapon != null); }
         }
@@ -109,13 +109,13 @@ namespace WatchYourBackLibrary
             set { lastUpdate = value; }
         }
 
-        private void weaponReady(object sender, EventArgs e)
+        private void WeaponReady(object sender, EventArgs e)
         {
             attackCooldown = true;
             attackTimer.Stop();
         }
 
-        private void thrownReady(object sender, EventArgs e)
+        private void ThrownReady(object sender, EventArgs e)
         {
             throwCooldown = true;
             throwTimer.Stop();

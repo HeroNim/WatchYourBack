@@ -47,7 +47,7 @@ namespace WatchYourBackLibrary
             components = new Dictionary<Masks, EComponent>();
             foreach (EComponent arg in args)
             {
-                this.addComponent(arg);
+                this.AddComponent(arg);
             }
             clientID = -1;
             serverID = -1;
@@ -66,7 +66,7 @@ namespace WatchYourBackLibrary
         /// </summary>
         /// <param name="bitMask">The bitmask of the component</param>
         /// <returns>True if the entity has the component</returns>
-        public bool hasComponent(Masks bitMask)
+        public bool HasComponent(Masks bitMask)
         {
             if ((this.mask & (int)bitMask) != 0)
                 return true;
@@ -77,12 +77,12 @@ namespace WatchYourBackLibrary
         /// Add a component to the entity
         /// </summary>
         /// <param name="component">The component to add</param>
-        public void addComponent(EComponent component)
+        public void AddComponent(EComponent component)
         {
-            if (!hasComponent(component.Mask))
+            if (!HasComponent(component.Mask))
             {
                 components.Add(component.Mask, component);
-                component.setEntity(this);
+                component.SetEntity(this);
                 mask |= component.BitMask;
             }
         }
@@ -91,9 +91,9 @@ namespace WatchYourBackLibrary
         /// Remove a component from the entity
         /// </summary>
         /// <param name="component">The component to remove</param>
-        public void removeComponent(EComponent component)
+        public void RemoveComponent(EComponent component)
         {
-            if (hasComponent(component.Mask))
+            if (HasComponent(component.Mask))
             {
                 components.Remove(component.Mask);
                 mask = 0;
@@ -106,7 +106,7 @@ namespace WatchYourBackLibrary
         /// <summary>
         /// Initialize the entity. This sets the entity to active, and initializes all of it's components as well
         /// </summary>
-        public void initialize()
+        public void Initialize()
         {
             isActive = true;
         }
@@ -122,7 +122,7 @@ namespace WatchYourBackLibrary
             get { return components; }
         }
 
-        public EComponent getGraphics
+        public EComponent GetGraphics
         {
             get { return components[Masks.Graphics]; }
         }

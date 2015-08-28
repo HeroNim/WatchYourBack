@@ -35,7 +35,7 @@ namespace WatchYourBackLibrary
 
         public void ApplyStatus(Status status, float statusDuration, float cooldown)
         {
-            if (getCooldown(status) <= 0)
+            if (GetCooldown(status) <= 0)
             {
                 currentStatus[status][0] = statusDuration;
                 currentStatus[status][1] = cooldown;
@@ -57,12 +57,12 @@ namespace WatchYourBackLibrary
             }
         }
 
-        public float getDuration (Status status)
+        public float GetDuration (Status status)
         {
             return currentStatus[status][0];
         }
 
-        public float getCooldown(Status status)
+        public float GetCooldown(Status status)
         {
             return currentStatus[status][1];
         }       

@@ -22,7 +22,7 @@ namespace WatchYourBackLibrary
             possiblePoints = new List<Vector2>();
             
         }
-        public override void update(TimeSpan gameTime)
+        public override void Update(TimeSpan gameTime)
         {
             Vector2 center;          
 
@@ -74,7 +74,7 @@ namespace WatchYourBackLibrary
                     possiblePoints.Add(vertices[i]);
                     foreach (Entity possibleEntity in collidingEntities)
      
-                        if (possibleEntity.hasComponent(Masks.VisionBlock))
+                        if (possibleEntity.HasComponent(Masks.VisionBlock))
                         {
                             Rectangle collider = possibleEntity.GetComponent<VisionBlockComponent>().Collider;
                             Vector2 point = HelperFunctions.GetClosestPoint(ray.P1, CollisionHelper.GetIntersection(ray, possibleEntity.GetComponent<VisionBlockComponent>().Collider));
@@ -99,7 +99,7 @@ namespace WatchYourBackLibrary
 
                 v.VisionField = new Polygon(endpoints, PolyType.TriangleFan);
               
-                if (manager.hasGraphics())
+                if (manager.HasGraphics())
                 {                 
                     GraphicsComponent g = e.GetComponent<GraphicsComponent>();
                     g.AddPolygon("Vision", v.VisionField);                   

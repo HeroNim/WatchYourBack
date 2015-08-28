@@ -47,13 +47,13 @@ namespace WatchYourBackLibrary
         private Entity entity;
 
         //Set the component to an entity
-        public void setEntity(Entity entity)
+        public void SetEntity(Entity entity)
         {
             this.entity = entity;
         }
 
         //Get the entity the component is attached to
-        public Entity getEntity()
+        public Entity GetEntity()
         {
             return this.entity;
         }

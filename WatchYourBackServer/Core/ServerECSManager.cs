@@ -53,33 +53,33 @@ namespace WatchYourBackServer
                         other.inputFired += new EventHandler(system.EventListener);
                     }
                 }
-                system.initialize(this);
+                system.Initialize(this);
             }
         }
 
-        public void addSystem(ESystem system)
+        public void AddSystem(ESystem system)
         {
             systems.Add(system);
-            system.initialize(this);
+            system.Initialize(this);
             systems = systems.OrderBy(o => o.Priority).ToList();
         }
 
-        public void removeSystem(ESystem system)
+        public void RemoveSystem(ESystem system)
         {
             systems.Remove(system);
         }
 
-        public void addEntity(Entity entity)
+        public void AddEntity(Entity entity)
         {
-            entity.ServerID = assignID();
-            entity.initialize();
+            entity.ServerID = AssignID();
+            entity.Initialize();
             activeEntities.Add(entity.ServerID, entity);
-            if (entity.hasComponent(Masks.Transform))
+            if (entity.HasComponent(Masks.Transform))
                 quadTree.Add(entity, entity.GetComponent<TransformComponent>().Body);
-            addChangedEntities(entity, EntityCommands.Add);
+            AddChangedEntities(entity, EntityCommands.Add);
         }
 
-        public int assignID()
+        public int AssignID()
         {
             currentID = 0;
             while (activeEntities.Keys.Contains(currentID))
@@ -87,12 +87,12 @@ namespace WatchYourBackServer
             return currentID;
         }
 
-        public void removeEntity(Entity entity)
+        public void RemoveEntity(Entity entity)
         {
             if (activeEntities.Values.Contains(entity) && !removal.Contains(entity))
             {
                 removal.Add(entity);
-                addChangedEntities(entity, EntityCommands.Remove);
+                AddChangedEntities(entity, EntityCommands.Remove);
             }
         }
         
@@ -122,7 +122,7 @@ namespace WatchYourBackServer
             get { return quadTree; }
         }
 
-        public void addChangedEntities(Entity e, EntityCommands c)
+        public void AddChangedEntities(Entity e, EntityCommands c)
         {
             if (!changedEntities.Keys.Contains(e.ServerID))
                 changedEntities.Add(e.ServerID, c);
@@ -130,13 +130,13 @@ namespace WatchYourBackServer
                 changedEntities[e.ServerID] = EntityCommands.Remove;
         }
        
-        public void update(TimeSpan gameTime)
+        public void Update(TimeSpan gameTime)
         {            
             gameTime = TimeSpan.FromTicks((long)(TimeSpan.TicksPerSecond * timeStep));
             //Update the systems
             foreach (ESystem system in systems)            
                 if (system.Loop == true)
-                    system.updateEntities(gameTime);   
+                    system.UpdateEntities(gameTime);   
         }      
 
         public void RemoveAll()
@@ -152,7 +152,7 @@ namespace WatchYourBackServer
             removal.Clear();
         }       
 
-        public bool hasGraphics()
+        public bool HasGraphics()
         {
             return false;
         }       

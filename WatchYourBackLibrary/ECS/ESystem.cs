@@ -37,7 +37,7 @@ namespace WatchYourBackLibrary
         /// Initializes the system, pulling the entity list from the manager.
         /// </summary>
         /// <param name="manager">The ECS manager the system is attached to</param>
-        public virtual void initialize(IECSManager manager)
+        public virtual void Initialize(IECSManager manager)
         {
             this.manager = manager;
             entities = manager.Entities;
@@ -48,7 +48,7 @@ namespace WatchYourBackLibrary
         /// the entity must have only those components. The applicable entities are then updated.
         /// </summary>
         /// <param name="gameTime">The time since the last update</param>
-        public void updateEntities(TimeSpan gameTime)
+        public void UpdateEntities(TimeSpan gameTime)
         {
             activeEntities.Clear();
             if (components != 0)
@@ -64,7 +64,7 @@ namespace WatchYourBackLibrary
                         if ((entity.Mask & components) == components)
                             activeEntities.Add(entity);
             }
-            update(gameTime);                                        
+            Update(gameTime);                                        
         }
 
         public int Priority
@@ -78,17 +78,17 @@ namespace WatchYourBackLibrary
         /// All the logic of the system is done here.
         /// </summary>
         /// <param name="gameTime">The time since the last update</param>
-        public abstract void update(TimeSpan gameTime);
+        public abstract void Update(TimeSpan gameTime);
 
         public event EventHandler inputFired;
 
-        protected void onFire(EventArgs e)
+        protected void OnFire(EventArgs e)
         {
             if (inputFired != null)
                 inputFired(this, e);
         }
 
-        protected void onFire(Entity sender, EventArgs e)
+        protected void OnFire(Entity sender, EventArgs e)
         {
             if (inputFired != null)
                 inputFired(sender, e);

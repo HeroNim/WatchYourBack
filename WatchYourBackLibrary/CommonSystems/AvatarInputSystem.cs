@@ -24,7 +24,7 @@ namespace WatchYourBackLibrary
             components += (int)Masks.Status;
         }
 
-        public override void update(TimeSpan gameTime)
+        public override void Update(TimeSpan gameTime)
         {
             foreach (Entity entity in activeEntities)
             {
@@ -50,13 +50,13 @@ namespace WatchYourBackLibrary
                 else
                     velocity.VelocityModifier = 1;
 
-                if (status.getDuration(Status.Dashing) > 0)
+                if (status.GetDuration(Status.Dashing) > 0)
                     velocity.VelocityModifier *= 2;
                     
                 velocity.Velocity = Vector2.Zero;
                 velocity.RotationSpeed = 0;
 
-                if (status.getDuration(Status.Paralyzed) <= 0)
+                if (status.GetDuration(Status.Paralyzed) <= 0)
                 {
                     if (input.MoveY == 1)
                         velocity.Y = 4;
@@ -80,7 +80,7 @@ namespace WatchYourBackLibrary
                     float angle = transform.LookAngle - transform.Rotation;
                     angle = HelperFunctions.Normalize(angle);
                     
-                    if (!wielder.hasWeapon)
+                    if (!wielder.HasWeapon)
                     {
                         if (angle > Math.PI)
                             velocity.RotationSpeed = -5;

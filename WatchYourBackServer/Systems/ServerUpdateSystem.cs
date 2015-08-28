@@ -66,20 +66,20 @@ namespace WatchYourBackServer
         /// at least one packet from the server per cycle.
         /// </remarks>
         /// <param name="gameTime">The update time of the game</param>
-        public override void update(TimeSpan gameTime)
+        public override void Update(TimeSpan gameTime)
         {
             if (level == null)
                 level = manager.LevelInfo;
 
-            if (checkGame())
+            if (CheckGame())
             {
                 if (updating)
                 {
                     for (int i = 0; i < playerMap.Count; i++)
                     {
                         currentAvatar = level.Avatars[i];
-                        packEntities();
-                        packScores();
+                        PackEntities();
+                        PackScores();
                         NetOutgoingMessage om = server.CreateMessage();
                         om.Write(SerializationHelper.Serialize(sendData));
                         server.SendMessage(om, server.Connections[i], NetDeliveryMethod.UnreliableSequenced);
@@ -168,7 +168,7 @@ namespace WatchYourBackServer
                                 accumulator[playerIndex] += args.DrawTime;
                                 if (accumulator[playerIndex] < timeStep)
                                     interpolation[playerIndex] = accumulator[playerIndex] / timeStep;
-                                interpolate(interpolation[playerIndex]);
+                                Interpolate(interpolation[playerIndex]);
 
                                 om.Write(SerializationHelper.Serialize(sendData));
                                 server.SendMessage(om, server.Connections[playerIndex], NetDeliveryMethod.ReliableOrdered);
@@ -194,7 +194,7 @@ namespace WatchYourBackServer
             }
         }
 
-        public bool checkGame()
+        public bool CheckGame()
         {
             if (!level.Playing)
             {
@@ -233,7 +233,7 @@ namespace WatchYourBackServer
             return true;
         }
 
-        public void packEntities()
+        public void PackEntities()
         {
             AllegianceComponent avatarAllegiance = currentAvatar.GetComponent<AllegianceComponent>();
             GraphicsLayer layer;
@@ -248,10 +248,10 @@ namespace WatchYourBackServer
                 else
                     layer = GraphicsLayer.Foreground;
 
-                if (e.hasComponent(Masks.Transform) && e.Drawable == true)
+                if (e.HasComponent(Masks.Transform) && e.Drawable == true)
                 {
                     TransformComponent transform = (TransformComponent)e.Components[Masks.Transform];
-                    if (e.hasComponent(Masks.Tile))
+                    if (e.HasComponent(Masks.Tile))
                     {
                         TileComponent tile = (TileComponent)e.Components[Masks.Tile];
                         sendData.Add(new NetworkEntityArgs(e.Type, manager.ChangedEntities[id], e.ServerID, transform.X, transform.Y, transform.Width, transform.Height, transform.Rotation, layer, tile.AtlasIndex));
@@ -270,7 +270,7 @@ namespace WatchYourBackServer
             }
         }
 
-        public void packScores()
+        public void PackScores()
         {          
             {
                 for (int i = 0; i < 2; i++)
@@ -287,7 +287,7 @@ namespace WatchYourBackServer
         /// each player to draw entities as they should see them, depending on their update rates.
         /// </summary>
         /// <param name="interpolationFactor">The ratio between the player's elapsed time and the update rate of the server</param>
-        private void interpolate(double interpolationFactor)
+        private void Interpolate(double interpolationFactor)
         {
             AllegianceComponent avatarAllegiance = currentAvatar.GetComponent<AllegianceComponent>();
             GraphicsLayer layer;
@@ -302,7 +302,7 @@ namespace WatchYourBackServer
                 else
                     layer = GraphicsLayer.Foreground;
 
-                if(e.hasComponent(Masks.Transform) && e.hasComponent(Masks.Velocity))
+                if(e.HasComponent(Masks.Transform) && e.HasComponent(Masks.Velocity))
                 {
                     TransformComponent transform = (TransformComponent)e.Components[Masks.Transform];
                     VelocityComponent velocity = (VelocityComponent)e.Components[Masks.Velocity];
@@ -310,7 +310,7 @@ namespace WatchYourBackServer
                     float y = transform.Y + (float)(velocity.Y * interpolationFactor);
                     float rotation = transform.Rotation + (float)(velocity.RotationSpeed * interpolationFactor);
 
-                    if (e.hasComponent(Masks.Tile))
+                    if (e.HasComponent(Masks.Tile))
                     {
                         TileComponent tile = (TileComponent)e.Components[Masks.Tile];
                         sendData.Add(new NetworkEntityArgs(e.Type, EntityCommands.Modify, e.ServerID, x, y, transform.Width, transform.Height, rotation, layer, tile.AtlasIndex));

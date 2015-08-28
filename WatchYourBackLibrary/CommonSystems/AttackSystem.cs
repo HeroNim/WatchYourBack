@@ -24,7 +24,7 @@ namespace WatchYourBackLibrary
             components += (int)Masks.PlayerInput;
         }
 
-        public override void update(TimeSpan gameTime)
+        public override void Update(TimeSpan gameTime)
         {           
             foreach (Entity entity in activeEntities)
             {
@@ -40,13 +40,13 @@ namespace WatchYourBackLibrary
                 //Get the angle between the mouse and the player, and start the sword rotated 90 degrees clockwise from the resulting vector
                 float perpAngle = anchorTransform.Rotation + (float)Math.PI / 2;  
                           
-                if (wielderComponent.hasWeapon)
+                if (wielderComponent.HasWeapon)
                 {
                     Entity weapon = wielderComponent.Weapon;
                     WeaponComponent weaponComponent = (WeaponComponent)weapon.Components[Masks.Weapon];
                     if (weaponComponent.Arc >= weaponComponent.MaxArc)
                     {
-                        manager.removeEntity(weapon);
+                        manager.RemoveEntity(weapon);
                         wielderComponent.RemoveWeapon();
                     }
                 }
@@ -56,13 +56,13 @@ namespace WatchYourBackLibrary
                     if (wielderComponent.AttackOffCooldown)
                     {
                         if (wielderComponent.WeaponType == Weapons.SWORD)
-                            if (!wielderComponent.hasWeapon)
+                            if (!wielderComponent.HasWeapon)
                             {
-                                Entity sword = EFactory.createSword(entity, anchorAllegiance.Allegiance, anchorTransform, perpAngle, (perpAngle + (float)Math.PI / 4), manager.hasGraphics());
+                                Entity sword = EFactory.CreateSword(entity, anchorAllegiance.Allegiance, anchorTransform, perpAngle, (perpAngle + (float)Math.PI / 4), manager.HasGraphics());
                                 wielderComponent.EquipWeapon(sword);
-                                manager.addEntity(sword);
+                                manager.AddEntity(sword);
                                 SoundEffectComponent soundC = sword.GetComponent<SoundEffectComponent>();
-                                onFire(new SoundArgs(0, 0, soundC.Sounds[SoundTriggers.Initialize]));
+                                OnFire(new SoundArgs(0, 0, soundC.Sounds[SoundTriggers.Initialize]));
                             }
                         wielderComponent.AttackOffCooldown = false;
                         wielderComponent.AttackCooldown.Start();
@@ -73,12 +73,12 @@ namespace WatchYourBackLibrary
                 {
                     if (wielderComponent.ThrowOffCooldown)
                     {
-                        Entity thrown = EFactory.createThrown(anchorAllegiance.Allegiance, anchorTransform.Center.X, anchorTransform.Center.Y, lookDir, lookAngle, manager.hasGraphics());
-                        manager.addEntity(thrown);                      
+                        Entity thrown = EFactory.CreateThrown(anchorAllegiance.Allegiance, anchorTransform.Center.X, anchorTransform.Center.Y, lookDir, lookAngle, manager.HasGraphics());
+                        manager.AddEntity(thrown);                      
                         wielderComponent.ThrowOffCooldown = false;
                         wielderComponent.ThrowCooldown.Start();
                         SoundEffectComponent soundC = (SoundEffectComponent)thrown.Components[Masks.SoundEffect];
-                        onFire(new SoundArgs(0, 0, soundC.Sounds[SoundTriggers.Initialize]));
+                        OnFire(new SoundArgs(0, 0, soundC.Sounds[SoundTriggers.Initialize]));
                         wielderComponent.ThrowCooldown.Start();
                     }
                     

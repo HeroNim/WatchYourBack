@@ -29,42 +29,42 @@ namespace WatchYourBackLibrary
         /// </summary>
         /// <remarks>Checks entities that have velocity components against other entities with different allegiances. This reduces the majority of unneccessary collision checks.</remarks>
         /// <param name="gameTime">The time since the last update</param>
-        public override void update(TimeSpan gameTime)
+        public override void Update(TimeSpan gameTime)
         {    
             foreach (Entity entity in activeEntities)
-                if (entity.hasComponent(Masks.Velocity))
+                if (entity.HasComponent(Masks.Velocity))
                 {
                     TransformComponent t1 = (TransformComponent)entity.Components[Masks.Transform];
                     foreach (Entity other in activeEntities)
                     {
                         TransformComponent t2 = (TransformComponent)other.Components[Masks.Transform];
-                        if (!haveSameAllegiance(entity, other) && TransformComponent.distanceBetween(t1, t2) < 100)
+                        if (!HaveSameAllegiance(entity, other) && TransformComponent.DistanceBetween(t1, t2) < 100)
                         {
-                            if (entity.hasComponent(Masks.LineCollider))
+                            if (entity.HasComponent(Masks.LineCollider))
                             {
                                 Line c1 = entity.GetComponent<LineColliderComponent>().Collider;
-                                if (other.hasComponent(Masks.PlayerHitbox)) // Line - Hitbox
+                                if (other.HasComponent(Masks.PlayerHitbox)) // Line - Hitbox
                                     if (CollisionHelper.CheckCollision(c1, other.GetComponent<PlayerHitboxComponent>().Collider))
                                         ResolveCollisions(entity, other, Masks.LineCollider, Masks.PlayerHitbox);
-                                if (other.hasComponent(Masks.CircleCollider)) // Line - Circle
+                                if (other.HasComponent(Masks.CircleCollider)) // Line - Circle
                                     if (CollisionHelper.GetIntersection(c1, other.GetComponent<CircleColliderComponent>().Collider) != null)
                                         ResolveCollisions(entity, other, Masks.LineCollider, Masks.CircleCollider);
                             }
-                            if (entity.hasComponent(Masks.RectangleCollider))
+                            if (entity.HasComponent(Masks.RectangleCollider))
                             {
-                                if (other.hasComponent(Masks.RectangleCollider)) // Rectangle - Rectangle
-                                    if (checkRectangleCollisions(entity, other))
+                                if (other.HasComponent(Masks.RectangleCollider)) // Rectangle - Rectangle
+                                    if (CheckRectangleCollisions(entity, other))
                                         ResolveCollisions(entity, other, Masks.RectangleCollider, Masks.RectangleCollider);
                             }                                                       
                         }
                     }
                 }
             foreach (Entity e in removeList.Values)
-                manager.removeEntity(e);
+                manager.RemoveEntity(e);
             removeList.Clear();
         }
 
-        private bool checkRectangleCollisions(Entity e1, Entity e2)
+        private bool CheckRectangleCollisions(Entity e1, Entity e2)
         {
             bool collided = false;
             int displacement;
@@ -106,32 +106,32 @@ namespace WatchYourBackLibrary
 
             if (e1.IsDestructable)
             {
-                remove(e1);
-                if (e1.hasComponent(Masks.Weapon))
+                Remove(e1);
+                if (e1.HasComponent(Masks.Weapon))
                 {
                     WeaponComponent weaponC = (WeaponComponent)e1.Components[Masks.Weapon];
                     if(weaponC.Wielder != null)
                         ((WielderComponent)weaponC.Wielder.Components[Masks.Wielder]).RemoveWeapon();
                 }
-                if(e1.hasComponent(Masks.SoundEffect))
+                if(e1.HasComponent(Masks.SoundEffect))
                 {
                     SoundEffectComponent soundC = (SoundEffectComponent)e1.Components[Masks.SoundEffect];
-                    onFire(new SoundArgs(0, 0, soundC.Sounds[SoundTriggers.Destroy]));
+                    OnFire(new SoundArgs(0, 0, soundC.Sounds[SoundTriggers.Destroy]));
                 }
             }
             if (e2.IsDestructable)
             {
-                remove(e2);
-                if (e2.hasComponent(Masks.Weapon))
+                Remove(e2);
+                if (e2.HasComponent(Masks.Weapon))
                 {
                     WeaponComponent wielder = (WeaponComponent)e2.Components[Masks.Weapon];
                     if (wielder.Wielder != null)
                         ((WielderComponent)wielder.Wielder.Components[Masks.Wielder]).RemoveWeapon();
                 }
-                if (e2.hasComponent(Masks.SoundEffect))
+                if (e2.HasComponent(Masks.SoundEffect))
                 {
                     SoundEffectComponent soundC = (SoundEffectComponent)e2.Components[Masks.SoundEffect];
-                    onFire(new SoundArgs(0, 0, soundC.Sounds[SoundTriggers.Destroy]));
+                    OnFire(new SoundArgs(0, 0, soundC.Sounds[SoundTriggers.Destroy]));
                 }
             }
             if(e1.Type == Entities.Sword)
@@ -149,13 +149,13 @@ namespace WatchYourBackLibrary
                     StatusComponent avatarInfo = (StatusComponent)e2.Components[Masks.Status];
                     avatarInfo.ApplyStatus(Status.Paralyzed, 1000f, 0);
                     Console.WriteLine("Paralyzed");
-                    onFire(new SoundArgs(0, 0, "Sounds/SFX/StunSound"));
+                    OnFire(new SoundArgs(0, 0, "Sounds/SFX/StunSound"));
                 }
         }
 
-        private bool haveSameAllegiance(Entity e1, Entity e2)
+        private bool HaveSameAllegiance(Entity e1, Entity e2)
         {
-            if (!e1.hasComponent(Masks.Allegiance) || !e2.hasComponent(Masks.Allegiance))
+            if (!e1.HasComponent(Masks.Allegiance) || !e2.HasComponent(Masks.Allegiance))
                 return false;
             AllegianceComponent a1 = (AllegianceComponent)e1.Components[Masks.Allegiance];
             AllegianceComponent a2 = (AllegianceComponent)e2.Components[Masks.Allegiance];
@@ -165,7 +165,7 @@ namespace WatchYourBackLibrary
             return false;
         }
 
-        private void remove(Entity e)
+        private void Remove(Entity e)
         {
             if (!removeList.ContainsKey(e.ClientID))
                 removeList.Add(e.ClientID, e);

@@ -22,12 +22,12 @@ namespace WatchYourBackLibrary
             this.ui = ui;
             
         }
-        public override void update(TimeSpan gameTime)
+        public override void Update(TimeSpan gameTime)
         {
             level = manager.LevelInfo;
             PlayerInfoComponent p1 = (PlayerInfoComponent)level.Avatars[0].Components[Masks.PlayerInfo];
             PlayerInfoComponent p2 = (PlayerInfoComponent)level.Avatars[1].Components[Masks.PlayerInfo];
-            ui.updateUI(p1.Score, p2.Score, level.GameTime);                                 
+            ui.UpdateUI(p1.Score, p2.Score, level.GameTime);                                 
         }      
     }
 }

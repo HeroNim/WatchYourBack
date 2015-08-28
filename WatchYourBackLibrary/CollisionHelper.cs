@@ -28,10 +28,10 @@ namespace WatchYourBackLibrary
         /// <returns>True if colliding</returns>
         public static bool CheckCollision(Line c1, Rectangle c2)
         {                  
-            bool pos1 = (lineEquation(c1.P1, c1.P2, c2.Right, c2.Top) > 0);
-            bool pos2 = (lineEquation(c1.P1, c1.P2, c2.Left, c2.Bottom) > 0);
-            bool pos3 = (lineEquation(c1.P1, c1.P2, c2.Right, c2.Bottom) > 0);
-            bool pos4 = (lineEquation(c1.P1, c1.P2, c2.Left, c2.Top) > 0);
+            bool pos1 = (LineEquation(c1.P1, c1.P2, c2.Right, c2.Top) > 0);
+            bool pos2 = (LineEquation(c1.P1, c1.P2, c2.Left, c2.Bottom) > 0);
+            bool pos3 = (LineEquation(c1.P1, c1.P2, c2.Right, c2.Bottom) > 0);
+            bool pos4 = (LineEquation(c1.P1, c1.P2, c2.Left, c2.Top) > 0);
 
             if (!(pos1 != pos2 || pos2 != pos3 || pos3 != pos4))
                 return false;
@@ -56,10 +56,10 @@ namespace WatchYourBackLibrary
         /// <returns>True if colliding</returns>
         public static bool CheckCollision(Line c1, Line c2)
         {
-            float result1 = lineEquation(c1.P1, c1.P2, c2.P1);
-            float result2 = lineEquation(c1.P1, c1.P2, c2.P2);
-            float result3 = lineEquation(c2.P1, c2.P2, c1.P1);
-            float result4 = lineEquation(c2.P1, c2.P2, c1.P2);
+            float result1 = LineEquation(c1.P1, c1.P2, c2.P1);
+            float result2 = LineEquation(c1.P1, c1.P2, c2.P2);
+            float result3 = LineEquation(c2.P1, c2.P2, c1.P1);
+            float result4 = LineEquation(c2.P1, c2.P2, c1.P2);
 
             if (result1 * result2 > 0 || result3 * result4 > 0)
                 return false;
@@ -217,12 +217,12 @@ namespace WatchYourBackLibrary
         /// <param name="p2">A point on the line</param>
         /// <param name="point">The point to check</param>
         /// <returns>Zero if on the line, positive or negative if not</returns>
-        public static float lineEquation(Vector2 p1, Vector2 p2, float x, float y)
+        public static float LineEquation(Vector2 p1, Vector2 p2, float x, float y)
         {
             return (p2.Y - p1.Y) * x + (p1.X - p2.X) * y + (p2.X * p1.Y - p1.X * p2.Y);
         }
 
-        public static float lineEquation(Vector2 p1, Vector2 p2, Vector2 point)
+        public static float LineEquation(Vector2 p1, Vector2 p2, Vector2 point)
         {
             return (p2.Y - p1.Y) * point.X + (p1.X - p2.X) * point.Y + (p2.X * p1.Y - p1.X * p2.Y);
         }

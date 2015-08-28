@@ -184,12 +184,12 @@ namespace WatchYourBackLibrary
             set { parent = value; }
         }
 
-        public bool hasParent
+        public bool HasParent
         {
             get { return (parent != null); }
         }
 
-        public static float distanceBetween(TransformComponent t1, TransformComponent t2)
+        public static float DistanceBetween(TransformComponent t1, TransformComponent t2)
         {
             float y = Math.Abs(t1.Center.Y - t2.Center.Y);
             float x = Math.Abs(t1.Center.X - t2.Center.X);

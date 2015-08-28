@@ -152,11 +152,11 @@ namespace WatchYourBack
             lightMaskBackground.SetData(new[] { Color.Black });
             
 
-            createMainMenu();
-            createConnectMenu();
-            createDebug();
-            createGame();
-            createPauseMenu();
+            CreateMainMenu();
+            CreateConnectMenu();
+            CreateDebug();
+            CreateGame();
+            CreatePauseMenu();
           
             gameSongs.Add(Content.Load<Song>("Sounds/Music/HeroRemix"));
 
@@ -182,7 +182,7 @@ namespace WatchYourBack
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            InputManager.setActiveWorld(activeWorld);
+            InputManager.SetActiveWorld(activeWorld);
             foreach (World world in worldStack)
             {             
                 updateStack.Push(world);
@@ -196,7 +196,7 @@ namespace WatchYourBack
                     if (!isPlayingOnline)
                         Connect();
                 activeManager = (ClientECSManager)updateStack.Pop().Manager;
-                activeManager.update(gameTime.ElapsedGameTime);                       
+                activeManager.Update(gameTime.ElapsedGameTime);                       
             }
             
             base.Update(gameTime);
@@ -260,13 +260,13 @@ namespace WatchYourBack
             while(drawStack.Count != 0)
             {
                 activeManager = (ClientECSManager)drawStack.Pop().Manager;                
-                draw();                
+                DrawScene();                
                 activeManager.DrawTime = gameTime.ElapsedGameTime.TotalSeconds;
             }
             base.Draw(gameTime);            
         }
 
-        private void draw()
+        private void DrawScene()
         {
 
             //Draw Lightmap
@@ -277,7 +277,7 @@ namespace WatchYourBack
                 GraphicsDevice.DepthStencilState = DepthStencilState.Default;
                 foreach (Entity entity in activeManager.Entities.Values)
                 {
-                    if (entity.hasComponent(Masks.Graphics))
+                    if (entity.HasComponent(Masks.Graphics))
                     {
                         GraphicsComponent graphics = entity.GetComponent<GraphicsComponent>();
                         if (graphics.Polygons.ContainsKey("Vision"))
@@ -296,7 +296,7 @@ namespace WatchYourBack
             spriteBatch.Draw(background, GraphicsDevice.Viewport.Bounds, null, Color.White, 0, Vector2.Zero, SpriteEffects.None, 1);
             foreach (Entity entity in activeManager.Entities.Values)
             {
-                if (entity.hasComponent(Masks.Graphics))
+                if (entity.HasComponent(Masks.Graphics))
                 {
                     currentGraphics = entity.GetComponent<GraphicsComponent>();
                     if (currentGraphics.GraphicsLayer == GraphicsLayer.Background)
@@ -329,7 +329,7 @@ namespace WatchYourBack
             spriteBatch.Draw(background, GraphicsDevice.Viewport.Bounds, null, Color.White, 0, Vector2.Zero, SpriteEffects.None, 1);
             foreach (Entity entity in activeManager.Entities.Values)
             {
-                if (entity.hasComponent(Masks.Graphics))
+                if (entity.HasComponent(Masks.Graphics))
                 {
                     currentGraphics = entity.GetComponent<GraphicsComponent>();
                     //if (currentGraphics.GraphicsLayer == GraphicsLayer.Foreground)
@@ -417,121 +417,121 @@ namespace WatchYourBack
       
         
 
-        private void reset(World world)
+        private void Reset(World world)
         {
-            inputListener.removeWorld(world);
-            InputManager.removeWorld(world);
+            inputListener.RemoveWorld(world);
+            InputManager.RemoveWorld(world);
 
             if (world.WorldType == Worlds.Debug)
-                createDebug();
+                CreateDebug();
             else if (world.WorldType == Worlds.InGame)
             {
                 client.Disconnect("Disconnecting");
                 isConnected = false;
                 isPlayingOnline = false;
-                createGame();
+                CreateGame();
             }
             else if (world.WorldType == Worlds.MainMenu)
-                createMainMenu();
+                CreateMainMenu();
             else if (world.WorldType == Worlds.PauseMenu)
-                createPauseMenu();
+                CreatePauseMenu();
         }
 
-        private void createMainMenu()
+        private void CreateMainMenu()
         {
             mainMenu = new World(Worlds.MainMenu);
-            mainMenu.addManager(new ClientECSManager());
+            mainMenu.AddManager(new ClientECSManager());
 
             MenuInputSystem menuInput = new MenuInputSystem();
-            mainMenu.Manager.addEntity(EFactory.createButton(GraphicsDevice.Viewport.Width / 2, (int)((float)GraphicsDevice.Viewport.Height / 2f), 200, 50, Inputs.StartDebug, "Debug", buttonFont));
-            mainMenu.Manager.addEntity(EFactory.createButton(GraphicsDevice.Viewport.Width / 2, (int)((float)GraphicsDevice.Viewport.Height / (10f / 6f)), 200, 50, Inputs.Start, "Start", buttonFont));
-            mainMenu.Manager.addEntity(EFactory.createButton(GraphicsDevice.Viewport.Width / 2, (int)((float)GraphicsDevice.Viewport.Height / (10f / 8f)), 200, 50, Inputs.Exit, "Exit", buttonFont));           
-            mainMenu.Manager.addSystem(new AudioSystem(Content));
-            mainMenu.Manager.addSystem(menuInput);
+            mainMenu.Manager.AddEntity(EFactory.CreateButton(GraphicsDevice.Viewport.Width / 2, (int)((float)GraphicsDevice.Viewport.Height / 2f), 200, 50, Inputs.StartDebug, "Debug", buttonFont));
+            mainMenu.Manager.AddEntity(EFactory.CreateButton(GraphicsDevice.Viewport.Width / 2, (int)((float)GraphicsDevice.Viewport.Height / (10f / 6f)), 200, 50, Inputs.Start, "Start", buttonFont));
+            mainMenu.Manager.AddEntity(EFactory.CreateButton(GraphicsDevice.Viewport.Width / 2, (int)((float)GraphicsDevice.Viewport.Height / (10f / 8f)), 200, 50, Inputs.Exit, "Exit", buttonFont));           
+            mainMenu.Manager.AddSystem(new AudioSystem(Content));
+            mainMenu.Manager.AddSystem(menuInput);
             
-            inputListener.addInput(mainMenu, menuInput);
-            InputManager.addInput(mainMenu, menuInput);
+            inputListener.AddInput(mainMenu, menuInput);
+            InputManager.AddInput(mainMenu, menuInput);
 
             mainMenu.Manager.Initialize();
         }
 
-        private void createConnectMenu()
+        private void CreateConnectMenu()
         {
             connectMenu = new World(Worlds.ConnectMenu);
-            connectMenu.addManager(new ClientECSManager());
+            connectMenu.AddManager(new ClientECSManager());
 
             MenuInputSystem menuInput = new MenuInputSystem();
-            connectMenu.Manager.addEntity(EFactory.createButton(GraphicsDevice.Viewport.Width / 2, (int)((float)GraphicsDevice.Viewport.Height / 2f), 200, 50, Inputs.Start, "Connect", buttonFont));
-            connectMenu.Manager.addEntity(EFactory.createButton(GraphicsDevice.Viewport.Width / 2, (int)((float)GraphicsDevice.Viewport.Height / (10f / 8f)), 200, 50, Inputs.Exit, "Back", buttonFont));          
-            connectMenu.Manager.addSystem(new AudioSystem(Content));
-            connectMenu.Manager.addSystem(menuInput);
+            connectMenu.Manager.AddEntity(EFactory.CreateButton(GraphicsDevice.Viewport.Width / 2, (int)((float)GraphicsDevice.Viewport.Height / 2f), 200, 50, Inputs.Start, "Connect", buttonFont));
+            connectMenu.Manager.AddEntity(EFactory.CreateButton(GraphicsDevice.Viewport.Width / 2, (int)((float)GraphicsDevice.Viewport.Height / (10f / 8f)), 200, 50, Inputs.Exit, "Back", buttonFont));          
+            connectMenu.Manager.AddSystem(new AudioSystem(Content));
+            connectMenu.Manager.AddSystem(menuInput);
             
-            inputListener.addInput(connectMenu, menuInput);
-            InputManager.addInput(connectMenu, menuInput);
+            inputListener.AddInput(connectMenu, menuInput);
+            InputManager.AddInput(connectMenu, menuInput);
 
             connectMenu.Manager.Initialize();
         }
 
-        private void createDebug()
+        private void CreateDebug()
         {            
             debug = new World(Worlds.Debug);
             ClientECSManager gameManager = new ClientECSManager();
             UI gameUI = new UI(GraphicsDevice);
-            gameManager.addUI(gameUI);
-            debug.addManager(gameManager);
+            gameManager.AddUI(gameUI);
+            debug.AddManager(gameManager);
             
             AudioSystem audio = new AudioSystem(Content);
             GameInputSystem gameInput = new GameInputSystem();
             audio.Songs = gameSongs;
-            debug.Manager.addSystem(new AvatarInputSystem());
-            debug.Manager.addSystem(new GameCollisionSystem());
-            debug.Manager.addSystem(new MovementSystem());
-            debug.Manager.addSystem(new LevelSystem(levels));
-            debug.Manager.addSystem(new AttackSystem());
-            debug.Manager.addSystem(new FieldOfViewSystem());
-            debug.Manager.addSystem(new UIUpdateSystem(gameUI));
-            debug.Manager.addSystem(audio);
-            debug.Manager.addSystem(gameInput);
+            debug.Manager.AddSystem(new AvatarInputSystem());
+            debug.Manager.AddSystem(new GameCollisionSystem());
+            debug.Manager.AddSystem(new MovementSystem());
+            debug.Manager.AddSystem(new LevelSystem(levels));
+            debug.Manager.AddSystem(new AttackSystem());
+            debug.Manager.AddSystem(new FieldOfViewSystem());
+            debug.Manager.AddSystem(new UIUpdateSystem(gameUI));
+            debug.Manager.AddSystem(audio);
+            debug.Manager.AddSystem(gameInput);
 
-            inputListener.addInput(debug, gameInput);
-            InputManager.addInput(debug, gameInput);
+            inputListener.AddInput(debug, gameInput);
+            InputManager.AddInput(debug, gameInput);
 
             debug.Manager.Initialize();
         }
 
-        private void createGame()
+        private void CreateGame()
         {
             inGame = new World(Worlds.InGame);
             ClientECSManager gameManager = new ClientECSManager();
             UI gameUI = new UI(GraphicsDevice);
-            gameManager.addUI(gameUI);
-            inGame.addManager(gameManager);
+            gameManager.AddUI(gameUI);
+            inGame.AddManager(gameManager);
 
             ClientUpdateSystem networkInput = new ClientUpdateSystem(client);
             AudioSystem audio = new AudioSystem(Content);
             audio.Songs = gameSongs;
-            inGame.Manager.addSystem(networkInput);                       
-            inGame.Manager.addSystem(audio);
+            inGame.Manager.AddSystem(networkInput);                       
+            inGame.Manager.AddSystem(audio);
 
-            inputListener.addInput(inGame, networkInput);
-            InputManager.addInput(inGame, networkInput);
+            inputListener.AddInput(inGame, networkInput);
+            InputManager.AddInput(inGame, networkInput);
 
             inGame.Manager.Initialize();
         }
 
-        private void createPauseMenu()
+        private void CreatePauseMenu()
         {
             pauseMenu = new World(Worlds.PauseMenu, false, false);
-            pauseMenu.addManager(new ClientECSManager());
+            pauseMenu.AddManager(new ClientECSManager());
 
             MenuInputSystem menuInput = new MenuInputSystem();
-            pauseMenu.Manager.addEntity(EFactory.createButton(GraphicsDevice.Viewport.Width / 2, (int)((float)GraphicsDevice.Viewport.Height / 3.2f), 200, 50, Inputs.Resume, "Resume", buttonFont));
-            pauseMenu.Manager.addEntity(EFactory.createButton(GraphicsDevice.Viewport.Width / 2, (int)((float)GraphicsDevice.Viewport.Height / (10f / 8f)), 200, 50, Inputs.Exit, "Exit To Menu", buttonFont));
-            pauseMenu.Manager.addSystem(new AudioSystem(Content));
-            pauseMenu.Manager.addSystem(menuInput);
+            pauseMenu.Manager.AddEntity(EFactory.CreateButton(GraphicsDevice.Viewport.Width / 2, (int)((float)GraphicsDevice.Viewport.Height / 3.2f), 200, 50, Inputs.Resume, "Resume", buttonFont));
+            pauseMenu.Manager.AddEntity(EFactory.CreateButton(GraphicsDevice.Viewport.Width / 2, (int)((float)GraphicsDevice.Viewport.Height / (10f / 8f)), 200, 50, Inputs.Exit, "Exit To Menu", buttonFont));
+            pauseMenu.Manager.AddSystem(new AudioSystem(Content));
+            pauseMenu.Manager.AddSystem(menuInput);
 
-            inputListener.addInput(pauseMenu, menuInput);
-            InputManager.addInput(pauseMenu, menuInput);
+            inputListener.AddInput(pauseMenu, menuInput);
+            InputManager.AddInput(pauseMenu, menuInput);
 
             pauseMenu.Manager.Initialize();
         }
@@ -550,14 +550,14 @@ namespace WatchYourBack
                 inputs = new Dictionary<World, List<ESystem>>();
             }
            
-            public void addInput(World world, ESystem input)
+            public void AddInput(World world, ESystem input)
             {
                 if (!inputs.ContainsKey(world))
                     inputs.Add(world, new List<ESystem>());
                 inputs[world].Add(input);                
             }
 
-            public void removeWorld(World world)
+            public void RemoveWorld(World world)
             {
                 if (inputs.ContainsKey(world))
                 {
@@ -569,17 +569,17 @@ namespace WatchYourBack
             public void Subscribe(World world)
             {
                 foreach (ESystem system in inputs[world])
-                    system.inputFired += new EventHandler(inputFired);
+                    system.inputFired += new EventHandler(InputFired);
             }
 
             public void Unsubscribe(World world)
             {
                 if(inputs.ContainsKey(world))
                     foreach (ESystem system in inputs[world])
-                        system.inputFired -= new EventHandler(inputFired);
+                        system.inputFired -= new EventHandler(InputFired);
             }
 
-            private void inputFired(object sender, EventArgs e)
+            private void InputFired(object sender, EventArgs e)
             {
                 if (e is InputArgs)
                 {                   
@@ -620,7 +620,7 @@ namespace WatchYourBack
                                 game.worldStack.Push(game.pauseMenu);
                             if (args.InputType == Inputs.Exit)
                             {
-                                game.reset(game.activeWorld);
+                                game.Reset(game.activeWorld);
                                 game.worldStack.Pop();
                             }
                             break;
@@ -631,7 +631,7 @@ namespace WatchYourBack
                             {
 
                                 game.worldStack.Pop();
-                                game.reset(game.worldStack.Peek());
+                                game.Reset(game.worldStack.Peek());
                                 game.worldStack.Pop();
                             }
                             break;

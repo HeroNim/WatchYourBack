@@ -33,7 +33,7 @@ namespace WatchYourBackLibrary
             components += (int)Masks.Velocity;
         }
 
-        public override void update(TimeSpan gameTime)
+        public override void Update(TimeSpan gameTime)
         {
             foreach (Entity entity in activeEntities)
             {
@@ -45,7 +45,7 @@ namespace WatchYourBackLibrary
                 yVel = velocity.Y;
                 rotationSpeed = velocity.RotationSpeed;
 
-                if (transform.hasParent)
+                if (transform.HasParent)
                 {
                     anchorTransform = (TransformComponent)transform.Parent.Components[Masks.Transform];
                     anchorVelocity = (VelocityComponent)transform.Parent.Components[Masks.Velocity];
@@ -64,14 +64,14 @@ namespace WatchYourBackLibrary
                 transform.Position = rotation;
 
                 //Update weapons
-                if (entity.hasComponent(Masks.Weapon))
+                if (entity.HasComponent(Masks.Weapon))
                 {
                     WeaponComponent weapon = (WeaponComponent)entity.Components[Masks.Weapon];
                     weapon.Arc += Math.Abs(velocity.RotationSpeed);            
                 }
 
                 //Update graphics
-                if (entity.hasComponent(Masks.Graphics))
+                if (entity.HasComponent(Masks.Graphics))
                 {
                     GraphicsComponent graphics = (GraphicsComponent)entity.Components[Masks.Graphics];
                     graphics.X = (int)transform.X;
@@ -80,23 +80,23 @@ namespace WatchYourBackLibrary
                 }
 
                 //Update colliders
-                if (entity.hasComponent(Masks.Collider))
+                if (entity.HasComponent(Masks.Collider))
                 {
-                    if (entity.hasComponent(Masks.RectangleCollider))
+                    if (entity.HasComponent(Masks.RectangleCollider))
                     {
                         RectangleColliderComponent collider = (RectangleColliderComponent)entity.Components[Masks.RectangleCollider];
                         collider.X = (int)collider.Anchor.X;
                         collider.Y = (int)collider.Anchor.Y;
                     }
 
-                    if (entity.hasComponent(Masks.CircleCollider))
+                    if (entity.HasComponent(Masks.CircleCollider))
                     {
                         CircleColliderComponent collider = (CircleColliderComponent)entity.Components[Masks.CircleCollider];
                         collider.X = (int)collider.Anchor.Center.X;
                         collider.Y = (int)collider.Anchor.Center.Y;
                     }
 
-                    if (entity.hasComponent(Masks.LineCollider))
+                    if (entity.HasComponent(Masks.LineCollider))
                     {
                         //GraphicsComponent g = (GraphicsComponent)entity.Components[Masks.Graphics];
                         //g.DebugPoints.Clear();
@@ -116,7 +116,7 @@ namespace WatchYourBackLibrary
                         
                     }
 
-                    if (entity.hasComponent(Masks.PlayerHitbox))
+                    if (entity.HasComponent(Masks.PlayerHitbox))
                     {
                        //GraphicsComponent g = (GraphicsComponent)entity.Components[Masks.Graphics];
                        //g.DebugPoints.Clear();
@@ -137,7 +137,7 @@ namespace WatchYourBackLibrary
                 }
 
                 if (transform.HasMoved)
-                    manager.addChangedEntities(entity, EntityCommands.Modify);
+                    manager.AddChangedEntities(entity, EntityCommands.Modify);
                 transform.HasMoved = false;
             }
         }

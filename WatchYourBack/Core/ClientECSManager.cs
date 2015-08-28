@@ -18,7 +18,7 @@ namespace WatchYourBack
     public class ClientECSManager : IECSManager
     {
 
-        private QuadTree<Entity> quadtree;
+        private QuadTree<Entity> entityQuadtree;
         private Dictionary<int, Entity> activeEntities;
         private Dictionary<int, EntityCommands> changedEntities;
         private List<ESystem> systems;
@@ -36,7 +36,7 @@ namespace WatchYourBack
             currentID = 0;
             drawTime = 0;
             systems = new List<ESystem>();
-            quadtree = new QuadTree<Entity>(0, 0, GameData.gameWidth, GameData.gameHeight, 4);
+            entityQuadtree = new QuadTree<Entity>(0, 0, GameData.gameWidth, GameData.gameHeight, 4);
             activeEntities = new Dictionary<int, Entity>();
             changedEntities = new Dictionary<int, EntityCommands>();
             removal = new List<Entity>();
@@ -55,16 +55,16 @@ namespace WatchYourBack
                         other.inputFired += new EventHandler(system.EventListener);
                     }
                 }
-                system.initialize(this);                
+                system.Initialize(this);                
             }
         }
       
-        public void addUI(UI info)
+        public void AddUI(UI info)
         {
             ui = info;
             foreach (Entity e in ui.UIElements)
             {
-                addEntity(e);
+                AddEntity(e);
             }
         }
 
@@ -73,34 +73,34 @@ namespace WatchYourBack
             get { return ui; }
         }
 
-        public void addEntity(Entity entity)
+        public void AddEntity(Entity entity)
         {
             entity.ClientID = assignID();
-            entity.initialize();
+            entity.Initialize();
             activeEntities.Add(entity.ClientID, entity);
-            if (entity.hasComponent(Masks.Transform))
-                quadtree.Add(entity, entity.GetComponent<TransformComponent>().Body);
-            addChangedEntities(entity, EntityCommands.Add);
+            if (entity.HasComponent(Masks.Transform))
+                entityQuadtree.Add(entity, entity.GetComponent<TransformComponent>().Body);
+            AddChangedEntities(entity, EntityCommands.Add);
         }
 
-        public void removeEntity(Entity entity)
+        public void RemoveEntity(Entity entity)
         {
             if (activeEntities.Values.Contains(entity) && !removal.Contains(entity))
             {
                 removal.Add(entity);
-                addChangedEntities(entity, EntityCommands.Remove);
+                AddChangedEntities(entity, EntityCommands.Remove);
             }
-            quadtree.Remove(entity);
+            entityQuadtree.Remove(entity);
         }
 
-        public void addSystem(ESystem system)
+        public void AddSystem(ESystem system)
         {
             systems.Add(system);
-            system.initialize(this);
+            system.Initialize(this);
             systems = systems.OrderBy(o => o.Priority).ToList();
         }
 
-        public void removeSystem(ESystem system)
+        public void RemoveSystem(ESystem system)
         {
             systems.Remove(system);
         }      
@@ -132,10 +132,10 @@ namespace WatchYourBack
 
         public QuadTree<Entity> QuadTree
         {
-            get { return quadtree; }
+            get { return entityQuadtree; }
         }
 
-        public void addChangedEntities(Entity e, EntityCommands c)
+        public void AddChangedEntities(Entity e, EntityCommands c)
         {
             if (!changedEntities.Keys.Contains(e.ClientID))
                 changedEntities.Add(e.ClientID, c);
@@ -143,12 +143,12 @@ namespace WatchYourBack
                 changedEntities[e.ClientID] = EntityCommands.Remove;
         }
              
-        public void update(TimeSpan gameTime)
+        public void Update(TimeSpan gameTime)
         {
             //Update the systems
             foreach (ESystem system in systems)
                 if (system.Loop == true)
-                    system.updateEntities(gameTime);          
+                    system.UpdateEntities(gameTime);          
             RemoveAll();
         }
 
@@ -177,7 +177,7 @@ namespace WatchYourBack
             set { levelInfo = value; }
         }
 
-        public bool hasGraphics()
+        public bool HasGraphics()
         {
             return true;
         }           

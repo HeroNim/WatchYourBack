@@ -88,7 +88,7 @@ namespace WatchYourBackLibrary
             set { vertices = value; }
         }
 
-        public void addVertex(Vector2 toAdd)
+        public void AddVertex(Vector2 toAdd)
         {
             foreach (Vector2 vertex in vertices)
                 if (vertex.Equals(toAdd))

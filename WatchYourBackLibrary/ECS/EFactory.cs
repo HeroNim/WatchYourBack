@@ -32,7 +32,7 @@ namespace WatchYourBackLibrary
         /// <param name="weaponType">The identity of the avatar's primary weapon</param>
         /// <param name="hasGraphics">A flag identifying whether the entity should have graphics or not</param>
         /// <returns>An avatar entity</returns>
-        public static Entity createAvatar(PlayerInfoComponent info, Rectangle rect, Allegiance player, Weapons weaponType, bool hasGraphics)
+        public static Entity CreateAvatar(PlayerInfoComponent info, Rectangle rect, Allegiance player, Weapons weaponType, bool hasGraphics)
         {
             Vector2 offset = new Vector2(rect.Width / 2, rect.Height / 2);
             TransformComponent transform = new TransformComponent(rect);
@@ -43,7 +43,7 @@ namespace WatchYourBackLibrary
             new AllegianceComponent(player),
             new RectangleColliderComponent(rect, transform),
             new CircleColliderComponent(new Vector2(rect.Center.X, rect.Center.Y), rect.Width/2, transform),
-            new PlayerHitboxComponent(PlayerHitboxComponent.setAvatarHitbox(rect, 10, -Vector2.UnitY)),
+            new PlayerHitboxComponent(PlayerHitboxComponent.SetAvatarHitbox(rect, 10, -Vector2.UnitY)),
             new WielderComponent(weaponType),
             new StatusComponent(),
             new VisionComponent(60, new Vector2(rect.Center.X, rect.Center.Y), rect.Width),
@@ -53,7 +53,7 @@ namespace WatchYourBackLibrary
                 Texture2D myTexture = content.Load<Texture2D>("PlayerTexture");
                 GraphicsComponent graphics = new GraphicsComponent(GraphicsLayer.Foreground, new Vector2(myTexture.Width / 2, myTexture.Height / 2));
                 graphics.AddSprite("Avatar", new SpriteGraphicsInfo(rect, myTexture, myTexture.Bounds, offset, 0.5f));               
-                e.addComponent(graphics);
+                e.AddComponent(graphics);
             }
             e.Type = Entities.Avatar;
             return e;
@@ -69,7 +69,7 @@ namespace WatchYourBackLibrary
         /// /// <param name="rotationAngle">The initial position of the sword</param>
         /// <param name="hasGraphics">A flag identifying whether the enttiy should have graphics or not</param>
         /// <returns>A sword entity anchored at the wielder</returns>
-        public static Entity createSword(Entity wielder, Allegiance wielderAllegiance, TransformComponent anchorTransform, float rotationAngle, float positionAngle, bool hasGraphics)
+        public static Entity CreateSword(Entity wielder, Allegiance wielderAllegiance, TransformComponent anchorTransform, float rotationAngle, float positionAngle, bool hasGraphics)
         {
             SoundEffectComponent soundC = new SoundEffectComponent();
             soundC.AddSound(SoundTriggers.Initialize, "Sounds/SFX/SwordSwing");
@@ -99,7 +99,7 @@ namespace WatchYourBackLibrary
                 Texture2D myTexture = content.Load<Texture2D>("SwordTexture");
                 GraphicsComponent graphics = new GraphicsComponent(GraphicsLayer.Foreground, new Vector2(myTexture.Width / 2, myTexture.Height), rotationAngle);
                 graphics.AddSprite("Sword", new SpriteGraphicsInfo(new Rectangle((int)point.X, (int)point.Y, (int)SWORD.WIDTH, (int)SWORD.RANGE), myTexture, 0.4f));
-                e.addComponent(graphics);
+                e.AddComponent(graphics);
             }
             e.Type = Entities.Sword;
             return e;           
@@ -115,7 +115,7 @@ namespace WatchYourBackLibrary
         /// <param name="rotationAngle">The angle of the weapon</param>
         /// <param name="hasGraphics">A flag identifying whether the enttiy should have graphics or not</param>
         /// <returns>A thrown weapon entity</returns>
-        public static Entity createThrown(Allegiance wielderAllegiance, float xOrigin, float yOrigin, Vector2 rotationVector, float rotationAngle, bool hasGraphics)
+        public static Entity CreateThrown(Allegiance wielderAllegiance, float xOrigin, float yOrigin, Vector2 rotationVector, float rotationAngle, bool hasGraphics)
         {
             SoundEffectComponent soundC = new SoundEffectComponent();
             soundC.AddSound(SoundTriggers.Initialize, "Sounds/SFX/ThrowSound");
@@ -134,7 +134,7 @@ namespace WatchYourBackLibrary
                 Texture2D myTexture = content.Load<Texture2D>("ThrownTexture");
                 GraphicsComponent graphics = new GraphicsComponent(GraphicsLayer.Foreground, new Vector2(myTexture.Width / 2, myTexture.Height), rotationAngle);
                 graphics.AddSprite("Thrown", new SpriteGraphicsInfo(new Rectangle((int)xOrigin, (int)yOrigin, (int)THROWN.RADIUS, (int)THROWN.RADIUS), myTexture, 0.7f));
-                e.addComponent(graphics);
+                e.AddComponent(graphics);
             }
             e.Type = Entities.Thrown;
             return e;
@@ -150,7 +150,7 @@ namespace WatchYourBackLibrary
         /// <param name="type">The role of the button</param>
         /// <param name="text">The text of the button</param>
         /// <returns>A button entity</returns>
-        public static Entity createButton(int x, int y, int width, int height, Inputs type, string text, SpriteFont font)
+        public static Entity CreateButton(int x, int y, int width, int height, Inputs type, string text, SpriteFont font)
         {
             SoundEffectComponent soundC = new SoundEffectComponent();            
             soundC.AddSound(SoundTriggers.Action, "Sounds/SFX/ButtonClick");
@@ -186,7 +186,7 @@ namespace WatchYourBackLibrary
         /// <param name="atlasIndex">The index of the texture atlas to be drawn</param>
         /// /// <param name="hasGraphics">A flag identifying whether the entity should have graphics or not</param>
         /// <returns>A wall segment entity</returns>
-        public static Entity createWall(int x, int y, int width, int height, int[,] atlasIndex, bool hasGraphics)
+        public static Entity CreateWall(int x, int y, int width, int height, int[,] atlasIndex, bool hasGraphics)
         {
             TransformComponent transform = new TransformComponent(x, y, width, height);
             Entity e = new Entity(false,
@@ -203,7 +203,7 @@ namespace WatchYourBackLibrary
                 graphics.AddSprite("TopRight", new SpriteGraphicsInfo(new Rectangle(x + width / 2, y, width / 2, height / 2), myTexture, new Rectangle((int)LevelDimensions.X_SCALE / 2 * atlasIndex[0, 1], 0, (int)LevelDimensions.X_SCALE / 2, (int)LevelDimensions.Y_SCALE / 2), 0.9f));
                 graphics.AddSprite("BottomLeft", new SpriteGraphicsInfo(new Rectangle(x, y + height / 2, width / 2, height / 2), myTexture, new Rectangle((int)LevelDimensions.X_SCALE / 2 * atlasIndex[1, 0], 0, (int)LevelDimensions.X_SCALE / 2, (int)LevelDimensions.Y_SCALE / 2), 0.9f));
                 graphics.AddSprite("BottomRight", new SpriteGraphicsInfo(new Rectangle(x + width / 2, y + height / 2, width / 2, height / 2), myTexture, new Rectangle((int)LevelDimensions.X_SCALE / 2 * atlasIndex[1, 1], 0, (int)LevelDimensions.X_SCALE / 2, (int)LevelDimensions.Y_SCALE / 2), 0.9f));
-                e.addComponent(graphics);
+                e.AddComponent(graphics);
             }
             e.Type = Entities.Wall;
             return e;
@@ -217,7 +217,7 @@ namespace WatchYourBackLibrary
         /// <param name="width">The width of the spawn</param>
         /// <param name="height">The height of the spawn</param>
         /// <returns>A spawn entity</returns>
-        public static Entity createSpawn(int x, int y, int width, int height)
+        public static Entity CreateSpawn(int x, int y, int width, int height)
         {
             Entity e = new Entity(
                 new TransformComponent(x, y, width, height),
@@ -232,7 +232,7 @@ namespace WatchYourBackLibrary
         /// </summary>
         /// <param name="rect">The location and size of the display</param>
         /// <returns>A display entity</returns>
-        public static Entity createDisplay(Rectangle rect, SpriteFont font)
+        public static Entity CreateDisplay(Rectangle rect, SpriteFont font)
         {
             GraphicsComponent graphics = new GraphicsComponent(GraphicsLayer.Foreground, rect.Center);
             graphics.AddSprite("Display", new SpriteGraphicsInfo(rect, "", font, Color.Red, 0));
@@ -255,7 +255,7 @@ namespace WatchYourBackLibrary
         /// <param name="type">The type of entity</param>
         /// <param name="layer">The layer to be drawn on</param>
         /// <returns>An entity containing only a graphics component</returns>
-        public static Entity createGraphics(Rectangle rect, float rotation, int ID, Entities type, GraphicsLayer graphicsLayer, int[,] textureIndex = null, Polygon poly = null)
+        public static Entity CreateGraphics(Rectangle rect, float rotation, int ID, Entities type, GraphicsLayer graphicsLayer, int[,] textureIndex = null, Polygon poly = null)
         {
             float layer = 0;
             Vector2 rotationOrigin = Vector2.Zero;
@@ -297,7 +297,7 @@ namespace WatchYourBackLibrary
                     graphics.AddSprite("TopRight", new SpriteGraphicsInfo(new Rectangle(rect.X + rect.Width / 2, rect.Y, rect.Width / 2, rect.Height / 2), texture, new Rectangle((int)LevelDimensions.X_SCALE / 2 * textureIndex[0, 1], 0, (int)LevelDimensions.X_SCALE / 2, (int)LevelDimensions.Y_SCALE / 2), 0.9f));
                     graphics.AddSprite("BottomLeft", new SpriteGraphicsInfo(new Rectangle(rect.X, rect.Y + rect.Height / 2, rect.Width / 2, rect.Height / 2), texture, new Rectangle((int)LevelDimensions.X_SCALE / 2 * textureIndex[1, 0], 0, (int)LevelDimensions.X_SCALE / 2, (int)LevelDimensions.Y_SCALE / 2), 0.9f));
                     graphics.AddSprite("BottomRight", new SpriteGraphicsInfo(new Rectangle(rect.X + rect.Width / 2, rect.Y + rect.Height / 2, rect.Width / 2, rect.Height / 2), texture, new Rectangle((int)LevelDimensions.X_SCALE / 2 * textureIndex[1, 1], 0, (int)LevelDimensions.X_SCALE / 2, (int)LevelDimensions.Y_SCALE / 2), 0.9f));
-                    e.addComponent(graphics);
+                    e.AddComponent(graphics);
                     e.ServerID = ID;
                     e.Type = type;
                     return e;                

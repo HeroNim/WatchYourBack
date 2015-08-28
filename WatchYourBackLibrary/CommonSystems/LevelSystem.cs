@@ -36,21 +36,21 @@ namespace WatchYourBackLibrary
             built = false;
         }
 
-        public override void update(TimeSpan gameTime)
+        public override void Update(TimeSpan gameTime)
         {
             if(currentLevel != level.CurrentLevel)
             {
-                clearLevel();
+                ClearLevel();
                 currentLevel = level.CurrentLevel;
-                update(gameTime);
+                Update(gameTime);
             }
             if (!built)
             {
-                buildLevel(currentLevel);
+                BuildLevel(currentLevel);
                 level.Start();
             }
             if (level.Reset)
-                resetLevel();
+                ResetLevel();
 
             if (!level.Playing)
             {
@@ -58,7 +58,7 @@ namespace WatchYourBackLibrary
             }                            
         }
 
-        public void addLevel(LevelTemplate level)
+        public void AddLevel(LevelTemplate level)
         {
             levels.Add(level.Name, level);
         }
@@ -68,7 +68,7 @@ namespace WatchYourBackLibrary
         /// the initial avatars and starting the game timer.
         /// </summary>
         /// <param name="levelName">The name of the level to be built</param>
-        private void buildLevel(LevelName levelName)
+        private void BuildLevel(LevelName levelName)
         {
             int player = 1;
 
@@ -79,9 +79,9 @@ namespace WatchYourBackLibrary
                 {
                     if (levelTemplate.LevelData[y, x] == (int)TileType.WALL)
                     {
-                        Entity wall = EFactory.createWall(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE, (int)LevelDimensions.X_SCALE, (int)LevelDimensions.Y_SCALE,
-                            levelTemplate.TileIndex(y, x), manager.hasGraphics());
-                        manager.addEntity(wall);
+                        Entity wall = EFactory.CreateWall(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE, (int)LevelDimensions.X_SCALE, (int)LevelDimensions.Y_SCALE,
+                            levelTemplate.TileIndex(y, x), manager.HasGraphics());
+                        manager.AddEntity(wall);
                         level.Walls.Add(wall);
 
                         //GraphicsComponent g = (GraphicsComponent)wall.Components[Masks.Graphics];
@@ -91,22 +91,22 @@ namespace WatchYourBackLibrary
                         if (levelTemplate.CornerVertices[y, x][0] == true)
                         {
                             vertex = new Vector2(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE);
-                            level.addVertex(vertex);
+                            level.AddVertex(vertex);
                             //g.DebugPoints.Add(new Vector2(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE));
                         }
                         if (levelTemplate.CornerVertices[y, x][1] == true){
                             vertex = new Vector2((x + 1) * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE);
-                            level.addVertex(vertex);
+                            level.AddVertex(vertex);
                             //g.DebugPoints.Add(new Vector2((x + 1) * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE));
                         }
                         if (levelTemplate.CornerVertices[y, x][2] == true){
                             vertex = new Vector2(x * (int)LevelDimensions.X_SCALE, (y + 1) * (int)LevelDimensions.Y_SCALE);
-                            level.addVertex(vertex);
+                            level.AddVertex(vertex);
                            // g.DebugPoints.Add(new Vector2(x * (int)LevelDimensions.X_SCALE, (y + 1) * (int)LevelDimensions.Y_SCALE));
                         }
                         if (levelTemplate.CornerVertices[y, x][3] == true){
                             vertex = new Vector2((x + 1) * (int)LevelDimensions.X_SCALE, (y + 1) * (int)LevelDimensions.Y_SCALE);
-                            level.addVertex(vertex);
+                            level.AddVertex(vertex);
                             //g.DebugPoints.Add(new Vector2((x + 1) * (int)LevelDimensions.X_SCALE, (y + 1) * (int)LevelDimensions.Y_SCALE));
                         }
 
@@ -116,12 +116,12 @@ namespace WatchYourBackLibrary
                     }
                     if (levelTemplate.LevelData[y, x] == (int)TileType.SPAWN)
                     {
-                        Entity spawn = EFactory.createSpawn(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE, (int)LevelDimensions.X_SCALE, (int)LevelDimensions.Y_SCALE);
-                        Entity avatar = EFactory.createAvatar(new PlayerInfoComponent((Allegiance)player), new Rectangle(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE,
-                           40, 40), (Allegiance)player, Weapons.SWORD, manager.hasGraphics());
+                        Entity spawn = EFactory.CreateSpawn(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE, (int)LevelDimensions.X_SCALE, (int)LevelDimensions.Y_SCALE);
+                        Entity avatar = EFactory.CreateAvatar(new PlayerInfoComponent((Allegiance)player), new Rectangle(x * (int)LevelDimensions.X_SCALE, y * (int)LevelDimensions.Y_SCALE,
+                           40, 40), (Allegiance)player, Weapons.SWORD, manager.HasGraphics());
 
-                        manager.addEntity(spawn);
-                        manager.addEntity(avatar);
+                        manager.AddEntity(spawn);
+                        manager.AddEntity(avatar);
 
                         level.Spawns.Add(spawn);
                         level.Avatars.Add(avatar);
@@ -134,9 +134,9 @@ namespace WatchYourBackLibrary
         /// <summary>
         /// Initializes the system when the game starts, loading the first level and updating the manager accordingly.
         /// </summary>
-        public override void initialize(IECSManager manager)
+        public override void Initialize(IECSManager manager)
         {
-            base.initialize(manager);
+            base.Initialize(manager);
             level = new LevelInfo();
             level.Levels = this.levels;
 
@@ -147,11 +147,11 @@ namespace WatchYourBackLibrary
         /// <summary>
         /// Removes all entities from the level, apart from information and ui entities
         /// </summary>
-        private void clearLevel()
+        private void ClearLevel()
         {
             foreach (Entity entity in manager.Entities.Values)
                 if(level.Contains(entity))
-                    manager.removeEntity(entity);
+                    manager.RemoveEntity(entity);
             level.ResetLevel();
             built = false;
         }
@@ -159,19 +159,19 @@ namespace WatchYourBackLibrary
         /// <summary>
         /// Resets a level, moving avatars back to their spawns and removing destructable entities such as swords or thrown weapons
         /// </summary>
-        private void resetLevel()
+        private void ResetLevel()
         {
             foreach (Entity entity in manager.Entities.Values)
                 if (entity.IsDestructable)
-                    manager.removeEntity(entity);
+                    manager.RemoveEntity(entity);
             for(int i = 0; i < level.Avatars.Count; i++)
             {
-                manager.removeEntity(level.Avatars[i]);
+                manager.RemoveEntity(level.Avatars[i]);
                 TransformComponent transform = (TransformComponent)level.Spawns[i].Components[Masks.Transform];
                 PlayerInfoComponent info = (PlayerInfoComponent)level.Avatars[i].Components[Masks.PlayerInfo];
-                Entity avatar = EFactory.createAvatar(info, new Rectangle((int)transform.X, (int)transform.Y, 40, 40),
-                             (Allegiance)i, Weapons.SWORD, manager.hasGraphics());
-                manager.addEntity(avatar);
+                Entity avatar = EFactory.CreateAvatar(info, new Rectangle((int)transform.X, (int)transform.Y, 40, 40),
+                             (Allegiance)i, Weapons.SWORD, manager.HasGraphics());
+                manager.AddEntity(avatar);
                 level.Avatars[i] = avatar;                
             }
             level.Reset = false;

@@ -120,18 +120,18 @@ namespace WatchYourBackServer
             Thread.Sleep(100);
 
             inGame = new World(Worlds.Debug, true, true);
-            inGame.addManager(new ServerECSManager(server.ConnectionsCount));
+            inGame.AddManager(new ServerECSManager(server.ConnectionsCount));
             inGame.Manager.Playing = true;
             ServerUpdateSystem input = new ServerUpdateSystem(server);
             input.Accumulator = new double[server.ConnectionsCount];
-            inGame.Manager.addSystem(input);           
+            inGame.Manager.AddSystem(input);           
 
-            inGame.Manager.addSystem(new AvatarInputSystem());
-            inGame.Manager.addSystem(new GameCollisionSystem());
-            inGame.Manager.addSystem(new MovementSystem());
-            inGame.Manager.addSystem(new LevelSystem(levels));
-            inGame.Manager.addSystem(new AttackSystem());
-            inGame.Manager.addSystem(new FieldOfViewSystem());
+            inGame.Manager.AddSystem(new AvatarInputSystem());
+            inGame.Manager.AddSystem(new GameCollisionSystem());
+            inGame.Manager.AddSystem(new MovementSystem());
+            inGame.Manager.AddSystem(new LevelSystem(levels));
+            inGame.Manager.AddSystem(new AttackSystem());
+            inGame.Manager.AddSystem(new FieldOfViewSystem());
 
             foreach(ESystem system in inGame.Manager.Systems)
             {
@@ -145,12 +145,12 @@ namespace WatchYourBackServer
             while (true)
             {
                 while (inGame.Manager.Playing == true)
-                    inGame.Manager.update(gameTime);
-                reset();
+                    inGame.Manager.Update(gameTime);
+                Reset();
             }            
         }
 
-        private void reset()
+        private void Reset()
         {         
             Thread.Sleep(100);
             server.Shutdown("Restarting");

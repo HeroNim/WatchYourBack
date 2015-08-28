@@ -40,11 +40,11 @@ namespace WatchYourBack
             mappings.Add(KeyBindings.DASH, Keys.Space);       
         }
 
-        public override void update(TimeSpan gameTime)
+        public override void Update(TimeSpan gameTime)
         {
             AvatarInputComponent p1;
 
-            if (InputManager.checkIfActive(this))
+            if (InputManager.CheckIfActive(this))
             {
                 foreach (Entity entity in activeEntities)
                 {
@@ -79,7 +79,7 @@ namespace WatchYourBack
                 }
 
                 if (Keyboard.GetState().IsKeyDown(mappings[KeyBindings.PAUSE]))
-                    onFire(new InputArgs(Inputs.Pause));
+                    OnFire(new InputArgs(Inputs.Pause));
             } 
         }
     }
